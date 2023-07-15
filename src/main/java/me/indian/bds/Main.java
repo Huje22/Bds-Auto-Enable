@@ -140,17 +140,17 @@ public class Main {
                         shutdown();
                 }
 
+                final File logFile = logger.getLogFile();
+
+                processBuilder.redirectOutput(logFile);
+                processBuilder.redirectError(logFile );
+
+
                 final ProcessBuilder builder = processBuilder.inheritIO();
                 logger.info(builder);
 
                 process = processBuilder.start();
 
-
-                final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    logger.info("Test" + line);
-                }
 
                 process.waitFor();
                 startProcess();
