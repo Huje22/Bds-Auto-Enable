@@ -59,7 +59,6 @@ public class Logger implements AutoRestartLogger {
     @Override
     public void alert(Object log) {
         logState = LogState.ALERT;
-        this.updatePrefix();
         this.logToFile(log);
         System.out.println(prefix + log);
     }
@@ -67,23 +66,20 @@ public class Logger implements AutoRestartLogger {
     @Override
     public void critical(Object log) {
         logState = LogState.CRITICAL;
-        this.updatePrefix();
-        this.logToFile(log);
+       this.logToFile(log);
         System.out.println(prefix + log);
     }
 
     @Override
     public void error(Object log) {
         logState = LogState.ERROR;
-        this.updatePrefix();
-        this.logToFile(log);
+this.logToFile(log);
         System.out.println(prefix + log);
     }
 
     @Override
     public void warning(Object log) {
         logState = LogState.WARNING;
-        this.updatePrefix();
         this.logToFile(log);
         System.out.println(prefix + log);
     }
@@ -91,12 +87,13 @@ public class Logger implements AutoRestartLogger {
     @Override
     public void info(Object log) {
         logState = LogState.INFO;
-        this.updatePrefix();
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
     public void logToFile(Object log) {
+        this.upDateDate();
+        this.updatePrefix();
         if (this.printStream != null) {
             this.printStream.println(date + " [" + Thread.currentThread().getName() + "] " + logState + " " + log);
         }
