@@ -1,5 +1,8 @@
 package me.indian.bds;
 
+import eu.okaeri.configs.ConfigManager;
+import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
+import me.indian.bds.config.Config;
 import me.indian.bds.logger.impl.Logger;
 import me.indian.bds.util.SystemOs;
 import me.indian.bds.util.ThreadUtil;
@@ -18,8 +21,12 @@ public class Main {
 
     private static Logger logger;
     private static ExecutorService service;
+    private static Scanner scanner;
+    private static Config config;
+    private static ProcessBuilder processBuilder;
     private static String jarPath;
     private static String filePath;
+    private static String finalFilePath;
     private static String name;
     private static SystemOs os;
     private static boolean wine;
@@ -28,29 +35,37 @@ public class Main {
     public Main() {
         jarPath = getJarPath();
         logger = new Logger();
+        config = ConfigManager.create(Config.class, (it) -> {
+            it.withConfigurer(new YamlSnakeYamlConfigurer());
+            it.withBindFile("config.yml");
+            it.withRemoveOrphans(true);
+            it.saveDefaults();
+            it.load(true);
+        });
+
         service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Auto restart"));
+        scanner = new Scanner(System.in);
     }
 
     public static void main(String[] args) {
         new Main();
-
         init();
 
-        final File file = new File(filePath);
+        finalFilePath = filePath + File.separator + name;
 
+        final File file = new File(finalFilePath);
         if (file.exists()) {
             logger.info("Odnaleziono " + name);
         } else {
-            logger.critical("Nie można odnaleźć pliku " + name);
-            logger.alert("Ścieżka " + filePath);
+            logger.critical("Nie można odnaleźć pliku " + name + " na ścieżce " + filePath);
             return;
         }
 
+        config.save();
         startProcess();
     }
 
     private static void init() {
-        final Scanner scanner = new Scanner(System.in);
         String input;
 
         logger.info("Podaj system: ");
@@ -77,21 +92,25 @@ public class Main {
             wine = false;
         }
 
-        logger.info("Podaj ścieżkę do pliku (Domyślnie " + jarPath + File.separator + name + "): ");
+        logger.info("Podaj ścieżkę do pliku (Domyślnie " + jarPath + "): ");
         input = scanner.nextLine();
-        filePath = input.isEmpty() ? jarPath + File.separator + name : input;
+        filePath = input.isEmpty() ? jarPath : input;
         System.out.println();
 
         logger.info("Podane informacje:");
+        logger.info("System: " + os);
+        config.setSystemOs(os);
         logger.info("Nazwa: " + name);
-        logger.info("Pełnoletni: " + wine);
+        config.setName(name);
+        logger.info("Wine: " + wine);
+        config.setWine(wine);
         logger.info("Ścieżka do pliku: " + filePath);
+        config.setFilePath(filePath);
 
         logger.info("Kliknij enter przycisk aby kontunować");
         scanner.nextLine();
 
 
-//        System.exit(0);
     }
 
 
@@ -108,12 +127,11 @@ public class Main {
                     command = "pgrep -f " + name;
                     break;
                 case WINDOWS:
-                    command = "tasklist.exe /FI \"IMAGENAME eq " + filePath + "\"";
+                    command = "tasklist /NH /FI \"IMAGENAME eq " + name + "\"";
                     break;
                 default:
                     logger.critical("Musisz podać odpowiedni system");
                     System.exit(0);
-
             }
 
             final Process process = Runtime.getRuntime().exec(command);
@@ -122,7 +140,7 @@ public class Main {
             final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
-                if (!line.isEmpty()) {
+                if (!line.isEmpty() && !line.equalsIgnoreCase("INFO: No tasks are running which match the specified criteria.")) {
                     return true;
                 }
             }
@@ -140,9 +158,7 @@ public class Main {
             logger.info("Proces " + name + " nie jest uruchomiony. Uruchamianie...");
 
             try {
-                String command = filePath;
-                ProcessBuilder processBuilder = null;
-
+                String command;
                 switch (os) {
                     case LINUX:
                         if (wine) {
@@ -150,38 +166,40 @@ public class Main {
                         } else {
                             command = "LD_LIBRARY_PATH=.";
                         }
-                        processBuilder = new ProcessBuilder(command, filePath);
+                        processBuilder = new ProcessBuilder(command, finalFilePath);
                         break;
                     case WINDOWS:
-                        processBuilder = new ProcessBuilder(filePath);
+                        processBuilder = new ProcessBuilder(finalFilePath);
                         break;
                     default:
                         logger.critical("Musisz podać odpowiedni system");
-                        System.exit(0);
+                        exit();
                 }
 
-
-                processBuilder.inheritIO();
-
-                logger.info(processBuilder.inheritIO());
+                final ProcessBuilder builder = processBuilder.inheritIO();
+                logger.info(builder);
 
                 final Process process = processBuilder.start();
-
                 final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line;
                 while ((line = reader.readLine()) != null) {
                     System.out.println(line);
                 }
 
-                process.waitFor(); 
+                process.waitFor();
                 startProcess();
 
-            } catch (Exception exception) {
+            } catch (final Exception exception) {
                 logger.critical("Nie można uruchomic procesu");
                 logger.critical(exception);
                 exception.printStackTrace();
-                System.exit(0);
+                exit();
             }
         }
+    }
+
+    public static void exit() {
+
+        System.exit(0);
     }
 }
