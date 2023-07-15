@@ -18,7 +18,7 @@ public class Config extends OkaeriConfig {
 
     @Comment({" "})
     @Comment({"Pierwsze uruchomienie"})
-    private boolean firstRun = false;
+    private boolean firstRun = true;
 
 
     @Comment({" "})
@@ -27,7 +27,7 @@ public class Config extends OkaeriConfig {
 
     @Comment({" "})
     @Comment({"Nazwa pliku który ma być włączony"})
-    private String name = "bedrock_server.exe";
+    private String fileName = "bedrock_server.exe";
 
     @Comment({" "})
     @Comment({"Czy użyć wine?"})
@@ -35,9 +35,47 @@ public class Config extends OkaeriConfig {
 
 
     @Comment({" "})
-    @Comment({"Ścieżka do pliku"})
+    @Comment({"Ścieżka do z serverem"})
     private String filePath = "./";
 
+
+    @Comment({" "})
+    @Comment({"Watchdog"})
+    private boolean watchdog = true;
+
+    @Comment({" "})
+    @Comment({"Backups"})
+    private boolean backup = true;
+
+    @Comment({" "})
+    @Comment({"Backup World Name"})
+    private String worldName = "Bedrock Level";
+
+
+    public boolean isWatchdog() {
+        return this.watchdog;
+    }
+
+    public void setWatchdog(final boolean watchdog) {
+        this.watchdog = watchdog;
+    }
+
+    public boolean isBackup() {
+        return this.backup;
+    }
+
+    public void setBackup(final boolean backup) {
+        this.backup = backup;
+    }
+
+    public String getWorldName() {
+        return this.worldName;
+    }
+
+
+    public void setWorldName(final String worldName) {
+        this.worldName = worldName;
+    }
 
     public boolean isFirstRun() {
         return firstRun;
@@ -55,12 +93,12 @@ public class Config extends OkaeriConfig {
         this.systemOs = systemOs;
     }
 
-    public String getName() {
-        return this.name;
+    public String getFileName() {
+        return this.fileName;
     }
 
-    public void setName(final String name) {
-        this.name = name;
+    public void setFileName(final String fileName) {
+        this.fileName = fileName;
     }
 
     public boolean isWine() {

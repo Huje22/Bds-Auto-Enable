@@ -84,3 +84,11 @@ nb-configuration.xml
 ##############################
 .DS_Store
 /.idea/
+###############
+BDS-Auto-Enable-settings.yml
+BDS-Auto-Enable-logs/
+
+
+
+
+

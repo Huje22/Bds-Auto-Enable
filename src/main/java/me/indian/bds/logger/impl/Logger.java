@@ -1,10 +1,13 @@
 package me.indian.bds.logger.impl;
 
-
 import me.indian.bds.logger.AutoRestartLogger;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.util.ConsoleColors;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -12,11 +15,13 @@ public class Logger implements AutoRestartLogger {
     private String prefix;
     private LogState logState;
     private String date;
+    private PrintStream printStream;
 
     public Logger() {
         logState = LogState.NONE;
-        upDateDate();
-        updatePrefix();
+        this.upDateDate();
+        this.updatePrefix();
+        this.initializeLogFile();
     }
 
     private void upDateDate() {
@@ -35,33 +40,65 @@ public class Logger implements AutoRestartLogger {
                 + ConsoleColors.RESET + " ";
     }
 
+    private void initializeLogFile() {
+        try {
+            final File logsDir = new File("BDS-Auto-Enable-logs");
+            if (!logsDir.exists()) {
+                logsDir.mkdir();
+            }
+
+            final File logFile = new File(logsDir, "server" + date.replaceAll(":", "-") + ".log");
+            final FileOutputStream fileOutputStream = new FileOutputStream(logFile, true);
+            this.printStream = new PrintStream(fileOutputStream);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    @Override
     public void alert(Object log) {
         logState = LogState.ALERT;
-        updatePrefix();
+        this.updatePrefix();
+        this.logToFile(log);
         System.out.println(prefix + log);
     }
 
+    @Override
     public void critical(Object log) {
         logState = LogState.CRITICAL;
-        updatePrefix();
+        this.updatePrefix();
+        this.logToFile(log);
         System.out.println(prefix + log);
     }
 
+    @Override
     public void error(Object log) {
         logState = LogState.ERROR;
-        updatePrefix();
+        this.updatePrefix();
+        this.logToFile(log);
         System.out.println(prefix + log);
     }
 
+    @Override
     public void warning(Object log) {
         logState = LogState.WARNING;
-        updatePrefix();
+        this.updatePrefix();
+        this.logToFile(log);
         System.out.println(prefix + log);
     }
 
+    @Override
     public void info(Object log) {
         logState = LogState.INFO;
-        updatePrefix();
+        this.updatePrefix();
+        this.logToFile(log);
         System.out.println(prefix + log);
+    }
+
+    public void logToFile(Object log) {
+        if (this.printStream != null) {
+            this.printStream.println(date + " [" + Thread.currentThread().getName() + "] " + logState + " " + log);
+        }
     }
 }

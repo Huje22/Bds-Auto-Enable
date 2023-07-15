@@ -2,123 +2,87 @@ package me.indian.bds;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
+import me.indian.bds.basic.Settings;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.impl.Logger;
-import me.indian.bds.util.SystemOs;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.watchdog.WatchDog;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Arrays;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import static me.indian.bds.basic.Settings.filePath;
+import static me.indian.bds.basic.Settings.name;
+import static me.indian.bds.basic.Settings.os;
+import static me.indian.bds.basic.Settings.wine;
+
 public class Main {
 
 
+    private static Main instance;
+    private static Scanner scanner;
+    private static WatchDog watchDog;
     private static Logger logger;
     private static ExecutorService service;
-    private static Scanner scanner;
     private static Config config;
     private static ProcessBuilder processBuilder;
+    private static Process process;
     private static String jarPath;
-    private static String filePath;
     private static String finalFilePath;
-    private static String name;
-    private static SystemOs os;
-    private static boolean wine;
 
 
     public Main() {
+        instance = this;
+        scanner = new Scanner(System.in);
         jarPath = getJarPath();
         logger = new Logger();
         config = ConfigManager.create(Config.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile("config.yml");
+            it.withBindFile("BDS-Auto-Enable-settings.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
         });
 
-        service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Auto restart"));
-        scanner = new Scanner(System.in);
+        service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("BDS Auto Enable"));
     }
 
     public static void main(String[] args) {
         new Main();
-        init();
+        new Settings(config).loadSettings(scanner);
+        service.execute(() -> {
+            watchDog = new WatchDog(config);
+            watchDog.backup();
 
-        finalFilePath = filePath + File.separator + name;
+            finalFilePath = filePath + File.separator + name;
 
-        final File file = new File(finalFilePath);
-        if (file.exists()) {
-            logger.info("Odnaleziono " + name);
-        } else {
-            logger.critical("Nie można odnaleźć pliku " + name + " na ścieżce " + filePath);
-            return;
-        }
-
+            final File file = new File(finalFilePath);
+            if (file.exists()) {
+                logger.info("Odnaleziono " + name);
+            } else {
+                logger.critical("Nie można odnaleźć pliku " + name + " na ścieżce " + filePath);
+                return;
+            }
+            if (config.isFirstRun()) {
+                config.setFirstRun(false);
+            }
+        });
         config.save();
         startProcess();
     }
 
-    private static void init() {
-        String input;
-
-        logger.info("Podaj system: ");
-        logger.info("Obsługiwane systemy: " + Arrays.toString(SystemOs.values()));
-
-        input = scanner.nextLine();
-        os = input.isEmpty() ? SystemOs.LINUX : SystemOs.valueOf(input.toUpperCase());
-        logger.info("System ustawiony na: " + os);
-        System.out.println();
-
-        logger.info("Podaj nazwę pliku (Domyślnie: bedrock_server.exe): ");
-        input = scanner.nextLine();
-        name = input.isEmpty() ? "bedrock_server.exe" : input;
-        logger.info("Nazwa pliku ustawiona na: " + name);
-        System.out.println();
-
-
-        if (os != SystemOs.WINDOWS) {
-            logger.info("Uzyć wine? (true/false): ");
-            wine = scanner.nextBoolean();
-            logger.info("Użycie wine ustawione na: " + wine);
-            System.out.println();
-        } else {
-            wine = false;
-        }
-
-        logger.info("Podaj ścieżkę do pliku (Domyślnie " + jarPath + "): ");
-        input = scanner.nextLine();
-        filePath = input.isEmpty() ? jarPath : input;
-        System.out.println();
-
-        logger.info("Podane informacje:");
-        logger.info("System: " + os);
-        config.setSystemOs(os);
-        logger.info("Nazwa: " + name);
-        config.setName(name);
-        logger.info("Wine: " + wine);
-        config.setWine(wine);
-        logger.info("Ścieżka do pliku: " + filePath);
-        config.setFilePath(filePath);
-
-        logger.info("Kliknij enter przycisk aby kontunować");
-        scanner.nextLine();
-
-
-    }
 
 
     public static String getJarPath() {
         return System.getProperty("user.dir");
     }
 
-    public static boolean isProcessRunning() {
+    private static boolean isProcessRunning() {
         try {
             String command = "";
 
@@ -151,7 +115,7 @@ public class Main {
         return false;
     }
 
-    public static void startProcess() {
+    private static void startProcess() {
         if (isProcessRunning()) {
             logger.info("Proces " + name + " jest już uruchomiony.");
         } else {
@@ -173,17 +137,19 @@ public class Main {
                         break;
                     default:
                         logger.critical("Musisz podać odpowiedni system");
-                        exit();
+                        shutdown();
                 }
 
                 final ProcessBuilder builder = processBuilder.inheritIO();
                 logger.info(builder);
 
-                final Process process = processBuilder.start();
+                process = processBuilder.start();
+
+
                 final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
+                    logger.info("Test" + line);
                 }
 
                 process.waitFor();
@@ -193,13 +159,22 @@ public class Main {
                 logger.critical("Nie można uruchomic procesu");
                 logger.critical(exception);
                 exception.printStackTrace();
-                exit();
+                shutdown();
             }
         }
     }
 
-    public static void exit() {
+
+    private static void shutdown() {
+        watchDog.backup();
+        config.save();
+        service.shutdown();
+        scanner.close();
 
         System.exit(0);
+    }
+
+    public static Logger getLogger() {
+        return logger;
     }
 }
