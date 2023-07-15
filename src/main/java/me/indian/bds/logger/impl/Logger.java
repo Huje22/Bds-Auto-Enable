@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Logger implements AutoRestartLogger {
+
+    private File logFile;
     private String prefix;
     private LogState logState;
     private String date;
@@ -47,7 +49,7 @@ public class Logger implements AutoRestartLogger {
                 logsDir.mkdir();
             }
 
-            final File logFile = new File(logsDir, "server" + date.replaceAll(":", "-") + ".log");
+            logFile = new File(logsDir, "ServerLog-" + date.replaceAll(":", "-") + ".log");
             final FileOutputStream fileOutputStream = new FileOutputStream(logFile, true);
             this.printStream = new PrintStream(fileOutputStream);
         } catch (IOException e) {
@@ -97,5 +99,9 @@ this.logToFile(log);
         if (this.printStream != null) {
             this.printStream.println(date + " [" + Thread.currentThread().getName() + "] " + logState + " " + log);
         }
+    }
+
+    public File getLogFile() {
+        return this.logFile;
     }
 }
