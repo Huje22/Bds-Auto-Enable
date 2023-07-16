@@ -1,23 +1,15 @@
-package me.indian.bds.logger.impl;
+package me.indian.bds.logger;
 
-import me.indian.bds.logger.AutoRestartLogger;
-import me.indian.bds.logger.LogState;
 import me.indian.bds.util.ConsoleColors;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.util.ZipUtil;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Logger implements AutoRestartLogger {
+public class Logger  {
 
     private File logFile;
     private String prefix;
@@ -65,35 +57,30 @@ public class Logger implements AutoRestartLogger {
     }
 
 
-    @Override
     public void alert(Object log) {
         logState = LogState.ALERT;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
-    @Override
     public void critical(Object log) {
         logState = LogState.CRITICAL;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
-    @Override
     public void error(Object log) {
         logState = LogState.ERROR;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
-    @Override
     public void warning(Object log) {
         logState = LogState.WARNING;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
-    @Override
     public void info(Object log) {
         logState = LogState.INFO;
         this.logToFile(log);

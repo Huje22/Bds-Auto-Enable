@@ -4,7 +4,7 @@ import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import me.indian.bds.basic.Settings;
 import me.indian.bds.config.Config;
-import me.indian.bds.logger.impl.Logger;
+import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
 

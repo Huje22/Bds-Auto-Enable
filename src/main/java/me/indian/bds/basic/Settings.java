@@ -2,7 +2,7 @@ package me.indian.bds.basic;
 
 import me.indian.bds.Main;
 import me.indian.bds.config.Config;
-import me.indian.bds.logger.impl.Logger;
+import me.indian.bds.logger.Logger;
 import me.indian.bds.util.SystemOs;
 
 import java.util.Arrays;
