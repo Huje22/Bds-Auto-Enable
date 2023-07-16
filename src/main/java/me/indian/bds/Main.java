@@ -122,15 +122,15 @@ public class Main {
             logger.info("Proces " + name + " nie jest uruchomiony. Uruchamianie...");
 
             try {
-                String command;
                 switch (os) {
                     case LINUX:
                         if (wine) {
-                            command = "wine";
+                            processBuilder = new ProcessBuilder("wine", finalFilePath);
                         } else {
-                            command = "LD_LIBRARY_PATH=.";
+                            processBuilder = new ProcessBuilder("./" + name);
+                            processBuilder.environment().put("LD_LIBRARY_PATH", ".");
+                            processBuilder.directory(new File(filePath));
                         }
-                        processBuilder = new ProcessBuilder(command, finalFilePath);
                         break;
                     case WINDOWS:
                         processBuilder = new ProcessBuilder(finalFilePath);
