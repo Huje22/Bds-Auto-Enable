@@ -79,7 +79,7 @@ public class WatchDog {
                         forceBackup();
                     }
                 };
-                timer.schedule(hourlyTask, 0, this.minutesToMilliseconds(1));
+                timer.schedule(hourlyTask, 0, this.minutesToMilliseconds(30));
             }
         });
     }
