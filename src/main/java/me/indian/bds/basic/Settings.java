@@ -58,6 +58,8 @@ public class Settings {
                 worldName = config.getWorldName();
                 logger.info("WorldName: " + worldName);
 
+                logger.info("Kliknij enter przycisk aby kontunować");
+                scanner.nextLine();
 
             } else {
                 logger.info("Zaczynamy od nowa");

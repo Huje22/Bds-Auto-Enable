@@ -3,7 +3,7 @@ package me.indian.bds.util;
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.ThreadFactory;
 
-public class ThreadUtil implements ThreadFactory {
+public class ThreadUtil extends Thread implements ThreadFactory {
 
     private final String threadName;
     private final Runnable runnable;

@@ -11,6 +11,7 @@ import me.indian.bds.watchdog.WatchDog;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -32,18 +33,16 @@ public class Main {
     private static Config config;
     private static ProcessBuilder processBuilder;
     private static Process process;
-    private static String jarPath;
     private static String finalFilePath;
 
 
     public Main() {
         instance = this;
         scanner = new Scanner(System.in);
-        jarPath = getJarPath();
         logger = new Logger();
         config = ConfigManager.create(Config.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile("BDS-Auto-Enable-settings.yml");
+            it.withBindFile("BDS-Auto-Enable/config.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
@@ -58,6 +57,7 @@ public class Main {
         service.execute(() -> {
             watchDog = new WatchDog(config);
             watchDog.backup();
+            watchDog.forceBackup();
 
             finalFilePath = filePath + File.separator + name;
 
@@ -72,10 +72,10 @@ public class Main {
                 config.setFirstRun(false);
             }
         });
+
         config.save();
         startProcess();
     }
-
 
 
     public static String getJarPath() {
@@ -141,18 +141,23 @@ public class Main {
                 }
 
                 final File logFile = logger.getLogFile();
-
                 processBuilder.redirectOutput(logFile);
-                processBuilder.redirectError(logFile );
-
-
-                final ProcessBuilder builder = processBuilder.inheritIO();
-                logger.info(builder);
+                processBuilder.redirectError(logFile);
 
                 process = processBuilder.start();
+                logger.info("Uruchomiono proces (nadal może on sie wyłączyć)");
 
 
-                process.waitFor();
+                InputStream stdout = process.getInputStream();
+                logger.critical(stdout);
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = stdout.read(buffer)) != -1) {
+                    String output = new String(buffer, 0, bytesRead);
+                    logger.info(output);
+                }
+
+                logger.alert("Proces zakończony z kodem: " + process.waitFor());
                 startProcess();
 
             } catch (final Exception exception) {
@@ -165,11 +170,14 @@ public class Main {
     }
 
 
+
     private static void shutdown() {
-        watchDog.backup();
+        logger.alert("Wykonuje się przed zakończeniem programu...");
+        watchDog.forceBackup();
         config.save();
         service.shutdown();
         scanner.close();
+        process.destroy();
 
         System.exit(0);
     }

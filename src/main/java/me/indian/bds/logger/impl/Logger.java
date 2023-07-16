@@ -3,9 +3,15 @@ package me.indian.bds.logger.impl;
 import me.indian.bds.logger.AutoRestartLogger;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.util.ConsoleColors;
+import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.ZipUtil;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
@@ -44,11 +50,12 @@ public class Logger implements AutoRestartLogger {
 
     private void initializeLogFile() {
         try {
-            final File logsDir = new File("BDS-Auto-Enable-logs");
+            final File logsDir = new File("BDS-Auto-Enable/logs");
             if (!logsDir.exists()) {
-                logsDir.mkdir();
+                if (!logsDir.mkdir()) {
+                    logsDir.mkdirs();
+                }
             }
-
             logFile = new File(logsDir, "ServerLog-" + date.replaceAll(":", "-") + ".log");
             final FileOutputStream fileOutputStream = new FileOutputStream(logFile, true);
             this.printStream = new PrintStream(fileOutputStream);
@@ -68,14 +75,14 @@ public class Logger implements AutoRestartLogger {
     @Override
     public void critical(Object log) {
         logState = LogState.CRITICAL;
-       this.logToFile(log);
+        this.logToFile(log);
         System.out.println(prefix + log);
     }
 
     @Override
     public void error(Object log) {
         logState = LogState.ERROR;
-this.logToFile(log);
+        this.logToFile(log);
         System.out.println(prefix + log);
     }
 
