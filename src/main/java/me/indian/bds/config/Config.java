@@ -3,6 +3,7 @@ package me.indian.bds.config;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.Header;
+import me.indian.bds.logger.ServerLogType;
 import me.indian.bds.util.SystemOs;
 
 
@@ -16,10 +17,20 @@ import me.indian.bds.util.SystemOs;
 
 public class Config extends OkaeriConfig {
 
+
+    @Comment({" "})
+    @Comment({"Debug"})
+    private boolean debug = true;
+
+
+    @Comment({" "})
+    @Comment({"Gdzie wypisywać wyjście konsoli"})
+    private ServerLogType serverLogType = ServerLogType.FILE;
+
+
     @Comment({" "})
     @Comment({"Pierwsze uruchomienie"})
     private boolean firstRun = true;
-
 
     @Comment({" "})
     @Comment({"System na którym uruchamiana jest aplikacja"})
@@ -36,7 +47,7 @@ public class Config extends OkaeriConfig {
 
     @Comment({" "})
     @Comment({"Ścieżka do z serverem"})
-    private String filePath = "./";
+    private String filesPath = "./";
 
 
     @Comment({" "})
@@ -51,6 +62,18 @@ public class Config extends OkaeriConfig {
     @Comment({"Backup World Name"})
     private String worldName = "Bedrock Level";
 
+
+    public ServerLogType getServerLogType() {
+        return this.serverLogType;
+    }
+
+    public void setServerLogType(final ServerLogType serverLogType) {
+        this.serverLogType = serverLogType;
+    }
+
+    public boolean isDebug() {
+        return this.debug;
+    }
 
     public boolean isWatchdog() {
         return this.watchdog;
@@ -109,11 +132,11 @@ public class Config extends OkaeriConfig {
         this.wine = wine;
     }
 
-    public String getFilePath() {
-        return this.filePath;
+    public String getFilesPath() {
+        return this.filesPath;
     }
 
-    public void setFilePath(final String filePath) {
-        this.filePath = filePath;
+    public void setFilesPath(final String filesPath) {
+        this.filesPath = filesPath;
     }
 }

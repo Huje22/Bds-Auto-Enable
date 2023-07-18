@@ -8,6 +8,7 @@ public enum LogState {
     ALERT(ConsoleColors.BRIGHT_RED),
     CRITICAL(ConsoleColors.DARK_RED),
     ERROR(ConsoleColors.DARK_GRAY),
+    DEBUG(ConsoleColors.DARK_GRAY),
     WARNING(ConsoleColors.BRIGHT_WHITE);
 
     private final String colorCode;

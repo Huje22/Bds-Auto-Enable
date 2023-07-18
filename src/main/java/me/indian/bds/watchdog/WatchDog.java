@@ -1,9 +1,9 @@
 package me.indian.bds.watchdog;
 
 import me.indian.bds.Main;
+import me.indian.bds.basic.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.SystemOs;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.ZipUtil;
 
@@ -21,12 +21,12 @@ public class WatchDog {
     private final ExecutorService service;
     private final Config config;
     private final Timer timer;
-    private final SystemOs os;
+    private final String worldPath;
+    private final File backupFile;
+    private final File worldFile;
     private String date;
     private TimerTask hourlyTask;
-    private String worldPath;
-    private String backupPath;
-    private File backupFile;
+    private String worldName;
 
     public WatchDog(final Config config) {
         this.logger = Main.getLogger();
@@ -34,45 +34,33 @@ public class WatchDog {
         this.config = config;
         this.timer = new Timer();
         if (this.config.isBackup()) logger.alert("Backupy są włączone");
-        this.os = this.config.getSystemOs();
+        this.backupFile = new File("BDS-Auto-Enable/backup");
+        this.worldName = this.config.getWorldName();
+        this.worldPath = Defaults.getWorldsPath() + this.worldName;
+        this.worldFile = new File(worldPath);
+        if (!backupFile.exists()) {
+            logger.alert("Nie znaleziono foldera dla backupów");
+            logger.info("Tworzenie folderu dla backupów");
+            if (backupFile.mkdir()) {
+                logger.info("Utworzono folder dla backupów");
+            } else {
+                logger.error("Nie można utworzyć folderu dla backupów");
+            }
+        }
+
+        if (!worldFile.exists()) {
+            logger.critical("Folder świata \"" + this.worldName + "\" nie istnieje");
+            logger.alert("Ścieżka " + this.worldPath);
+            Thread.currentThread().interrupt();
+            timer.cancel();
+//            hourlyTask.cancel();
+        }
     }
 
     public void backup() {
         this.service.execute(() -> {
             if (config.isWatchdog() && config.isBackup()) {
-                String worldFolder;
-                if (os == SystemOs.WINDOWS) {
-                    worldFolder = "\\worlds\\";
-                } else if (os == SystemOs.LINUX) {
-                    worldFolder = "/worlds/";
-                } else {
-                    worldFolder = "worlds";
-                }
-
-                this.worldPath = config.getFilePath() + worldFolder + config.getWorldName();
-                final File worldFile = new File(worldPath);
-                this.backupFile = new File("BDS-Auto-Enable/backup");
-
-                logger.alert("Ścieżka świata backupów " + backupFile.getAbsolutePath());
-
-                if (!backupFile.exists()) {
-                    logger.alert("Nie znaleziono foldera dla backupów");
-                    logger.info("Tworzenie folderu dla backupów");
-                    if (backupFile.mkdir()) {
-                        logger.info("Utworzono folder dla backupów");
-                    } else {
-                        logger.error("Nie można utworzyć folderu dla backupów");
-                    }
-                }
-
-                if (!worldFile.exists()) {
-                    logger.critical("Folder świata " + config.getWorldName() + " nie istnieje");
-                    logger.alert("Ścieżka " + worldPath);
-                    Thread.currentThread().interrupt();
-                    timer.cancel();
-                    hourlyTask.cancel();
-                }
-
+                logger.debug("Ścieżka świata backupów " + Defaults.getWorldsPath() + this.worldName);
                 this.hourlyTask = new TimerTask() {
                     @Override
                     public void run() {
@@ -85,13 +73,15 @@ public class WatchDog {
     }
 
     public void forceBackup() {
+        if (!worldFile.exists()) return;
         upDateDate();
         try {
-            ZipUtil.zipFolder(worldPath, backupFile.getAbsolutePath() + File.separator + config.getWorldName() + date + ".zip");
+            ZipUtil.zipFolder(this.worldPath, this.backupFile.getAbsolutePath() + File.separator + this.worldName + this.date + ".zip");
             logger.info("Utworzono kopię zapasową");
         } catch (final Exception exception) {
             logger.critical("Nie można utworzyć kopii zapasowej");
             logger.critical(exception);
+            exception.printStackTrace();
         }
     }
 

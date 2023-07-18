@@ -5,6 +5,8 @@ import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import me.indian.bds.basic.Settings;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.logger.ServerLogType;
+import me.indian.bds.util.ConsoleColors;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
 
@@ -13,6 +15,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -39,7 +43,6 @@ public class Main {
     public Main() {
         instance = this;
         scanner = new Scanner(System.in);
-        logger = new Logger();
         config = ConfigManager.create(Config.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
             it.withBindFile("BDS-Auto-Enable/config.yml");
@@ -47,40 +50,40 @@ public class Main {
             it.saveDefaults();
             it.load(true);
         });
-
+        logger = new Logger(config);
         service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("BDS Auto Enable"));
     }
+
 
     public static void main(String[] args) {
         new Main();
         new Settings(config).loadSettings(scanner);
-        service.execute(() -> {
-            watchDog = new WatchDog(config);
-            watchDog.backup();
-            watchDog.forceBackup();
-
-            finalFilePath = filePath + File.separator + name;
-
-            final File file = new File(finalFilePath);
-            if (file.exists()) {
-                logger.info("Odnaleziono " + name);
-            } else {
-                logger.critical("Nie można odnaleźć pliku " + name + " na ścieżce " + filePath);
-                return;
-            }
-            if (config.isFirstRun()) {
-                config.setFirstRun(false);
-            }
-        });
+        watchDog = new WatchDog(config);
+        watchDog.backup();
+        watchDog.forceBackup();
+        finalFilePath = filePath + File.separator + name;
+        final File file = new File(finalFilePath);
+        if (file.exists()) {
+            logger.info("Odnaleziono " + name);
+        } else {
+            logger.critical("Nie można odnaleźć pliku " + name + " na ścieżce " + filePath);
+            System.exit(0);
+        }
 
         config.save();
+
+        Runtime.getRuntime().addShutdownHook(new ThreadUtil("Shutdown", () -> {
+            logger.alert("Wykonuje się przed zakończeniem programu...");
+            watchDog.forceBackup();
+            config.save();
+            service.shutdown();
+            scanner.close();
+            process.destroy();
+        }));
+
         startProcess();
     }
 
-
-    public static String getJarPath() {
-        return System.getProperty("user.dir");
-    }
 
     private static boolean isProcessRunning() {
         try {
@@ -98,10 +101,10 @@ public class Main {
                     System.exit(0);
             }
 
-            final Process process = Runtime.getRuntime().exec(command);
-            process.waitFor();
+            final Process checkProcessIsRunning = Runtime.getRuntime().exec(command);
+            checkProcessIsRunning.waitFor();
 
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(checkProcessIsRunning.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
                 if (!line.isEmpty() && !line.equalsIgnoreCase("INFO: No tasks are running which match the specified criteria.")) {
@@ -116,6 +119,7 @@ public class Main {
     }
 
     private static void startProcess() {
+        service.execute(() ->{
         if (isProcessRunning()) {
             logger.info("Proces " + name + " jest już uruchomiony.");
         } else {
@@ -140,16 +144,31 @@ public class Main {
                         shutdown();
                 }
 
-                final File logFile = logger.getLogFile();
-                processBuilder.redirectOutput(logFile);
-                processBuilder.redirectError(logFile);
+                if (Settings.serverLogType == ServerLogType.FILE) {
+                    final File logFile = logger.getLogFile();
+                    processBuilder.redirectOutput(logFile);
+                    processBuilder.redirectError(logFile);
+                } else if (Settings.serverLogType == ServerLogType.CONSOLE) {
+                    processBuilder.inheritIO();
+                }
 
                 process = processBuilder.start();
                 logger.info("Uruchomiono proces (nadal może on sie wyłączyć)");
 
+                new ThreadUtil("Exit scanner", () ->{
+                final Scanner exit = new Scanner(System.in);
+                logger.alert("Wpisz: " + ConsoleColors.GREEN + "end" + ConsoleColors.RESET + " aby zakończyć działanie programu");
+                String input;
+                do {
+                    input = exit.nextLine();
+                    logger.info("Wprowadzono: " + input);
+                } while (!input.equalsIgnoreCase("end"));
+                logger.info("Wyłączanie...");
+                    shutdown();
+                }).newThread().start();
 
                 InputStream stdout = process.getInputStream();
-                logger.critical(stdout);
+                logger.debug(stdout);
                 byte[] buffer = new byte[1024];
                 int bytesRead;
                 while ((bytesRead = stdout.read(buffer)) != -1) {
@@ -167,12 +186,11 @@ public class Main {
                 shutdown();
             }
         }
+        });
     }
 
 
-
     private static void shutdown() {
-        logger.alert("Wykonuje się przed zakończeniem programu...");
         watchDog.forceBackup();
         config.save();
         service.shutdown();
@@ -180,6 +198,11 @@ public class Main {
         process.destroy();
 
         System.exit(0);
+    }
+
+
+    public static Config getConfig() {
+        return config;
     }
 
     public static Logger getLogger() {

@@ -1,5 +1,6 @@
 package me.indian.bds.logger;
 
+import me.indian.bds.config.Config;
 import me.indian.bds.util.ConsoleColors;
 
 import java.io.File;
@@ -9,16 +10,18 @@ import java.io.PrintStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class Logger  {
+public class Logger {
 
+    private final Config config;
     private File logFile;
     private String prefix;
     private LogState logState;
     private String date;
     private PrintStream printStream;
 
-    public Logger() {
-        logState = LogState.NONE;
+    public Logger(final Config config) {
+        this.config = config;
+        this.logState = LogState.NONE;
         this.upDateDate();
         this.updatePrefix();
         this.initializeLogFile();
@@ -31,12 +34,12 @@ public class Logger  {
     }
 
     private void updatePrefix() {
-        String logStateColor = logState.getColorCode();
+        final String logStateColor = this.logState.getColorCode();
         prefix = ConsoleColors.DARK_GRAY + date + ConsoleColors.BRIGHT_GREEN + "BDS " + ConsoleColors.BRIGHT_BLUE + "Auto Enabled " +
                 ConsoleColors.BRIGHT_GREEN + "[" + ConsoleColors.BRIGHT_GRAY +
                 Thread.currentThread().getName()
                 + ConsoleColors.BRIGHT_GREEN + "]" +
-                " " + logStateColor + logState.name().toUpperCase()
+                " " + logStateColor + this.logState.name().toUpperCase()
                 + ConsoleColors.RESET + " ";
     }
 
@@ -58,40 +61,48 @@ public class Logger  {
 
 
     public void alert(Object log) {
-        logState = LogState.ALERT;
+        this.logState = LogState.ALERT;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
     public void critical(Object log) {
-        logState = LogState.CRITICAL;
+        this.logState = LogState.CRITICAL;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
     public void error(Object log) {
-        logState = LogState.ERROR;
+        this.logState = LogState.ERROR;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
     public void warning(Object log) {
-        logState = LogState.WARNING;
+        this.logState = LogState.WARNING;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
     public void info(Object log) {
-        logState = LogState.INFO;
+        this.logState = LogState.INFO;
         this.logToFile(log);
         System.out.println(prefix + log);
+    }
+
+    public void debug(Object log) {
+        if (config.isDebug()) {
+            this.logState = LogState.DEBUG;
+            this.logToFile(log);
+            System.out.println(prefix + log);
+        }
     }
 
     public void logToFile(Object log) {
         this.upDateDate();
         this.updatePrefix();
         if (this.printStream != null) {
-            this.printStream.println(date + " [" + Thread.currentThread().getName() + "] " + logState + " " + log);
+            this.printStream.println(date + " [" + Thread.currentThread().getName() + "] " + this.logState + " " + log);
         }
     }
 
