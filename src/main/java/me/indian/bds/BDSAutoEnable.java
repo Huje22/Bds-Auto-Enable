@@ -12,13 +12,9 @@ import me.indian.bds.watchdog.WatchDog;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -83,13 +79,13 @@ public class BDSAutoEnable {
             process.destroy();
         }));
 
+
         startProcess();
     }
 
     private static boolean isProcessRunning() {
         try {
             String command = "";
-
             switch (os) {
                 case LINUX:
                     command = "pgrep -f " + name;
@@ -120,73 +116,76 @@ public class BDSAutoEnable {
     }
 
     private static void startProcess() {
-        service.execute(() ->{
-        if (isProcessRunning()) {
-            logger.info("Proces " + name + " jest już uruchomiony.");
-        } else {
-            logger.info("Proces " + name + " nie jest uruchomiony. Uruchamianie...");
+        service.execute(() -> {
+            if (isProcessRunning()) {
+                logger.info("Proces " + name + " jest już uruchomiony.");
+            } else {
+                logger.info("Proces " + name + " nie jest uruchomiony. Uruchamianie...");
 
-            try {
-                switch (os) {
-                    case LINUX:
-                        if (wine) {
-                            processBuilder = new ProcessBuilder("wine", finalFilePath);
-                        } else {
-                            processBuilder = new ProcessBuilder("./" + name);
-                            processBuilder.environment().put("LD_LIBRARY_PATH", ".");
-                            processBuilder.directory(new File(filePath));
+                try {
+                    switch (os) {
+                        case LINUX:
+                            if (wine) {
+                                processBuilder = new ProcessBuilder("wine", finalFilePath);
+                            } else {
+                                processBuilder = new ProcessBuilder("./" + name);
+                                processBuilder.environment().put("LD_LIBRARY_PATH", ".");
+                                processBuilder.directory(new File(filePath));
+                            }
+                            break;
+                        case WINDOWS:
+                            processBuilder = new ProcessBuilder(finalFilePath);
+                            break;
+                        default:
+                            logger.critical("Musisz podać odpowiedni system");
+                            shutdown();
+                    }
+
+                    if (Settings.serverLogType == ServerLogType.FILE) {
+                        final File logFile = logger.getLogFile();
+                        processBuilder.redirectOutput(logFile);
+                        processBuilder.redirectError(logFile);
+                    } else if (Settings.serverLogType == ServerLogType.CONSOLE) {
+                        processBuilder.inheritIO();
+                    }
+
+                    process = processBuilder.start();
+                    logger.info("Uruchomiono proces (nadal może on sie wyłączyć)");
+
+                    service.execute(() -> {
+                        logger.info(ConsoleColors.BLUE + "----------------"+ ConsoleColors.LIGHT_GRAY +"Polecenia" + ConsoleColors.BLUE +"-------------------" + ConsoleColors.RESET);
+                        logger.info(ConsoleColors.GREEN + "end" + ConsoleColors.RED + " zatrzymuje proces servera i aplikacij" + ConsoleColors.RESET);
+                        logger.info(ConsoleColors.GREEN + "restart" + ConsoleColors.RED + " zatrzymuje proces servera" + ConsoleColors.RESET);
+                        logger.info(ConsoleColors.BLUE + "--------------------------------------------" + ConsoleColors.RESET);
+                        String input;
+                        while (true) {
+                            if (!scanner.hasNext()) continue;
+                            input = scanner.nextLine();
+                            logger.info("Wprowadzono: " + input);
+                            if (input.equalsIgnoreCase("restart")) endServerProcess();
+                            if (input.equalsIgnoreCase("end")) shutdown();
                         }
-                        break;
-                    case WINDOWS:
-                        processBuilder = new ProcessBuilder(finalFilePath);
-                        break;
-                    default:
-                        logger.critical("Musisz podać odpowiedni system");
-                        shutdown();
-                }
+                    });
 
-                if (Settings.serverLogType == ServerLogType.FILE) {
-                    final File logFile = logger.getLogFile();
-                    processBuilder.redirectOutput(logFile);
-                    processBuilder.redirectError(logFile);
-                } else if (Settings.serverLogType == ServerLogType.CONSOLE) {
-                    processBuilder.inheritIO();
-                }
+                    final InputStream stdout = process.getInputStream();
+                    logger.debug(stdout);
+                    byte[] buffer = new byte[1024];
+                    int bytesRead;
+                    while ((bytesRead = stdout.read(buffer)) != -1) {
+                        String output = new String(buffer, 0, bytesRead);
+                        logger.info(output);
+                    }
 
-                process = processBuilder.start();
-                logger.info("Uruchomiono proces (nadal może on sie wyłączyć)");
+                    logger.alert("Proces zakończony z kodem: " + process.waitFor());
+                    startProcess();
 
-                new ThreadUtil("Exit scanner", () ->{
-                final Scanner exit = new Scanner(System.in);
-                logger.alert("Wpisz: " + ConsoleColors.GREEN + "end" + ConsoleColors.RESET + " aby zakończyć działanie programu");
-                String input;
-                do {
-                    input = exit.nextLine();
-                    logger.info("Wprowadzono: " + input);
-                } while (!input.equalsIgnoreCase("end"));
-                logger.info("Wyłączanie...");
+                } catch (final Exception exception) {
+                    logger.critical("Nie można uruchomic procesu");
+                    logger.critical(exception);
+                    exception.printStackTrace();
                     shutdown();
-                }).newThread().start();
-
-                InputStream stdout = process.getInputStream();
-                logger.debug(stdout);
-                byte[] buffer = new byte[1024];
-                int bytesRead;
-                while ((bytesRead = stdout.read(buffer)) != -1) {
-                    String output = new String(buffer, 0, bytesRead);
-                    logger.info(output);
                 }
-
-                logger.alert("Proces zakończony z kodem: " + process.waitFor());
-                startProcess();
-
-            } catch (final Exception exception) {
-                logger.critical("Nie można uruchomic procesu");
-                logger.critical(exception);
-                exception.printStackTrace();
-                shutdown();
             }
-        }
         });
     }
 
@@ -196,9 +195,27 @@ public class BDSAutoEnable {
         config.save();
         service.shutdown();
         scanner.close();
-        process.destroy();
+        endServerProcess();
 
+        logger.alert("Wyłączono");
         System.exit(0);
+    }
+
+    private static void endServerProcess() {
+        if (process.isAlive()) {
+            try {
+                int timeoutInSeconds = 10;
+                boolean processCompleted = process.waitFor(timeoutInSeconds, java.util.concurrent.TimeUnit.SECONDS);
+                logger.info("Czekanie na zakończnie procesu servera..");
+                if (!processCompleted) {
+                    process.destroy();
+                    logger.alert("Zakończono proces servera");
+                }
+            } catch (Exception e) {
+                logger.critical(e);
+                throw new RuntimeException(e);
+            }
+        }
     }
 
 

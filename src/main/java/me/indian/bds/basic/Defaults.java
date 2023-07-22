@@ -55,8 +55,7 @@ public class Defaults {
             properties.load(input);
             return properties.getProperty("level-name");
         } catch (final Exception e) {
-            logger.critical("Nie udało znaleźć sie nazwy pliku świata");
-            throw new RuntimeException(e);
+           return "Nie udało znaleźć sie nazwy pliku świata";
         }
     }
 

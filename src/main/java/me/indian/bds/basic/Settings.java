@@ -142,7 +142,9 @@ public class Settings {
         backup = this.config.isBackup();
         this.logger.info("Backup: " + backup);
 
-        this.logger.info("WorldName: " + Defaults.getWorldName());
+        if(backup) {
+            this.logger.info("WorldName: " + Defaults.getWorldName());
+        }
 
         this.logger.info("Kliknij enter przycisk aby kontunować");
         scanner.nextLine();

@@ -21,10 +21,10 @@ public class WatchDog {
     private final ExecutorService service;
     private final Config config;
     private final Timer timer;
-    private final String worldPath;
-    private final File backupFile;
-    private final File worldFile;
-    private final String worldName;
+    private String worldPath;
+    private File backupFile;
+    private File worldFile;
+    private String worldName;
     private String date;
     private TimerTask hourlyTask;
 
@@ -34,54 +34,57 @@ public class WatchDog {
         this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Watchdog"));
         this.config = config;
         this.timer = new Timer();
-        if (this.config.isBackup()) logger.alert("Backupy są włączone");
-        this.backupFile = new File("BDS-Auto-Enable/backup");
-        this.worldName = Defaults.getWorldName();
-        this.worldPath = Defaults.getWorldsPath() + this.worldName;
-        this.worldFile = new File(worldPath);
-        if (!backupFile.exists()) {
-            logger.alert("Nie znaleziono foldera dla backupów");
-            logger.info("Tworzenie folderu dla backupów");
-            if (backupFile.mkdir()) {
-                logger.info("Utworzono folder dla backupów");
-            } else {
-                logger.error("Nie można utworzyć folderu dla backupów");
+        if (this.config.isBackup()) {
+            logger.alert("Backupy są włączone");
+            this.backupFile = new File("BDS-Auto-Enable/backup");
+            this.worldName = Defaults.getWorldName();
+            this.worldPath = Defaults.getWorldsPath() + this.worldName;
+            this.worldFile = new File(this.worldPath);
+            if (!this.backupFile.exists()) {
+                this.logger.alert("Nie znaleziono foldera dla backupów");
+                this.logger.info("Tworzenie folderu dla backupów");
+                if (this.backupFile.mkdir()) {
+                    this.logger.info("Utworzono folder dla backupów");
+                } else {
+                    this.logger.error("Nie można utworzyć folderu dla backupów");
+                }
             }
-        }
 
-        if (!worldFile.exists()) {
-            logger.critical("Folder świata \"" + this.worldName + "\" nie istnieje");
-            logger.alert("Ścieżka " + this.worldPath);
-            Thread.currentThread().interrupt();
-            timer.cancel();
+            if (!this.worldFile.exists()) {
+                this.logger.critical("Folder świata \"" + this.worldName + "\" nie istnieje");
+                this.logger.alert("Ścieżka " + this.worldPath);
+                Thread.currentThread().interrupt();
+                this.timer.cancel();
 //            hourlyTask.cancel();
+            }
         }
     }
 
     public void backup() {
         this.service.execute(() -> {
-            if (config.isWatchdog() && config.isBackup()) {
-                logger.debug("Ścieżka świata backupów " + Defaults.getWorldsPath() + this.worldName);
+            if (this.config.isWatchdog() && this.config.isBackup()) {
+                this.logger.debug("Ścieżka świata backupów " + Defaults.getWorldsPath() + this.worldName);
                 this.hourlyTask = new TimerTask() {
                     @Override
                     public void run() {
                         forceBackup();
                     }
                 };
-                timer.schedule(hourlyTask, 0, this.minutesToMilliseconds(30));
+                this.timer.schedule(this.hourlyTask, 0, this.minutesToMilliseconds(30));
             }
         });
     }
 
     public void forceBackup() {
-        if (!worldFile.exists()) return;
-        upDateDate();
+        if (!this.config.isBackup()) return;
+        if (!this.worldFile.exists()) return;
+        this.upDateDate();
         try {
             ZipUtil.zipFolder(this.worldPath, this.backupFile.getAbsolutePath() + File.separator + this.worldName + this.date + ".zip");
-            logger.info("Utworzono kopię zapasową");
+            this.logger.info("Utworzono kopię zapasową");
         } catch (final Exception exception) {
-            logger.critical("Nie można utworzyć kopii zapasowej");
-            logger.critical(exception);
+            this.logger.critical("Nie można utworzyć kopii zapasowej");
+            this.logger.critical(exception);
             exception.printStackTrace();
         }
     }
@@ -89,11 +92,10 @@ public class WatchDog {
     private void upDateDate() {
         final LocalDateTime now = LocalDateTime.now();
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        date = (now.format(formatter) + " ").replace(":", "-");
+        this.date = (now.format(formatter) + " ").replace(":", "-");
     }
 
     public int minutesToMilliseconds(int minutes) {
-        int milliseconds = minutes * 60000;
-        return milliseconds;
+        return minutes * 60000;
     }
 }
