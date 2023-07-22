@@ -58,10 +58,6 @@ public class Config extends OkaeriConfig {
     @Comment({"Backups"})
     private boolean backup = true;
 
-    @Comment({" "})
-    @Comment({"Backup World Name"})
-    private String worldName = "Bedrock Level";
-
 
     public ServerLogType getServerLogType() {
         return this.serverLogType;
@@ -89,15 +85,6 @@ public class Config extends OkaeriConfig {
 
     public void setBackup(final boolean backup) {
         this.backup = backup;
-    }
-
-    public String getWorldName() {
-        return this.worldName;
-    }
-
-
-    public void setWorldName(final String worldName) {
-        this.worldName = worldName;
     }
 
     public boolean isFirstRun() {

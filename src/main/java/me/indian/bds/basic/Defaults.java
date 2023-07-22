@@ -1,18 +1,25 @@
 package me.indian.bds.basic;
 
-import me.indian.bds.Main;
+import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
+import me.indian.bds.logger.Logger;
 import me.indian.bds.util.SystemOs;
 
 import java.io.File;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Properties;
 
 public class Defaults {
 
-    private static final Config config = Main.getConfig();
+    private static final Config config = BDSAutoEnable.getConfig();
+    private static final Logger logger = BDSAutoEnable.getLogger();
+    private static final Properties properties = new Properties();
 
 
     public static String getSystem() {
-        String os = System.getProperty("os.name").toLowerCase();
+      final   String os = System.getProperty("os.name").toLowerCase();
 
         if (os.contains("win")) {
             return "Windows";
@@ -40,6 +47,17 @@ public class Defaults {
 
     public static String getJarPath() {
         return System.getProperty("user.dir");
+    }
+
+    public static String getWorldName() {
+        try {
+            final InputStream input = Files.newInputStream(Paths.get(config.getFilesPath() + "/" + "server.properties"));
+            properties.load(input);
+            return properties.getProperty("level-name");
+        } catch (final Exception e) {
+            logger.critical("Nie udało znaleźć sie nazwy pliku świata");
+            throw new RuntimeException(e);
+        }
     }
 
     public static String getWorldsPath() {

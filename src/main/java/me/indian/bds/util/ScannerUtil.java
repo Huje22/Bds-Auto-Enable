@@ -1,11 +1,7 @@
 package me.indian.bds.util;
 
-import me.indian.bds.Main;
-import me.indian.bds.basic.Defaults;
-import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class ScannerUtil {

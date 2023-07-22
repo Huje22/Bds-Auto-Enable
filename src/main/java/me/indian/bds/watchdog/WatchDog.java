@@ -1,6 +1,6 @@
 package me.indian.bds.watchdog;
 
-import me.indian.bds.Main;
+import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.basic.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
@@ -24,18 +24,19 @@ public class WatchDog {
     private final String worldPath;
     private final File backupFile;
     private final File worldFile;
+    private final String worldName;
     private String date;
     private TimerTask hourlyTask;
-    private String worldName;
+
 
     public WatchDog(final Config config) {
-        this.logger = Main.getLogger();
+        this.logger = BDSAutoEnable.getLogger();
         this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Watchdog"));
         this.config = config;
         this.timer = new Timer();
         if (this.config.isBackup()) logger.alert("Backupy są włączone");
         this.backupFile = new File("BDS-Auto-Enable/backup");
-        this.worldName = this.config.getWorldName();
+        this.worldName = Defaults.getWorldName();
         this.worldPath = Defaults.getWorldsPath() + this.worldName;
         this.worldFile = new File(worldPath);
         if (!backupFile.exists()) {

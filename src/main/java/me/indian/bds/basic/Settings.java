@@ -1,6 +1,6 @@
 package me.indian.bds.basic;
 
-import me.indian.bds.Main;
+import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.logger.ServerLogType;
@@ -13,44 +13,42 @@ import java.util.Scanner;
 public class Settings {
 
 
+    private final Logger logger;
+    private final Config config;
     public static String filePath;
     public static String name;
     public static SystemOs os;
     public static ServerLogType serverLogType;
     public static boolean wine;
-    private final Logger logger;
-    private final Config config;
     private boolean watchdog;
-    private String worldName;
     private boolean backup;
 
     public Settings(final Config config) {
-        this.logger = Main.getLogger();
+        this.logger = BDSAutoEnable.getLogger();
         this.config = config;
     }
 
 
     public void loadSettings(final Scanner scanner) {
         if (!this.config.isFirstRun()) {
-            logger.info("Zastosować wcześnejsze ustawienia? (true/false) (Enter = true) ");
+            this.logger.info("Zastosować wcześnejsze ustawienia? (true/false) (Enter = true) ");
 
             final String input = scanner.nextLine();
-            boolean ustawienia = Boolean.parseBoolean(input.isEmpty() ? "true" : input);
+            final boolean ustawienia = Boolean.parseBoolean(input.isEmpty() ? "true" : input);
 
             if (ustawienia) {
                 this.currentSettings(scanner);
             } else {
-                logger.info("Zaczynamy od nowa");
-                init(scanner);
+                this.logger.info("Zaczynamy od nowa");
+                this.init(scanner);
             }
-            System.out.println();
         } else {
-            init(scanner);
+            this.init(scanner);
         }
     }
 
     private void init(final Scanner scanner) {
-        ScannerUtil scannerUtil = new ScannerUtil(logger, scanner);
+        final ScannerUtil scannerUtil = new ScannerUtil(logger, scanner);
 
         final String enter = "[Enter = Domyślnie]";
 
@@ -59,14 +57,14 @@ public class Settings {
             serverLogType = ServerLogType.valueOf(
                     scannerUtil.addQuestion(
                             (defaultValue) -> {
-                                logger.info("Gdzie zapisywać wyjście konsoli (Domyślnie: " + defaultValue + "): " + enter);
-                                logger.info("Dostępne wyjścia: " + Arrays.toString(ServerLogType.values()));
+                                this.logger.info("Gdzie zapisywać wyjście konsoli (Domyślnie: " + defaultValue + "): " + enter);
+                                this.logger.info("Dostępne wyjścia: " + Arrays.toString(ServerLogType.values()));
                             },
                             String.valueOf(ServerLogType.FILE),
-                            (input) -> logger.info("System ustawiony na: " + input.toUpperCase())
+                            (input) -> this.logger.info("System ustawiony na: " + input.toUpperCase())
                     ).toUpperCase());
         } catch (IllegalArgumentException exception) {
-            logger.error("Nie znane wyjście konsoli, ustawiono domyślnie na: FILE");
+            this.logger.error("Nie znane wyjście konsoli, ustawiono domyślnie na: FILE");
             serverLogType = ServerLogType.FILE;
         }
         this.config.setServerLogType(serverLogType);
@@ -76,90 +74,82 @@ public class Settings {
             system = SystemOs.valueOf(
                     scannerUtil.addQuestion(
                             (defaultValue) -> {
-                                logger.info("Podaj system (Wykryty system: " + defaultValue + "): " + enter);
-                                logger.info("Obsługiwane systemy: " + Arrays.toString(SystemOs.values()));
+                                this.logger.info("Podaj system (Wykryty system: " + defaultValue + "): " + enter);
+                                this.logger.info("Obsługiwane systemy: " + Arrays.toString(SystemOs.values()));
                             },
                             Defaults.getSystem(),
-                            (input) -> logger.info("System ustawiony na: " + input.toUpperCase())
+                            (input) -> this.logger.info("System ustawiony na: " + input.toUpperCase())
                     ).toUpperCase());
         } catch (IllegalArgumentException exception) {
-            logger.error("Podano nie znany system , ustawiono domyślnie na: LINUX");
+            this.logger.error("Podano nie znany system , ustawiono domyślnie na: LINUX");
             system = SystemOs.LINUX;
         }
         this.config.setSystemOs(system);
         this.config.setFileName(scannerUtil.addQuestion(
-                (defaultValue) -> logger.info("Podaj nazwę pliku (Domyślnie: " + defaultValue + "): " + enter),
+                (defaultValue) -> this.logger.info("Podaj nazwę pliku (Domyślnie: " + defaultValue + "): " + enter),
                 Defaults.getDefaultFileName(),
-                (input) -> logger.info("Nazwa pliku ustawiona na: " + input)
+                (input) -> this.logger.info("Nazwa pliku ustawiona na: " + input)
         ));
         if (this.config.getSystemOs() == SystemOs.LINUX) {
             if (this.config.getFileName().contains(".exe")) {
-                logger.alert("W tym wypadku będzie potrzebne WINE");
+                this.logger.alert("W tym wypadku będzie potrzebne WINE");
                 this.config.setWine(true);
             } else {
                 this.config.setWine(false);
             }
         }
         this.config.setFilesPath(scannerUtil.addQuestion(
-                (defaultValue) -> logger.info("Podaj ścieżkę do plików servera (Domyślnie: " + defaultValue + "): " + enter),
+                (defaultValue) -> this.logger.info("Podaj ścieżkę do plików servera (Domyślnie: " + defaultValue + "): " + enter),
                 Defaults.getJarPath(),
-                (input) -> logger.info("Ścieżke do plików servera ustawiona na: " + input)
+                (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)
         ));
         this.config.setWatchdog(scannerUtil.addQuestion(
-                (defaultValue) -> logger.info("Włączyć Watchdog (Domyślnie: " + defaultValue + ")? " + enter),
+                (defaultValue) -> this.logger.info("Włączyć Watchdog (Domyślnie: " + defaultValue + ")? " + enter),
                 true,
-                (input) -> logger.info("Watchdog ustawiony na: " + input)
+                (input) -> this.logger.info("Watchdog ustawiony na: " + input)
         ));
         if (this.config.isWatchdog()) {
             this.config.setBackup(scannerUtil.addQuestion(
-                    (defaultValue) -> logger.info("Włączyć Backupy (Domyślnie: " + defaultValue + ")? " + enter),
+                    (defaultValue) -> this.logger.info("Włączyć Backupy (Domyślnie: " + defaultValue + ")? " + enter),
                     true,
-                    (input) -> logger.info("Backupy ustawione na: " + input)
-            ));
-            this.config.setWorldName(scannerUtil.addQuestion(
-                    (defaultValue) -> logger.info("Podaj nazwę folderu świata (Domyślnie: " + defaultValue + "): " + enter),
-                    "Bedrock level",
-                    (input) -> logger.info("Podany folder świata: " + input)
+                    (input) -> this.logger.info("Backupy ustawione na: " + input)
             ));
         } else {
-            this.config.setWorldName("Bedrock level");
             this.config.setBackup(false);
         }
         this.currentSettings(scanner);
     }
 
-    private void currentSettings(Scanner scanner) {
+    private void currentSettings(final Scanner scanner) {
         serverLogType = this.config.getServerLogType();
-        logger.info("Wyjście konsoli: " + serverLogType);
+        this.logger.info("Wyjście konsoli: " + serverLogType);
 
         os = this.config.getSystemOs();
-        logger.info("System: " + os);
+        this.logger.info("System: " + os);
 
         name = this.config.getFileName();
-        logger.info("FileName: " + name);
+        this.logger.info("FileName: " + name);
 
         wine = this.config.isWine();
-        logger.info("IsWine: " + wine);
+        this.logger.info("IsWine: " + wine);
 
         filePath = this.config.getFilesPath();
-        logger.info("FilePath: " + filePath);
+        this.logger.info("FilePath: " + filePath);
 
         watchdog = this.config.isWatchdog();
-        logger.info("Watchdog: " + watchdog);
+        this.logger.info("Watchdog: " + watchdog);
 
         backup = this.config.isBackup();
-        logger.info("Backup: " + backup);
+        this.logger.info("Backup: " + backup);
 
-        worldName = this.config.getWorldName();
-        logger.info("WorldName: " + worldName);
+        this.logger.info("WorldName: " + Defaults.getWorldName());
 
-        logger.info("Kliknij enter przycisk aby kontunować");
+        this.logger.info("Kliknij enter przycisk aby kontunować");
         scanner.nextLine();
 
-        if (config.isFirstRun()) {
-            config.setFirstRun(false);
+        if (this.config.isFirstRun()) {
+            this.config.setFirstRun(false);
         }
-
-        config.save();
+        this.config.save();
     }
 }

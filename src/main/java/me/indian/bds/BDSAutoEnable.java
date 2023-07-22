@@ -12,11 +12,13 @@ import me.indian.bds.watchdog.WatchDog;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -26,10 +28,10 @@ import static me.indian.bds.basic.Settings.name;
 import static me.indian.bds.basic.Settings.os;
 import static me.indian.bds.basic.Settings.wine;
 
-public class Main {
+public class BDSAutoEnable {
 
 
-    private static Main instance;
+    private static BDSAutoEnable instance;
     private static Scanner scanner;
     private static WatchDog watchDog;
     private static Logger logger;
@@ -40,7 +42,7 @@ public class Main {
     private static String finalFilePath;
 
 
-    public Main() {
+    public BDSAutoEnable() {
         instance = this;
         scanner = new Scanner(System.in);
         config = ConfigManager.create(Config.class, (it) -> {
@@ -56,7 +58,7 @@ public class Main {
 
 
     public static void main(String[] args) {
-        new Main();
+        new BDSAutoEnable();
         new Settings(config).loadSettings(scanner);
         watchDog = new WatchDog(config);
         watchDog.backup();
@@ -83,7 +85,6 @@ public class Main {
 
         startProcess();
     }
-
 
     private static boolean isProcessRunning() {
         try {

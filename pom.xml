@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>me.indian.bds</groupId>
-    <artifactId>BDS-Auto-Enabled</artifactId>
+    <artifactId>BDS-Auto-Enable</artifactId>
     <version>1.0</version>
 
     <properties>
@@ -30,13 +30,12 @@
             <version>5.0.0-beta.5</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>io.nats</groupId>
-            <artifactId>jnats</artifactId>
-            <version>2.16.11</version>
-            <scope>compile</scope> <!-- shade nats client to jar -->
-        </dependency>
-
+<!--        <dependency>-->
+<!--            <groupId>io.nats</groupId>-->
+<!--            <artifactId>jnats</artifactId>-->
+<!--            <version>2.16.11</version>-->
+<!--            <scope>compile</scope> &lt;!&ndash; shade nats client to jar &ndash;&gt;-->
+<!--        </dependency>-->
     </dependencies>
 
 
@@ -65,7 +64,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>me.indian.bds.Main</mainClass>
+                                    <mainClass>me.indian.bds.BDSAutoEnable</mainClass>
                                 </transformer>
                             </transformers>
                             <finalName>${project.name}-${project.version}</finalName>
