@@ -173,7 +173,7 @@ public class BDSAutoEnable {
                 final String line = console.nextLine();
                 System.out.println(line);
                 this.logger.consoleToFile(line);
-                if (line.equalsIgnoreCase("Quit correctly")) {
+                if (line.equalsIgnoreCase("Quit correctly") || line.equalsIgnoreCase("crash")) {
                     this.restartServerProcess();
                 }
             }
@@ -239,16 +239,21 @@ public class BDSAutoEnable {
         if (this.process != null && this.process.isAlive()) {
             this.service.execute(() -> {
                 try {
-                    this.logger.info("Czekanie na zakończnie procesu servera..");
-                    ThreadUtil.sleep(10);
-                    this.process.destroy();
-                    this.logger.alert("Zakończono proces servera");
+                    int timeoutInSeconds = 10;
+                    boolean processCompleted = process.waitFor(timeoutInSeconds, java.util.concurrent.TimeUnit.SECONDS);
+                    logger.info("Czekanie na zakończnie procesu servera..");
+                    if (!processCompleted) {
+                        process.destroy();
+                        logger.alert("Zakończono proces servera");
+                    }
                     this.startProcess();
                 } catch (final Exception e) {
                     this.logger.critical(e);
                     e.printStackTrace();
                 }
             });
+        } else {
+            this.startProcess();
         }
     }
 
