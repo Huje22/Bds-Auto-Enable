@@ -1,5 +1,6 @@
 package me.indian.bds.logger;
 
+import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.util.ConsoleColors;
 
@@ -8,10 +9,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
 public class Logger {
 
+    private final BDSAutoEnable bdsAutoEnable;
     private final Config config;
     private File logFile;
     private String prefix;
@@ -19,8 +22,9 @@ public class Logger {
     private String date;
     private PrintStream printStream;
 
-    public Logger(final Config config) {
-        this.config = config;
+    public Logger(final BDSAutoEnable bdsAutoEnable) {
+        this.bdsAutoEnable = bdsAutoEnable;
+        this.config = this.bdsAutoEnable.getConfig();
         this.logState = LogState.NONE;
         this.upDateDate();
         this.updatePrefix();
@@ -28,7 +32,7 @@ public class Logger {
     }
 
     private void upDateDate() {
-        final LocalDateTime now = LocalDateTime.now();
+        final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         this.date = now.format(formatter) + " ";
     }
@@ -51,7 +55,7 @@ public class Logger {
                     logsDir.mkdirs();
                 }
             }
-            this.logFile = new File(logsDir, "ServerLog-" + date.replaceAll(":", "-") + ".log");
+            this.logFile = new File(logsDir, "ServerLog-" + this.bdsAutoEnable.getRunDate() + ".log");
             final FileOutputStream fileOutputStream = new FileOutputStream(logFile, true);
             this.printStream = new PrintStream(fileOutputStream);
         } catch (IOException e) {

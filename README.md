@@ -11,7 +11,7 @@ Program zawiera: <br/>
 
 * Automatyczne włączenie servera po wyłączeniu
 * Tworzenie backupów świata
-* Pisanie w konsoli w 100%
+* Pisanie w konsoli w 80%
 
 Program nie wspiera: <br/>
 

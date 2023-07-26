@@ -69,7 +69,7 @@ public class Settings {
     }
 
     private void init(final Scanner scanner) {
-        final ScannerUtil scannerUtil = new ScannerUtil(logger, scanner);
+        final ScannerUtil scannerUtil = new ScannerUtil(scanner);
 
         final String enter = "[Enter = Domyślnie]";
         SystemOs system;
