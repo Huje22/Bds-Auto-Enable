@@ -3,7 +3,6 @@ package me.indian.bds.basic;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.logger.ServerLogType;
 import me.indian.bds.util.ScannerUtil;
 import me.indian.bds.util.SystemOs;
 
@@ -15,19 +14,41 @@ public class Settings {
 
     private final Logger logger;
     private final Config config;
-    public static String filePath;
-    public static String name;
-    public static SystemOs os;
-    public static ServerLogType serverLogType;
-    public static boolean wine;
+    private String filePath;
+    private String name;
+    private SystemOs os;
+    private boolean wine;
     private boolean watchdog;
     private boolean backup;
 
-    public Settings(final Config config) {
-        this.logger = BDSAutoEnable.getLogger();
-        this.config = config;
+    public Settings(final BDSAutoEnable bdsAutoEnable) {
+        this.logger = bdsAutoEnable.getLogger();
+        this.config = bdsAutoEnable.getConfig();
     }
 
+    public String getFilePath() {
+        return this.filePath;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public SystemOs getOs() {
+        return this.os;
+    }
+
+    public boolean isWine() {
+        return this.wine;
+    }
+
+    private boolean isWatchdog() {
+        return this.watchdog;
+    }
+
+    private boolean isBackup() {
+        return this.backup;
+    }
 
     public void loadSettings(final Scanner scanner) {
         if (!this.config.isFirstRun()) {
@@ -51,24 +72,6 @@ public class Settings {
         final ScannerUtil scannerUtil = new ScannerUtil(logger, scanner);
 
         final String enter = "[Enter = Domyślnie]";
-
-        ServerLogType serverLogType;
-        try {
-            serverLogType = ServerLogType.valueOf(
-                    scannerUtil.addQuestion(
-                            (defaultValue) -> {
-                                this.logger.info("Gdzie zapisywać wyjście konsoli (Domyślnie: " + defaultValue + "): " + enter);
-                                this.logger.info("Dostępne wyjścia: " + Arrays.toString(ServerLogType.values()));
-                            },
-                            String.valueOf(ServerLogType.FILE),
-                            (input) -> this.logger.info("System ustawiony na: " + input.toUpperCase())
-                    ).toUpperCase());
-        } catch (IllegalArgumentException exception) {
-            this.logger.error("Nie znane wyjście konsoli, ustawiono domyślnie na: FILE");
-            serverLogType = ServerLogType.FILE;
-        }
-        this.config.setServerLogType(serverLogType);
-
         SystemOs system;
         try {
             system = SystemOs.valueOf(
@@ -121,9 +124,6 @@ public class Settings {
     }
 
     private void currentSettings(final Scanner scanner) {
-        serverLogType = this.config.getServerLogType();
-        this.logger.info("Wyjście konsoli: " + serverLogType);
-
         os = this.config.getSystemOs();
         this.logger.info("System: " + os);
 

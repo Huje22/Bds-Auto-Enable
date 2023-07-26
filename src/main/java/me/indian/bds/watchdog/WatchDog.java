@@ -4,6 +4,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.basic.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.MinecraftColor;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.ZipUtil;
 
@@ -17,9 +18,10 @@ import java.util.concurrent.Executors;
 
 public class WatchDog {
 
+    private static boolean backuping = false;
     private final Logger logger;
+    private final BDSAutoEnable bdsAutoEnable;
     private final ExecutorService service;
-    private final Config config;
     private final Timer timer;
     private String worldPath;
     private File backupFile;
@@ -27,13 +29,17 @@ public class WatchDog {
     private String worldName;
     private String date;
     private TimerTask hourlyTask;
+    private final Config config;
+    private final String prefix;
 
 
-    public WatchDog(final Config config) {
-        this.logger = BDSAutoEnable.getLogger();
+    public WatchDog(final BDSAutoEnable bdsAutoEnable) {
+        this.bdsAutoEnable = bdsAutoEnable;
+        this.logger = this.bdsAutoEnable.getLogger();
+        this.config = this.bdsAutoEnable.getConfig();
         this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Watchdog"));
-        this.config = config;
         this.timer = new Timer();
+        this.prefix = "&b[&3WatchDog&b]";
         if (this.config.isBackup()) {
             logger.alert("Backupy są włączone");
             this.backupFile = new File("BDS-Auto-Enable/backup");
@@ -70,7 +76,7 @@ public class WatchDog {
                         forceBackup();
                     }
                 };
-                this.timer.schedule(this.hourlyTask, 0, this.minutesToMilliseconds(30));
+                this.timer.schedule(this.hourlyTask, 0, this.minutesToMilliseconds(60));
             }
         });
     }
@@ -78,15 +84,27 @@ public class WatchDog {
     public void forceBackup() {
         if (!this.config.isBackup()) return;
         if (!this.worldFile.exists()) return;
-        this.upDateDate();
-        try {
-            ZipUtil.zipFolder(this.worldPath, this.backupFile.getAbsolutePath() + File.separator + this.worldName + this.date + ".zip");
-            this.logger.info("Utworzono kopię zapasową");
-        } catch (final Exception exception) {
-            this.logger.critical("Nie można utworzyć kopii zapasowej");
-            this.logger.critical(exception);
-            exception.printStackTrace();
+        if (backuping) {
+            this.logger.error("Nie można zrobić kopi podczas robienia już jednej");
+            return;
         }
+        this.service.execute(() -> {
+            this.upDateDate();
+            try {
+                backuping = true;
+                this.bdsAutoEnable.sendCommandToConsole(MinecraftColor.colorize("tellraw @a {\"rawtext\":[{\"text\":\"" + this.prefix + " &6Tworzenie kopij zapasowej\"}]}"));
+                ZipUtil.zipFolder(this.worldPath, this.backupFile.getAbsolutePath() + File.separator + this.worldName + this.date + ".zip");
+                this.logger.info("Utworzono kopię zapasową");
+                this.bdsAutoEnable.sendCommandToConsole(MinecraftColor.colorize("tellraw @a {\"rawtext\":[{\"text\":\"" + this.prefix + " &aUtworzono kopię zapasową\"}]}"));
+                backuping = false;
+            } catch (final Exception exception) {
+                backuping = false;
+                this.bdsAutoEnable.sendCommandToConsole(MinecraftColor.colorize("tellraw @a {\"rawtext\":[{\"text\":\"" + this.prefix + " &4Nie można utworzyć kopii zapasowej\"}]}"));
+                this.logger.critical("Nie można utworzyć kopii zapasowej");
+                this.logger.critical(exception);
+                exception.printStackTrace();
+            }
+        });
     }
 
     private void upDateDate() {

@@ -3,7 +3,6 @@ package me.indian.bds.config;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.Header;
-import me.indian.bds.logger.ServerLogType;
 import me.indian.bds.util.SystemOs;
 
 
@@ -21,12 +20,6 @@ public class Config extends OkaeriConfig {
     @Comment({" "})
     @Comment({"Debug"})
     private boolean debug = true;
-
-
-    @Comment({" "})
-    @Comment({"Gdzie wypisywać wyjście konsoli"})
-    private ServerLogType serverLogType = ServerLogType.FILE;
-
 
     @Comment({" "})
     @Comment({"Pierwsze uruchomienie"})
@@ -58,14 +51,6 @@ public class Config extends OkaeriConfig {
     @Comment({"Backups"})
     private boolean backup = true;
 
-
-    public ServerLogType getServerLogType() {
-        return this.serverLogType;
-    }
-
-    public void setServerLogType(final ServerLogType serverLogType) {
-        this.serverLogType = serverLogType;
-    }
 
     public boolean isDebug() {
         return this.debug;

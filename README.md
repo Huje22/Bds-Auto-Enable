@@ -11,13 +11,13 @@ Program zawiera: <br/>
 
 * Automatyczne włączenie servera po wyłączeniu
 * Tworzenie backupów świata
+* Pisanie w konsoli w 100%
 
 Program nie wspiera: <br/>
 
-* Pisania w konsoli (w 100%)
-
 Todo: <br/>
 
-* Przesyłanie listy graczy do bazy danych
+* ~~Przesyłanie listy graczy do bazy danych~~ (Zrób to sam jeśli potzrebujesz za pomocą  `@minecraft/server-net `
+  module)
 
 

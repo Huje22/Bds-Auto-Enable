@@ -30,12 +30,12 @@ public class Logger {
     private void upDateDate() {
         final LocalDateTime now = LocalDateTime.now();
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        date = now.format(formatter) + " ";
+        this.date = now.format(formatter) + " ";
     }
 
     private void updatePrefix() {
         final String logStateColor = this.logState.getColorCode();
-        prefix = ConsoleColors.DARK_GRAY + date + ConsoleColors.BRIGHT_GREEN + "BDS " + ConsoleColors.BRIGHT_BLUE + "Auto Enabled " +
+        this.prefix = ConsoleColors.DARK_GRAY + date + ConsoleColors.BRIGHT_GREEN + "BDS " + ConsoleColors.BRIGHT_BLUE + "Auto Enabled " +
                 ConsoleColors.BRIGHT_GREEN + "[" + ConsoleColors.BRIGHT_GRAY +
                 Thread.currentThread().getName()
                 + ConsoleColors.BRIGHT_GREEN + "]" +
@@ -51,7 +51,7 @@ public class Logger {
                     logsDir.mkdirs();
                 }
             }
-            logFile = new File(logsDir, "ServerLog-" + date.replaceAll(":", "-") + ".log");
+            this.logFile = new File(logsDir, "ServerLog-" + date.replaceAll(":", "-") + ".log");
             final FileOutputStream fileOutputStream = new FileOutputStream(logFile, true);
             this.printStream = new PrintStream(fileOutputStream);
         } catch (IOException e) {
@@ -60,37 +60,37 @@ public class Logger {
     }
 
 
-    public void alert(Object log) {
+    public void alert(final Object log) {
         this.logState = LogState.ALERT;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
-    public void critical(Object log) {
+    public void critical(final Object log) {
         this.logState = LogState.CRITICAL;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
-    public void error(Object log) {
+    public void error(final Object log) {
         this.logState = LogState.ERROR;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
-    public void warning(Object log) {
+    public void warning(final Object log) {
         this.logState = LogState.WARNING;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
-    public void info(Object log) {
+    public void info(final Object log) {
         this.logState = LogState.INFO;
         this.logToFile(log);
         System.out.println(prefix + log);
     }
 
-    public void debug(Object log) {
+    public void debug(final Object log) {
         if (config.isDebug()) {
             this.logState = LogState.DEBUG;
             this.logToFile(log);
@@ -98,7 +98,14 @@ public class Logger {
         }
     }
 
-    public void logToFile(Object log) {
+    public void consoleToFile(final Object log) {
+        if (this.printStream != null) {
+            this.printStream.println(log);
+        }
+        ;
+    }
+
+    public void logToFile(final Object log) {
         this.upDateDate();
         this.updatePrefix();
         if (this.printStream != null) {

@@ -2,7 +2,6 @@ package me.indian.bds.basic;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.util.SystemOs;
 
 import java.io.File;
@@ -13,13 +12,16 @@ import java.util.Properties;
 
 public class Defaults {
 
-    private static final Config config = BDSAutoEnable.getConfig();
-    private static final Logger logger = BDSAutoEnable.getLogger();
-    private static final Properties properties = new Properties();
+    private static Config config;
+    private static Properties properties;
 
+    public static void init(final BDSAutoEnable bdsAutoEnable) {
+        config = bdsAutoEnable.getConfig();
+        properties = new Properties();
+    }
 
     public static String getSystem() {
-      final   String os = System.getProperty("os.name").toLowerCase();
+        final String os = System.getProperty("os.name").toLowerCase();
 
         if (os.contains("win")) {
             return "Windows";
@@ -51,7 +53,7 @@ public class Defaults {
 
     public static String getWorldName() {
         try {
-            final InputStream input = Files.newInputStream(Paths.get(config.getFilesPath() + "/" + "server.properties"));
+            final InputStream input = Files.newInputStream(Paths.get(config.getFilesPath() + "/server.properties"));
             properties.load(input);
             return properties.getProperty("level-name");
         } catch (final Exception e) {
