@@ -147,6 +147,9 @@ public class ServerProcess {
                 final String input = console.nextLine();
                 if (input.equalsIgnoreCase("stop")) {
                     this.sendCommandToConsole(MinecraftUtil.colorize("say &4Zamykanie servera..."));
+                } else if (input.equalsIgnoreCase("stop")){
+                    //TODO: zrobić to dobrze, robione na telefonie 
+                   this.bdsAutoEnable.getWatchDog().forceBackup();
                 }
                 this.writer.println(input);
                 this.writer.flush();
