@@ -98,10 +98,10 @@ public class WatchDog {
             try {
                 backuping = true;
                 this.saveWorld();
-                this.bdsAutoEnable.getServerProcess().sendCommandToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &6Tworzenie kopij zapasowej"));
+                this.serverProcess.sendCommandToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &6Tworzenie kopij zapasowej"));
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 this.logger.info("Utworzono kopię zapasową");
-                this.bdsAutoEnable.getServerProcess().sendCommandToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUtworzono kopię zapasową"));
+                this.serverProcess.sendCommandToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUtworzono kopię zapasową"));
                 this.saveResume();
                 backuping = false;
             } catch (final Exception exception) {
