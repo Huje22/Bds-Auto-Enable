@@ -14,6 +14,7 @@ Program zawiera: <br/>
 * Pisanie w konsoli w 80%
 
 Program nie wspiera: <br/>
+* Wtyczek
 
 Todo: <br/>
 
