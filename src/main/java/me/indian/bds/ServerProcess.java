@@ -107,6 +107,7 @@ public class ServerProcess {
                     new ThreadUtil("Console", this::writeConsoleInput).newThread().start();
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
+                    ThreadUtil.sleep(5);
                     this.startProcess();
 
                 } catch (final Exception exception) {
@@ -129,9 +130,6 @@ public class ServerProcess {
                 final String line = console.nextLine();
                 System.out.println(line);
                 this.logger.consoleToFile(line);
-                if (line.equalsIgnoreCase("Quit correctly") || line.equalsIgnoreCase("crash")) {
-                    this.restartServerProcess();
-                }
             }
         } catch (final Exception exception) {
             this.logger.critical(exception);

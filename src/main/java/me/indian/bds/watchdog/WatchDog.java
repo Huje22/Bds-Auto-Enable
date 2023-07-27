@@ -80,7 +80,7 @@ public class WatchDog {
                         forceBackup();
                     }
                 };
-                this.timer.schedule(this.hourlyTask, 0, this.minutesToMilliseconds(1));
+                this.timer.schedule(this.hourlyTask, 0, this.minutesToMilliseconds(60));
             }
         });
     }
@@ -94,7 +94,7 @@ public class WatchDog {
         }
         this.service.execute(() -> {
             this.upDateDate();
-            final File backup = new File(this.backupFolder.getAbsolutePath() + File.separator + this.worldName + this.date + ".zip");
+            final File backup = new File(this.backupFolder.getAbsolutePath() + File.separator + this.worldName + " " + this.date + ".zip");
             try {
                 backuping = true;
                 this.saveWorld();
