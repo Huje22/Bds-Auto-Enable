@@ -7,6 +7,7 @@ import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.TimeUtil;
 import me.indian.bds.util.ZipUtil;
 
 import java.io.File;
@@ -21,8 +22,8 @@ import java.util.concurrent.Executors;
 public class WatchDog {
 
     private static boolean backuping = false;
-    private final Logger logger;
     private final BDSAutoEnable bdsAutoEnable;
+    private final Logger logger;
     private final ExecutorService service;
     private final Timer timer;
     private final Config config;
@@ -80,7 +81,7 @@ public class WatchDog {
                         forceBackup();
                     }
                 };
-                this.timer.schedule(this.hourlyTask, 0, this.minutesToMilliseconds(60));
+                this.timer.schedule(this.hourlyTask, 0, TimeUtil.minutesToMilliseconds(60));
             }
         });
     }
@@ -136,9 +137,5 @@ public class WatchDog {
         final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         this.date = (now.format(formatter) + " ").replace(":", "-");
-    }
-
-    public int minutesToMilliseconds(int minutes) {
-        return minutes * 60000;
     }
 }

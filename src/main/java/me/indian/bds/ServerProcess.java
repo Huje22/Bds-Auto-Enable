@@ -5,6 +5,7 @@ import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.watchdog.WatchDog;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -16,12 +17,10 @@ import java.io.PrintWriter;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class ServerProcess {
 
-
-    private final BDSAutoEnable bdsAutoEnable;
+    private WatchDog watchDog;
     private final Logger logger;
     private final Config config;
     private final ExecutorService service;
@@ -31,16 +30,17 @@ public class ServerProcess {
     private Process process;
     private PrintWriter writer;
 
-
     public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
-        this.bdsAutoEnable = bdsAutoEnable;
-        this.config = this.bdsAutoEnable.getConfig();
-        this.logger = this.bdsAutoEnable.getLogger();
+        this.config = bdsAutoEnable.getConfig();
+        this.logger = bdsAutoEnable.getLogger();
         this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Server process"));
-        this.settings = this.bdsAutoEnable.getSettings();
+        this.settings = bdsAutoEnable.getSettings();
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
     }
 
+    public void initWatchDog(final WatchDog watchDog){
+        this.watchDog = watchDog;
+    }
 
     private boolean isProcessRunning() {
         try {
@@ -147,9 +147,9 @@ public class ServerProcess {
                 final String input = console.nextLine();
                 if (input.equalsIgnoreCase("stop")) {
                     this.sendCommandToConsole(MinecraftUtil.colorize("say &4Zamykanie servera..."));
-                } else if (input.equalsIgnoreCase("stop")){
-                    //TODO: zrobić to dobrze, robione na telefonie 
-                   this.bdsAutoEnable.getWatchDog().forceBackup();
+                } else if (input.equalsIgnoreCase("backup")) {
+                    this.logger.info("Tworzenie backupa!");
+                    this.watchDog.forceBackup();
                 }
                 this.writer.println(input);
                 this.writer.flush();
@@ -166,13 +166,11 @@ public class ServerProcess {
     }
 
     public void shutdown() {
-        this.bdsAutoEnable.getWatchDog().forceBackup();
+        this.watchDog.forceBackup();
         this.config.save();
         this.service.shutdown();
         this.writer.close();
-
         this.endServerProcess();
-
         this.logger.alert("Wyłączono");
         System.exit(0);
     }
@@ -181,7 +179,7 @@ public class ServerProcess {
         if (this.process != null && this.process.isAlive()) {
             this.service.execute(() -> {
                 try {
-                    this.bdsAutoEnable.getWatchDog().forceBackup();
+                    this.watchDog.forceBackup();
                     ThreadUtil.sleep(10);
                     this.process.destroy();
                     this.logger.alert("Zakończono proces servera");
@@ -190,28 +188,6 @@ public class ServerProcess {
                     e.printStackTrace();
                 }
             });
-        }
-    }
-
-    public void restartServerProcess() {
-        if (this.process != null && this.process.isAlive()) {
-            this.service.execute(() -> {
-                try {
-                    this.bdsAutoEnable.getWatchDog().forceBackup();
-                    boolean processCompleted = process.waitFor(10, TimeUnit.SECONDS);
-                    this.logger.info("Czekanie na zakończnie procesu servera..");
-                    if (!processCompleted) {
-                        this.process.destroy();
-                        this.logger.alert("Zakończono proces servera");
-                    }
-                    this.startProcess();
-                } catch (final Exception e) {
-                    this.logger.critical(e);
-                    e.printStackTrace();
-                }
-            });
-        } else {
-            this.startProcess();
         }
     }
 }

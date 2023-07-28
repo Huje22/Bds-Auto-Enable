@@ -6,37 +6,25 @@ import me.indian.bds.basic.Defaults;
 import me.indian.bds.basic.Settings;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 
 public class BDSAutoEnable {
-
 
     private final Scanner scanner;
     private final Logger logger;
     private final Config config;
     private final Settings settings;
     private final ServerProcess serverProcess;
-    private WatchDog watchDog;
+    private  WatchDog watchDog;
     private String runDate;
-
-
 
     public BDSAutoEnable() {
         this.initRunDate();
@@ -52,6 +40,8 @@ public class BDSAutoEnable {
         this.logger = new Logger(this);
         this.settings = new Settings(this);
         this.serverProcess = new ServerProcess(this);
+        this.watchDog = new WatchDog(this);
+        this.serverProcess.initWatchDog(this.watchDog);
         this.init();
     }
 
@@ -62,10 +52,9 @@ public class BDSAutoEnable {
 
     public void init() {
         this.settings.loadSettings(this.scanner);
-        this.watchDog = new WatchDog(this);
-        this.watchDog.backup();
         this.watchDog.forceBackup();
-        String finalFilePath = this.settings.getFilePath() + File.separator + this.settings.getName();
+        this.watchDog.backup();
+        final String finalFilePath = this.settings.getFilePath() + File.separator + this.settings.getName();
         final File file = new File(finalFilePath);
         if (file.exists()) {
             this.logger.info("Odnaleziono " + this.settings.getName());
