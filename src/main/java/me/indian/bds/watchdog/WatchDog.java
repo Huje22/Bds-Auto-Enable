@@ -7,7 +7,7 @@ import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.util.TimeUtil;
+import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ZipUtil;
 
 import java.io.File;
@@ -81,7 +81,7 @@ public class WatchDog {
                         forceBackup();
                     }
                 };
-                this.timer.schedule(this.hourlyTask, 0, TimeUtil.minutesToMilliseconds(60));
+                this.timer.schedule(this.hourlyTask, 0, MathUtil.minutesToMilliseconds(60));
             }
         });
     }
