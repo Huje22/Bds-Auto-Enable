@@ -69,7 +69,7 @@ public class BDSAutoEnable {
             this.watchDog.forceBackup();
             this.config.save();
             this.scanner.close();
-            this.serverProcess.shutdown();
+            this.serverProcess.shutdown(true);
         }));
         this.serverProcess.startProcess();
     }

@@ -99,22 +99,22 @@ public class WatchDog {
             try {
                 backuping = true;
                 this.saveWorld();
-                this.serverProcess.sendCommandToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &6Tworzenie kopij zapasowej"));
+                this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &6Tworzenie kopij zapasowej"));
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 this.logger.info("Utworzono kopię zapasową");
-                this.serverProcess.sendCommandToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUtworzono kopię zapasową"));
+                this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUtworzono kopię zapasową"));
                 this.saveResume();
                 backuping = false;
             } catch (final Exception exception) {
                 backuping = false;
-                this.bdsAutoEnable.getServerProcess().sendCommandToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &4Nie można utworzyć kopii zapasowej"));
+                this.bdsAutoEnable.getServerProcess().sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &4Nie można utworzyć kopii zapasowej"));
                 this.logger.critical("Nie można utworzyć kopii zapasowej");
                 this.logger.critical(exception);
                 exception.printStackTrace();
                 if (backup.delete()) {
-                    this.serverProcess.sendCommandToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUsunięto błędny backup"));
+                    this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUsunięto błędny backup"));
                 } else {
-                    this.serverProcess.sendCommandToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &4Nie można usunać błędnego backupa"));
+                    this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &4Nie można usunać błędnego backupa"));
                 }
                 this.saveResume();
             }
@@ -123,13 +123,13 @@ public class WatchDog {
 
 
     public void saveWorld() {
-        this.serverProcess.sendCommandToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aZapisywanie servera...."));
-        this.serverProcess.sendCommandToConsole("save hold");
+        this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aZapisywanie servera...."));
+        this.serverProcess.sendToConsole("save hold");
         ThreadUtil.sleep(10);
     }
 
     public void saveResume() {
-        this.serverProcess.sendCommandToConsole("save resume");
+        this.serverProcess.sendToConsole("save resume");
     }
 
 

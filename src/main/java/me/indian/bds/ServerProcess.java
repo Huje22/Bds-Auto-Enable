@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -24,6 +25,7 @@ public class ServerProcess {
     private final Logger logger;
     private final Config config;
     private final ExecutorService service;
+    private final ExecutorService consoleService;
     private final Settings settings;
     private final String finalFilePath;
     private ProcessBuilder processBuilder;
@@ -34,6 +36,7 @@ public class ServerProcess {
         this.config = bdsAutoEnable.getConfig();
         this.logger = bdsAutoEnable.getLogger();
         this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Server process"));
+        this.consoleService = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Console"));
         this.settings = bdsAutoEnable.getSettings();
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
     }
@@ -68,9 +71,8 @@ public class ServerProcess {
                 }
             }
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-
         return false;
     }
 
@@ -78,6 +80,7 @@ public class ServerProcess {
         this.service.execute(() -> {
             if (isProcessRunning()) {
                 this.logger.info("Proces " + this.settings.getName() + " jest już uruchomiony.");
+                this.shutdown(false);
                 System.exit(0);
             } else {
                 this.logger.info("Proces " + this.settings.getName() + " nie jest uruchomiony. Uruchamianie...");
@@ -98,13 +101,13 @@ public class ServerProcess {
                             break;
                         default:
                             this.logger.critical("Musisz podać odpowiedni system");
-                            this.shutdown();
+                            this.shutdown(false);
                     }
-                    this.process = processBuilder.start();
+                    this.process = this.processBuilder.start();
                     this.logger.info("Uruchomiono proces (nadal może on sie wyłączyć)");
 
-                    new ThreadUtil("Console", this::readConsoleOutput).newThread().start();
-                    new ThreadUtil("Console", this::writeConsoleInput).newThread().start();
+                    this.consoleService.execute(this::readConsoleOutput);
+                    this.consoleService.execute(this::writeConsoleInput);
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
                     ThreadUtil.sleep(5);
@@ -114,17 +117,16 @@ public class ServerProcess {
                     this.logger.critical("Nie można uruchomic procesu");
                     this.logger.critical(exception);
                     exception.printStackTrace();
-                    shutdown();
+                    this.shutdown(false);
                 }
             }
         });
     }
 
-    public void readConsoleOutput() {
+    private void readConsoleOutput() {
+        final InputStream inputStream = this.process.getInputStream();
+        final Scanner console = new Scanner(inputStream);
         try {
-            final InputStream inputStream = this.process.getInputStream();
-            final Scanner console = new Scanner(inputStream);
-
             while (console.hasNextLine()) {
                 if (!console.hasNext()) continue;
                 final String line = console.nextLine();
@@ -134,42 +136,62 @@ public class ServerProcess {
         } catch (final Exception exception) {
             this.logger.critical(exception);
             exception.printStackTrace();
+            console.close();
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            ThreadUtil.sleep(2);
+            this.readConsoleOutput();
         }
     }
 
-    public void writeConsoleInput() {
-        try {
-            final OutputStream outputStream = this.process.getOutputStream();
-            this.writer = new PrintWriter(outputStream);
+    private void writeConsoleInput() {
 
-            final Scanner console = new Scanner(System.in);
-            while (true) {
+        final OutputStream outputStream = this.process.getOutputStream();
+        final Scanner console = new Scanner(System.in);
+        try {
+            this.writer = new PrintWriter(outputStream);
+            while (!Thread.currentThread().isInterrupted()) {
                 final String input = console.nextLine();
                 if (input.equalsIgnoreCase("stop")) {
-                    this.sendCommandToConsole(MinecraftUtil.colorize("say &4Zamykanie servera..."));
+                    this.sendToConsole(MinecraftUtil.colorize("say &4Zamykanie servera..."));
                 } else if (input.equalsIgnoreCase("backup")) {
                     this.logger.info("Tworzenie backupa!");
                     this.watchDog.forceBackup();
                 }
-                this.writer.println(input);
-                this.writer.flush();
+                this.sendToConsole(input);
             }
-        } catch (final Exception exception) {
-            this.logger.critical(exception);
-            exception.printStackTrace();
+
+        } catch (final NoSuchElementException noSuchElementException) {
+            this.logger.critical(noSuchElementException);
+            noSuchElementException.printStackTrace();
+            console.close();
+            try {
+                outputStream.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            this.writer.close();
+            ThreadUtil.sleep(2);
+            Thread.currentThread().interrupt();
         }
     }
 
-    public void sendCommandToConsole(String command) {
+    public void sendToConsole(String command) {
         this.writer.println(command);
         this.writer.flush();
     }
 
-    public void shutdown() {
-        this.watchDog.forceBackup();
-        this.config.save();
+    public void shutdown(final boolean backup) {
+        if (backup) {
+            this.watchDog.forceBackup();
+        }
         this.service.shutdown();
+        this.consoleService.shutdown();
         this.writer.close();
+        this.config.save();
         this.endServerProcess();
         this.logger.alert("Wyłączono");
         System.exit(0);
@@ -189,5 +211,10 @@ public class ServerProcess {
                 }
             });
         }
+    }
+
+
+    public Process getProcess() {
+        return this.process;
     }
 }
