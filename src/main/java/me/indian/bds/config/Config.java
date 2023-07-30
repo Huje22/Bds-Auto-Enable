@@ -5,6 +5,9 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.Header;
 import me.indian.bds.util.SystemOs;
 
+import java.util.Arrays;
+import java.util.List;
+
 
 @Header("################################################################")
 @Header("#                                                              #")
@@ -50,6 +53,15 @@ public class Config extends OkaeriConfig {
     @Comment({" "})
     @Comment({"Backups"})
     private boolean backup = true;
+
+    @Comment({" "})
+    @Comment({"Nie zapisuje tych informacj , w konsoli i pliku"})
+    private List<String> noLogInfo = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]", "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
+            "\"component_groups\"");
+
+    public List<String> getNoLogInfo() {
+        return this.noLogInfo;
+    }
 
 
     public boolean isDebug() {

@@ -130,6 +130,7 @@ public class ServerProcess {
             while (console.hasNextLine()) {
                 if (!console.hasNext()) continue;
                 final String line = console.nextLine();
+                if (this.containsNotAllowedToLog(line) || line.isEmpty()) continue;
                 System.out.println(line);
                 this.logger.consoleToFile(line);
             }
@@ -213,6 +214,15 @@ public class ServerProcess {
         }
     }
 
+
+    private boolean containsNotAllowedToLog(final String msg) {
+        for (final String s : this.config.getNoLogInfo()) {
+            if (msg.toLowerCase().contains(s.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     public Process getProcess() {
         return this.process;
