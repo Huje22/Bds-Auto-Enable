@@ -5,6 +5,7 @@ import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import me.indian.bds.basic.Defaults;
 import me.indian.bds.basic.Settings;
 import me.indian.bds.config.Config;
+import me.indian.bds.files.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
@@ -23,7 +24,8 @@ public class BDSAutoEnable {
     private final Config config;
     private final Settings settings;
     private final ServerProcess serverProcess;
-    private  WatchDog watchDog;
+    private final ServerProperties serverProperties;
+    private WatchDog watchDog;
     private String runDate;
 
     public BDSAutoEnable() {
@@ -39,9 +41,8 @@ public class BDSAutoEnable {
         Defaults.init(this);
         this.logger = new Logger(this);
         this.settings = new Settings(this);
+        this.serverProperties = new ServerProperties(this);
         this.serverProcess = new ServerProcess(this);
-        this.watchDog = new WatchDog(this);
-        this.serverProcess.initWatchDog(this.watchDog);
         this.init();
     }
 
@@ -52,6 +53,8 @@ public class BDSAutoEnable {
 
     public void init() {
         this.settings.loadSettings(this.scanner);
+        this.watchDog = new WatchDog(this);
+        this.serverProcess.initWatchDog(this.watchDog);
         this.watchDog.forceBackup();
         this.watchDog.backup();
         final String finalFilePath = this.settings.getFilePath() + File.separator + this.settings.getName();
@@ -98,6 +101,10 @@ public class BDSAutoEnable {
 
     public ServerProcess getServerProcess() {
         return this.serverProcess;
+    }
+
+    public ServerProperties getServerProperties() {
+        return this.serverProperties;
     }
 
     public WatchDog getWatchDog() {

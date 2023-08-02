@@ -47,10 +47,6 @@ public class Config extends OkaeriConfig {
 
 
     @Comment({" "})
-    @Comment({"Watchdog"})
-    private boolean watchdog = true;
-
-    @Comment({" "})
     @Comment({"Backups"})
     private boolean backup = true;
 
@@ -66,14 +62,6 @@ public class Config extends OkaeriConfig {
 
     public boolean isDebug() {
         return this.debug;
-    }
-
-    public boolean isWatchdog() {
-        return this.watchdog;
-    }
-
-    public void setWatchdog(final boolean watchdog) {
-        this.watchdog = watchdog;
     }
 
     public boolean isBackup() {

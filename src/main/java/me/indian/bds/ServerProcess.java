@@ -186,23 +186,22 @@ public class ServerProcess {
     }
 
     public void shutdown(final boolean backup) {
-        if (backup) {
-            this.watchDog.forceBackup();
-        }
         this.service.shutdown();
         this.consoleService.shutdown();
         this.writer.close();
         this.config.save();
-        this.endServerProcess();
+        this.endServerProcess(backup);
         this.logger.alert("Wyłączono");
         System.exit(0);
     }
 
-    public void endServerProcess() {
+    public void endServerProcess(final boolean backup) {
         if (this.process != null && this.process.isAlive()) {
             this.service.execute(() -> {
                 try {
-                    this.watchDog.forceBackup();
+                    if (backup) {
+                        this.watchDog.forceBackup();
+                    }
                     ThreadUtil.sleep(10);
                     this.process.destroy();
                     this.logger.alert("Zakończono proces servera");

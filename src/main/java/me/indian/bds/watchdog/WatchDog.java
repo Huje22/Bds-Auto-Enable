@@ -48,7 +48,7 @@ public class WatchDog {
         if (this.config.isBackup()) {
             logger.alert("Backupy są włączone");
             this.backupFolder = new File("BDS-Auto-Enable/backup");
-            this.worldName = Defaults.getWorldName();
+            this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
             this.worldPath = Defaults.getWorldsPath() + this.worldName;
             this.worldFile = new File(this.worldPath);
             if (!this.backupFolder.exists()) {
@@ -73,7 +73,7 @@ public class WatchDog {
 
     public void backup() {
         this.service.execute(() -> {
-            if (this.config.isWatchdog() && this.config.isBackup()) {
+            if (this.config.isBackup()) {
                 this.logger.debug("Ścieżka świata backupów " + Defaults.getWorldsPath() + this.worldName);
                 this.hourlyTask = new TimerTask() {
                     @Override

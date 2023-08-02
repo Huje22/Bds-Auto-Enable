@@ -5,19 +5,13 @@ import me.indian.bds.config.Config;
 import me.indian.bds.util.SystemOs;
 
 import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Properties;
 
 public class Defaults {
 
     private static Config config;
-    private static Properties properties;
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         config = bdsAutoEnable.getConfig();
-        properties = new Properties();
     }
 
     public static String getSystem() {
@@ -51,15 +45,6 @@ public class Defaults {
         return System.getProperty("user.dir");
     }
 
-    public static String getWorldName() {
-        try {
-            final InputStream input = Files.newInputStream(Paths.get(config.getFilesPath() + "/server.properties"));
-            properties.load(input);
-            return properties.getProperty("level-name");
-        } catch (final Exception e) {
-           return "Nie udało znaleźć sie nazwy pliku świata";
-        }
-    }
 
     public static String getWorldsPath() {
         return config.getFilesPath() + File.separator + "worlds" + File.separator;

@@ -12,6 +12,7 @@ import java.util.Scanner;
 public class Settings {
 
 
+    private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Config config;
     private String filePath;
@@ -22,8 +23,9 @@ public class Settings {
     private boolean backup;
 
     public Settings(final BDSAutoEnable bdsAutoEnable) {
-        this.logger = bdsAutoEnable.getLogger();
-        this.config = bdsAutoEnable.getConfig();
+        this.bdsAutoEnable = bdsAutoEnable;
+        this.logger = this.bdsAutoEnable.getLogger();
+        this.config = this.bdsAutoEnable.getConfig();
     }
 
     public String getFilePath() {
@@ -106,20 +108,13 @@ public class Settings {
                 Defaults.getJarPath(),
                 (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)
         ));
-        this.config.setWatchdog(scannerUtil.addQuestion(
-                (defaultValue) -> this.logger.info("Włączyć Watchdog (Domyślnie: " + defaultValue + ")? " + enter),
-                true,
-                (input) -> this.logger.info("Watchdog ustawiony na: " + input)
-        ));
-        if (this.config.isWatchdog()) {
+
             this.config.setBackup(scannerUtil.addQuestion(
                     (defaultValue) -> this.logger.info("Włączyć Backupy (Domyślnie: " + defaultValue + ")? " + enter),
                     true,
                     (input) -> this.logger.info("Backupy ustawione na: " + input)
             ));
-        } else {
-            this.config.setBackup(false);
-        }
+
         this.currentSettings(scanner);
     }
 
@@ -136,14 +131,13 @@ public class Settings {
         filePath = this.config.getFilesPath();
         this.logger.info("FilePath: " + filePath);
 
-        watchdog = this.config.isWatchdog();
-        this.logger.info("Watchdog: " + watchdog);
-
         backup = this.config.isBackup();
         this.logger.info("Backup: " + backup);
 
+        this.bdsAutoEnable.getServerProperties().loadProperties();
+
         if(backup) {
-            this.logger.info("WorldName: " + Defaults.getWorldName());
+            this.logger.info("WorldName: " + this.bdsAutoEnable.getServerProperties().getWorldName());
         }
 
         this.logger.info("Kliknij enter przycisk aby kontunować");
