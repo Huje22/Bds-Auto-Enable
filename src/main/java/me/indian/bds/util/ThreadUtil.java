@@ -29,6 +29,14 @@ public class ThreadUtil extends Thread implements ThreadFactory {
         }
     }
 
+    public static void sleep(final long millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public static int getThreadsCount() {
         int availableProcessors = 5;
         try {
