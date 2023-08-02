@@ -3,6 +3,7 @@ package me.indian.bds.basic;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.ConsoleColors;
 import me.indian.bds.util.ScannerUtil;
 import me.indian.bds.util.SystemOs;
 
@@ -11,7 +12,6 @@ import java.util.Scanner;
 
 public class Settings {
 
-
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Config config;
@@ -19,37 +19,12 @@ public class Settings {
     private String name;
     private SystemOs os;
     private boolean wine;
-    private boolean watchdog;
     private boolean backup;
 
     public Settings(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
-    }
-
-    public String getFilePath() {
-        return this.filePath;
-    }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public SystemOs getOs() {
-        return this.os;
-    }
-
-    public boolean isWine() {
-        return this.wine;
-    }
-
-    private boolean isWatchdog() {
-        return this.watchdog;
-    }
-
-    private boolean isBackup() {
-        return this.backup;
     }
 
     public void loadSettings(final Scanner scanner) {
@@ -72,8 +47,9 @@ public class Settings {
 
     private void init(final Scanner scanner) {
         final ScannerUtil scannerUtil = new ScannerUtil(scanner);
-
         final String enter = "[Enter = Domyślnie]";
+        final long startTime = System.currentTimeMillis();
+
         SystemOs system;
         try {
             system = SystemOs.valueOf(
@@ -109,12 +85,13 @@ public class Settings {
                 (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)
         ));
 
-            this.config.setBackup(scannerUtil.addQuestion(
-                    (defaultValue) -> this.logger.info("Włączyć Backupy (Domyślnie: " + defaultValue + ")? " + enter),
-                    true,
-                    (input) -> this.logger.info("Backupy ustawione na: " + input)
-            ));
+        this.config.setBackup(scannerUtil.addQuestion(
+                (defaultValue) -> this.logger.info("Włączyć Backupy (Domyślnie: " + defaultValue + ")? " + enter),
+                true,
+                (input) -> this.logger.info("Backupy ustawione na: " + input)
+        ));
 
+        this.logger.info("Ukończono odpowiedzi w " + ConsoleColors.GREEN + ((System.currentTimeMillis() - startTime) / 1000.0) + ConsoleColors.RESET + " sekund");
         this.currentSettings(scanner);
     }
 
@@ -147,5 +124,25 @@ public class Settings {
             this.config.setFirstRun(false);
         }
         this.config.save();
+    }
+
+    public String getFilePath() {
+        return this.filePath;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public SystemOs getOs() {
+        return this.os;
+    }
+
+    public boolean isWine() {
+        return this.wine;
+    }
+
+    private boolean isBackup() {
+        return this.backup;
     }
 }
