@@ -106,7 +106,6 @@ public class Logger {
         if (this.printStream != null) {
             this.printStream.println(log);
         }
-        ;
     }
 
     public void logToFile(final Object log) {
