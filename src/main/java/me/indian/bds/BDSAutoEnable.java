@@ -57,9 +57,8 @@ public class BDSAutoEnable {
         this.serverProcess.initWatchDog(this.watchDog);
         this.watchDog.forceBackup();
         this.watchDog.backup();
-        final String finalFilePath = this.settings.getFilePath() + File.separator + this.settings.getName();
-        final File file = new File(finalFilePath);
-        if (file.exists()) {
+        final File bedrockFile = new File(this.settings.getFilePath() + File.separator + this.settings.getName());
+        if (bedrockFile.exists()) {
             this.logger.info("Odnaleziono " + this.settings.getName());
         } else {
             this.logger.critical("Nie można odnaleźć pliku " + this.settings.getName() + " na ścieżce " + this.settings.getFilePath());
