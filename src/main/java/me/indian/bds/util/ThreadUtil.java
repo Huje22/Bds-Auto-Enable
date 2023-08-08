@@ -38,12 +38,12 @@ public class ThreadUtil extends Thread implements ThreadFactory {
     }
 
     public static int getThreadsCount() {
-        int availableProcessors = 5;
+        int availableThreads = 2;
         try {
-            availableProcessors = ManagementFactory.getThreadMXBean().getThreadCount();
+            availableThreads = ManagementFactory.getThreadMXBean().getThreadCount();
         } catch (Exception ignore) {
         }
-        return availableProcessors;
+        return availableThreads;
     }
 
     @Override
