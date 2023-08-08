@@ -39,7 +39,7 @@ public class ServerProperties {
     }
 
     public String getWorldName() {
-        return properties.getProperty("level-name");
+        return this.properties.getProperty("level-name");
     }
 
     public Properties getProperties() {
