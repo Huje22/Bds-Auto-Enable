@@ -124,8 +124,7 @@ public class ServerProcess {
     }
 
     private void readConsoleOutput() {
-        final InputStream inputStream = this.process.getInputStream();
-        final Scanner console = new Scanner(inputStream);
+        final Scanner console = new Scanner(this.process.getInputStream());
         try {
             while (console.hasNextLine()) {
                 if (!console.hasNext()) continue;
@@ -138,22 +137,15 @@ public class ServerProcess {
             this.logger.critical(exception);
             exception.printStackTrace();
             console.close();
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            ThreadUtil.sleep(2);
+            ThreadUtil.sleep(1);
             this.readConsoleOutput();
         }
     }
 
     private void writeConsoleInput() {
-
-        final OutputStream outputStream = this.process.getOutputStream();
         final Scanner console = new Scanner(System.in);
         try {
-            this.writer = new PrintWriter(outputStream);
+            this.writer = new PrintWriter(this.process.getOutputStream());
             while (!Thread.currentThread().isInterrupted()) {
                 final String input = console.nextLine();
                 if (input.equalsIgnoreCase("stop")) {
@@ -169,13 +161,8 @@ public class ServerProcess {
             this.logger.critical(noSuchElementException);
             noSuchElementException.printStackTrace();
             console.close();
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
             this.writer.close();
-            ThreadUtil.sleep(2);
+            ThreadUtil.sleep(1);
             Thread.currentThread().interrupt();
         }
     }
