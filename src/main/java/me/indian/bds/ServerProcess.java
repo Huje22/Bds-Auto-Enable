@@ -46,6 +46,7 @@ public class ServerProcess {
     }
 
     private boolean isProcessRunning() {
+        BufferedReader reader:
         try {
             String command = "";
             switch (this.settings.getOs()) {
@@ -57,21 +58,25 @@ public class ServerProcess {
                     break;
                 default:
                     this.logger.critical("Musisz podać odpowiedni system");
-                    System.exit(0);
+                    this.shutdown(false);
             }
 
             final Process checkProcessIsRunning = Runtime.getRuntime().exec(command);
             checkProcessIsRunning.waitFor();
 
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(checkProcessIsRunning.getInputStream()));
+            reader = new BufferedReader(new InputStreamReader(checkProcessIsRunning.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
                 if (!line.isEmpty() && !line.equalsIgnoreCase("INFO: No tasks are running which match the specified criteria.")) {
                     return true;
                 }
             }
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
+             reader.close();
+        } catch (IOException | InterruptedException exception) {
+            reader.close();
+            this.logger.critical(exception);
+            exception.printStackTrace();
+        this.shutdown(false);
         }
         return false;
     }
@@ -81,7 +86,6 @@ public class ServerProcess {
             if (isProcessRunning()) {
                 this.logger.info("Proces " + this.settings.getName() + " jest już uruchomiony.");
                 this.shutdown(false);
-                System.exit(0);
             } else {
                 this.logger.info("Proces " + this.settings.getName() + " nie jest uruchomiony. Uruchamianie...");
 
