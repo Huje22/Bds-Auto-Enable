@@ -50,10 +50,9 @@ public class Logger {
     private void initializeLogFile() {
         try {
             final File logsDir = new File("BDS-Auto-Enable/logs");
-            if (!logsDir.exists()) {
-                if (!logsDir.mkdir()) {
-                    logsDir.mkdirs();
-                }
+            if (logsDir.exists()) return;
+            if (!logsDir.mkdir()) {
+                logsDir.mkdirs();
             }
             this.logFile = new File(logsDir, "ServerLog-" + this.bdsAutoEnable.getRunDate() + ".log");
             final FileOutputStream fileOutputStream = new FileOutputStream(logFile, true);
@@ -102,7 +101,7 @@ public class Logger {
         }
     }
 
-    public void consoleToFile(final Object log) {
+    public void instantLogToFile(final Object log) {
         if (this.printStream != null) {
             this.printStream.println(log);
         }

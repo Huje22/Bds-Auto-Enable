@@ -5,7 +5,7 @@ import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import me.indian.bds.basic.Defaults;
 import me.indian.bds.basic.Settings;
 import me.indian.bds.config.Config;
-import me.indian.bds.files.ServerProperties;
+import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
@@ -25,10 +25,12 @@ public class BDSAutoEnable {
     private final Settings settings;
     private final ServerProcess serverProcess;
     private final ServerProperties serverProperties;
+    private final String projectVersion;
     private WatchDog watchDog;
     private String runDate;
 
     public BDSAutoEnable() {
+        this.projectVersion = "1.0.0-Dev";
         this.initRunDate();
         this.scanner = new Scanner(System.in);
         this.config = ConfigManager.create(Config.class, (it) -> {
@@ -40,39 +42,41 @@ public class BDSAutoEnable {
         });
         Defaults.init(this);
         this.logger = new Logger(this);
-        this.settings = new Settings(this);
         this.serverProperties = new ServerProperties(this);
+        this.settings = new Settings(this);
         this.serverProcess = new ServerProcess(this);
+
         this.init();
     }
 
 
-    public static void main(String[] args) {
+    public static void main(final String[] args) {
         new BDSAutoEnable();
     }
 
     public void init() {
+        this.logger.alert("Numer wersji projektu: " + this.projectVersion);
         this.settings.loadSettings(this.scanner);
         this.watchDog = new WatchDog(this);
         this.serverProcess.initWatchDog(this.watchDog);
         this.watchDog.forceBackup();
         this.watchDog.backup();
-        final File bedrockFile = new File(this.settings.getFilePath() + File.separator + this.settings.getName());
+        final File bedrockFile = new File(this.settings.getFilePath() + File.separator + this.settings.getFileName());
         if (bedrockFile.exists()) {
-            this.logger.info("Odnaleziono " + this.settings.getName());
+            this.logger.info("Odnaleziono " + this.settings.getFileName());
         } else {
-            this.logger.critical("Nie można odnaleźć pliku " + this.settings.getName() + " na ścieżce " + this.settings.getFilePath());
+            this.logger.critical("Nie można odnaleźć pliku " + this.settings.getFileName() + " na ścieżce " + this.settings.getFilePath());
             System.exit(0);
         }
 
         this.config.save();
         Runtime.getRuntime().addShutdownHook(new ThreadUtil("Shutdown", () -> {
             this.logger.alert("Wykonuje się przed zakończeniem programu...");
-            this.watchDog.forceBackup();
             this.config.save();
             this.scanner.close();
             this.serverProcess.shutdown(true);
         }));
+
         this.serverProcess.startProcess();
     }
 
@@ -84,6 +88,10 @@ public class BDSAutoEnable {
 
     public String getRunDate() {
         return this.runDate;
+    }
+
+    public String getProjectVersion() {
+        return this.projectVersion;
     }
 
     public Config getConfig() {

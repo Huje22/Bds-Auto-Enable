@@ -10,7 +10,7 @@ public class ScannerUtil {
         this.scanner = scanner;
     }
 
-    public String addQuestion(ResponseConsumer question, String defaultValue, ResponseConsumer response) {
+    public String addQuestion(final ResponseConsumer question, final String defaultValue, final ResponseConsumer response) {
         question.accept(defaultValue);
         String input = getInput();
         input = input.isEmpty() ? defaultValue : input;
@@ -21,10 +21,20 @@ public class ScannerUtil {
     }
 
 
-    public boolean addQuestion(ResponseConsumer question, boolean defaultValue, ResponseConsumer response) {
+    public boolean addQuestion(final ResponseConsumer question, final boolean defaultValue, final ResponseConsumer response) {
         question.accept(String.valueOf(defaultValue));
         String input = getInput();
         boolean userInput = input.isEmpty() ? defaultValue : Boolean.parseBoolean(input);
+        response.accept(String.valueOf(userInput));
+
+        System.out.println();
+        return userInput;
+    }
+
+    public int addQuestion(final ResponseConsumer question, final int defaultValue, final ResponseConsumer response) {
+        question.accept(String.valueOf(defaultValue));
+        String input = getInput();
+        int userInput = input.isEmpty() ? defaultValue : Integer.parseInt(input);
         response.accept(String.valueOf(userInput));
 
         System.out.println();
@@ -37,6 +47,6 @@ public class ScannerUtil {
 
     @FunctionalInterface
     public interface ResponseConsumer {
-        void accept(String string);
+        void accept(final String string);
     }
 }

@@ -5,9 +5,10 @@ import me.indian.bds.ServerProcess;
 import me.indian.bds.basic.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.ConsoleColors;
+import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ZipUtil;
 
 import java.io.File;
@@ -35,6 +36,7 @@ public class WatchDog {
     private String worldName;
     private String date;
     private TimerTask hourlyTask;
+    private double lastBackupTime;
 
 
     public WatchDog(final BDSAutoEnable bdsAutoEnable) {
@@ -66,9 +68,10 @@ public class WatchDog {
                 this.logger.alert("Ścieżka " + this.worldPath);
                 Thread.currentThread().interrupt();
                 this.timer.cancel();
-//            hourlyTask.cancel();
+//              this.hourlyTask.cancel();
             }
         }
+        this.lastBackupTime = 20;
     }
 
     public void backup() {
@@ -93,6 +96,7 @@ public class WatchDog {
             this.logger.error("Nie można zrobić kopi podczas robienia już jednej");
             return;
         }
+        final long startTime = System.currentTimeMillis();
         this.service.execute(() -> {
             this.upDateDate();
             final File backup = new File(this.backupFolder.getAbsolutePath() + File.separator + this.worldName + " " + this.date + ".zip");
@@ -101,8 +105,9 @@ public class WatchDog {
                 this.saveWorld();
                 this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &6Tworzenie kopij zapasowej"));
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
-                this.logger.info("Utworzono kopię zapasową");
-                this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUtworzono kopię zapasową"));
+                this.lastBackupTime = ((System.currentTimeMillis() - startTime) / 1000.0);
+                this.logger.info("Utworzono kopię zapasowąw " + ConsoleColors.GREEN + lastBackupTime + ConsoleColors.RESET + " sekund");
+                this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUtworzono kopię zapasową w&b " + lastBackupTime + "&a sekund"));
                 this.saveResume();
                 backuping = false;
             } catch (final Exception exception) {
@@ -121,7 +126,6 @@ public class WatchDog {
         });
     }
 
-
     public void saveWorld() {
         this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aZapisywanie servera...."));
         this.serverProcess.sendToConsole("save hold");
@@ -132,6 +136,9 @@ public class WatchDog {
         this.serverProcess.sendToConsole("save resume");
     }
 
+    public double getLastBackupTime() {
+        return this.lastBackupTime;
+    }
 
     private void upDateDate() {
         final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));

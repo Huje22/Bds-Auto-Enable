@@ -3,6 +3,7 @@ package me.indian.bds;
 import me.indian.bds.basic.Settings;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.ConsoleColors;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
@@ -10,9 +11,7 @@ import me.indian.bds.watchdog.WatchDog;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -28,6 +27,7 @@ public class ServerProcess {
     private final ExecutorService consoleService;
     private final Settings settings;
     private final String finalFilePath;
+    private final String prefix;
     private ProcessBuilder processBuilder;
     private Process process;
     private PrintWriter writer;
@@ -39,6 +39,7 @@ public class ServerProcess {
         this.consoleService = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Console"));
         this.settings = bdsAutoEnable.getSettings();
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
+        this.prefix = "&b[&3ServerProcess&b] ";
     }
 
     public void initWatchDog(final WatchDog watchDog){
@@ -46,15 +47,15 @@ public class ServerProcess {
     }
 
     private boolean isProcessRunning() {
-        BufferedReader reader:
+        BufferedReader reader = null;
         try {
             String command = "";
             switch (this.settings.getOs()) {
                 case LINUX:
-                    command = "pgrep -f " + this.settings.getName();
+                    command = "pgrep -f " + this.settings.getFileName();
                     break;
                 case WINDOWS:
-                    command = "tasklist /NH /FI \"IMAGENAME eq " + this.settings.getName() + "\"";
+                    command = "tasklist /NH /FI \"IMAGENAME eq " + this.settings.getFileName() + "\"";
                     break;
                 default:
                     this.logger.critical("Musisz podać odpowiedni system");
@@ -62,7 +63,6 @@ public class ServerProcess {
             }
 
             final Process checkProcessIsRunning = Runtime.getRuntime().exec(command);
-            checkProcessIsRunning.waitFor();
 
             reader = new BufferedReader(new InputStreamReader(checkProcessIsRunning.getInputStream()));
             String line;
@@ -71,12 +71,19 @@ public class ServerProcess {
                     return true;
                 }
             }
-             reader.close();
-        } catch (IOException | InterruptedException exception) {
-            reader.close();
+            checkProcessIsRunning.waitFor();
+        } catch (final IOException | InterruptedException exception) {
             this.logger.critical(exception);
             exception.printStackTrace();
-        this.shutdown(false);
+            this.shutdown(false);
+        } finally {
+            if (reader != null) {
+                try {
+                    reader.close();
+                } catch (final IOException ioException) {
+                    throw new RuntimeException(ioException);
+                }
+            }
         }
         return false;
     }
@@ -84,10 +91,10 @@ public class ServerProcess {
     public void startProcess() {
         this.service.execute(() -> {
             if (isProcessRunning()) {
-                this.logger.info("Proces " + this.settings.getName() + " jest już uruchomiony.");
+                this.logger.info("Proces " + this.settings.getFileName() + " jest już uruchomiony.");
                 this.shutdown(false);
             } else {
-                this.logger.info("Proces " + this.settings.getName() + " nie jest uruchomiony. Uruchamianie...");
+                this.logger.info("Proces " + this.settings.getFileName() + " nie jest uruchomiony. Uruchamianie...");
 
                 try {
                     switch (this.settings.getOs()) {
@@ -95,7 +102,7 @@ public class ServerProcess {
                             if (this.settings.isWine()) {
                                 this.processBuilder = new ProcessBuilder("wine", finalFilePath);
                             } else {
-                                this.processBuilder = new ProcessBuilder("./" + this.settings.getName());
+                                this.processBuilder = new ProcessBuilder("./" + this.settings.getFileName());
                                 this.processBuilder.environment().put("LD_LIBRARY_PATH", ".");
                                 this.processBuilder.directory(new File(this.settings.getFilePath()));
                             }
@@ -135,7 +142,7 @@ public class ServerProcess {
                 final String line = console.nextLine();
                 if (this.containsNotAllowedToLog(line) || line.isEmpty()) continue;
                 System.out.println(line);
-                this.logger.consoleToFile(line);
+                this.logger.instantLogToFile(line);
             }
         } catch (final Exception exception) {
             this.logger.critical(exception);
@@ -154,9 +161,14 @@ public class ServerProcess {
                 final String input = console.nextLine();
                 if (input.equalsIgnoreCase("stop")) {
                     this.sendToConsole(MinecraftUtil.colorize("say &4Zamykanie servera..."));
+                    ThreadUtil.sleep(1);
                 } else if (input.equalsIgnoreCase("backup")) {
                     this.logger.info("Tworzenie backupa!");
                     this.watchDog.forceBackup();
+                    continue;
+                } else if (input.equalsIgnoreCase(".end")) {
+                    this.endServerProcess(true);
+                    continue;
                 }
                 this.sendToConsole(input);
             }
@@ -177,25 +189,30 @@ public class ServerProcess {
     }
 
     public void shutdown(final boolean backup) {
-        this.service.shutdown();
         this.consoleService.shutdown();
         this.writer.close();
         this.config.save();
-        this.endServerProcess(backup);
-        this.logger.alert("Wyłączono");
-        System.exit(0);
+        this.service.shutdown();
     }
 
     public void endServerProcess(final boolean backup) {
         if (this.process != null && this.process.isAlive()) {
             this.service.execute(() -> {
+                final int endTime = (int) this.watchDog.getLastBackupTime() + 2;
+                this.logger.warning("Wyłączanie servera , prosze poczekac " + ConsoleColors.GREEN + endTime + ConsoleColors.RESET + " sekund....");
+                this.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + "&aWyłączanie servera , prosze poczekac&b " + endTime + "&a sekund...."));
                 try {
                     if (backup) {
                         this.watchDog.forceBackup();
                     }
-                    ThreadUtil.sleep(10);
+                    ThreadUtil.sleep(endTime);
                     this.process.destroy();
+                    this.consoleService.shutdown();
+                    this.writer.close();
+                    this.config.save();
+                    this.service.shutdown();
                     this.logger.alert("Zakończono proces servera");
+                    System.exit(1);
                 } catch (final Exception e) {
                     this.logger.critical(e);
                     e.printStackTrace();

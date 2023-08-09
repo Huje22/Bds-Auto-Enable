@@ -24,16 +24,16 @@ public class ThreadUtil extends Thread implements ThreadFactory {
     public static void sleep(final int seconds) {
         try {
             Thread.sleep(1000 * seconds);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (final InterruptedException exception) {
+            throw new RuntimeException(exception);
         }
     }
 
     public static void sleep(final long millis) {
         try {
             Thread.sleep(millis);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        } catch (final InterruptedException exception) {
+            throw new RuntimeException(exception);
         }
     }
 
@@ -41,7 +41,7 @@ public class ThreadUtil extends Thread implements ThreadFactory {
         int availableThreads = 2;
         try {
             availableThreads = ManagementFactory.getThreadMXBean().getThreadCount();
-        } catch (Exception ignore) {
+        } catch (final Exception ignore) {
         }
         return availableThreads;
     }

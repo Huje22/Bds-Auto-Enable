@@ -2,10 +2,12 @@ package me.indian.bds.basic;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
+import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ConsoleColors;
 import me.indian.bds.util.ScannerUtil;
 import me.indian.bds.util.SystemOs;
+import me.indian.bds.util.ThreadUtil;
 
 import java.util.Arrays;
 import java.util.Scanner;
@@ -13,16 +15,18 @@ import java.util.Scanner;
 public class Settings {
 
     private final BDSAutoEnable bdsAutoEnable;
+    private final ServerProperties serverProperties;
     private final Logger logger;
     private final Config config;
     private String filePath;
-    private String name;
+    private String fileName;
     private SystemOs os;
     private boolean wine;
     private boolean backup;
 
     public Settings(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
+        this.serverProperties = this.bdsAutoEnable.getServerProperties();
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
     }
@@ -35,6 +39,7 @@ public class Settings {
             final boolean ustawienia = Boolean.parseBoolean(input.isEmpty() ? "true" : input);
 
             if (ustawienia) {
+                this.serverProperties.loadProperties();
                 this.currentSettings(scanner);
             } else {
                 this.logger.info("Zaczynamy od nowa");
@@ -85,10 +90,28 @@ public class Settings {
                 (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)
         ));
 
+        this.serverProperties.loadProperties();
+
         this.config.setBackup(scannerUtil.addQuestion(
                 (defaultValue) -> this.logger.info("Włączyć Backupy (Domyślnie: " + defaultValue + ")? " + enter),
                 true,
                 (input) -> this.logger.info("Backupy ustawione na: " + input)
+        ));
+
+        this.serverProperties.setMaxThreads(scannerUtil.addQuestion(
+                (defaultValue) -> this.logger.info("Liczba wątków używana przez server (Dostępna liczba wątków " + ThreadUtil.getThreadsCount() + ")? "),
+                ThreadUtil.getThreadsCount(),
+                (input) -> this.logger.info("Liczba wątków ustawiona na: " + input)
+        ));
+
+        this.serverProperties.setClientSideChunkGeneration(scannerUtil.addQuestion(
+                (defaultValue) -> {
+                    this.logger.info("Client Side Chunks (Domyślnie: " + defaultValue + ")? " + enter);
+                    this.logger.info("Jeśli jest " + ConsoleColors.BLUE + "true" + ConsoleColors.RESET +
+                            ", serwer poinformuje klientów, że mają możliwość generowania chunków poziomu wizualnego poza odległościami interakcji graczy.");
+                },
+                false,
+                (input) -> this.logger.info("Client Side Chunks na: " + input)
         ));
 
         this.logger.info("Ukończono odpowiedzi w " + ConsoleColors.GREEN + ((System.currentTimeMillis() - startTime) / 1000.0) + ConsoleColors.RESET + " sekund");
@@ -96,28 +119,29 @@ public class Settings {
     }
 
     private void currentSettings(final Scanner scanner) {
-        os = this.config.getSystemOs();
-        this.logger.info("System: " + os);
+        this.os = this.config.getSystemOs();
+        this.logger.info("System: " + this.os);
 
-        name = this.config.getFileName();
-        this.logger.info("FileName: " + name);
+        this.fileName = this.config.getFileName();
+        this.logger.info("FileName: " + this.fileName);
 
-        wine = this.config.isWine();
-        this.logger.info("IsWine: " + wine);
+        this.wine = this.config.isWine();
+        this.logger.info("IsWine: " + this.wine);
 
-        filePath = this.config.getFilesPath();
-        this.logger.info("FilePath: " + filePath);
+        this.filePath = this.config.getFilesPath();
+        this.logger.info("FilePath: " + this.filePath);
 
-        backup = this.config.isBackup();
-        this.logger.info("Backup: " + backup);
+        this.backup = this.config.isBackup();
+        this.logger.info("Backup: " + this.backup);
 
-        this.bdsAutoEnable.getServerProperties().loadProperties();
-
-        if(backup) {
-            this.logger.info("WorldName: " + this.bdsAutoEnable.getServerProperties().getWorldName());
+        if (this.backup) {
+            this.logger.info("WorldName: " + this.serverProperties.getWorldName());
         }
 
-        this.logger.info("Kliknij enter przycisk aby kontunować");
+        this.logger.info("Liczba wątków używana przez server: " + this.serverProperties.getMaxThreads());
+        this.logger.info("Czy klient generuje chunki: " + this.serverProperties.isClientSideChunkGeneration());
+
+        this.logger.info("Kliknij enter aby kontunować");
         scanner.nextLine();
 
         if (this.config.isFirstRun()) {
@@ -130,8 +154,8 @@ public class Settings {
         return this.filePath;
     }
 
-    public String getName() {
-        return this.name;
+    public String getFileName() {
+        return this.fileName;
     }
 
     public SystemOs getOs() {
