@@ -74,7 +74,7 @@ public class BDSAutoEnable {
             this.logger.alert("Wykonuje się przed zakończeniem programu...");
             this.config.save();
             this.scanner.close();
-            this.serverProcess.shutdown(true);
+            this.serverProcess.instantShutdown(true);
         }));
 
         this.serverProcess.startProcess();

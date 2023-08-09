@@ -59,7 +59,7 @@ public class ServerProcess {
                     break;
                 default:
                     this.logger.critical("Musisz podać odpowiedni system");
-                    this.shutdown(false);
+                    this.instantShutdown();
             }
 
             final Process checkProcessIsRunning = Runtime.getRuntime().exec(command);
@@ -75,7 +75,7 @@ public class ServerProcess {
         } catch (final IOException | InterruptedException exception) {
             this.logger.critical(exception);
             exception.printStackTrace();
-            this.shutdown(false);
+            this.instantShutdown();
         } finally {
             if (reader != null) {
                 try {
@@ -92,7 +92,7 @@ public class ServerProcess {
         this.service.execute(() -> {
             if (isProcessRunning()) {
                 this.logger.info("Proces " + this.settings.getFileName() + " jest już uruchomiony.");
-                this.shutdown(false);
+                this.instantShutdown();
             } else {
                 this.logger.info("Proces " + this.settings.getFileName() + " nie jest uruchomiony. Uruchamianie...");
 
@@ -112,7 +112,7 @@ public class ServerProcess {
                             break;
                         default:
                             this.logger.critical("Musisz podać odpowiedni system");
-                            this.shutdown(false);
+                            this.instantShutdown();
                     }
                     this.process = this.processBuilder.start();
                     this.logger.info("Uruchomiono proces (nadal może on sie wyłączyć)");
@@ -128,7 +128,7 @@ public class ServerProcess {
                     this.logger.critical("Nie można uruchomic procesu");
                     this.logger.critical(exception);
                     exception.printStackTrace();
-                    this.shutdown(false);
+                    this.instantShutdown();
                 }
             }
         });
@@ -188,7 +188,10 @@ public class ServerProcess {
         this.writer.flush();
     }
 
-    public void shutdown(final boolean backup) {
+    public void instantShutdown() {
+        if(this.process != null && this.process.isAlive()){
+            this.process.destroy();
+        }
         this.consoleService.shutdown();
         this.writer.close();
         this.config.save();

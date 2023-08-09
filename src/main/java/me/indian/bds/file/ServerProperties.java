@@ -33,7 +33,7 @@ public class ServerProperties {
             this.properties.load(input);
         } catch (final IOException exception) {
             this.logger.critical(ConsoleColors.RED + "Wystąpił krytyczny błąd podczas ładowania " + ConsoleColors.GREEN + "server.properties" + ConsoleColors.RESET);
-            this.bdsAutoEnable.getServerProcess().shutdown(false);
+            this.bdsAutoEnable.getServerProcess().instantShutdown(false);
             throw new RuntimeException(exception);
         }
     }
@@ -43,7 +43,7 @@ public class ServerProperties {
             this.properties.store(Files.newOutputStream(Paths.get(this.config.getFilesPath() + "/server.properties")), null);
         } catch (final IOException e) {
             this.logger.critical(ConsoleColors.RED + "Wystąpił krytyczny błąd podczas zapisywania " + ConsoleColors.GREEN + "server.properties" + ConsoleColors.RESET);
-            this.bdsAutoEnable.getServerProcess().shutdown(false);
+            this.bdsAutoEnable.getServerProcess().instantShutdown(false);
             throw new RuntimeException(e);
         }
     }
