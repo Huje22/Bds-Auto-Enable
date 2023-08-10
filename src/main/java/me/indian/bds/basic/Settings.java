@@ -97,13 +97,15 @@ public class Settings {
                 true,
                 (input) -> this.logger.info("Backupy ustawione na: " + input)
         ));
+        final int threads = scannerUtil.addQuestion(
+                (defaultValue) -> {
+                    this.logger.info("Liczba wątków używana przez server (Dostępna liczba wątków " + ThreadUtil.getThreadsCount() + ")? ");
+                    this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na 0 wtedy będzie używać najwięcej jak to możliwe.");
+                },
+                0,
+                (input) -> this.logger.info("Liczba wątków ustawiona na: " + (Integer.parseInt(input) <= -1 ? 0 : input)));
 
-        this.serverProperties.setMaxThreads(scannerUtil.addQuestion(
-                (defaultValue) -> this.logger.info("Liczba wątków używana przez server (Dostępna liczba wątków " + ThreadUtil.getThreadsCount() + ")? "),
-                ThreadUtil.getThreadsCount(),
-                (input) -> this.logger.info("Liczba wątków ustawiona na: " + input)
-        ));
-
+        this.serverProperties.setMaxThreads(threads <= -1 ? 0 : threads);
         this.serverProperties.setClientSideChunkGeneration(scannerUtil.addQuestion(
                 (defaultValue) -> {
                     this.logger.info("Client Side Chunks (Domyślnie: " + defaultValue + ")? " + enter);
