@@ -106,7 +106,7 @@ public class WatchDog {
                 this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &6Tworzenie kopij zapasowej"));
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 this.lastBackupTime = ((System.currentTimeMillis() - startTime) / 1000.0);
-                this.logger.info("Utworzono kopię zapasowąw " + ConsoleColors.GREEN + lastBackupTime + ConsoleColors.RESET + " sekund");
+                this.logger.info("Utworzono kopię zapasową w " + ConsoleColors.GREEN + lastBackupTime + ConsoleColors.RESET + " sekund");
                 this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUtworzono kopię zapasową w&b " + lastBackupTime + "&a sekund"));
                 this.saveResume();
                 backuping = false;
