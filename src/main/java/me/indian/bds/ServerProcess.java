@@ -35,8 +35,8 @@ public class ServerProcess {
     public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
         this.config = bdsAutoEnable.getConfig();
         this.logger = bdsAutoEnable.getLogger();
-        this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Server process"));
-        this.consoleService = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Console"));
+        this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
+        this.consoleService = Executors.newScheduledThreadPool(2, new ThreadUtil("Console"));
         this.settings = bdsAutoEnable.getSettings();
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
         this.prefix = "&b[&3ServerProcess&b] ";

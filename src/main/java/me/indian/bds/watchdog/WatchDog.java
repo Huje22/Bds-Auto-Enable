@@ -43,7 +43,7 @@ public class WatchDog {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
-        this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Watchdog"));
+        this.service = Executors.newScheduledThreadPool(10, new ThreadUtil("Watchdog"));
         this.timer = new Timer();
         this.prefix = "&b[&3WatchDog&b]";
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
