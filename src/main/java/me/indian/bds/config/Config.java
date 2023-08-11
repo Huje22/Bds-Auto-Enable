@@ -19,10 +19,10 @@ import java.util.List;
 
 public class Config extends OkaeriConfig {
 
-
     @Comment({" "})
-    @Comment({"Debug"})
-    private boolean debug = true;
+    @Comment({"Versia która jest załadowana"})
+    private String version = "1.20.14.01";
+    private boolean loaded = false;
 
     @Comment({" "})
     @Comment({"Pierwsze uruchomienie"})
@@ -55,10 +55,29 @@ public class Config extends OkaeriConfig {
     private List<String> noLogInfo = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]", "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
             "\"component_groups\"");
 
+    @Comment({" "})
+    @Comment({"Debug"})
+    private boolean debug = true;
+
+    public String getVersion() {
+        return this.version;
+    }
+
+    public void setVersion(final String version) {
+        this.version = version;
+    }
+
+    public boolean isLoaded() {
+        return this.loaded;
+    }
+
+    public void setLoaded(final boolean loaded) {
+        this.loaded = loaded;
+    }
+
     public List<String> getNoLogInfo() {
         return this.noLogInfo;
     }
-
 
     public boolean isDebug() {
         return this.debug;

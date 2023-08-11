@@ -8,9 +8,9 @@ import me.indian.bds.config.Config;
 import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
 
-import java.io.File;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -25,6 +25,7 @@ public class BDSAutoEnable {
     private final Settings settings;
     private final ServerProcess serverProcess;
     private final ServerProperties serverProperties;
+    private final VersionManager versionManager;
     private final String projectVersion;
     private WatchDog watchDog;
     private String runDate;
@@ -45,6 +46,9 @@ public class BDSAutoEnable {
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
         this.serverProcess = new ServerProcess(this);
+        this.versionManager = new VersionManager(this);
+
+
 
         this.init();
     }
@@ -61,15 +65,9 @@ public class BDSAutoEnable {
         this.serverProcess.initWatchDog(this.watchDog);
         this.watchDog.forceBackup();
         this.watchDog.backup();
-        final File bedrockFile = new File(this.settings.getFilePath() + File.separator + this.settings.getFileName());
-        if (bedrockFile.exists()) {
-            this.logger.info("Odnaleziono " + this.settings.getFileName());
-        } else {
-            this.logger.critical("Nie można odnaleźć pliku " + this.settings.getFileName() + " na ścieżce " + this.settings.getFilePath());
-            System.exit(0);
-        }
-
+        this.versionManager.loadVersion();
         this.config.save();
+
         Runtime.getRuntime().addShutdownHook(new ThreadUtil("Shutdown", () -> {
             this.logger.alert("Wykonuje się przed zakończeniem programu...");
             this.config.save();
@@ -108,6 +106,10 @@ public class BDSAutoEnable {
 
     public ServerProcess getServerProcess() {
         return this.serverProcess;
+    }
+
+    public VersionManager getVersionManager() {
+        return this.versionManager;
     }
 
     public ServerProperties getServerProperties() {

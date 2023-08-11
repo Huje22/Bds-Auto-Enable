@@ -23,7 +23,7 @@ public class ServerProcess {
     private WatchDog watchDog;
     private final Logger logger;
     private final Config config;
-    private final ExecutorService service;
+    private final ExecutorService processService;
     private final ExecutorService consoleService;
     private final Settings settings;
     private final String finalFilePath;
@@ -35,7 +35,7 @@ public class ServerProcess {
     public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
         this.config = bdsAutoEnable.getConfig();
         this.logger = bdsAutoEnable.getLogger();
-        this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
+        this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
         this.consoleService = Executors.newScheduledThreadPool(2, new ThreadUtil("Console"));
         this.settings = bdsAutoEnable.getSettings();
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
@@ -89,26 +89,26 @@ public class ServerProcess {
     }
 
     public void startProcess() {
-        this.service.execute(() -> {
+        this.processService.execute(() -> {
             if (isProcessRunning()) {
-                this.logger.info("Proces " + this.settings.getFileName() + " jest już uruchomiony.");
+                this.logger.info("Proces " + this.config.getFileName() + " jest już uruchomiony.");
                 this.instantShutdown();
             } else {
-                this.logger.info("Proces " + this.settings.getFileName() + " nie jest uruchomiony. Uruchamianie...");
+                this.logger.info("Proces " + this.config.getFileName() + " nie jest uruchomiony. Uruchamianie...");
 
                 try {
-                    switch (this.settings.getOs()) {
+                    switch (this.config.getSystemOs()) {
                         case LINUX:
-                            if (this.settings.isWine()) {
-                                this.processBuilder = new ProcessBuilder("wine", finalFilePath);
+                            if (this.config.isWine()) {
+                                this.processBuilder = new ProcessBuilder("wine", this.finalFilePath);
                             } else {
-                                this.processBuilder = new ProcessBuilder("./" + this.settings.getFileName());
+                                this.processBuilder = new ProcessBuilder("./" + this.config.getFileName());
                                 this.processBuilder.environment().put("LD_LIBRARY_PATH", ".");
-                                this.processBuilder.directory(new File(this.settings.getFilePath()));
+                                this.processBuilder.directory(new File(this.config.getFilesPath()));
                             }
                             break;
                         case WINDOWS:
-                            this.processBuilder = new ProcessBuilder(finalFilePath);
+                            this.processBuilder = new ProcessBuilder(this.finalFilePath);
                             break;
                         default:
                             this.logger.critical("Musisz podać odpowiedni system");
@@ -189,18 +189,19 @@ public class ServerProcess {
     }
 
     public void instantShutdown() {
-        if(this.process != null && this.process.isAlive()){
-            this.process.destroy();
-        }
-        this.consoleService.shutdown();
-        this.writer.close();
+        this.logger.alert("Wyłączanie...");
+        if (this.process != null && this.process.isAlive()) this.process.destroy();
+        if (this.consoleService != null && !this.consoleService.isTerminated()) this.consoleService.shutdown();
+        if (this.writer != null) this.writer.close();
+        if (this.processService != null && !this.processService.isTerminated()) this.processService.shutdown();
         this.config.save();
-        this.service.shutdown();
+        ThreadUtil.sleep(5);
+        System.exit(1);
     }
 
     public void endServerProcess(final boolean backup) {
         if (this.process != null && this.process.isAlive()) {
-            this.service.execute(() -> {
+            this.processService.execute(() -> {
                 final int endTime = (int) this.watchDog.getLastBackupTime() + 2;
                 this.logger.warning("Wyłączanie servera , prosze poczekac " + ConsoleColors.GREEN + endTime + ConsoleColors.RESET + " sekund....");
                 this.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + "&aWyłączanie servera , prosze poczekac&b " + endTime + "&a sekund...."));
@@ -213,7 +214,7 @@ public class ServerProcess {
                     this.consoleService.shutdown();
                     this.writer.close();
                     this.config.save();
-                    this.service.shutdown();
+                    this.processService.shutdown();
                     this.logger.alert("Zakończono proces servera");
                     System.exit(1);
                 } catch (final Exception e) {

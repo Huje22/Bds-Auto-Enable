@@ -18,6 +18,7 @@ public class Settings {
     private final ServerProperties serverProperties;
     private final Logger logger;
     private final Config config;
+    private final String enter;
     private String filePath;
     private String fileName;
     private SystemOs os;
@@ -29,6 +30,7 @@ public class Settings {
         this.serverProperties = this.bdsAutoEnable.getServerProperties();
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
+        this.enter = "[Enter = Domyślnie]";
     }
 
     public void loadSettings(final Scanner scanner) {
@@ -52,7 +54,6 @@ public class Settings {
 
     private void init(final Scanner scanner) {
         final ScannerUtil scannerUtil = new ScannerUtil(scanner);
-        final String enter = "[Enter = Domyślnie]";
         final long startTime = System.currentTimeMillis();
 
         SystemOs system;
@@ -60,46 +61,60 @@ public class Settings {
             system = SystemOs.valueOf(
                     scannerUtil.addQuestion(
                             (defaultValue) -> {
-                                this.logger.info("Podaj system (Wykryty system: " + defaultValue + "): " + enter);
+                                this.logger.info(ConsoleColors.BOLD + "Podaj systemu" + ConsoleColors.RESET + " (Wykryty system: " + defaultValue + "): " + this.enter);
                                 this.logger.info("Obsługiwane systemy: " + Arrays.toString(SystemOs.values()));
                             },
                             Defaults.getSystem(),
                             (input) -> this.logger.info("System ustawiony na: " + input.toUpperCase())
                     ).toUpperCase());
-        } catch (IllegalArgumentException exception) {
+        } catch (final IllegalArgumentException exception) {
             this.logger.error("Podano nie znany system , ustawiono domyślnie na: LINUX");
             system = SystemOs.LINUX;
         }
         this.config.setSystemOs(system);
         this.config.setFileName(scannerUtil.addQuestion(
-                (defaultValue) -> this.logger.info("Podaj nazwę pliku (Domyślnie: " + defaultValue + "): " + enter),
+                (defaultValue) -> this.logger.info(ConsoleColors.BOLD + "Podaj nazwę pliku" + ConsoleColors.RESET + " (Domyślnie: " + defaultValue + "): " + enter),
                 Defaults.getDefaultFileName(),
-                (input) -> this.logger.info("Nazwa pliku ustawiona na: " + input)
-        ));
-        if (this.config.getSystemOs() == SystemOs.LINUX) {
-            if (this.config.getFileName().contains(".exe")) {
-                this.logger.alert("W tym wypadku będzie potrzebne WINE");
-                this.config.setWine(true);
-            } else {
-                this.config.setWine(false);
-            }
-        }
+                (input) -> {
+                    this.logger.info("Nazwa pliku ustawiona na: " + input);
+                    if (this.config.getSystemOs() == SystemOs.LINUX) {
+                        if (input.contains(".exe")) {
+                            this.logger.alert("W tym wypadku będzie potrzebne " + ConsoleColors.UNDERLINE + ConsoleColors.BLUE + "WINE" + ConsoleColors.RESET);
+                            this.config.setWine(true);
+                        } else {
+                            this.config.setWine(false);
+                        }
+
+                    }
+                }));
+
         this.config.setFilesPath(scannerUtil.addQuestion(
-                (defaultValue) -> this.logger.info("Podaj ścieżkę do plików servera (Domyślnie: " + defaultValue + "): " + enter),
+                (defaultValue) -> this.logger.info(ConsoleColors.BOLD + "Podaj ścieżkę do plików servera" + ConsoleColors.RESET + " (Domyślnie: " + defaultValue + "): " + enter),
                 Defaults.getJarPath(),
                 (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)
         ));
 
+        if (this.config.isLoaded()) scannerUtil.addQuestion(
+                (defaultValue) -> this.logger.info(ConsoleColors.BOLD + "Załadować jakąś inną versie?" + ConsoleColors.RESET + " (Domyślnie: " + defaultValue + "): " + enter),
+                false,
+                (input) -> {
+                    if (Boolean.parseBoolean(input)) {
+                        this.config.setLoaded(false);
+                        this.config.save();
+                    }
+                });
+
+        if (!this.config.isLoaded()) this.versionQuestion(scannerUtil);
         this.serverProperties.loadProperties();
 
         this.config.setBackup(scannerUtil.addQuestion(
-                (defaultValue) -> this.logger.info("Włączyć Backupy (Domyślnie: " + defaultValue + ")? " + enter),
+                (defaultValue) -> this.logger.info(ConsoleColors.BOLD + "Włączyć Backupy " + ConsoleColors.RESET + " (Domyślnie: " + defaultValue + ")? " + enter),
                 true,
                 (input) -> this.logger.info("Backupy ustawione na: " + input)
         ));
         final int threads = scannerUtil.addQuestion(
                 (defaultValue) -> {
-                    this.logger.info("Liczba wątków używana przez server (Dostępna liczba wątków " + ThreadUtil.getThreadsCount() + ")? ");
+                    this.logger.info(ConsoleColors.BOLD + "Liczba wątków używana przez server" + ConsoleColors.RESET + " (Dostępna liczba wątków " + ThreadUtil.getThreadsCount() + ")? ");
                     this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na 0 wtedy będzie używać najwięcej jak to możliwe.");
                 },
                 0,
@@ -108,12 +123,12 @@ public class Settings {
         this.serverProperties.setMaxThreads(threads <= -1 ? 0 : threads);
         this.serverProperties.setClientSideChunkGeneration(scannerUtil.addQuestion(
                 (defaultValue) -> {
-                    this.logger.info("Client Side Chunks (Domyślnie: " + defaultValue + ")? " + enter);
+                    this.logger.info(ConsoleColors.BOLD + "Client Side Chunks" + ConsoleColors.RESET + " (Domyślnie: " + defaultValue + ")? " + enter);
                     this.logger.info("Jeśli jest " + ConsoleColors.BLUE + "true" + ConsoleColors.RESET +
                             ", serwer poinformuje klientów, że mają możliwość generowania chunków poziomu wizualnego poza odległościami interakcji graczy.");
                 },
                 false,
-                (input) -> this.logger.info("Client Side Chunks na: " + input)
+                (input) -> this.logger.info("Ustawiono Client Side Chunks na: " + input)
         ));
 
         this.logger.info("Ukończono odpowiedzi w " + ConsoleColors.GREEN + ((System.currentTimeMillis() - startTime) / 1000.0) + ConsoleColors.RESET + " sekund");
@@ -128,7 +143,7 @@ public class Settings {
         this.logger.info("FileName: " + this.fileName);
 
         this.wine = this.config.isWine();
-        this.logger.info("IsWine: " + this.wine);
+        this.logger.info("Wine: " + this.wine);
 
         this.filePath = this.config.getFilesPath();
         this.logger.info("FilePath: " + this.filePath);
@@ -152,8 +167,17 @@ public class Settings {
         this.config.save();
     }
 
-    public String getFilePath() {
-        return this.filePath;
+    private void versionQuestion(final ScannerUtil scannerUtil) {
+        this.config.setVersion(scannerUtil.addQuestion(
+                (defaultValue) -> {
+                    this.logger.info(ConsoleColors.BOLD + "Jaką versie załadować?" + ConsoleColors.RESET + " (Domyślnie: " + defaultValue + "): " + enter);
+                    this.logger.info("Pobrane versije: " + this.bdsAutoEnable.getVersionManager().getAvailableVersions());
+                    this.logger.info("Aby pobrać jakaś versie wpisz jej numer (niektóre mogą mieć .01 / .02 na końcu)");
+                },
+                this.config.getVersion(),
+                (input) -> this.logger.info("Versia do załadowania ustawiona na: " + input)
+        ));
+        this.bdsAutoEnable.getVersionManager().loadVersion();
     }
 
     public String getFileName() {
@@ -162,6 +186,10 @@ public class Settings {
 
     public SystemOs getOs() {
         return this.os;
+    }
+
+    public String getFilesPath() {
+        return this.filePath;
     }
 
     public boolean isWine() {

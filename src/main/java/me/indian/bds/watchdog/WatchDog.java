@@ -48,18 +48,19 @@ public class WatchDog {
         this.prefix = "&b[&3WatchDog&b]";
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
         if (this.config.isBackup()) {
-            logger.alert("Backupy są włączone");
-            this.backupFolder = new File("BDS-Auto-Enable/backup");
+            final String version = this.config.getVersion();
+            this.logger.alert("Backupy są włączone");
+            this.backupFolder = new File("BDS-Auto-Enable/backup/" + version);
             this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
             this.worldPath = Defaults.getWorldsPath() + this.worldName;
             this.worldFile = new File(this.worldPath);
             if (!this.backupFolder.exists()) {
-                this.logger.alert("Nie znaleziono foldera dla backupów");
-                this.logger.info("Tworzenie folderu dla backupów");
-                if (this.backupFolder.mkdir()) {
-                    this.logger.info("Utworzono folder dla backupów");
+                this.logger.alert("Nie znaleziono foldera backupów dla versij " + version);
+                this.logger.info("Tworzenie folderu backupów dla versij " + version);
+                if (this.backupFolder.mkdirs()) {
+                    this.logger.info("Utworzono folder backupów dla versij " + version);
                 } else {
-                    this.logger.error("Nie można utworzyć folderu dla backupów");
+                    this.logger.error("Nie można utworzyć folderu backupów dla versij " + version);
                 }
             }
 
@@ -138,6 +139,10 @@ public class WatchDog {
 
     public double getLastBackupTime() {
         return this.lastBackupTime;
+    }
+
+    public File getBackupFolder() {
+        return this.backupFolder;
     }
 
     private void upDateDate() {

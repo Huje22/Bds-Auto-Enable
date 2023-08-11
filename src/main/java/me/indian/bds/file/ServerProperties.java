@@ -33,10 +33,7 @@ public class ServerProperties {
             this.properties.load(input);
         } catch (final IOException exception) {
             this.logger.critical(ConsoleColors.RED + "Wystąpił krytyczny błąd podczas ładowania " + ConsoleColors.GREEN + "server.properties" + ConsoleColors.RESET);
-            this.bdsAutoEnable.getServerProcess().instantShutdown();
-            this.logger.critical(exception);
-            exception.printStackTrace();
-            this.bdsAutoEnable.getVersionManager().loadVersion();
+            throw new RuntimeException(exception);
         }
     }
 

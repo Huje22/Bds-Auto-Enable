@@ -45,7 +45,7 @@ public class ZipUtil {
         fos.close();
     }
 
-    private void unzipFile(final String zipFilePatch, final String targetDirectory) throws IOException {
+    public static void unzipFile(final String zipFilePatch, final String targetDirectory) throws IOException {
         try (final ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(Paths.get(zipFilePatch)))) {
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
@@ -66,13 +66,16 @@ public class ZipUtil {
         }
     }
 
-    public static void unzipFile(final String targetDirectory, final String zipFilePath, final List<String> skipFiles) throws IOException {
+    public static void unzipFile(final String zipFilePath, final String targetDirectory, final List<String> skipFiles) throws IOException {
         try (final ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(Paths.get(zipFilePath)))) {
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 final String entryName = zipEntry.getName();
-                if (skipFiles.contains(entryName)) continue;
                 final File outputFile = new File(targetDirectory, entryName);
+                if (outputFile.exists() && skipFiles.contains(entryName)) {
+                    System.out.println("Omijam plik " + entryName);
+                    continue;
+                }
                 if (zipEntry.isDirectory()) {
                     outputFile.mkdirs();
                 } else {
