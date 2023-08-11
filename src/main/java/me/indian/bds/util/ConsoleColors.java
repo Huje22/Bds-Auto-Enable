@@ -3,6 +3,9 @@ package me.indian.bds.util;
 public class ConsoleColors {
 
     public static final String RESET = "\u001B[0m";
+    public static final String BOLD = "\033[1m";
+    public static final String ITALIC = "\033[3m";
+    public static final String UNDERLINE = "\033[4m";
     public static final String BLACK = "\u001B[30m";
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
