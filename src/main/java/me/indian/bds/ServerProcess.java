@@ -161,18 +161,17 @@ public class ServerProcess {
                 final String input = console.nextLine();
                 if (input.equalsIgnoreCase("stop")) {
                     this.sendToConsole(MinecraftUtil.colorize("say &4Zamykanie servera..."));
-                    ThreadUtil.sleep(1);
+                    ThreadUtil.sleep(3);
+                    this.sendToConsole("stop");
                 } else if (input.equalsIgnoreCase("backup")) {
                     this.logger.info("Tworzenie backupa!");
                     this.watchDog.forceBackup();
-                    continue;
                 } else if (input.equalsIgnoreCase(".end")) {
                     this.endServerProcess(true);
-                    continue;
+                } else {
+                    this.sendToConsole(input);
                 }
-                this.sendToConsole(input);
             }
-
         } catch (final NoSuchElementException noSuchElementException) {
             this.logger.critical(noSuchElementException);
             noSuchElementException.printStackTrace();
