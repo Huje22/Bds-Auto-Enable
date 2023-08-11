@@ -20,4 +20,12 @@ public class MathUtil {
         df.setMaximumFractionDigits(format);
         return Double.parseDouble(df.format(decimal));
     }
+
+    public static double bytesToKb(final long bytes) {
+        final DecimalFormat df = new DecimalFormat();
+        df.setMaximumFractionDigits(0);
+        final String kb = df.format((double) bytes / 1024);
+
+        return Double.parseDouble(kb);
+    }
 }
