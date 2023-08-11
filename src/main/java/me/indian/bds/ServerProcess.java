@@ -161,6 +161,7 @@ public class ServerProcess {
                 final String input = console.nextLine();
                 if (input.equalsIgnoreCase("stop")) {
                     this.sendToConsole(MinecraftUtil.colorize("say &4Zamykanie servera..."));
+                  // TODO: Zmienić to na tellraw message z prefixem klasy
                     ThreadUtil.sleep(3);
                     this.sendToConsole("stop");
                 } else if (input.equalsIgnoreCase("backup")) {
@@ -223,7 +224,7 @@ public class ServerProcess {
             });
         }
     }
-
+//TODO: Dodać metodę do wysłania wiadomości do konsoli i odczytania najnowszej linii 
 
     private boolean containsNotAllowedToLog(final String msg) {
         for (final String s : this.config.getNoLogInfo()) {
