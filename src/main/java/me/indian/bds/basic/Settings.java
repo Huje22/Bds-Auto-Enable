@@ -132,6 +132,7 @@ public class Settings {
         ));
 
         this.logger.info("Ukończono odpowiedzi w " + ConsoleColors.GREEN + ((System.currentTimeMillis() - startTime) / 1000.0) + ConsoleColors.RESET + " sekund");
+        this.config.save();
         this.currentSettings(scanner);
     }
 
