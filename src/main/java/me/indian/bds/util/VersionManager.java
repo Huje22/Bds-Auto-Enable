@@ -41,6 +41,7 @@ public class VersionManager {
         this.importantFiles.add("allowlist.json");
         this.importantFiles.add("server.properties");
         this.importantFiles.add("permissions.json");
+        this.importantFiles.add("config" + File.separator + "default" + File.separator + "permissions.json");
     }
 
     private void loadVersionsInfo() {
@@ -49,16 +50,14 @@ public class VersionManager {
             for (Path path : directoryStream) {
                 if (Files.isRegularFile(path)) {
                     final String name = String.valueOf(path.getFileName());
-                    System.out.println("Plik: " + name);
                     if (name.endsWith(".zip")) {
                         this.availableVersions.add(name.replaceAll(".zip", ""));
                     }
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (final IOException exception) {
+            exception.printStackTrace();
         }
-        System.out.println(this.availableVersions);
     }
 
     public void loadVersion(final String version) {
