@@ -1,18 +1,21 @@
 package me.indian.bds;
 
 import me.indian.bds.config.Config;
+import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.manager.PlayerManager;
 import me.indian.bds.util.ConsoleColors;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
+import me.indian.bds.watchdog.module.BackupModule;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.NoSuchElementException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -20,8 +23,10 @@ import java.util.concurrent.Executors;
 public class ServerProcess {
 
     private WatchDog watchDog;
+    private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Config config;
+    private final PlayerManager playerManager;
     private final ExecutorService processService;
     private final ExecutorService consoleService;
     private final String finalFilePath;
@@ -29,14 +34,18 @@ public class ServerProcess {
     private ProcessBuilder processBuilder;
     private Process process;
     private PrintWriter writer;
+    private String lastLine;
 
     public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
-        this.config = bdsAutoEnable.getConfig();
-        this.logger = bdsAutoEnable.getLogger();
+        this.bdsAutoEnable = bdsAutoEnable;
+        this.logger = this.bdsAutoEnable.getLogger();
+        this.config = this.bdsAutoEnable.getConfig();
+        this.playerManager = this.bdsAutoEnable.getPlayerManager();
         this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
         this.consoleService = Executors.newScheduledThreadPool(2, new ThreadUtil("Console"));
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
         this.prefix = "&b[&3ServerProcess&b] ";
+
     }
 
     public void initWatchDog(final WatchDog watchDog){
@@ -111,6 +120,7 @@ public class ServerProcess {
                             this.logger.critical("Musisz podać odpowiedni system");
                             this.instantShutdown();
                     }
+                    this.playerManager.clearPlayers();
                     this.process = this.processBuilder.start();
                     this.logger.info("Uruchomiono proces (nadal może on sie wyłączyć)");
 
@@ -132,87 +142,164 @@ public class ServerProcess {
     }
 
     private void readConsoleOutput() {
-        final Scanner console = new Scanner(this.process.getInputStream());
+        final Scanner consoleOutput = new Scanner(this.process.getInputStream());
         try {
-            while (console.hasNextLine()) {
-                if (!console.hasNext()) continue;
-                final String line = console.nextLine();
+            while (consoleOutput.hasNextLine()) {
+                if (!consoleOutput.hasNext()) continue;
+                final String line = consoleOutput.nextLine();
                 if (this.containsNotAllowedToLog(line) || line.isEmpty()) continue;
+                this.lastLine = line;
                 System.out.println(line);
                 this.logger.instantLogToFile(line);
+                this.playerManager.updatePlayerList(line);
             }
         } catch (final Exception exception) {
             this.logger.critical(exception);
             exception.printStackTrace();
-            console.close();
+            consoleOutput.close();
             ThreadUtil.sleep(1);
             this.readConsoleOutput();
         }
     }
 
     private void writeConsoleInput() {
-        final Scanner console = new Scanner(System.in);
+        final Scanner consoleInput = new Scanner(System.in);
         try {
             this.writer = new PrintWriter(this.process.getOutputStream());
-            while (!Thread.currentThread().isInterrupted()) {
-                final String input = console.nextLine();
+            while (consoleInput.hasNextLine()) {
+                final String input = consoleInput.nextLine();
                 if (input.equalsIgnoreCase("stop")) {
                     this.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + "&4Zamykanie servera..."));
-                    ThreadUtil.sleep(3);
+                    if (!this.playerManager.getOnlinePlayers().isEmpty()) {
+                        for (final String name : this.playerManager.getOnlinePlayers()) {
+                            this.sendToConsole(MinecraftUtil.kickCommand(name, this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem"));
+                        }
+                    }
+                    ThreadUtil.sleep(2);
                     this.sendToConsole("stop");
                 } else if (input.equalsIgnoreCase("backup")) {
-                    this.logger.info("Tworzenie backupa!");
-                    this.watchDog.forceBackup();
+                    this.watchDog.getBackupModule().forceBackup();
                 } else if (input.equalsIgnoreCase(".end")) {
                     this.endServerProcess(true);
+                } else if (input.equalsIgnoreCase("version")) {
+                    this.logger.info("Versija minecraft: " + this.config.getVersion());
+                    this.logger.info("Versija BDS-Auro-Enable:" + this.bdsAutoEnable.getProjectVersion());
+                    final List<String> players = this.playerManager.getOnlinePlayers();
+                    if (!players.isEmpty()) {
+                        for (final String name : players) {
+                            this.sendToConsole(MinecraftUtil.tellrawToAllMessage("&aVersija minecraft:&b " + this.config.getVersion()));
+                            this.sendToConsole(MinecraftUtil.tellrawToAllMessage("&aVersija BDS-Auro-Enable:&b " + this.bdsAutoEnable.getProjectVersion()));
+                        }
+                    }
                 } else {
                     this.sendToConsole(input);
                 }
             }
-        } catch (final NoSuchElementException noSuchElementException) {
-            this.logger.critical(noSuchElementException);
-            noSuchElementException.printStackTrace();
-            console.close();
+        } catch (final Exception exception) {
+            this.logger.critical(exception);
+            exception.printStackTrace();
+            consoleInput.close();
             this.writer.close();
-            ThreadUtil.sleep(1);
-            Thread.currentThread().interrupt();
         }
     }
 
-    public void sendToConsole(String command) {
+    public String commandAndResponse(final String command) throws BadThreadException {
+        final String threadName = Thread.currentThread().getName();
+        if (threadName.contains("Console") || threadName.contains("Server process")) {
+            throw new BadThreadException("Nie możesz wykonac tego na tym wątku!");
+        }
+        this.sendToConsole(command);
+        ThreadUtil.sleep(1);
+        return this.lastLine == null ? "null" : this.lastLine;
+    }
+
+
+    public void sendToConsole(final String command) {
         this.writer.println(command);
         this.writer.flush();
     }
 
     public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
-        if (this.process != null && this.process.isAlive()) this.process.destroy();
-        if (this.consoleService != null && !this.consoleService.isTerminated()) this.consoleService.shutdown();
-        if (this.writer != null) this.writer.close();
-        if (this.processService != null && !this.processService.isTerminated()) this.processService.shutdown();
-        this.config.save();
-        ThreadUtil.sleep(5);
-        System.exit(1);
+        if (this.consoleService != null && !this.consoleService.isTerminated()) {
+            this.logger.info("Zatrzymywanie wątków konsoli");
+            try {
+                this.consoleService.shutdown();
+                ThreadUtil.sleep(2);
+                this.logger.info("Zatrzymano wątki konsoli");
+            } catch (final Exception exception) {
+                this.logger.error("Nie udało się zarzymać wątków konsoli");
+                exception.printStackTrace();
+            }
+        }
+
+        if (this.processService != null && !this.processService.isTerminated()) {
+            this.logger.info("Zatrzymywanie wątków procesu servera");
+            try {
+                this.processService.shutdown();
+                ThreadUtil.sleep(2);
+                this.logger.info("Zatrzymano wątki procesu servera");
+            } catch (final Exception exception) {
+                this.logger.error("Nie udało się zarzymać wątków procesu servera");
+                exception.printStackTrace();
+            }
+        }
+        if (!this.playerManager.getOnlinePlayers().isEmpty()) {
+            for (final String name : this.playerManager.getOnlinePlayers()) {
+                this.sendToConsole(MinecraftUtil.kickCommand(name, this.prefix + "&cServer jest zamykany"));
+            }
+            ThreadUtil.sleep(3);
+        }
+
+        if (this.writer != null) {
+            this.logger.info("Zatrzymywanie writera");
+            try {
+                this.writer.close();
+                this.logger.info("Zatrzymano writer");
+            } catch (final Exception exception) {
+                this.logger.error("Błąd podczas zamykania writera");
+                exception.printStackTrace();
+            }
+        }
+
+        if (this.process != null && this.process.isAlive()) {
+            this.logger.info("Niszczenie procesu servera");
+            try {
+                this.process.destroy();
+                this.logger.info("Zniszczeno proces servera");
+            } catch (final Exception exception) {
+                this.logger.error("Nie udało się zniszczyć procesu servera");
+                exception.printStackTrace();
+            }
+        }
+
+        this.logger.info("Zapisywanie configu...");
+        try {
+            this.config.save();
+            this.logger.info("Zapisano config");
+        } catch (final Exception exception) {
+            this.logger.critical("Nie można zapisać configu");
+            exception.printStackTrace();
+        }
+
+        Runtime.getRuntime().halt(129);
     }
 
     public void endServerProcess(final boolean backup) {
         if (this.process != null && this.process.isAlive()) {
             this.processService.execute(() -> {
-                final int endTime = (int) this.watchDog.getLastBackupTime() + 2;
-                this.logger.warning("Wyłączanie servera , prosze poczekac " + ConsoleColors.GREEN + endTime + ConsoleColors.RESET + " sekund....");
-                this.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + "&aWyłączanie servera , prosze poczekac&b " + endTime + "&a sekund...."));
                 try {
                     if (backup) {
-                        this.watchDog.forceBackup();
+                        this.logger.warning("Wyłączanie servera , prosze poczekac , pierw zostanie utworzony backup");
+                        this.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + "&aWyłączanie servera , prosze poczekac pierw zostanie utworzony backup"));
+                        this.watchDog.getBackupModule().forceBackup();
                     }
-                    ThreadUtil.sleep(endTime);
-                    this.process.destroy();
-                    this.consoleService.shutdown();
-                    this.writer.close();
-                    this.config.save();
-                    this.processService.shutdown();
-                    this.logger.alert("Zakończono proces servera");
-                    System.exit(1);
+                    while (!BackupModule.isBackuping()){
+                        final String done = "Backup zrobiony!";
+                        this.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + "&a" + done));
+                        this.logger.info(done);
+                        this.instantShutdown();
+                    }
                 } catch (final Exception e) {
                     this.logger.critical(e);
                     e.printStackTrace();
@@ -220,7 +307,6 @@ public class ServerProcess {
             });
         }
     }
-//TODO: Dodać metodę do wysłania wiadomości do konsoli i odczytania najnowszej linii 
 
     private boolean containsNotAllowedToLog(final String msg) {
         for (final String s : this.config.getNoLogInfo()) {

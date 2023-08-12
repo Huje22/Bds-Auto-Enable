@@ -5,8 +5,8 @@ import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import me.indian.bds.config.Config;
 import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.util.VersionManager;
+import me.indian.bds.manager.PlayerManager;
+import me.indian.bds.manager.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
 
 import java.time.LocalDateTime;
@@ -24,6 +24,7 @@ public class BDSAutoEnable {
     private final ServerProcess serverProcess;
     private final ServerProperties serverProperties;
     private final VersionManager versionManager;
+    private final PlayerManager playerManager;
     private final String projectVersion;
     private WatchDog watchDog;
     private String runDate;
@@ -43,6 +44,7 @@ public class BDSAutoEnable {
         this.logger = new Logger(this);
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
+        this.playerManager = new PlayerManager();
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
 
@@ -56,27 +58,36 @@ public class BDSAutoEnable {
     public void init() {
         this.logger.alert("Numer wersji projektu: " + this.projectVersion);
         this.settings.loadSettings(this.scanner);
+        this.shutdownHook();
         this.watchDog = new WatchDog(this);
         this.serverProcess.initWatchDog(this.watchDog);
-        this.watchDog.forceBackup();
-        this.watchDog.backup();
+        this.watchDog.getBackupModule().initBackupModule(this.watchDog);
+        this.watchDog.getBackupModule().backup();
         this.versionManager.loadVersion();
         this.config.save();
 
-        Runtime.getRuntime().addShutdownHook(new ThreadUtil("Shutdown", () -> {
-            this.logger.alert("Wykonuje się przed zakończeniem programu...");
-            this.config.save();
-            this.scanner.close();
-            this.serverProcess.instantShutdown();
-        }));
 
         this.serverProcess.startProcess();
     }
+
 
     private void initRunDate() {
         final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         this.runDate = now.format(formatter).replaceAll(":", "-");
+    }
+
+    private void shutdownHook() {
+        final Thread shutdown = new Thread(() -> {
+            try {
+                if (this.scanner != null) this.scanner.close();
+                this.serverProcess.instantShutdown();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+        shutdown.setName("Shutdown");
+        Runtime.getRuntime().addShutdownHook(shutdown);
     }
 
     public String getRunDate() {
@@ -105,6 +116,10 @@ public class BDSAutoEnable {
 
     public VersionManager getVersionManager() {
         return this.versionManager;
+    }
+
+    public PlayerManager getPlayerManager() {
+        return this.playerManager;
     }
 
     public ServerProperties getServerProperties() {

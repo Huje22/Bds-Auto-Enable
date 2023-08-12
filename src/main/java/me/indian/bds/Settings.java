@@ -18,11 +18,6 @@ public class Settings {
     private final Logger logger;
     private final Config config;
     private final String enter;
-    private String filePath;
-    private String fileName;
-    private SystemOs os;
-    private boolean wine;
-    private boolean backup;
 
     public Settings(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -136,22 +131,16 @@ public class Settings {
     }
 
     private void currentSettings(final Scanner scanner) {
-        this.os = this.config.getSystemOs();
-        this.logger.info("System: " + this.os);
+        this.logger.info("System: " + this.config.getSystemOs());
+        this.logger.info("FileName: " + this.config.getFileName());
+        this.logger.info("Wine: " + this.config.isWine());
+        this.logger.info("FilePath: " + this.config.getFilesPath());
+        this.logger.info("Versija: " + this.config.getVersion());
 
-        this.fileName = this.config.getFileName();
-        this.logger.info("FileName: " + this.fileName);
+        boolean backup = this.config.isBackup();
+        this.logger.info("Backup: " + backup);
 
-        this.wine = this.config.isWine();
-        this.logger.info("Wine: " + this.wine);
-
-        this.filePath = this.config.getFilesPath();
-        this.logger.info("FilePath: " + this.filePath);
-
-        this.backup = this.config.isBackup();
-        this.logger.info("Backup: " + this.backup);
-
-        if (this.backup) {
+        if (backup) {
             this.logger.info("WorldName: " + this.serverProperties.getWorldName());
         }
 

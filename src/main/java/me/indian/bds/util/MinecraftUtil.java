@@ -10,4 +10,8 @@ public class MinecraftUtil {
         return MinecraftUtil.colorize("tellraw @a {\"rawtext\":[{\"text\":\"" + msg + "\"}]}");
     }
 
+    public static String kickCommand(final String who, final String reason) {
+        return "kick " + who + " " + colorize(reason);
+    }
+
 }

@@ -1,8 +1,10 @@
-package me.indian.bds.util;
+package me.indian.bds.manager;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.ConsoleColors;
+import me.indian.bds.util.ZipUtil;
 
 import java.io.BufferedInputStream;
 import java.io.File;

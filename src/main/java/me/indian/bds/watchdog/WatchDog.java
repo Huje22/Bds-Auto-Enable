@@ -2,152 +2,56 @@ package me.indian.bds.watchdog;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.ServerProcess;
-import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ConsoleColors;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.util.ZipUtil;
+import me.indian.bds.watchdog.module.BackupModule;
 
-import java.io.File;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class WatchDog {
 
-    private static boolean backuping = false;
-    private final BDSAutoEnable bdsAutoEnable;
+    private final BackupModule backupModule;
     private final Logger logger;
-    private final ExecutorService service;
-    private final Timer timer;
     private final Config config;
-    private final String prefix;
+    private final String watchDogPrefix;
     private final ServerProcess serverProcess;
-    private String worldPath;
-    private File backupFolder;
-    private File worldFile;
-    private String worldName;
-    private String date;
-    private TimerTask hourlyTask;
-    private double lastBackupTime;
 
 
     public WatchDog(final BDSAutoEnable bdsAutoEnable) {
-        this.bdsAutoEnable = bdsAutoEnable;
-        this.logger = this.bdsAutoEnable.getLogger();
-        this.config = this.bdsAutoEnable.getConfig();
-        this.service = Executors.newScheduledThreadPool(10, new ThreadUtil("Watchdog"));
-        this.timer = new Timer();
-        this.prefix = "&b[&3WatchDog&b]";
-        this.serverProcess = this.bdsAutoEnable.getServerProcess();
-        if (this.config.isBackup()) {
-            final String version = this.config.getVersion();
-            this.logger.alert("Backupy są włączone");
-            this.backupFolder = new File("BDS-Auto-Enable/backup/" + version);
-            this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
-            this.worldPath = Defaults.getWorldsPath() + this.worldName;
-            this.worldFile = new File(this.worldPath);
-            if (!this.backupFolder.exists()) {
-                this.logger.alert("Nie znaleziono foldera backupów dla versij " + version);
-                this.logger.info("Tworzenie folderu backupów dla versij " + version);
-                if (this.backupFolder.mkdirs()) {
-                    this.logger.info("Utworzono folder backupów dla versij " + version);
-                } else {
-                    this.logger.error("Nie można utworzyć folderu backupów dla versij " + version);
-                }
-            }
-
-            if (!this.worldFile.exists()) {
-                this.logger.critical("Folder świata \"" + this.worldName + "\" nie istnieje");
-                this.logger.alert("Ścieżka " + this.worldPath);
-                Thread.currentThread().interrupt();
-                this.timer.cancel();
-//              this.hourlyTask.cancel();
-            }
-        }
-        this.lastBackupTime = 20;
+        this.backupModule = new BackupModule(bdsAutoEnable);
+        this.logger = bdsAutoEnable.getLogger();
+        this.config = bdsAutoEnable.getConfig();
+        this.watchDogPrefix = "&b[&3WatchDog&b]";
+        this.serverProcess = bdsAutoEnable.getServerProcess();
     }
 
-    public void backup() {
-        this.service.execute(() -> {
-            if (this.config.isBackup()) {
-                this.logger.debug("Ścieżka świata backupów " + Defaults.getWorldsPath() + this.worldName);
-                this.hourlyTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        forceBackup();
-                    }
-                };
-                this.timer.schedule(this.hourlyTask, 0, MathUtil.minutesToMilliseconds(60));
-            }
-        });
-    }
 
-    public void forceBackup() {
-        if (!this.config.isBackup()) return;
-        if (!this.worldFile.exists()) return;
-        if (backuping) {
-            this.logger.error("Nie można zrobić kopi podczas robienia już jednej");
-            return;
-        }
-        final long startTime = System.currentTimeMillis();
-        this.service.execute(() -> {
-            this.upDateDate();
-            final File backup = new File(this.backupFolder.getAbsolutePath() + File.separator + this.worldName + " " + this.date + ".zip");
-            try {
-                backuping = true;
-                this.saveWorld();
-                this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &6Tworzenie kopij zapasowej"));
-                ZipUtil.zipFolder(this.worldPath, backup.getPath());
-                this.lastBackupTime = ((System.currentTimeMillis() - startTime) / 1000.0);
-                this.logger.info("Utworzono kopię zapasową w " + ConsoleColors.GREEN + lastBackupTime + ConsoleColors.RESET + " sekund");
-                this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUtworzono kopię zapasową w&b " + lastBackupTime + "&a sekund"));
-                this.saveResume();
-                backuping = false;
-            } catch (final Exception exception) {
-                backuping = false;
-                this.bdsAutoEnable.getServerProcess().sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &4Nie można utworzyć kopii zapasowej"));
-                this.logger.critical("Nie można utworzyć kopii zapasowej");
-                this.logger.critical(exception);
-                exception.printStackTrace();
-                if (backup.delete()) {
-                    this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUsunięto błędny backup"));
-                } else {
-                    this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &4Nie można usunać błędnego backupa"));
-                }
-                this.saveResume();
-            }
-        });
+    public BackupModule getBackupModule() {
+        return this.backupModule;
     }
 
     public void saveWorld() {
-        this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aZapisywanie servera...."));
+        final double lastSave = (this.config.getLastBackupTime() / 4.0);
+        this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.watchDogPrefix + " &aZapisywanie servera, prosze czekać około:&b " + lastSave + "&b sekund"));
+       this.logger.info("Za[isywanie servera , prosze czekać około: " + lastSave + " sekund");
         this.serverProcess.sendToConsole("save hold");
-        ThreadUtil.sleep(10);
+        ThreadUtil.sleep((int) lastSave);
     }
 
     public void saveResume() {
         this.serverProcess.sendToConsole("save resume");
     }
 
-    public double getLastBackupTime() {
-        return this.lastBackupTime;
+    public void saveAndResume() {
+        this.saveWorld();
+        this.saveResume();
+        ThreadUtil.sleep(2);
     }
 
-    public File getBackupFolder() {
-        return this.backupFolder;
-    }
-
-    private void upDateDate() {
-        final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        this.date = (now.format(formatter) + " ").replace(":", "-");
+    public String getWatchDogPrefix() {
+        return this.watchDogPrefix;
     }
 }

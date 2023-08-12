@@ -49,6 +49,15 @@ public class Config extends OkaeriConfig {
     @Comment({" "})
     @Comment({"Backups"})
     private boolean backup = true;
+    private double lastBackupTime = 20;
+
+    public double getLastBackupTime() {
+        return this.lastBackupTime;
+    }
+
+    public void setLastBackupTime(final double lastBackupTime) {
+        this.lastBackupTime = lastBackupTime;
+    }
 
     @Comment({" "})
     @Comment({"Nie zapisuje tych informacj , w konsoli i pliku"})
