@@ -157,8 +157,7 @@ public class ServerProcess {
             while (!Thread.currentThread().isInterrupted()) {
                 final String input = console.nextLine();
                 if (input.equalsIgnoreCase("stop")) {
-                    this.sendToConsole(MinecraftUtil.colorize("say &4Zamykanie servera..."));
-                  // TODO: Zmienić to na tellraw message z prefixem klasy
+                    this.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + "&4Zamykanie servera..."));
                     ThreadUtil.sleep(3);
                     this.sendToConsole("stop");
                 } else if (input.equalsIgnoreCase("backup")) {
