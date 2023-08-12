@@ -1,6 +1,5 @@
-package me.indian.bds.basic;
+package me.indian.bds;
 
-import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
@@ -179,25 +178,5 @@ public class Settings {
                 (input) -> this.logger.info("Versia do załadowania ustawiona na: " + input)
         ));
         this.bdsAutoEnable.getVersionManager().loadVersion();
-    }
-
-    public String getFileName() {
-        return this.fileName;
-    }
-
-    public SystemOs getOs() {
-        return this.os;
-    }
-
-    public String getFilesPath() {
-        return this.filePath;
-    }
-
-    public boolean isWine() {
-        return this.wine;
-    }
-
-    private boolean isBackup() {
-        return this.backup;
     }
 }

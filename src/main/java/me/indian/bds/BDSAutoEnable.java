@@ -2,8 +2,6 @@ package me.indian.bds;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
-import me.indian.bds.basic.Defaults;
-import me.indian.bds.basic.Settings;
 import me.indian.bds.config.Config;
 import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
@@ -48,11 +46,8 @@ public class BDSAutoEnable {
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
 
-
-
         this.init();
     }
-
 
     public static void main(final String[] args) {
         new BDSAutoEnable();

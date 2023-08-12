@@ -1,4 +1,4 @@
-package me.indian.bds.basic;
+package me.indian.bds;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;

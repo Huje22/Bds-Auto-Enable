@@ -2,7 +2,7 @@ package me.indian.bds.watchdog;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.ServerProcess;
-import me.indian.bds.basic.Defaults;
+import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ConsoleColors;

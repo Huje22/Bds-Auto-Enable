@@ -1,6 +1,5 @@
 package me.indian.bds;
 
-import me.indian.bds.basic.Settings;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ConsoleColors;
@@ -25,7 +24,6 @@ public class ServerProcess {
     private final Config config;
     private final ExecutorService processService;
     private final ExecutorService consoleService;
-    private final Settings settings;
     private final String finalFilePath;
     private final String prefix;
     private ProcessBuilder processBuilder;
@@ -37,7 +35,6 @@ public class ServerProcess {
         this.logger = bdsAutoEnable.getLogger();
         this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
         this.consoleService = Executors.newScheduledThreadPool(2, new ThreadUtil("Console"));
-        this.settings = bdsAutoEnable.getSettings();
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
         this.prefix = "&b[&3ServerProcess&b] ";
     }
@@ -46,16 +43,16 @@ public class ServerProcess {
         this.watchDog = watchDog;
     }
 
-    private boolean isProcessRunning() {
+    private boolean isProcessRunning() throws RuntimeException {
         BufferedReader reader = null;
         try {
             String command = "";
-            switch (this.settings.getOs()) {
+            switch (this.config.getSystemOs()) {
                 case LINUX:
-                    command = "pgrep -f " + this.settings.getFileName();
+                    command = "pgrep -f " + this.config.getFileName();
                     break;
                 case WINDOWS:
-                    command = "tasklist /NH /FI \"IMAGENAME eq " + this.settings.getFileName() + "\"";
+                    command = "tasklist /NH /FI \"IMAGENAME eq " + this.config.getFileName() + "\"";
                     break;
                 default:
                     this.logger.critical("Musisz podać odpowiedni system");
