@@ -4,7 +4,6 @@ import me.indian.bds.config.Config;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.PlayerManager;
-import me.indian.bds.util.ConsoleColors;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
@@ -203,6 +202,11 @@ public class ServerProcess {
         }
     }
 
+    public void sendToConsole(final String command) {
+        this.writer.println(command);
+        this.writer.flush();
+    }
+
     public String commandAndResponse(final String command) throws BadThreadException {
         final String threadName = Thread.currentThread().getName();
         if (threadName.contains("Console") || threadName.contains("Server process")) {
@@ -211,12 +215,6 @@ public class ServerProcess {
         this.sendToConsole(command);
         ThreadUtil.sleep(1);
         return this.lastLine == null ? "null" : this.lastLine;
-    }
-
-
-    public void sendToConsole(final String command) {
-        this.writer.println(command);
-        this.writer.flush();
     }
 
     public void instantShutdown() {

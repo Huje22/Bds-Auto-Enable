@@ -21,7 +21,6 @@ import java.util.concurrent.Executors;
 
 public class BackupModule {
 
-
     private static boolean backuping = false;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
@@ -36,7 +35,6 @@ public class BackupModule {
     private File worldFile;
     private String worldName;
     private TimerTask hourlyTask;
-
 
     public BackupModule(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -61,7 +59,6 @@ public class BackupModule {
                     this.logger.error("Nie można utworzyć folderu backupów dla versij " + version);
                 }
             }
-
             if (!this.worldFile.exists()) {
                 this.logger.critical("Folder świata \"" + this.worldName + "\" nie istnieje");
                 this.logger.alert("Ścieżka " + this.worldPath);
@@ -71,12 +68,10 @@ public class BackupModule {
         }
     }
 
-
     public void initBackupModule(final WatchDog watchDog) {
         this.watchDog = watchDog;
         this.prefix = this.watchDog.getWatchDogPrefix();
     }
-
 
     public void backup() {
         this.service.execute(() -> {

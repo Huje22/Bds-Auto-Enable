@@ -26,7 +26,6 @@ public class Logger {
         this.initializeLogFile();
     }
 
-
     private void updatePrefix() {
         final String logStateColor = this.logState.getColorCode();
         this.prefix = ConsoleColors.DARK_GRAY + DateUtil.getDate() + ConsoleColors.BRIGHT_GREEN + " BDS " + ConsoleColors.BRIGHT_BLUE + "Auto Enabled " +
@@ -50,7 +49,6 @@ public class Logger {
             e.printStackTrace();
         }
     }
-
 
     public void alert(final Object log) {
         this.logState = LogState.ALERT;

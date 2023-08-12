@@ -13,5 +13,4 @@ public class MinecraftUtil {
     public static String kickCommand(final String who, final String reason) {
         return "kick " + who + " " + colorize(reason);
     }
-
 }

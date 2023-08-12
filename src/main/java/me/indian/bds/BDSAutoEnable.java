@@ -65,8 +65,6 @@ public class BDSAutoEnable {
         this.watchDog.getBackupModule().backup();
         this.versionManager.loadVersion();
         this.config.save();
-
-
         this.serverProcess.startProcess();
     }
 

@@ -1,8 +1,7 @@
 package me.indian.bds.manager;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
+import me.indian.bds.util.DateUtil;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +10,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PlayerManager {
+
     private final List<String> onlinePlayers, offlinePlayers;
     private final Map<String, String> onlineWithTime, offlineWithTime;
 
@@ -20,7 +20,6 @@ public class PlayerManager {
         this.onlineWithTime = new HashMap<>();
         this.offlineWithTime = new HashMap<>();
     }
-
 
     public void updatePlayerList(final String logEntry) {
         final String patternString = "(Player connected|Player disconnected): ([^,]+),";
@@ -33,14 +32,14 @@ public class PlayerManager {
 
             if ("Player connected".equals(action)) {
                 this.onlinePlayers.add(playerName);
-                this.onlineWithTime.put(playerName, this.upDateDate());
+                this.onlineWithTime.put(playerName, DateUtil.getDate());
                 this.offlinePlayers.remove(playerName);
                 this.offlineWithTime.remove(playerName);
             } else if ("Player disconnected".equals(action)) {
                 this.onlinePlayers.remove(playerName);
                 this.onlineWithTime.remove(playerName);
                 this.offlinePlayers.add(playerName);
-                this.offlineWithTime.put(playerName, this.upDateDate());
+                this.offlineWithTime.put(playerName, DateUtil.getDate());
             }
         }
     }
@@ -65,9 +64,4 @@ public class PlayerManager {
         return this.onlineWithTime;
     }
 
-    private String upDateDate() {
-        final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return now.format(formatter);
-    }
 }

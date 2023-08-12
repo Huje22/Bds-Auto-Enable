@@ -14,7 +14,6 @@ import java.util.zip.ZipOutputStream;
 
 public class ZipUtil {
 
-
     public static void zipFolder(final String sourceFolderPath, final String zipFilePath) throws IOException {
         final File sourceFolder = new File(sourceFolderPath);
         try (final FileOutputStream fos = new FileOutputStream(zipFilePath);

@@ -1,6 +1,5 @@
 package me.indian.bds;
 
-import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.util.SystemOs;
 

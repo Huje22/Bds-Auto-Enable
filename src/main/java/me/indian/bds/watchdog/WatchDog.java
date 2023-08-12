@@ -8,9 +8,6 @@ import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 public class WatchDog {
 
     private final BackupModule backupModule;
@@ -19,7 +16,6 @@ public class WatchDog {
     private final String watchDogPrefix;
     private final ServerProcess serverProcess;
 
-
     public WatchDog(final BDSAutoEnable bdsAutoEnable) {
         this.backupModule = new BackupModule(bdsAutoEnable);
         this.logger = bdsAutoEnable.getLogger();
@@ -27,7 +23,6 @@ public class WatchDog {
         this.watchDogPrefix = "&b[&3WatchDog&b]";
         this.serverProcess = bdsAutoEnable.getServerProcess();
     }
-
 
     public BackupModule getBackupModule() {
         return this.backupModule;
