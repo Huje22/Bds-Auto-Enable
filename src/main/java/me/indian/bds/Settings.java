@@ -96,17 +96,17 @@ public class Settings {
             this.config.setBackupFrequency(backupFrequency == 0 ? 60 : backupFrequency);
         }
 
-        this.logger.info(ConsoleColors.convertMinecraftColors("#a Konfiguracija servera"));
+        this.logger.info(ConsoleColors.convertMinecraftColors("&aKonfiguracija servera&r"));
 
         this.serverProperties.setServerPort(scannerUtil.addQuestion((defaultValue) -> {
-            this.logger.info(ConsoleColors.convertMinecraftColors("&lUstaw port v4r?&r (Aktualny z &bserver.properties&r" + defaultValue + ")" + this.enter));
-            this.logger.info(ConsoleColors.convertMinecraftColors("#cPamiętaj że twoja siec musi miec dostepny ten port"));
-        }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na" + input)));
+            this.logger.info(ConsoleColors.convertMinecraftColors("&lUstaw port v4?&r (Aktualny z &bserver.properties&r " + defaultValue + ")" + this.enter));
+            this.logger.info(ConsoleColors.convertMinecraftColors("#cPamiętaj że twoja siec musi miec dostepny ten port&r"));
+        }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na: " + input)));
 
         this.serverProperties.setServerPortV6(scannerUtil.addQuestion((defaultValue) -> {
-            this.logger.info(ConsoleColors.convertMinecraftColors("&lUstaw port v6?&r (Aktualny z &bserver.properties&r" + defaultValue + ")" + this.enter));
-            this.logger.info(ConsoleColors.convertMinecraftColors("#cJeśli twoja maszyna obsługuje ipv6 ustaw go na dostepny z puli portów"));
-        }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na" + input)));
+            this.logger.info(ConsoleColors.convertMinecraftColors("&lUstaw port v6?&r (Aktualny z &bserver.properties&r " + defaultValue + ")" + this.enter));
+            this.logger.info(ConsoleColors.convertMinecraftColors("#cJeśli twoja maszyna obsługuje ipv6 ustaw go na dostepny z puli portów&r"));
+        }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na: " + input)));
 
         final int threads = scannerUtil.addQuestion((defaultValue) -> {
             this.logger.info(ConsoleColors.convertMinecraftColors("&lLiczba wątków używana przez server&r (Dostępna liczba wątków to około " + ThreadUtil.getThreadsCount() + ")? "));
@@ -143,8 +143,8 @@ public class Settings {
             this.logger.info("WorldName: " + this.serverProperties.getWorldName());
         }
 
-        this.logger.info("Port v6 " + this.serverProperties.getServerPortV6());
         this.logger.info("Port v4 " + this.serverProperties.getServerPort());
+        this.logger.info("Port v6 " + this.serverProperties.getServerPortV6());
         this.logger.info("Liczba wątków używana przez server: " + this.serverProperties.getMaxThreads());
         this.logger.info("Czy klient generuje chunki: " + this.serverProperties.isClientSideChunkGeneration());
 

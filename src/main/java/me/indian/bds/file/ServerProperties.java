@@ -64,6 +64,17 @@ public class ServerProperties {
         return Integer.parseInt(this.properties.getProperty("server-portv6"));
     }
 
+    public int getMaxThreads() {
+        return Integer.parseInt(this.properties.getProperty("max-threads"));
+    }
+
+    public boolean isClientSideChunkGeneration() {
+        return Boolean.parseBoolean(this.properties.getProperty("client-side-chunk-generation-enabled"));
+    }
+    public boolean isAllowList() {
+        return Boolean.parseBoolean(this.properties.getProperty("allow-list"));
+    }
+
     public void setServerPort(final int port) {
         this.properties.setProperty("server-port", String.valueOf(port));
         this.reloadServerProperties();
@@ -74,21 +85,17 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
-    public int getMaxThreads() {
-        return Integer.parseInt(this.properties.getProperty("max-threads"));
-    }
-
     public void setMaxThreads(final int threads) {
         this.properties.setProperty("max-threads", String.valueOf(threads));
         this.reloadServerProperties();
     }
 
-    public boolean isClientSideChunkGeneration() {
-        return Boolean.parseBoolean(this.properties.getProperty("client-side-chunk-generation-enabled"));
-    }
-
     public void setClientSideChunkGeneration(final boolean clientSide) {
         this.properties.setProperty("client-side-chunk-generation-enabled", String.valueOf(clientSide));
+        this.reloadServerProperties();
+    }
+    public void setAllowList(final boolean allowList) {
+        this.properties.setProperty("allow-list", String.valueOf(allowList));
         this.reloadServerProperties();
     }
 
