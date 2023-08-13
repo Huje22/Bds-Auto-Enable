@@ -6,18 +6,38 @@ import java.util.Map;
 public class ConsoleColors {
 
     private static final Map<String, String> COLOR_MAP = new HashMap<>();
-    public static final String RESET = "\u001B[0m";
-    public static final String BOLD = "\033[1m";
-    public static final String ITALIC = "\033[3m";
-    public static final String UNDERLINE = "\033[4m";
+
     public static final String BLACK = "\u001B[30m";
     public static final String RED = "\u001B[31m";
     public static final String GREEN = "\u001B[32m";
-    public static final String YELLOW = "\u001B[33m";
-    public static final String BLUE = "\u001B[34m";
+    public static final String YELLOW = "\u001B[0;33m";
+    public static final String DARK_BLUE = "\u001B[34m";
     public static final String PURPLE = "\u001B[35m";
+    public static final String LIGHT_PURPLE = "\u001B[0;95m";
     public static final String CYAN = "\u001B[36m";
     public static final String WHITE = "\u001B[37m";
+
+    public static final String BRIGHT_RED = "\u001B[91m";
+    public static final String BRIGHT_GREEN = "\u001B[92m";
+    public static final String BRIGHT_YELLOW = "\u001B[93m";
+    public static final String BLUE = "\u001B[94m";
+    public static final String BRIGHT_PURPLE = "\u001B[95m";
+    public static final String BRIGHT_CYAN = "\u001B[96m";
+    public static final String BRIGHT_WHITE = "\u001B[97m";
+
+    public static final String BRIGHT_GRAY = "\u001B[37m";
+    public static final String DARK_GRAY = "\u001B[90m";
+    public static final String LIGHT_GRAY = "\u001B[37;1m";
+    public static final String SILVER = "\u001B[90;1m";
+    public static final String DARK_RED = "\u001B[31;1m";
+
+    public static final String RESET = "\u001B[0m";
+    public static final String BOLD = "\033[1m";
+    public static final String OBFUSCATED = "\033[8m";
+    public static final String ITALIC = "\033[3m";
+    public static final String UNDERLINE = "\033[4m";
+    public static final String STRIKETHROUGH = "\033[9m";
+
     public static final String BLACK_BACKGROUND = "\u001B[40m";
     public static final String RED_BACKGROUND = "\u001B[41m";
     public static final String GREEN_BACKGROUND = "\u001B[42m";
@@ -26,13 +46,7 @@ public class ConsoleColors {
     public static final String PURPLE_BACKGROUND = "\u001B[45m";
     public static final String CYAN_BACKGROUND = "\u001B[46m";
     public static final String WHITE_BACKGROUND = "\u001B[47m";
-    public static final String BRIGHT_RED = "\u001B[91m";
-    public static final String BRIGHT_GREEN = "\u001B[92m";
-    public static final String BRIGHT_YELLOW = "\u001B[93m";
-    public static final String BRIGHT_BLUE = "\u001B[94m";
-    public static final String BRIGHT_PURPLE = "\u001B[95m";
-    public static final String BRIGHT_CYAN = "\u001B[96m";
-    public static final String BRIGHT_WHITE = "\u001B[97m";
+
     public static final String BRIGHT_BLACK_BACKGROUND = "\u001B[100m";
     public static final String BRIGHT_RED_BACKGROUND = "\u001B[101m";
     public static final String BRIGHT_GREEN_BACKGROUND = "\u001B[102m";
@@ -41,30 +55,26 @@ public class ConsoleColors {
     public static final String BRIGHT_PURPLE_BACKGROUND = "\u001B[105m";
     public static final String BRIGHT_CYAN_BACKGROUND = "\u001B[106m";
     public static final String BRIGHT_WHITE_BACKGROUND = "\u001B[107m";
-    public static final String BRIGHT_GRAY = "\u001B[37m";
-    public static final String DARK_GRAY = "\u001B[90m";
-    public static final String LIGHT_GRAY = "\u001B[37;1m";
-    public static final String SILVER = "\u001B[90;1m";
-    public static final String DARK_RED = "\u001B[31;1m";
 
     static {
-        COLOR_MAP.put("&0", ConsoleColors.BLACK);
-        COLOR_MAP.put("&1", ConsoleColors.BLUE);
-        COLOR_MAP.put("&2", ConsoleColors.GREEN);
-        COLOR_MAP.put("&3", ConsoleColors.CYAN);
-        COLOR_MAP.put("&4", ConsoleColors.PURPLE);
-        COLOR_MAP.put("&5", ConsoleColors.YELLOW);
-        COLOR_MAP.put("&6", ConsoleColors.BRIGHT_BLUE);
-        COLOR_MAP.put("&7", ConsoleColors.LIGHT_GRAY);
-        COLOR_MAP.put("&8", ConsoleColors.DARK_GRAY);
-        COLOR_MAP.put("&9", ConsoleColors.BRIGHT_RED);
-        COLOR_MAP.put("&a", ConsoleColors.BRIGHT_GREEN);
-        COLOR_MAP.put("&b", ConsoleColors.BRIGHT_BLUE);
-        COLOR_MAP.put("&c", ConsoleColors.BRIGHT_RED);
-        COLOR_MAP.put("&d", "MISSING");
-        COLOR_MAP.put("&e", ConsoleColors.YELLOW);
-        COLOR_MAP.put("&f", ConsoleColors.WHITE);
-        COLOR_MAP.put("&r", ConsoleColors.RESET);
+        COLOR_MAP.put("&0", BLACK);
+        COLOR_MAP.put("&1", DARK_BLUE);
+        COLOR_MAP.put("&2", GREEN);
+        COLOR_MAP.put("&3", CYAN);
+        COLOR_MAP.put("&4", RED);
+        COLOR_MAP.put("&5", PURPLE);
+        COLOR_MAP.put("&6", YELLOW);
+        COLOR_MAP.put("&7", LIGHT_GRAY);
+        COLOR_MAP.put("&8", DARK_GRAY);
+        COLOR_MAP.put("&9", BLUE);
+        COLOR_MAP.put("&a", BRIGHT_GREEN);
+        COLOR_MAP.put("&b", BRIGHT_CYAN);
+        COLOR_MAP.put("&c", BRIGHT_RED);
+        COLOR_MAP.put("&d", LIGHT_PURPLE);
+        COLOR_MAP.put("&e", BRIGHT_YELLOW);
+        COLOR_MAP.put("&f", WHITE);
+        COLOR_MAP.put("&r", RESET);
+        COLOR_MAP.put("§i", SILVER);
     }
 
     public static String convertMinecraftColors(String input) {
