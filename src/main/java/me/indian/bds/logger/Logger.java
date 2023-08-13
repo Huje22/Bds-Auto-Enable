@@ -28,7 +28,7 @@ public class Logger {
 
     private void updatePrefix() {
         final String logStateColor = this.logState.getColorCode();
-        this.prefix = ConsoleColors.DARK_GRAY + DateUtil.getDate() + ConsoleColors.BRIGHT_GREEN + " BDS " + ConsoleColors.BRIGHT_BLUE + "Auto Enabled " +
+        this.prefix = ConsoleColors.DARK_GRAY + DateUtil.getDate() + ConsoleColors.BRIGHT_GREEN + " BDS " + ConsoleColors.BLUE + "Auto Enabled " +
                 ConsoleColors.BRIGHT_GREEN + "[" + ConsoleColors.BRIGHT_GRAY +
                 Thread.currentThread().getName()
                 + ConsoleColors.BRIGHT_GREEN + "]" +
@@ -81,10 +81,21 @@ public class Logger {
     }
 
     public void debug(final Object log) {
-        if (config.isDebug()) {
+        if (this.config.isDebug()) {
             this.logState = LogState.DEBUG;
             this.logToFile(log);
             System.out.println(prefix + log);
+        }
+    }
+
+    public void logByState(final Object log, final LogState logState) {
+        switch (logState) {
+            case INFO -> this.info(log);
+            case ALERT -> this.alert(log);
+            case CRITICAL -> this.critical(log);
+            case ERROR -> this.error(log);
+            case WARNING -> this.warning(log);
+            case DEBUG -> this.debug(log);
         }
     }
 

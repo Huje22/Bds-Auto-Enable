@@ -1,8 +1,9 @@
 package me.indian.bds.watchdog;
 
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.ServerProcess;
+import me.indian.bds.server.ServerProcess;
 import me.indian.bds.config.Config;
+import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
@@ -30,8 +31,7 @@ public class WatchDog {
 
     public void saveWorld() {
         final double lastSave = (this.config.getLastBackupTime() / 4.0);
-        this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.watchDogPrefix + " &aZapisywanie servera, prosze czekać około:&b " + lastSave + "&b sekund"));
-       this.logger.info("Za[isywanie servera , prosze czekać około: " + lastSave + " sekund");
+        MinecraftUtil.tellrawToAllAndLogger(this.watchDogPrefix, "&aZapisywanie świata, prosze czekać około:&b " + lastSave + "&b sekund", LogState.INFO);
         this.serverProcess.sendToConsole("save hold");
         ThreadUtil.sleep((int) lastSave);
     }

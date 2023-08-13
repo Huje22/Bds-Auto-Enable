@@ -7,6 +7,8 @@ import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.PlayerManager;
 import me.indian.bds.manager.VersionManager;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.watchdog.WatchDog;
 
 import java.time.LocalDateTime;
@@ -47,6 +49,7 @@ public class BDSAutoEnable {
         this.playerManager = new PlayerManager();
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
+        MinecraftUtil.initMinecraftUtil(this);
 
         this.init();
     }

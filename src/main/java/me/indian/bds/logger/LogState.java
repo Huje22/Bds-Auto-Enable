@@ -4,7 +4,7 @@ import me.indian.bds.util.ConsoleColors;
 
 public enum LogState {
     NONE(ConsoleColors.RESET),
-    INFO(ConsoleColors.BLUE),
+    INFO(ConsoleColors.DARK_BLUE),
     ALERT(ConsoleColors.BRIGHT_RED),
     CRITICAL(ConsoleColors.DARK_RED),
     ERROR(ConsoleColors.DARK_GRAY),

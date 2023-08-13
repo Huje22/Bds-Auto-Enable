@@ -73,7 +73,7 @@ public class Settings {
                     this.logger.info("Nazwa pliku ustawiona na: " + input);
                     if (this.config.getSystemOs() == SystemOs.LINUX) {
                         if (input.contains(".exe")) {
-                            this.logger.alert("W tym wypadku będzie potrzebne " + ConsoleColors.UNDERLINE + ConsoleColors.BLUE + "WINE" + ConsoleColors.RESET);
+                            this.logger.alert("W tym wypadku będzie potrzebne " + ConsoleColors.UNDERLINE + ConsoleColors.DARK_BLUE + "WINE" + ConsoleColors.RESET);
                             this.config.setWine(true);
                         } else {
                             this.config.setWine(false);
@@ -118,7 +118,7 @@ public class Settings {
         this.serverProperties.setClientSideChunkGeneration(scannerUtil.addQuestion(
                 (defaultValue) -> {
                     this.logger.info(ConsoleColors.BOLD + "Client Side Chunks" + ConsoleColors.RESET + " (Domyślnie: " + defaultValue + ")? " + enter);
-                    this.logger.info("Jeśli jest " + ConsoleColors.BLUE + "true" + ConsoleColors.RESET +
+                    this.logger.info("Jeśli jest " + ConsoleColors.DARK_BLUE + "true" + ConsoleColors.RESET +
                             ", serwer poinformuje klientów, że mają możliwość generowania chunków poziomu wizualnego poza odległościami interakcji graczy.");
                 },
                 false,

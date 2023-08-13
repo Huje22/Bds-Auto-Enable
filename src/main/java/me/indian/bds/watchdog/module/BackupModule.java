@@ -2,10 +2,10 @@ package me.indian.bds.watchdog.module;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
-import me.indian.bds.ServerProcess;
 import me.indian.bds.config.Config;
+import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ConsoleColors;
+import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MinecraftUtil;
@@ -21,7 +21,6 @@ import java.util.concurrent.Executors;
 
 public class BackupModule {
 
-    private static boolean backuping = false;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final ExecutorService service;
@@ -35,6 +34,7 @@ public class BackupModule {
     private File worldFile;
     private String worldName;
     private TimerTask hourlyTask;
+    private boolean backuping;
 
     public BackupModule(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -64,8 +64,11 @@ public class BackupModule {
                 this.logger.alert("Ścieżka " + this.worldPath);
                 Thread.currentThread().interrupt();
                 this.timer.cancel();
+                this.backuping = true;
+                return;
             }
         }
+        this.backuping = false;
     }
 
     public void initBackupModule(final WatchDog watchDog) {
@@ -91,7 +94,7 @@ public class BackupModule {
     public void forceBackup() {
         if (!this.config.isBackup()) return;
         if (!this.worldFile.exists()) return;
-        if (backuping) {
+        if (this.backuping) {
             this.logger.error("Nie można zrobić kopi podczas robienia już jednej");
             return;
         }
@@ -99,34 +102,32 @@ public class BackupModule {
         this.service.execute(() -> {
             final File backup = new File(this.backupFolder.getAbsolutePath() + File.separator + this.worldName + " " + DateUtil.getFixedDate() + ".zip");
             try {
-                backuping = true;
+                this.backuping = true;
                 this.watchDog.saveWorld();
                 final double lastBackUpTime = this.config.getLastBackupTime();
-                this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &6Tworzenie kopij zapasowej ostatnio trwało to&b " + lastBackUpTime + "&a sekund"));
-                this.logger.info("Tworzenie kopij zapasowej ostatnio trwało to " + ConsoleColors.GREEN + lastBackUpTime + ConsoleColors.RESET + " sekund");
+                MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aTworzenie kopij zapasowej ostatnio trwało to&b " + lastBackUpTime + "&a sekund", LogState.INFO);
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 final double backUpTime = ((System.currentTimeMillis() - startTime) / 1000.0);
                 this.config.setLastBackupTime(backUpTime);
-                this.logger.info("Utworzono kopię zapasową w " + ConsoleColors.GREEN + backUpTime + ConsoleColors.RESET + " sekund");
-                this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund"));
+                MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund", LogState.INFO);
             } catch (final Exception exception) {
-                this.bdsAutoEnable.getServerProcess().sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &4Nie można utworzyć kopii zapasowej"));
+                MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&4Nie można utworzyć kopii zapasowej", LogState.ERROR);
                 this.logger.critical("Nie można utworzyć kopii zapasowej");
                 this.logger.critical(exception);
                 exception.printStackTrace();
                 if (backup.delete()) {
-                    this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &aUsunięto błędny backup"));
+                    MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aUsunięto błędny backup", LogState.INFO);
                 } else {
-                    this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + " &4Nie można usunać błędnego backupa"));
+                    MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&4Nie można usunać błędnego backupa", LogState.INFO);
                 }
             }
-            backuping = false;
+            this.backuping = false;
             this.watchDog.saveResume();
             this.config.save();
         });
     }
 
-    public static boolean isBackuping() {
-        return backuping;
+    public boolean isBackuping() {
+        return this.backuping;
     }
 }

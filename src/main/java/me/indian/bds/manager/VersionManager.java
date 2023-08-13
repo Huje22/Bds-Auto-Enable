@@ -74,7 +74,7 @@ public class VersionManager {
 
         final File verFile = new File(this.versionFolder.getPath() + File.separator + version + ".zip");
         if (!verFile.exists()) {
-            this.logger.info("Nie znaleziono wersji " + ConsoleColors.BLUE + version + ConsoleColors.RESET);
+            this.logger.info("Nie znaleziono wersji " + ConsoleColors.DARK_BLUE + version + ConsoleColors.RESET);
             this.downloadServerFiles(version);
         }
         try {
@@ -121,7 +121,7 @@ public class VersionManager {
             final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             final int response = connection.getResponseCode();
             if (response == HttpURLConnection.HTTP_OK) {
-                this.logger.info("Pobieranie wersji: " + ConsoleColors.BLUE + version + ConsoleColors.RESET);
+                this.logger.info("Pobieranie wersji: " + ConsoleColors.DARK_BLUE + version + ConsoleColors.RESET);
                 final int fileSize = connection.getContentLength();
                 final InputStream inputStream = new BufferedInputStream(connection.getInputStream());
                 final FileOutputStream outputStream = new FileOutputStream(this.versionFolder.getPath() + File.separator + version + ".zip");

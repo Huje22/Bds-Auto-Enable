@@ -1,20 +1,20 @@
-package me.indian.bds;
+package me.indian.bds.server;
 
+import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.exception.BadThreadException;
+import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.PlayerManager;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
-import me.indian.bds.watchdog.module.BackupModule;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -56,15 +56,12 @@ public class ServerProcess {
         try {
             String command = "";
             switch (this.config.getSystemOs()) {
-                case LINUX:
-                    command = "pgrep -f " + this.config.getFileName();
-                    break;
-                case WINDOWS:
-                    command = "tasklist /NH /FI \"IMAGENAME eq " + this.config.getFileName() + "\"";
-                    break;
-                default:
+                case LINUX -> command = "pgrep -f " + this.config.getFileName();
+                case WINDOWS -> command = "tasklist /NH /FI \"IMAGENAME eq " + this.config.getFileName() + "\"";
+                default -> {
                     this.logger.critical("Musisz podać odpowiedni system");
                     this.instantShutdown();
+                }
             }
 
             final Process checkProcessIsRunning = Runtime.getRuntime().exec(command);
@@ -103,7 +100,7 @@ public class ServerProcess {
 
                 try {
                     switch (this.config.getSystemOs()) {
-                        case LINUX:
+                        case LINUX -> {
                             if (this.config.isWine()) {
                                 this.processBuilder = new ProcessBuilder("wine", this.finalFilePath);
                             } else {
@@ -111,13 +108,12 @@ public class ServerProcess {
                                 this.processBuilder.environment().put("LD_LIBRARY_PATH", ".");
                                 this.processBuilder.directory(new File(this.config.getFilesPath()));
                             }
-                            break;
-                        case WINDOWS:
-                            this.processBuilder = new ProcessBuilder(this.finalFilePath);
-                            break;
-                        default:
+                        }
+                        case WINDOWS -> this.processBuilder = new ProcessBuilder(this.finalFilePath);
+                        default -> {
                             this.logger.critical("Musisz podać odpowiedni system");
                             this.instantShutdown();
+                        }
                     }
                     this.playerManager.clearPlayers();
                     this.process = this.processBuilder.start();
@@ -168,7 +164,7 @@ public class ServerProcess {
             while (consoleInput.hasNextLine()) {
                 final String input = consoleInput.nextLine();
                 if (input.equalsIgnoreCase("stop")) {
-                    this.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + "&4Zamykanie servera..."));
+                    MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
                     if (!this.playerManager.getOnlinePlayers().isEmpty()) {
                         for (final String name : this.playerManager.getOnlinePlayers()) {
                             this.sendToConsole(MinecraftUtil.kickCommand(name, this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem"));
@@ -181,15 +177,8 @@ public class ServerProcess {
                 } else if (input.equalsIgnoreCase(".end")) {
                     this.endServerProcess(true);
                 } else if (input.equalsIgnoreCase("version")) {
-                    this.logger.info("Versija minecraft: " + this.config.getVersion());
-                    this.logger.info("Versija BDS-Auro-Enable:" + this.bdsAutoEnable.getProjectVersion());
-                    final List<String> players = this.playerManager.getOnlinePlayers();
-                    if (!players.isEmpty()) {
-                        for (final String name : players) {
-                            this.sendToConsole(MinecraftUtil.tellrawToAllMessage("&aVersija minecraft:&b " + this.config.getVersion()));
-                            this.sendToConsole(MinecraftUtil.tellrawToAllMessage("&aVersija BDS-Auro-Enable:&b " + this.bdsAutoEnable.getProjectVersion()));
-                        }
-                    }
+                    MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija minecraft:&b " + this.config.getVersion(), LogState.INFO);
+                    MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija BDS-Auro-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
                 } else {
                     this.sendToConsole(input);
                 }
@@ -288,19 +277,17 @@ public class ServerProcess {
             this.processService.execute(() -> {
                 try {
                     if (backup) {
-                        this.logger.warning("Wyłączanie servera , prosze poczekac , pierw zostanie utworzony backup");
-                        this.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + "&aWyłączanie servera , prosze poczekac pierw zostanie utworzony backup"));
+                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aWyłączanie servera , prosze poczekac pierw zostanie utworzony backup", LogState.ALERT);
                         this.watchDog.getBackupModule().forceBackup();
                     }
-                    while (!BackupModule.isBackuping()){
-                        final String done = "Backup zrobiony!";
-                        this.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.prefix + "&a" + done));
-                        this.logger.info(done);
+                    while (!this.watchDog.getBackupModule().isBackuping()) {
+                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aBackup zrobiony!", LogState.INFO);
+                        ThreadUtil.sleep(1);
                         this.instantShutdown();
                     }
-                } catch (final Exception e) {
-                    this.logger.critical(e);
-                    e.printStackTrace();
+                } catch (final Exception exception) {
+                    this.logger.critical(exception);
+                    exception.printStackTrace();
                 }
             });
         }
