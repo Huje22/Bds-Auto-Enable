@@ -14,7 +14,6 @@ public class ScannerUtil {
         String input = getInput();
         input = input.isEmpty() ? defaultValue : input;
         response.accept(input);
-
         System.out.println();
         return input;
     }
@@ -22,22 +21,24 @@ public class ScannerUtil {
 
     public boolean addQuestion(final ResponseConsumer question, final boolean defaultValue, final ResponseConsumer response) {
         question.accept(String.valueOf(defaultValue));
-        String input = getInput();
+        final String input = getInput();
         boolean userInput = input.isEmpty() ? defaultValue : Boolean.parseBoolean(input);
         response.accept(String.valueOf(userInput));
-
         System.out.println();
         return userInput;
     }
 
     public int addQuestion(final ResponseConsumer question, final int defaultValue, final ResponseConsumer response) {
         question.accept(String.valueOf(defaultValue));
-        String input = getInput();
+        final String input = getInput();
         int userInput = input.isEmpty() ? defaultValue : Integer.parseInt(input);
         response.accept(String.valueOf(userInput));
-
         System.out.println();
         return userInput;
+    }
+
+    public Scanner getScanner() {
+        return this.scanner;
     }
 
     private String getInput() {

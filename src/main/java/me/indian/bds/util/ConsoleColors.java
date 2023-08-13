@@ -37,7 +37,6 @@ public class ConsoleColors {
     public static final String ITALIC = "\033[3m";
     public static final String UNDERLINE = "\033[4m";
     public static final String STRIKETHROUGH = "\033[9m";
-
     public static final String BLACK_BACKGROUND = "\u001B[40m";
     public static final String RED_BACKGROUND = "\u001B[41m";
     public static final String GREEN_BACKGROUND = "\u001B[42m";
@@ -46,12 +45,12 @@ public class ConsoleColors {
     public static final String PURPLE_BACKGROUND = "\u001B[45m";
     public static final String CYAN_BACKGROUND = "\u001B[46m";
     public static final String WHITE_BACKGROUND = "\u001B[47m";
-
     public static final String BRIGHT_BLACK_BACKGROUND = "\u001B[100m";
     public static final String BRIGHT_RED_BACKGROUND = "\u001B[101m";
     public static final String BRIGHT_GREEN_BACKGROUND = "\u001B[102m";
     public static final String BRIGHT_YELLOW_BACKGROUND = "\u001B[103m";
     public static final String BRIGHT_BLUE_BACKGROUND = "\u001B[104m";
+    public static final String DARK_GRAY_BACKGROUND = "\u001B[100m";
     public static final String BRIGHT_PURPLE_BACKGROUND = "\u001B[105m";
     public static final String BRIGHT_CYAN_BACKGROUND = "\u001B[106m";
     public static final String BRIGHT_WHITE_BACKGROUND = "\u001B[107m";
@@ -73,8 +72,32 @@ public class ConsoleColors {
         COLOR_MAP.put("&d", LIGHT_PURPLE);
         COLOR_MAP.put("&e", BRIGHT_YELLOW);
         COLOR_MAP.put("&f", WHITE);
+
+        COLOR_MAP.put("&i", SILVER);
+
         COLOR_MAP.put("&r", RESET);
-        COLOR_MAP.put("§i", SILVER);
+        COLOR_MAP.put("&k", OBFUSCATED);
+        COLOR_MAP.put("&l", BOLD);
+        COLOR_MAP.put("&m", STRIKETHROUGH);
+        COLOR_MAP.put("&n", UNDERLINE);
+        COLOR_MAP.put("&o", ITALIC);
+
+        COLOR_MAP.put("#0", BLACK_BACKGROUND);
+        COLOR_MAP.put("#1", BLUE_BACKGROUND);
+        COLOR_MAP.put("#2", GREEN_BACKGROUND);
+        COLOR_MAP.put("#3", CYAN_BACKGROUND);
+        COLOR_MAP.put("#4", RED_BACKGROUND);
+        COLOR_MAP.put("#5", PURPLE_BACKGROUND);
+        COLOR_MAP.put("#6", YELLOW_BACKGROUND);
+        COLOR_MAP.put("#7", DARK_GRAY_BACKGROUND);
+        COLOR_MAP.put("#8", BRIGHT_BLACK_BACKGROUND);
+        COLOR_MAP.put("#9", BLUE_BACKGROUND);
+        COLOR_MAP.put("#a", BRIGHT_GREEN_BACKGROUND);
+        COLOR_MAP.put("#b", BRIGHT_CYAN_BACKGROUND);
+        COLOR_MAP.put("#c", BRIGHT_RED_BACKGROUND);
+        COLOR_MAP.put("#d", BRIGHT_PURPLE_BACKGROUND);
+        COLOR_MAP.put("#e", BRIGHT_YELLOW_BACKGROUND);
+        COLOR_MAP.put("#f", BRIGHT_WHITE_BACKGROUND);
     }
 
     public static String convertMinecraftColors(String input) {

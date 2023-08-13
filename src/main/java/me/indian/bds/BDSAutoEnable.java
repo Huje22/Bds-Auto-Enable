@@ -71,7 +71,6 @@ public class BDSAutoEnable {
         this.serverProcess.startProcess();
     }
 
-
     private void initRunDate() {
         final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");

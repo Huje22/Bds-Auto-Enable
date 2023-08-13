@@ -56,6 +56,24 @@ public class ServerProperties {
         return this.properties.getProperty("level-name");
     }
 
+    public int getServerPort() {
+        return Integer.parseInt(this.properties.getProperty("server-port"));
+    }
+
+    public int getServerPortV6() {
+        return Integer.parseInt(this.properties.getProperty("server-portv6"));
+    }
+
+    public void setServerPort(final int port) {
+        this.properties.setProperty("server-port", String.valueOf(port));
+        this.reloadServerProperties();
+    }
+
+    public void setServerPortV6(final int port) {
+        this.properties.setProperty("server-portv6", String.valueOf(port));
+        this.reloadServerProperties();
+    }
+
     public int getMaxThreads() {
         return Integer.parseInt(this.properties.getProperty("max-threads"));
     }

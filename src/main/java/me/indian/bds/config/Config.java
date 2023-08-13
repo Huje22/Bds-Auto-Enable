@@ -21,43 +21,36 @@ public class Config extends OkaeriConfig {
 
     @Comment({" "})
     @Comment({"Versia która jest załadowana"})
-    private String version = "1.20.14.01";
-    private boolean loaded = false;
+    private String Version = "1.20.14.01";
+    private boolean Loaded = false;
 
     @Comment({" "})
     @Comment({"Pierwsze uruchomienie"})
-    private boolean firstRun = true;
+    private boolean FirstRun = true;
 
     @Comment({" "})
     @Comment({"System na którym uruchamiana jest aplikacja"})
-    private SystemOs systemOs = SystemOs.LINUX;
+    private SystemOs System = SystemOs.LINUX;
 
     @Comment({" "})
     @Comment({"Nazwa pliku który ma być włączony"})
-    private String fileName = "bedrock_server.exe";
+    private String FileName = "bedrock_server.exe";
 
     @Comment({" "})
     @Comment({"Czy użyć wine?"})
-    private boolean wine = false;
+    private boolean Wine = false;
 
 
     @Comment({" "})
     @Comment({"Ścieżka do z serverem"})
-    private String filesPath = "./";
+    private String FilesPath = "./";
 
 
     @Comment({" "})
     @Comment({"Backups"})
-    private boolean backup = true;
-    private double lastBackupTime = 20;
-
-    public double getLastBackupTime() {
-        return this.lastBackupTime;
-    }
-
-    public void setLastBackupTime(final double lastBackupTime) {
-        this.lastBackupTime = lastBackupTime;
-    }
+    private boolean Backup = true;
+    private int BackupFrequency = 60;
+    private double LastBackupTime = 20;
 
     @Comment({" "})
     @Comment({"Nie zapisuje tych informacj , w konsoli i pliku"})
@@ -68,20 +61,38 @@ public class Config extends OkaeriConfig {
     @Comment({"Debug"})
     private boolean debug = true;
 
+
+    public int getBackupFrequency() {
+        return this.BackupFrequency;
+    }
+
+    public void setBackupFrequency(final int backupFrequency) {
+        this.BackupFrequency = backupFrequency;
+    }
+
+    public double getLastBackupTime() {
+        return this.LastBackupTime;
+    }
+
+    public void setLastBackupTime(final double lastBackupTime) {
+        this.LastBackupTime = lastBackupTime;
+    }
+
+
     public String getVersion() {
-        return this.version;
+        return this.Version;
     }
 
     public void setVersion(final String version) {
-        this.version = version;
+        this.Version = version;
     }
 
     public boolean isLoaded() {
-        return this.loaded;
+        return this.Loaded;
     }
 
     public void setLoaded(final boolean loaded) {
-        this.loaded = loaded;
+        this.Loaded = loaded;
     }
 
     public List<String> getNoLogInfo() {
@@ -93,50 +104,50 @@ public class Config extends OkaeriConfig {
     }
 
     public boolean isBackup() {
-        return this.backup;
+        return this.Backup;
     }
 
     public void setBackup(final boolean backup) {
-        this.backup = backup;
+        this.Backup = backup;
     }
 
     public boolean isFirstRun() {
-        return firstRun;
+        return FirstRun;
     }
 
     public void setFirstRun(final boolean firstRun) {
-        this.firstRun = firstRun;
+        this.FirstRun = firstRun;
     }
 
     public SystemOs getSystemOs() {
-        return this.systemOs;
+        return this.System;
     }
 
     public void setSystemOs(final SystemOs systemOs) {
-        this.systemOs = systemOs;
+        this.System = systemOs;
     }
 
     public String getFileName() {
-        return this.fileName;
+        return this.FileName;
     }
 
     public void setFileName(final String fileName) {
-        this.fileName = fileName;
+        this.FileName = fileName;
     }
 
     public boolean isWine() {
-        return this.wine;
+        return this.Wine;
     }
 
     public void setWine(final boolean wine) {
-        this.wine = wine;
+        this.Wine = wine;
     }
 
     public String getFilesPath() {
-        return this.filesPath;
+        return this.FilesPath;
     }
 
     public void setFilesPath(final String filesPath) {
-        this.filesPath = filesPath;
+        this.FilesPath = filesPath;
     }
 }
