@@ -1,7 +1,11 @@
 package me.indian.bds.util;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ConsoleColors {
 
+    private static final Map<String, String> COLOR_MAP = new HashMap<>();
     public static final String RESET = "\u001B[0m";
     public static final String BOLD = "\033[1m";
     public static final String ITALIC = "\033[3m";
@@ -42,4 +46,31 @@ public class ConsoleColors {
     public static final String LIGHT_GRAY = "\u001B[37;1m";
     public static final String SILVER = "\u001B[90;1m";
     public static final String DARK_RED = "\u001B[31;1m";
+
+    static {
+        COLOR_MAP.put("&0", ConsoleColors.BLACK);
+        COLOR_MAP.put("&1", ConsoleColors.BLUE);
+        COLOR_MAP.put("&2", ConsoleColors.GREEN);
+        COLOR_MAP.put("&3", ConsoleColors.CYAN);
+        COLOR_MAP.put("&4", ConsoleColors.PURPLE);
+        COLOR_MAP.put("&5", ConsoleColors.YELLOW);
+        COLOR_MAP.put("&6", ConsoleColors.BRIGHT_BLUE);
+        COLOR_MAP.put("&7", ConsoleColors.LIGHT_GRAY);
+        COLOR_MAP.put("&8", ConsoleColors.DARK_GRAY);
+        COLOR_MAP.put("&9", ConsoleColors.BRIGHT_RED);
+        COLOR_MAP.put("&a", ConsoleColors.BRIGHT_GREEN);
+        COLOR_MAP.put("&b", ConsoleColors.BRIGHT_BLUE);
+        COLOR_MAP.put("&c", ConsoleColors.BRIGHT_RED);
+        COLOR_MAP.put("&d", "MISSING");
+        COLOR_MAP.put("&e", ConsoleColors.YELLOW);
+        COLOR_MAP.put("&f", ConsoleColors.WHITE);
+        COLOR_MAP.put("&r", ConsoleColors.RESET);
+    }
+
+    public static String convertMinecraftColors(String input) {
+        for (final Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
+            input = input.replaceAll(entry.getKey(), entry.getValue());
+        }
+        return input;
+    }
 }
