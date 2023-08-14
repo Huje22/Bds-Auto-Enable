@@ -66,6 +66,9 @@ public class ServerProperties {
     public int getMaxThreads() {
         return Integer.parseInt(this.properties.getProperty("max-threads"));
     }
+    public int getMaxPlayers() {
+        return Integer.parseInt(this.properties.getProperty("max-players"));
+    }
 
     public boolean isClientSideChunkGeneration() {
         return Boolean.parseBoolean(this.properties.getProperty("client-side-chunk-generation-enabled"));
