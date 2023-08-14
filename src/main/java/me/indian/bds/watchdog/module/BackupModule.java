@@ -33,7 +33,6 @@ public class BackupModule {
     private File backupFolder;
     private File worldFile;
     private String worldName;
-    private TimerTask hourlyTask;
     private boolean backuping;
 
     public BackupModule(final BDSAutoEnable bdsAutoEnable) {
@@ -80,13 +79,13 @@ public class BackupModule {
         this.service.execute(() -> {
             if (this.config.isBackup()) {
                 this.logger.debug("Ścieżka świata backupów " + Defaults.getWorldsPath() + this.worldName);
-                this.hourlyTask = new TimerTask() {
+                final TimerTask backupTask = new TimerTask() {
                     @Override
                     public void run() {
                         BackupModule.this.forceBackup();
                     }
                 };
-                this.timer.schedule(this.hourlyTask, MathUtil.minutesToMilliseconds(60));
+                this.timer.schedule(backupTask, MathUtil.minutesToMilliseconds(this.config.getBackupFrequency()));
             }
         });
     }
