@@ -39,11 +39,10 @@ public class VersionManager {
         this.loadVersionsInfo();
 
 
-        this.importantFiles.add("config");
         this.importantFiles.add("allowlist.json");
         this.importantFiles.add("server.properties");
         this.importantFiles.add("permissions.json");
-        this.importantFiles.add("config" + File.separator + "default" + File.separator + "permissions.json");
+        this.importantFiles.add("config/");
     }
 
     private void loadVersionsInfo() {
@@ -146,6 +145,7 @@ public class VersionManager {
                 outputStream.close();
 
                 this.logger.info("Pobrano w " + ConsoleColors.GREEN + ((System.currentTimeMillis() - startTime) / 1000.0) + ConsoleColors.RESET + " sekund");
+                this.loadVersionsInfo();
             } else {
                 this.logger.error("Kod odpowiedzi strony: " + response);
                 this.logger.error("Prawdopodobnie nie ma takiej wersij jak: " + version);
