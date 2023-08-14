@@ -100,10 +100,23 @@ public class ConsoleColors {
         COLOR_MAP.put("#f", BRIGHT_WHITE_BACKGROUND);
     }
 
-    public static String convertMinecraftColors(String input) {
-        for (final Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
-            input = input.replaceAll(entry.getKey(), entry.getValue());
+    public static String convertMinecraftColors(final Object input) {
+        if (input instanceof String in) {
+            for (final Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
+                in = in.replaceAll(entry.getKey(), entry.getValue());
+            }
+            return in + RESET;
         }
-        return input + RESET;
+        return "";
+    }
+
+    public static String removeColors(final Object input) {
+        if (input instanceof String in) {
+            for (Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
+                in = in.replace(entry.getValue(), "");
+            }
+            return in;
+        }
+        return "";
     }
 }

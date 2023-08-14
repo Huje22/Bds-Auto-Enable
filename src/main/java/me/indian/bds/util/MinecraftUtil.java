@@ -1,10 +1,10 @@
 package me.indian.bds.util;
 
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.server.ServerProcess;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.PlayerManager;
+import me.indian.bds.server.ServerProcess;
 
 public class MinecraftUtil {
 
@@ -31,7 +31,7 @@ public class MinecraftUtil {
     }
 
     public static void tellrawToAllAndLogger(final String prefix, final String msg, final LogState logState) {
-        logger.logByState("[To Minecraft] " + ConsoleColors.convertMinecraftColors(msg) + ConsoleColors.RESET, logState);
+        logger.logByState("[To Minecraft] " + msg, logState);
         if (!playerManager.getOnlinePlayers().isEmpty()) serverProcess.sendToConsole(tellrawToAllMessage(prefix + " " + msg));
     }
 

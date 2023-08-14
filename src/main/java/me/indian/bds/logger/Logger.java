@@ -59,32 +59,32 @@ public class Logger {
     public void critical(final Object log) {
         this.logState = LogState.CRITICAL;
         this.logToFile(log);
-        System.out.println(prefix + log);
+        System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
     }
 
     public void error(final Object log) {
         this.logState = LogState.ERROR;
         this.logToFile(log);
-        System.out.println(prefix + log);
+        System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
     }
 
     public void warning(final Object log) {
         this.logState = LogState.WARNING;
         this.logToFile(log);
-        System.out.println(prefix + log);
+        System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
     }
 
     public void info(final Object log) {
         this.logState = LogState.INFO;
         this.logToFile(log);
-        System.out.println(prefix + log);
+        System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
     }
 
     public void debug(final Object log) {
         if (this.config.isDebug()) {
             this.logState = LogState.DEBUG;
             this.logToFile(log);
-            System.out.println(prefix + log);
+            System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         }
     }
 
@@ -101,14 +101,14 @@ public class Logger {
 
     public void instantLogToFile(final Object log) {
         if (this.printStream != null) {
-            this.printStream.println(log);
+            this.printStream.println(ConsoleColors.removeColors(log));
         }
     }
 
     public void logToFile(final Object log) {
         this.updatePrefix();
         if (this.printStream != null) {
-            this.printStream.println(DateUtil.getDate() + " [" + Thread.currentThread().getName() + "] " + this.logState + " " + log);
+            this.printStream.println(DateUtil.getDate() + " [" + Thread.currentThread().getName() + "] " + this.logState + " " + ConsoleColors.removeColors(log));
         }
     }
 
