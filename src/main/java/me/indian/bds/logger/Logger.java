@@ -4,7 +4,6 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.util.ConsoleColors;
 import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.ThreadUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,24 +56,28 @@ public class Logger {
 
     public void critical(final Object log) {
         this.logState = LogState.CRITICAL;
+        this.updatePrefix();
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         this.logToFile(log);
     }
 
     public void error(final Object log) {
         this.logState = LogState.ERROR;
+        this.updatePrefix();
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         this.logToFile(log);
     }
 
     public void warning(final Object log) {
         this.logState = LogState.WARNING;
+        this.updatePrefix();
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         this.logToFile(log);
     }
 
     public void info(final Object log) {
         this.logState = LogState.INFO;
+        this.updatePrefix();
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         this.logToFile(log);
     }
@@ -105,7 +108,6 @@ public class Logger {
     }
 
     public void logToFile(final Object log) {
-        this.updatePrefix();
         if (this.printStream != null) {
             this.printStream.println(DateUtil.getDate() + " [" + Thread.currentThread().getName() + "] " + this.logState + " " + ConsoleColors.removeColors(log));
         }
