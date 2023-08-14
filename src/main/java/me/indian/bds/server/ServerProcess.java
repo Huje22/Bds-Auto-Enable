@@ -2,6 +2,7 @@ package me.indian.bds.server;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
+import me.indian.bds.discord.WebHook;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
@@ -25,6 +26,7 @@ public class ServerProcess {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Config config;
+    private final WebHook webHook;
     private final PlayerManager playerManager;
     private final ExecutorService processService;
     private final ExecutorService consoleService;
@@ -39,6 +41,7 @@ public class ServerProcess {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
+        this.webHook = this.bdsAutoEnable.getWebHook();
         this.playerManager = this.bdsAutoEnable.getPlayerManager();
         this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
         this.consoleService = Executors.newScheduledThreadPool(2, new ThreadUtil("Console"));
@@ -105,14 +108,11 @@ public class ServerProcess {
                                 this.processBuilder = new ProcessBuilder("wine", this.finalFilePath);
                             } else {
                                 this.processBuilder = new ProcessBuilder("./" + this.config.getFileName());
-
                                 this.processBuilder.environment().put("LD_LIBRARY_PATH", ".");
                                 this.processBuilder.directory(new File(this.config.getFilesPath()));
                             }
                         }
-                        case WINDOWS -> {System.out.println("NYGGGER" + this.config.getFileName());
-                            this.processBuilder = new ProcessBuilder(this.finalFilePath);
-                        }
+                        case WINDOWS -> this.processBuilder = new ProcessBuilder(this.finalFilePath);
                         default -> {
                             this.logger.critical("Musisz podać odpowiedni system");
                             this.instantShutdown();
@@ -120,12 +120,14 @@ public class ServerProcess {
                     }
                     this.playerManager.clearPlayers();
                     this.process = this.processBuilder.start();
-                    this.logger.info("Uruchomiono proces (nadal może on sie wyłączyć)");
+                    this.logger.info("Uruchomiono proces ");
+                    this.webHook.sendDiscordMessage(this.config.getMessages().get("Started"));
 
                     this.consoleService.execute(this::readConsoleOutput);
                     this.consoleService.execute(this::writeConsoleInput);
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
+                    this.webHook.sendDiscordMessage(this.config.getMessages().get("Disabled"));
                     ThreadUtil.sleep(5);
                     this.startProcess();
 
@@ -211,6 +213,7 @@ public class ServerProcess {
 
     public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
+        this.webHook.sendDiscordMessage(this.config.getMessages().get("Disabling"));
         if (this.consoleService != null && !this.consoleService.isTerminated()) {
             this.logger.info("Zatrzymywanie wątków konsoli");
             try {
@@ -257,6 +260,7 @@ public class ServerProcess {
             try {
                 this.process.destroy();
                 this.logger.info("Zniszczeno proces servera");
+                this.webHook.sendDiscordMessage(this.config.getMessages().get("Disabled"));
             } catch (final Exception exception) {
                 this.logger.error("Nie udało się zniszczyć procesu servera");
                 exception.printStackTrace();

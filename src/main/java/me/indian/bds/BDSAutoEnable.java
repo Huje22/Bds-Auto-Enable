@@ -3,6 +3,7 @@ package me.indian.bds;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import me.indian.bds.config.Config;
+import me.indian.bds.discord.WebHook;
 import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.PlayerManager;
@@ -19,15 +20,16 @@ import java.util.Scanner;
 
 public class BDSAutoEnable {
 
+    private final String projectVersion;
     private final Scanner scanner;
     private final Logger logger;
+    private final ServerProperties serverProperties;
     private final Config config;
+    private final WebHook webHook;
     private final Settings settings;
     private final ServerProcess serverProcess;
-    private final ServerProperties serverProperties;
-    private final VersionManager versionManager;
     private final PlayerManager playerManager;
-    private final String projectVersion;
+    private final VersionManager versionManager;
     private WatchDog watchDog;
     private String runDate;
 
@@ -45,9 +47,10 @@ public class BDSAutoEnable {
         });
         Defaults.init(this);
         this.logger = new Logger(this);
+        this.webHook = new WebHook(this);
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
-        this.playerManager = new PlayerManager();
+        this.playerManager = new PlayerManager(this);
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
         MinecraftUtil.initMinecraftUtil(this);
@@ -105,6 +108,10 @@ public class BDSAutoEnable {
 
     public Logger getLogger() {
         return logger;
+    }
+
+    public WebHook getWebHook() {
+        return this.webHook;
     }
 
     public Settings getSettings() {
