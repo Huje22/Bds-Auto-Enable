@@ -32,6 +32,7 @@ public class BDSAutoEnable {
     private String runDate;
 
     public BDSAutoEnable() {
+        System.setProperty("file.encoding", "UTF-8");
         this.projectVersion = "1.0.0-Dev";
         this.initRunDate();
         this.scanner = new Scanner(System.in);
