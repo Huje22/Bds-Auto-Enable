@@ -3,7 +3,6 @@ package me.indian.bds.manager;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ConsoleColors;
 import me.indian.bds.util.ZipUtil;
 
 import java.io.BufferedInputStream;
@@ -38,7 +37,6 @@ public class VersionManager {
         this.availableVersions = new ArrayList<>();
         this.loadVersionsInfo();
 
-
         this.importantFiles.add("allowlist.json");
         this.importantFiles.add("server.properties");
         this.importantFiles.add("permissions.json");
@@ -47,8 +45,8 @@ public class VersionManager {
 
     private void loadVersionsInfo() {
         this.availableVersions.clear();
-        try (DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(this.versionFolder.getPath()))) {
-            for (Path path : directoryStream) {
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(this.versionFolder.getPath()))) {
+            for (final Path path : directoryStream) {
                 if (Files.isRegularFile(path)) {
                     final String name = String.valueOf(path.getFileName());
                     if (name.endsWith(".zip")) {
@@ -64,7 +62,7 @@ public class VersionManager {
     public void loadVersion(final String version) {
         if (!this.versionFolder.exists()) {
             if (this.versionFolder.mkdirs()) {
-                this.logger.info("Utworzono mnieisce na wersjie");
+                this.logger.info("Utworzono miejsce na wersjie");
             } else {
                 this.logger.error("Nie można utworzyć mnieisca na wersjie");
                 return;
@@ -73,20 +71,19 @@ public class VersionManager {
 
         final File verFile = new File(this.versionFolder.getPath() + File.separator + version + ".zip");
         if (!verFile.exists()) {
-            this.logger.info("Nie znaleziono wersji " + ConsoleColors.DARK_BLUE + version + ConsoleColors.RESET);
+            this.logger.info("Nie znaleziono wersji:&1 " + version);
             this.downloadServerFiles(version);
         }
         try {
-            this.logger.info("Ładowanie wersji: " + version);
-
+            this.logger.info("Ładowanie wersji:&1 " + version);
             final int versionSize = this.getSize(version);
             if (!(versionSize <= -1) && versionSize != Files.size(verFile.toPath())) {
                 this.logger.critical("Wielkość versij nie jest zgodna!");
                 this.downloadServerFiles(version);
             }
-
+            final long startTime = System.currentTimeMillis();
             ZipUtil.unzipFile(verFile.getAbsolutePath(), this.config.getFilesPath(), this.importantFiles);
-            this.logger.info("Załadowano versie: " + version);
+            this.logger.info("Załadowano versie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final IOException exception) {
             this.logger.error("Nie można załadować wersji: " + version);
             this.logger.critical(exception);
@@ -96,7 +93,6 @@ public class VersionManager {
         this.config.setLoaded(true);
         this.config.setVersion(version);
         this.config.save();
-//        this.bdsAutoEnable.getServerProcess().instantShutdown();
     }
 
     public void loadVersion() {
@@ -120,7 +116,7 @@ public class VersionManager {
             final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             final int response = connection.getResponseCode();
             if (response == HttpURLConnection.HTTP_OK) {
-                this.logger.info("Pobieranie wersji: " + ConsoleColors.DARK_BLUE + version + ConsoleColors.RESET);
+                this.logger.info("Pobieranie wersji: &1" + version);
                 final int fileSize = connection.getContentLength();
                 final InputStream inputStream = new BufferedInputStream(connection.getInputStream());
                 final FileOutputStream outputStream = new FileOutputStream(this.versionFolder.getPath() + File.separator + version + ".zip");
@@ -144,7 +140,7 @@ public class VersionManager {
                 inputStream.close();
                 outputStream.close();
 
-                this.logger.info("Pobrano w " + ConsoleColors.GREEN + ((System.currentTimeMillis() - startTime) / 1000.0) + ConsoleColors.RESET + " sekund");
+                this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
                 this.loadVersionsInfo();
             } else {
                 this.logger.error("Kod odpowiedzi strony: " + response);

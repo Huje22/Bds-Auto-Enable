@@ -3,7 +3,6 @@ package me.indian.bds;
 import me.indian.bds.config.Config;
 import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ConsoleColors;
 import me.indian.bds.util.ScannerUtil;
 import me.indian.bds.util.SystemOs;
 import me.indian.bds.util.ThreadUtil;
@@ -30,8 +29,6 @@ public class Settings {
     public void loadSettings(final Scanner scanner) {
         final ScannerUtil scannerUtil = new ScannerUtil(scanner);
         if (!this.config.isFirstRun()) {
-
-
             scannerUtil.addQuestion((defaultValue) -> this.logger.info("Zastosować wcześnejsze ustawienia? (true/false) (Enter = true) "), true, (settings) -> {
                 if (Boolean.parseBoolean(settings)) {
                     this.serverProperties.loadProperties();
@@ -41,10 +38,7 @@ public class Settings {
                     this.init(scannerUtil);
                 }
             });
-
-
         } else {
-            this.logger.warning("&4Przy pierwszym start mogą wystąpić problemy");
             this.init(scannerUtil);
         }
     }
@@ -57,7 +51,7 @@ public class Settings {
                         this.logger.info("&lPodaj system&r (Wykryty system: " + defaultValue + "): " + this.enter);
                         this.logger.info("Obsługiwane systemy: " + Arrays.toString(SystemOs.values()));
                     }, Defaults.getSystem(),
-                    (input) -> this.logger.info("System ustawiony na:&b " + input.toUpperCase())
+                    (input) -> this.logger.info("System ustawiony na:&1 " + input.toUpperCase())
             ).toUpperCase());
         } catch (final IllegalArgumentException exception) {
             this.logger.error("Podano nie znany system , ustawiono domyślnie na: LINUX");
@@ -65,7 +59,7 @@ public class Settings {
         }
         this.config.setSystemOs(system);
         this.config.setFileName(scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + "): " + this.enter), Defaults.getDefaultFileName(), (input) -> {
-            this.logger.info("Nazwa pliku ustawiona na:&b " + input);
+            this.logger.info("Nazwa pliku ustawiona na:&1 " + input);
             if (this.config.getSystemOs() == SystemOs.LINUX) {
                 if (input.contains(".exe")) {
                     this.logger.alert("&lW tym wypadku będzie potrzebne&r&n&bWINE ");
@@ -76,9 +70,8 @@ public class Settings {
             }
         }));
 
-        this.config.setFilesPath(scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lPodaj ścieżkę do plików servera&r  (Domyślnie: " + defaultValue + "): " + this.enter),
-                Defaults.getJarPath(),
-                (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)));
+        this.config.setFilesPath(scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lPodaj ścieżkę do plików servera&r  (Domyślnie: " + defaultValue + "): " + this.enter), Defaults.getJarPath(), (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)));
+        this.config.save();
 
         if (this.config.isLoaded())
             scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lZaładować jakąś inną versie&r (Domyślnie: " + defaultValue + "): " + this.enter),
@@ -93,14 +86,10 @@ public class Settings {
         if (!this.config.isLoaded()) this.versionQuestion(scannerUtil);
         this.serverProperties.loadProperties();
 
-        final boolean backup = scannerUtil.addQuestion((defaultValue) -> this.logger.info(ConsoleColors.BOLD + "Włączyć Backupy " + ConsoleColors.RESET + " (Domyślnie: " + defaultValue + ")? " + this.enter),
-                true,
-                (input) -> this.logger.info("Backupy ustawione na:&b " + input));
+        final boolean backup = scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lWłączyć Backupy&r (Domyślnie: " + defaultValue + ")? " + this.enter), true, (input) -> this.logger.info("Backupy ustawione na:&1 " + input));
         this.config.setBackup(backup);
         if (backup) {
-            final int backupFrequency = scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lCo ile minut robic backup?&r (Domyślnie: " + defaultValue + ")? " + this.enter),
-                    60,
-                    (input) -> this.logger.info("Backup bedzie robiony co:&b " + (Integer.parseInt(input) == 0 ? 60 : Integer.parseInt(input) + "&a minut")));
+            final int backupFrequency = scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lCo ile minut robic backup?&r (Domyślnie: " + defaultValue + ")? " + this.enter), 60, (input) -> this.logger.info("Backup bedzie robiony co:&1 " + (Integer.parseInt(input) == 0 ? 60 : Integer.parseInt(input) + "&a minut")));
             this.config.setBackupFrequency(backupFrequency == 0 ? 60 : backupFrequency);
         }
 
@@ -109,17 +98,17 @@ public class Settings {
         this.serverProperties.setServerPort(scannerUtil.addQuestion((defaultValue) -> {
             this.logger.info("&lUstaw port v4?&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
             this.logger.info("#cPamiętaj że twoja siec musi miec dostepny ten port");
-        }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na:&b " + input)));
+        }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na:&1 " + input)));
 
         this.serverProperties.setServerPortV6(scannerUtil.addQuestion((defaultValue) -> {
             this.logger.info("&lUstaw port v6?&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
             this.logger.info("#cJeśli twoja maszyna obsługuje ipv6 ustaw go na dostepny z puli portów");
-        }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&b " + input)));
+        }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&1 " + input)));
 
         final int threads = scannerUtil.addQuestion((defaultValue) -> {
             this.logger.info("&lLiczba wątków używana przez server&r (Dostępna liczba wątków to około " + ThreadUtil.getThreadsCount() + ") ");
             this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
-        }, 0, (input) -> this.logger.info("Liczba wątków ustawiona na:&b " + (Integer.parseInt(input) <= -1 ? 0 : input)));
+        }, 0, (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + (Integer.parseInt(input) <= -1 ? 0 : input)));
 
         this.serverProperties.setMaxThreads(threads <= -1 ? 0 : threads);
         this.serverProperties.setClientSideChunkGeneration(scannerUtil.addQuestion(
@@ -127,8 +116,7 @@ public class Settings {
                     this.logger.info("&lClient Side Chunks&r (Domyślnie: " + defaultValue + ")? " + this.enter);
                     this.logger.info("Jeśli jest &1true&r serwer poinformuje klientów, " + "że mają możliwość generowania chunków poziomu wizualnego poza odległościami interakcji graczy. ");
                 },
-                true,
-                (input) -> this.logger.info("Ustawiono Client Side Chunks na:&b " + input)
+                true, (input) -> this.logger.info("Ustawiono Client Side Chunks na:&1 " + input)
         ));
 
         this.logger.info("Ukończono odpowiedzi w&a " + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
@@ -139,24 +127,24 @@ public class Settings {
     private void currentSettings(final Scanner scanner) {
         System.out.println();
         this.logger.info("Aktualne informacije");
-        this.logger.info("System:&b " + this.config.getSystemOs());
-        this.logger.info("Nazwa pliku:&b " + this.config.getFileName());
-        this.logger.info("Wine:&b " + this.config.isWine());
+        this.logger.info("System:&1 " + this.config.getSystemOs());
+        this.logger.info("Nazwa pliku:&1 " + this.config.getFileName());
+        this.logger.info("Wine:&1 " + this.config.isWine());
         this.logger.info("Ścieżka plików: " + this.config.getFilesPath());
-        this.logger.info("Wersija:&b " + this.config.getVersion());
+        this.logger.info("Wersija:&1 " + this.config.getVersion());
 
         boolean backup = this.config.isBackup();
-        this.logger.info("Backup:&b " + backup);
+        this.logger.info("Backup:&1 " + backup);
 
         if (backup) {
-            this.logger.info("Częstotliwość robienia backup:&b " + this.config.getBackupFrequency() + "&a minut");
-            this.logger.info("Nazwa świata:&b " + this.serverProperties.getWorldName());
+            this.logger.info("Częstotliwość robienia backup:&1 " + this.config.getBackupFrequency() + "&a minut");
+            this.logger.info("Nazwa świata:&1 " + this.serverProperties.getWorldName());
         }
 
-        this.logger.info("Port v4:&b " + this.serverProperties.getServerPort());
-        this.logger.info("Port v6:&b " + this.serverProperties.getServerPortV6());
-        this.logger.info("Liczba wątków używana przez server:&b " + this.serverProperties.getMaxThreads());
-        this.logger.info("Czy klient generuje chunki:&b " + this.serverProperties.isClientSideChunkGeneration());
+        this.logger.info("Port v4:&1 " + this.serverProperties.getServerPort());
+        this.logger.info("Port v6:&1 " + this.serverProperties.getServerPortV6());
+        this.logger.info("Liczba wątków używana przez server:&1 " + this.serverProperties.getMaxThreads());
+        this.logger.info("Czy klient generuje chunki:&1 " + this.serverProperties.isClientSideChunkGeneration());
 
         this.logger.info("Kliknij enter aby kontunować");
         scanner.nextLine();
@@ -171,15 +159,14 @@ public class Settings {
         this.config.setVersion(scannerUtil.addQuestion(
                 (defaultValue) -> {
                     this.logger.info("&lJaką versie załadować?&r (Domyślnie: " + defaultValue + "): " + this.enter);
-                    if(this.bdsAutoEnable.getVersionManager().getAvailableVersions().isEmpty()){
+                    if (this.bdsAutoEnable.getVersionManager().getAvailableVersions().isEmpty()) {
                         this.logger.info("Nie znaleziono żadnej wersij");
                     } else {
                         this.logger.info("Pobrane versije: " + this.bdsAutoEnable.getVersionManager().getAvailableVersions());
                     }
                     this.logger.info("Aby pobrać jakaś versie wpisz jej numer (niektóre mogą mieć .01 / .02 na końcu)");
                 },
-                this.config.getVersion(),
-                (input) -> this.logger.info("Wersia do załadowania ustawiona na:&b " + input)
+                this.config.getVersion(), (input) -> this.logger.info("Wersia do załadowania ustawiona na:&1 " + input)
         ));
         this.bdsAutoEnable.getVersionManager().loadVersion();
     }

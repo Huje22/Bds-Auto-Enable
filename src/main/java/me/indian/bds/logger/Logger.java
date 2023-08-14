@@ -4,6 +4,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.util.ConsoleColors;
 import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.ThreadUtil;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -28,12 +29,9 @@ public class Logger {
 
     private void updatePrefix() {
         final String logStateColor = this.logState.getColorCode();
-        this.prefix = ConsoleColors.DARK_GRAY + DateUtil.getDate() + ConsoleColors.BRIGHT_GREEN + " BDS " + ConsoleColors.BLUE + "Auto Enabled " +
-                ConsoleColors.BRIGHT_GREEN + "[" + ConsoleColors.BRIGHT_GRAY +
-                Thread.currentThread().getName()
-                + ConsoleColors.BRIGHT_GREEN + "]" +
-                " " + logStateColor + this.logState.name().toUpperCase()
-                + ConsoleColors.RESET + " ";
+        this.prefix = "&8" + DateUtil.getDate() + "&a BDS&1 Auto Enable &a[&7" +
+                Thread.currentThread().getName() + "&r&a] "
+                + logStateColor + this.logState.name().toUpperCase() + " &r";
     }
 
     private void initializeLogFile() {
@@ -52,32 +50,33 @@ public class Logger {
 
     public void alert(final Object log) {
         this.logState = LogState.ALERT;
+        this.updatePrefix();
+        System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         this.logToFile(log);
-        System.out.println(prefix + log);
     }
 
     public void critical(final Object log) {
         this.logState = LogState.CRITICAL;
-        this.logToFile(log);
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
+        this.logToFile(log);
     }
 
     public void error(final Object log) {
         this.logState = LogState.ERROR;
-        this.logToFile(log);
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
+        this.logToFile(log);
     }
 
     public void warning(final Object log) {
         this.logState = LogState.WARNING;
-        this.logToFile(log);
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
+        this.logToFile(log);
     }
 
     public void info(final Object log) {
         this.logState = LogState.INFO;
-        this.logToFile(log);
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
+        this.logToFile(log);
     }
 
     public void debug(final Object log) {

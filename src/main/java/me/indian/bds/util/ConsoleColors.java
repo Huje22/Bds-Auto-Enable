@@ -7,53 +7,53 @@ public class ConsoleColors {
 
     private static final Map<String, String> COLOR_MAP = new HashMap<>();
 
-    public static final String BLACK = "\u001B[30m";
-    public static final String RED = "\u001B[31m";
-    public static final String GREEN = "\u001B[32m";
-    public static final String YELLOW = "\u001B[0;33m";
-    public static final String DARK_BLUE = "\u001B[34m";
-    public static final String PURPLE = "\u001B[35m";
-    public static final String LIGHT_PURPLE = "\u001B[0;95m";
-    public static final String CYAN = "\u001B[36m";
-    public static final String WHITE = "\u001B[37m";
+    private static final String BLACK = "\u001B[30m";
+    private static final String RED = "\u001B[31m";
+    private static final String GREEN = "\u001B[32m";
+    private static final String YELLOW = "\u001B[0;33m";
+    private static final String DARK_BLUE = "\u001B[34m";
+    private static final String PURPLE = "\u001B[35m";
+    private static final String LIGHT_PURPLE = "\u001B[0;95m";
+    private static final String CYAN = "\u001B[36m";
+    private static final String WHITE = "\u001B[37m";
 
-    public static final String BRIGHT_RED = "\u001B[91m";
-    public static final String BRIGHT_GREEN = "\u001B[92m";
-    public static final String BRIGHT_YELLOW = "\u001B[93m";
-    public static final String BLUE = "\u001B[94m";
-    public static final String BRIGHT_PURPLE = "\u001B[95m";
-    public static final String BRIGHT_CYAN = "\u001B[96m";
-    public static final String BRIGHT_WHITE = "\u001B[97m";
+    private static final String BRIGHT_RED = "\u001B[91m";
+    private static final String BRIGHT_GREEN = "\u001B[92m";
+    private static final String BRIGHT_YELLOW = "\u001B[93m";
+    private static final String BLUE = "\u001B[94m";
+    private static final String BRIGHT_PURPLE = "\u001B[95m";
+    private static final String BRIGHT_CYAN = "\u001B[96m";
+    private static final String BRIGHT_WHITE = "\u001B[97m";
 
-    public static final String BRIGHT_GRAY = "\u001B[37m";
-    public static final String DARK_GRAY = "\u001B[90m";
-    public static final String LIGHT_GRAY = "\u001B[37;1m";
-    public static final String SILVER = "\u001B[90;1m";
-    public static final String DARK_RED = "\u001B[31;1m";
+    private static final String BRIGHT_GRAY = "\u001B[37m";
+    private static final String DARK_GRAY = "\u001B[90m";
+    private static final String LIGHT_GRAY = "\u001B[37;1m";
+    private static final String SILVER = "\u001B[90;1m";
+    private static final String DARK_RED = "\u001B[31;1m";
 
-    public static final String RESET = "\u001B[0m";
-    public static final String BOLD = "\033[1m";
-    public static final String OBFUSCATED = "\033[8m";
-    public static final String ITALIC = "\033[3m";
-    public static final String UNDERLINE = "\033[4m";
-    public static final String STRIKETHROUGH = "\033[9m";
-    public static final String BLACK_BACKGROUND = "\u001B[40m";
-    public static final String RED_BACKGROUND = "\u001B[41m";
-    public static final String GREEN_BACKGROUND = "\u001B[42m";
-    public static final String YELLOW_BACKGROUND = "\u001B[43m";
-    public static final String BLUE_BACKGROUND = "\u001B[44m";
-    public static final String PURPLE_BACKGROUND = "\u001B[45m";
-    public static final String CYAN_BACKGROUND = "\u001B[46m";
-    public static final String WHITE_BACKGROUND = "\u001B[47m";
-    public static final String BRIGHT_BLACK_BACKGROUND = "\u001B[100m";
-    public static final String BRIGHT_RED_BACKGROUND = "\u001B[101m";
-    public static final String BRIGHT_GREEN_BACKGROUND = "\u001B[102m";
-    public static final String BRIGHT_YELLOW_BACKGROUND = "\u001B[103m";
-    public static final String BRIGHT_BLUE_BACKGROUND = "\u001B[104m";
-    public static final String DARK_GRAY_BACKGROUND = "\u001B[100m";
-    public static final String BRIGHT_PURPLE_BACKGROUND = "\u001B[105m";
-    public static final String BRIGHT_CYAN_BACKGROUND = "\u001B[106m";
-    public static final String BRIGHT_WHITE_BACKGROUND = "\u001B[107m";
+    private static final String RESET = "\u001B[0m";
+    private static final String BOLD = "\033[1m";
+    private static final String OBFUSCATED = "\033[8m";
+    private static final String ITALIC = "\033[3m";
+    private static final String UNDERLINE = "\033[4m";
+    private static final String STRIKETHROUGH = "\033[9m";
+    private static final String BLACK_BACKGROUND = "\u001B[40m";
+    private static final String RED_BACKGROUND = "\u001B[41m";
+    private static final String GREEN_BACKGROUND = "\u001B[42m";
+    private static final String YELLOW_BACKGROUND = "\u001B[43m";
+    private static final String BLUE_BACKGROUND = "\u001B[44m";
+    private static final String PURPLE_BACKGROUND = "\u001B[45m";
+    private static final String CYAN_BACKGROUND = "\u001B[46m";
+    private static final String WHITE_BACKGROUND = "\u001B[47m";
+    private static final String BRIGHT_BLACK_BACKGROUND = "\u001B[100m";
+    private static final String BRIGHT_RED_BACKGROUND = "\u001B[101m";
+    private static final String BRIGHT_GREEN_BACKGROUND = "\u001B[102m";
+    private static final String BRIGHT_YELLOW_BACKGROUND = "\u001B[103m";
+    private static final String BRIGHT_BLUE_BACKGROUND = "\u001B[104m";
+    private static final String DARK_GRAY_BACKGROUND = "\u001B[100m";
+    private static final String BRIGHT_PURPLE_BACKGROUND = "\u001B[105m";
+    private static final String BRIGHT_CYAN_BACKGROUND = "\u001B[106m";
+    private static final String BRIGHT_WHITE_BACKGROUND = "\u001B[107m";
 
     static {
         COLOR_MAP.put("&0", BLACK);
@@ -113,7 +113,8 @@ public class ConsoleColors {
     public static String removeColors(final Object input) {
         if (input instanceof String in) {
             for (Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
-                in = in.replace(entry.getValue(), "");
+                in = in.replace(entry.getValue(), "")
+                        .replaceAll(entry.getKey(), "");
             }
             return in;
         }

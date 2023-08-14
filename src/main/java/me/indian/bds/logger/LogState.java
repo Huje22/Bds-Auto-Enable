@@ -1,15 +1,13 @@
 package me.indian.bds.logger;
 
-import me.indian.bds.util.ConsoleColors;
-
 public enum LogState {
-    NONE(ConsoleColors.RESET),
-    INFO(ConsoleColors.DARK_BLUE),
-    ALERT(ConsoleColors.BRIGHT_RED),
-    CRITICAL(ConsoleColors.DARK_RED),
-    ERROR(ConsoleColors.DARK_GRAY),
-    DEBUG(ConsoleColors.DARK_GRAY),
-    WARNING(ConsoleColors.BRIGHT_WHITE);
+    NONE("&r"),
+    INFO("&1"),
+    ALERT("&c"),
+    CRITICAL("&4"),
+    ERROR("&8"),
+    DEBUG("&8"),
+    WARNING("&f");
 
     private final String colorCode;
 

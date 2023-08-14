@@ -31,7 +31,7 @@ public class ServerProperties {
             this.properties.clear();
             this.properties.load(input);
         } catch (final IOException exception) {
-            this.logger.critical(ConsoleColors.RED + "Wystąpił krytyczny błąd podczas ładowania " + ConsoleColors.GREEN + "server.properties" + ConsoleColors.RESET);
+            this.logger.critical("&cWystąpił krytyczny błąd podczas ładowania &aserver.properties");
             throw new RuntimeException(exception);
         }
     }
@@ -40,7 +40,7 @@ public class ServerProperties {
         try {
             this.properties.store(Files.newOutputStream(Paths.get(this.config.getFilesPath() + "/server.properties")), null);
         } catch (final IOException e) {
-            this.logger.critical(ConsoleColors.RED + "Wystąpił krytyczny błąd podczas zapisywania " + ConsoleColors.GREEN + "server.properties" + ConsoleColors.RESET);
+            this.logger.critical("&cWystąpił krytyczny błąd podczas zapisywania&a server.properties");
             this.bdsAutoEnable.getServerProcess().instantShutdown();
             throw new RuntimeException(e);
         }
@@ -71,10 +71,6 @@ public class ServerProperties {
         return Boolean.parseBoolean(this.properties.getProperty("client-side-chunk-generation-enabled"));
     }
 
-    public boolean isAllowList() {
-        return Boolean.parseBoolean(this.properties.getProperty("allow-list"));
-    }
-
     public void setServerPort(final int port) {
         this.properties.setProperty("server-port", String.valueOf(port));
         this.reloadServerProperties();
@@ -92,11 +88,6 @@ public class ServerProperties {
 
     public void setClientSideChunkGeneration(final boolean clientSide) {
         this.properties.setProperty("client-side-chunk-generation-enabled", String.valueOf(clientSide));
-        this.reloadServerProperties();
-    }
-
-    public void setAllowList(final boolean allowList) {
-        this.properties.setProperty("allow-list", String.valueOf(allowList));
         this.reloadServerProperties();
     }
 

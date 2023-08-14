@@ -28,8 +28,8 @@ public class ServerProcess {
     private final PlayerManager playerManager;
     private final ExecutorService processService;
     private final ExecutorService consoleService;
-    private final String finalFilePath;
     private final String prefix;
+    private String finalFilePath;
     private ProcessBuilder processBuilder;
     private Process process;
     private PrintWriter writer;
@@ -42,7 +42,6 @@ public class ServerProcess {
         this.playerManager = this.bdsAutoEnable.getPlayerManager();
         this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
         this.consoleService = Executors.newScheduledThreadPool(2, new ThreadUtil("Console"));
-        this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
         this.prefix = "&b[&3ServerProcess&b] ";
 
     }
@@ -51,7 +50,7 @@ public class ServerProcess {
         this.watchDog = watchDog;
     }
 
-    private boolean isProcessRunning() throws RuntimeException {
+    private boolean isProcessRunning() {
         BufferedReader reader = null;
         try {
             String command = "";
@@ -91,6 +90,7 @@ public class ServerProcess {
     }
 
     public void startProcess() {
+        this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
         this.processService.execute(() -> {
             if (isProcessRunning()) {
                 this.logger.info("Proces " + this.config.getFileName() + " jest już uruchomiony.");
@@ -105,11 +105,14 @@ public class ServerProcess {
                                 this.processBuilder = new ProcessBuilder("wine", this.finalFilePath);
                             } else {
                                 this.processBuilder = new ProcessBuilder("./" + this.config.getFileName());
+
                                 this.processBuilder.environment().put("LD_LIBRARY_PATH", ".");
                                 this.processBuilder.directory(new File(this.config.getFilesPath()));
                             }
                         }
-                        case WINDOWS -> this.processBuilder = new ProcessBuilder(this.finalFilePath);
+                        case WINDOWS -> {System.out.println("NYGGGER" + this.config.getFileName());
+                            this.processBuilder = new ProcessBuilder(this.finalFilePath);
+                        }
                         default -> {
                             this.logger.critical("Musisz podać odpowiedni system");
                             this.instantShutdown();
@@ -279,6 +282,9 @@ public class ServerProcess {
                     if (backup) {
                         MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aWyłączanie servera , prosze poczekac pierw zostanie utworzony backup", LogState.ALERT);
                         this.watchDog.getBackupModule().forceBackup();
+                    }
+                    while (this.watchDog.getBackupModule().isBackuping()) {
+                        //it so bugged without this , idk why
                     }
                     while (!this.watchDog.getBackupModule().isBackuping()) {
                         MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aBackup zrobiony!", LogState.INFO);
