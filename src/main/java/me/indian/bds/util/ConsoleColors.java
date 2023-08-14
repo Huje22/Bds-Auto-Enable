@@ -104,6 +104,6 @@ public class ConsoleColors {
         for (final Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
             input = input.replaceAll(entry.getKey(), entry.getValue());
         }
-        return input;
+        return input + RESET;
     }
 }
