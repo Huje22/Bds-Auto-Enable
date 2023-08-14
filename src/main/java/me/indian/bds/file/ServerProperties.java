@@ -23,7 +23,6 @@ public class ServerProperties {
         this.properties = new Properties();
         this.config = this.bdsAutoEnable.getConfig();
         this.logger = this.bdsAutoEnable.getLogger();
-
     }
 
     public void loadProperties() {
@@ -71,6 +70,7 @@ public class ServerProperties {
     public boolean isClientSideChunkGeneration() {
         return Boolean.parseBoolean(this.properties.getProperty("client-side-chunk-generation-enabled"));
     }
+
     public boolean isAllowList() {
         return Boolean.parseBoolean(this.properties.getProperty("allow-list"));
     }
@@ -94,6 +94,7 @@ public class ServerProperties {
         this.properties.setProperty("client-side-chunk-generation-enabled", String.valueOf(clientSide));
         this.reloadServerProperties();
     }
+
     public void setAllowList(final boolean allowList) {
         this.properties.setProperty("allow-list", String.valueOf(allowList));
         this.reloadServerProperties();
