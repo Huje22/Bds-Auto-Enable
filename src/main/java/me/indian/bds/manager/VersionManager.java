@@ -133,7 +133,7 @@ public class VersionManager {
 
                     if (progress != tempProgres) {
                         tempProgres = progress;
-                        this.logger.info("Pobrano w: " + progress + "%");
+                        this.logger.info("Pobrano w:&b " + progress + "&a%");
                     }
                 }
 
