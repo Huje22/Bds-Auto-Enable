@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class MessageUtil {
-    
+
     public static String buildMessageFromArgs(final String[] args){
         String message = "";
         for (final String arg : args) {

@@ -160,7 +160,8 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                             .setDescription("`" + this.prefix + "help` - lista poleceń\n" +
                                     "`" + this.prefix + "list` - lista graczy online\n" +
                                     "`" + this.prefix + "ping` - aktualny ping bota\n" +
-                                    "`" + this.prefix + "uptime` - czas działania aplikacij i bota\n"
+                                    "`" + this.prefix + "uptime` - czas działania aplikacij i bota\n" +
+                                    "`" + this.prefix + "ip` - ip ustawione w config\n"
                             )
                             .setColor(Color.BLUE)
                             .setFooter("Wywołane przez " + member.getNickname(), member.getEffectiveAvatarUrl())
