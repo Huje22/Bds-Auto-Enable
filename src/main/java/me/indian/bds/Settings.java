@@ -57,10 +57,10 @@ public class Settings {
             this.logger.error("Podano nie znany system , ustawiono domyślnie na: LINUX");
             system = SystemOs.LINUX;
         }
-        this.config.setSystemOs(system);
+        this.config.setSystem(system);
         this.config.setFileName(scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + "): " + this.enter), Defaults.getDefaultFileName(), (input) -> {
             this.logger.info("Nazwa pliku ustawiona na:&1 " + input);
-            if (this.config.getSystemOs() == SystemOs.LINUX) {
+            if (this.config.getSystem() == SystemOs.LINUX) {
                 if (input.contains(".exe")) {
                     this.logger.alert("&lW tym wypadku będzie potrzebne&r&n&bWINE ");
                     this.config.setWine(true);
@@ -127,7 +127,7 @@ public class Settings {
     private void currentSettings(final Scanner scanner) {
         System.out.println();
         this.logger.info("Aktualne informacije");
-        this.logger.info("System:&1 " + this.config.getSystemOs());
+        this.logger.info("System:&1 " + this.config.getSystem());
         this.logger.info("Nazwa pliku:&1 " + this.config.getFileName());
         this.logger.info("Wine:&1 " + this.config.isWine());
         this.logger.info("Ścieżka plików: " + this.config.getFilesPath());

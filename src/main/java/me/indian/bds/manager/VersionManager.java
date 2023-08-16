@@ -171,7 +171,7 @@ public class VersionManager {
     }
 
     private String getServerDownloadUrl(final String version) {
-        switch (this.config.getSystemOs()) {
+        switch (this.config.getSystem()) {
             case LINUX:
                 if (this.config.isWine()) {
                     return "https://minecraft.azureedge.net/bin-win/bedrock-server-" + version + ".zip";

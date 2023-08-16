@@ -60,17 +60,17 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendJoinMessage(final String playerName) {
-        this.sendMessage(this.config.getMessages().get("Join").replaceAll("<name>", playerName));
+        this.sendMessage(this.config.getMessages().getJoinMessage().replaceAll("<name>", playerName));
     }
 
     @Override
     public void sendLeaveMessage(final String playerName) {
-        this.sendMessage(this.config.getMessages().get("Leave").replaceAll("<name>", playerName));
+        this.sendMessage(this.config.getMessages().getLeaveMessage().replaceAll("<name>", playerName));
     }
 
     @Override
     public void sendPlayerMessage(final String playerName, final String playerMessage) {
-        this.sendMessage(this.config.getMessages().get("MinecraftToDiscord")
+        this.sendMessage(this.config.getMessages().getMinecraftToDiscordMessage()
                 .replaceAll("<name>", playerName)
                 .replaceAll("<msg>", playerMessage)
         );
@@ -78,7 +78,7 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendDeathMessage(final String playerName, final String deathMessage) {
-        this.sendMessage(this.config.getMessages().get("Death")
+        this.sendMessage(this.config.getMessages().getDeathMessage()
                 .replaceAll("<name>", playerName)
                 .replaceAll("<casue>", deathMessage)
         );
@@ -86,29 +86,28 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendDisabledMessage() {
-        this.sendMessage(this.config.getMessages().get("Disabled"));
+        this.sendMessage(this.config.getMessages().getDisabledMessage());
     }
 
     @Override
     public void sendDisablingMessage() {
-        this.sendMessage(this.config.getMessages().get("Disabled"));
+        this.sendMessage(this.config.getMessages().getDisablingMessage());
     }
 
     @Override
     public void sendStopMessage() {
-        this.sendMessage(this.config.getMessages().get("Disabling"));
+        this.sendMessage(this.config.getMessages().getDisablingMessage());
     }
 
     @Override
     public void sendEnabledMessage() {
-        this.sendMessage(this.config.getMessages().get("Enabled"));
+        this.sendMessage(this.config.getMessages().getEnabledMessage());
     }
 
     @Override
     public void sendDestroyedMessage() {
-        this.sendMessage(this.config.getMessages().get("Destroyed"));
+        this.sendMessage(this.config.getMessages().getDestroyedMessage());
     }
-
     @Override
     public void writeConsole(String message) {
 

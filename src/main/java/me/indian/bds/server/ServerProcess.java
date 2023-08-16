@@ -29,7 +29,6 @@ public class ServerProcess {
     private final DiscordIntegration discord;
     private final PlayerManager playerManager;
     private final ExecutorService processService;
-    private final ExecutorService consoleService;
     private final String prefix;
     private String finalFilePath;
     private ProcessBuilder processBuilder;
@@ -37,9 +36,19 @@ public class ServerProcess {
     private PrintWriter writer;
     private String lastLine;
     private long startTime;
-    private Scanner consoleOutput;
 
-    public void initWatchDog(final WatchDog watchDog){
+    public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
+        this.bdsAutoEnable = bdsAutoEnable;
+        this.logger = this.bdsAutoEnable.getLogger();
+        this.config = this.bdsAutoEnable.getConfig();
+        this.discord = this.bdsAutoEnable.getDiscord();
+        this.playerManager = this.bdsAutoEnable.getPlayerManager();
+        this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
+        this.prefix = "&b[&3ServerProcess&b] ";
+
+    }
+
+    public void initWatchDog(final WatchDog watchDog) {
         this.watchDog = watchDog;
     }
 
@@ -47,7 +56,7 @@ public class ServerProcess {
         BufferedReader reader = null;
         try {
             String command = "";
-            switch (this.config.getSystemOs()) {
+            switch (this.config.getSystem()) {
                 case LINUX -> command = "pgrep -f " + this.config.getFileName();
                 case WINDOWS -> command = "tasklist /NH /FI \"IMAGENAME eq " + this.config.getFileName() + "\"";
                 default -> {
@@ -82,18 +91,6 @@ public class ServerProcess {
         return false;
     }
 
-    public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
-        this.bdsAutoEnable = bdsAutoEnable;
-        this.logger = this.bdsAutoEnable.getLogger();
-        this.config = this.bdsAutoEnable.getConfig();
-        this.discord = this.bdsAutoEnable.getDiscord();
-        this.playerManager = this.bdsAutoEnable.getPlayerManager();
-        this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
-        this.consoleService = Executors.newScheduledThreadPool(2, new ThreadUtil("Console"));
-        this.prefix = "&b[&3ServerProcess&b] ";
-
-    }
-
     public void startProcess() {
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
         this.processService.execute(() -> {
@@ -104,7 +101,7 @@ public class ServerProcess {
                 this.logger.info("Proces " + this.config.getFileName() + " nie jest uruchomiony. Uruchamianie...");
 
                 try {
-                    switch (this.config.getSystemOs()) {
+                    switch (this.config.getSystem()) {
                         case LINUX -> {
                             if (this.config.isWine()) {
                                 this.processBuilder = new ProcessBuilder("wine", this.finalFilePath);
@@ -126,11 +123,10 @@ public class ServerProcess {
                     this.logger.info("Uruchomiono proces ");
                     this.discord.sendEnabledMessage();
 
-                    this.consoleService.execute(this::readConsoleOutput);
-                    this.consoleService.execute(this::writeConsoleInput);
+                    new ThreadUtil("Console-Output", this::readConsoleOutput).newThread().start();
+                    new ThreadUtil("Console-Input", this::writeConsoleInput).newThread().start();
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
-                    this.consoleOutput.close();
                     this.discord.sendDisabledMessage();
                     ThreadUtil.sleep(5);
                     this.startProcess();
@@ -145,18 +141,18 @@ public class ServerProcess {
         });
     }
 
+
     private void readConsoleOutput() {
-        this.consoleOutput = new Scanner(this.process.getInputStream());
+        final Scanner consoleOutput = new Scanner(this.process.getInputStream());
         try {
-            while (this.consoleOutput.hasNextLine()) {
+            while (consoleOutput.hasNextLine()) {
                 try {
-                    // it fixing no writing console bug
-                    if (!this.consoleOutput.hasNext()) continue;
+                    if (!consoleOutput.hasNext()) continue;
                 } catch (final IllegalStateException stateException) {
                     break;
                 }
 
-                final String line = this.consoleOutput.nextLine();
+                final String line = consoleOutput.nextLine();
                 if (line.isEmpty()) continue;
                 if (!this.containsNotAllowedToFileLog(line)) {
                     this.logger.instantLogToFile(line);
@@ -168,12 +164,13 @@ public class ServerProcess {
                 this.playerManager.initFromLog(line);
                 this.discord.writeConsole(line);
             }
+
         } catch (final Exception exception) {
             this.logger.critical(exception);
             exception.printStackTrace();
-            this.consoleOutput.close();
-            ThreadUtil.sleep(1);
-            this.readConsoleOutput();
+            consoleOutput.close();
+        } finally {
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -230,17 +227,6 @@ public class ServerProcess {
     public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
         this.discord.sendDisablingMessage();
-        if (this.consoleService != null && !this.consoleService.isTerminated()) {
-            this.logger.info("Zatrzymywanie wątków konsoli");
-            try {
-                this.consoleService.shutdown();
-                ThreadUtil.sleep(2);
-                this.logger.info("Zatrzymano wątki konsoli");
-            } catch (final Exception exception) {
-                this.logger.error("Nie udało się zarzymać wątków konsoli");
-                exception.printStackTrace();
-            }
-        }
 
         if (this.processService != null && !this.processService.isTerminated()) {
             this.logger.info("Zatrzymywanie wątków procesu servera");

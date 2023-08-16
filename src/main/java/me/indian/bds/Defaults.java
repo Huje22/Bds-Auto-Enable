@@ -31,10 +31,10 @@ public class Defaults {
 
 
     public static String getDefaultFileName() {
-        if (config.getSystemOs() == SystemOs.LINUX) {
+        if (config.getSystem() == SystemOs.LINUX) {
             return "bedrock_server";
         }
-        if (config.getSystemOs() == SystemOs.WINDOWS) {
+        if (config.getSystem() == SystemOs.WINDOWS) {
             return "bedrock_server.exe";
         }
         return "";
