@@ -26,7 +26,6 @@ public class BackupModule {
     private final ExecutorService service;
     private final Timer timer;
     private final Config config;
-    private final ServerProcess serverProcess;
     private WatchDog watchDog;
     private String prefix;
     private String worldPath;
@@ -41,7 +40,6 @@ public class BackupModule {
         this.config = this.bdsAutoEnable.getConfig();
         this.service = Executors.newScheduledThreadPool(5, new ThreadUtil("Watchdog-BackupModule"));
         this.timer = new Timer();
-        this.serverProcess = this.bdsAutoEnable.getServerProcess();
         if (this.config.isBackup()) {
             final String version = this.config.getVersion();
             this.logger.alert("Backupy są włączone");
