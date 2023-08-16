@@ -6,7 +6,6 @@ import eu.okaeri.configs.annotation.Header;
 import me.indian.bds.discord.DiscordType;
 import me.indian.bds.util.SystemOs;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -54,15 +53,21 @@ public class Config extends OkaeriConfig {
     private boolean Backup = true;
     private int BackupFrequency = 60;
     private double LastBackupTime = 20;
-
     @Comment({""})
-    @Comment({"Nie zapisuje tych informacj , w konsoli i pliku"})
-    private List<String> NoLogInfo = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]", "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
+    @Comment({"Konsola i Plik .log"})
+    @Comment({"Nie zapisuje tych informacj które zawierają:"})
+    @Comment({"W pliku"})
+    private List<String> noFileLog = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]",
+            "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
+            " ERROR]", "WARN]",
+            "\"component_groups\"");
+    @Comment({"W konsoli"})
+    private List<String> noConsoleLog = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]",
+            "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
             "\"component_groups\"");
 
     @Comment({""})
     @Comment({"Ustawienia discord"})
-
     @Comment({"Implementacija Bota / WebHooku"})
     @Comment({"WEBHOOK - Możliwe tylko wysyłanie wiadomości do discord z uzyciem webhooku"})
     @Comment({"JDA - Bot discord przy uzyciu biblioteki Java Cord"})
@@ -76,7 +81,7 @@ public class Config extends OkaeriConfig {
     private long ChannelID = 1L;
     private long ConsoleID = 1L;
     private long ServerID = 1L;
-    private List<String> IPmessage = this.initIpMessage();
+    private List<String> IPmessage = Arrays.asList("Nasze IP: 127.0.0.1", "Nasz Port: 19132");
     @Comment({"Konfiguracija dostępnych wiadomości "})
     private Map<String, String> Messages = this.initMessages();
     @Comment({""})
@@ -87,6 +92,7 @@ public class Config extends OkaeriConfig {
         final Map<String, String> messages = new LinkedHashMap<>();
         messages.put("Join", "Gracz **<name>** dołączył do gry");
         messages.put("Leave", "Gracz **<name>** opuścił gre");
+        messages.put("Death", "Gracz **<name>** zabity przez <casue>");
         messages.put("MinecraftToDiscord", "**<name>** »» <msg>");
         messages.put("DiscordToMinecraft", "&7[&bDiscord&7]  &l<name>&r »» <msg>");
         messages.put("Enabled", ":white_check_mark: Server włączony");
@@ -94,13 +100,6 @@ public class Config extends OkaeriConfig {
         messages.put("Disabled", ":octagonal_sign: Server wyłączony");
         messages.put("Destroyed", "Proces servera został zabity");
         return messages;
-    }
-
-    private List<String> initIpMessage() {
-        final List<String> ipmsg = new ArrayList<>();
-        ipmsg.add("Nasze IP: 127.0.0.1");
-        ipmsg.add("Nasz Port: 19132");
-        return ipmsg;
     }
 
     public String getToken() {
@@ -159,6 +158,9 @@ public class Config extends OkaeriConfig {
         this.LastBackupTime = lastBackupTime;
     }
 
+    public List<String> getNoConsoleLog() {
+        return noConsoleLog;
+    }
 
     public String getVersion() {
         return this.Version;
@@ -176,8 +178,8 @@ public class Config extends OkaeriConfig {
         this.Loaded = loaded;
     }
 
-    public List<String> getNoLogInfo() {
-        return this.NoLogInfo;
+    public List<String> getNoFileLog() {
+        return this.noFileLog;
     }
 
     public boolean isDebug() {
