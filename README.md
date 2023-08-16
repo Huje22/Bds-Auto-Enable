@@ -12,6 +12,7 @@ Program zawiera: <br/>
 * Automatyczne włączenie servera po wyłączeniu
 * Tworzenie backupów świata
 * Pisanie w konsoli w 80%
+* Integracje z Discordem (Wymaga [BDS-Auto-Enable-Managment-Pack](https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack) do obsługi wiekszej ilosci funkcij )
 
 Dodatkowe polecenia(Tylko w konsoli): <br/>
 * `.end` - zatrzymuje proces servera i aplikacije
