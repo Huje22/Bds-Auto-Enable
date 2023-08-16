@@ -3,7 +3,9 @@ package me.indian.bds;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import me.indian.bds.config.Config;
-import me.indian.bds.discord.WebHook;
+import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.discord.webhook.WebHook;
 import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.PlayerManager;
@@ -20,21 +22,23 @@ import java.util.Scanner;
 
 public class BDSAutoEnable {
 
+    private final long startTime;
     private final String projectVersion;
     private final Scanner scanner;
     private final Logger logger;
     private final ServerProperties serverProperties;
     private final Config config;
-    private final WebHook webHook;
     private final Settings settings;
     private final ServerProcess serverProcess;
     private final PlayerManager playerManager;
     private final VersionManager versionManager;
+    private DiscordIntegration discord;
     private WatchDog watchDog;
     private String runDate;
 
     public BDSAutoEnable() {
         System.setProperty("file.encoding", "UTF-8");
+        this.startTime = System.currentTimeMillis();
         this.projectVersion = "1.0.0-Dev";
         this.initRunDate();
         this.scanner = new Scanner(System.in);
@@ -47,13 +51,22 @@ public class BDSAutoEnable {
         });
         Defaults.init(this);
         this.logger = new Logger(this);
-        this.webHook = new WebHook(this);
+        this.logger.alert("Numer wersji projektu: " + this.projectVersion);
+
+        switch (this.config.getIntegrationType()) {
+            case WEBHOOK -> this.discord = new WebHook(this);
+            case JDA -> this.discord = new DiscordJda(this);
+            default -> {
+
+            }
+        }
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
         this.playerManager = new PlayerManager(this);
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
         MinecraftUtil.initMinecraftUtil(this);
+        if (this.discord instanceof DiscordJda jda) jda.initServerProcess(this.serverProcess);
 
         this.init();
     }
@@ -63,7 +76,6 @@ public class BDSAutoEnable {
     }
 
     public void init() {
-        this.logger.alert("Numer wersji projektu: " + this.projectVersion);
         this.settings.loadSettings(this.scanner);
         this.shutdownHook();
         this.watchDog = new WatchDog(this);
@@ -72,6 +84,7 @@ public class BDSAutoEnable {
         this.watchDog.getBackupModule().backup();
         this.versionManager.loadVersion();
         this.config.save();
+        this.discord.init();
         this.serverProcess.startProcess();
     }
 
@@ -79,6 +92,10 @@ public class BDSAutoEnable {
         final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         this.runDate = now.format(formatter).replaceAll(":", "-");
+    }
+
+    public long getStartTime() {
+        return this.startTime;
     }
 
     private void shutdownHook() {
@@ -110,10 +127,6 @@ public class BDSAutoEnable {
         return logger;
     }
 
-    public WebHook getWebHook() {
-        return this.webHook;
-    }
-
     public Settings getSettings() {
         return this.settings;
     }
@@ -128,6 +141,10 @@ public class BDSAutoEnable {
 
     public PlayerManager getPlayerManager() {
         return this.playerManager;
+    }
+
+    public DiscordIntegration getDiscord() {
+        return this.discord;
     }
 
     public ServerProperties getServerProperties() {

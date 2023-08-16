@@ -3,12 +3,14 @@ package me.indian.bds.config;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.Header;
+import me.indian.bds.discord.DiscordType;
 import me.indian.bds.util.SystemOs;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 
 @Header("################################################################")
@@ -59,15 +61,22 @@ public class Config extends OkaeriConfig {
             "\"component_groups\"");
 
     @Comment({""})
-    @Comment({"Ustawienia webhooka discord"})
-    @Comment({"WebHooki nie są zaawansowane, lecz i tak użyje ich jak najlepiej  "})
-    @Comment({"Link do webhooka czaty  "})
-    private String WebHookChatUrl = "https://discord.com/api/webhooks/....";
-    @Comment({"Włączyć webhook czatu?  "})
-    private boolean EnableChat = true;
-    @Comment({"Częstotliwość wysyłania listy graczy na discord , w sekundach , 0 = wyłączone  "})
-    private int ListFrequency = 10;
+    @Comment({"Ustawienia discord"})
 
+    @Comment({"Implementacija Bota / WebHooku"})
+    @Comment({"WEBHOOK - Możliwe tylko wysyłanie wiadomości do discord z uzyciem webhooku"})
+    @Comment({"JDA - Bot discord przy uzyciu biblioteki Java Cord"})
+    private DiscordType IntegrationType = DiscordType.JDA;
+
+    @Comment({"Ustawienia webhooka"})
+    private String WebHookChatUrl = "https://discord.com/api/webhooks/....";
+    @Comment({"Ustawienia Bota"})
+    private String Token = "";
+    private String Prefix = "!";
+    private long ChannelID = 1L;
+    private long ConsoleID = 1L;
+    private long ServerID = 1L;
+    private List<String> IPmessage = this.initIpMessage();
     @Comment({"Konfiguracija dostępnych wiadomości "})
     private Map<String, String> Messages = this.initMessages();
     @Comment({""})
@@ -75,34 +84,63 @@ public class Config extends OkaeriConfig {
     private boolean debug = true;
 
     private Map<String, String> initMessages() {
-        final Map<String, String> messages = new TreeMap<>();
+        final Map<String, String> messages = new LinkedHashMap<>();
         messages.put("Join", "Gracz **<name>** dołączył do gry");
         messages.put("Leave", "Gracz **<name>** opuścił gre");
-        messages.put("Enabled", "Server włączony");
-        messages.put("Started", ":white_check_mark: Uruchomiono proces servera");
+        messages.put("MinecraftToDiscord", "**<name>** »» <msg>");
+        messages.put("DiscordToMinecraft", "&7[&bDiscord&7]  &l<name>&r »» <msg>");
+        messages.put("Enabled", ":white_check_mark: Server włączony");
         messages.put("Disabling", ":octagonal_sign: Server jest w trakcje wyłączania");
         messages.put("Disabled", ":octagonal_sign: Server wyłączony");
+        messages.put("Destroyed", "Proces servera został zabity");
         return messages;
     }
 
-    public int getListFrequency() {
-        return this.ListFrequency;
+    private List<String> initIpMessage() {
+        final List<String> ipmsg = new ArrayList<>();
+        ipmsg.add("Nasze IP: 127.0.0.1");
+        ipmsg.add("Nasz Port: 19132");
+        return ipmsg;
+    }
+
+    public String getToken() {
+        return this.Token;
+    }
+
+    public void setToken(String token) {
+        this.Token = token;
+    }
+
+    public String getPrefix() {
+        return this.Prefix;
+    }
+
+    public long getChannelID() {
+        return ChannelID;
+    }
+
+    public long getConsoleID() {
+        return this.ConsoleID;
+    }
+
+    public long getServerID() {
+        return this.ServerID;
+    }
+
+    public List<String> getIPmessage() {
+        return this.IPmessage;
+    }
+
+    public DiscordType getIntegrationType() {
+        return IntegrationType;
     }
 
     public Map<String, String> getMessages() {
         return this.Messages;
     }
 
-    public boolean isEnableChat() {
-        return this.EnableChat;
-    }
-
     public String getWebHookChatUrl() {
         return this.WebHookChatUrl;
-    }
-
-    public void setWebHookChatUrl(final String webHookChatUrl) {
-        this.WebHookChatUrl = webHookChatUrl;
     }
 
     public int getBackupFrequency() {

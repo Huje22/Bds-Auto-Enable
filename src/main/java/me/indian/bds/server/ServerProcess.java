@@ -2,7 +2,7 @@ package me.indian.bds.server;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
-import me.indian.bds.discord.WebHook;
+import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
@@ -26,7 +26,7 @@ public class ServerProcess {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Config config;
-    private final WebHook webHook;
+    private final DiscordIntegration discord;
     private final PlayerManager playerManager;
     private final ExecutorService processService;
     private final ExecutorService consoleService;
@@ -36,18 +36,8 @@ public class ServerProcess {
     private Process process;
     private PrintWriter writer;
     private String lastLine;
-
-    public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
-        this.bdsAutoEnable = bdsAutoEnable;
-        this.logger = this.bdsAutoEnable.getLogger();
-        this.config = this.bdsAutoEnable.getConfig();
-        this.webHook = this.bdsAutoEnable.getWebHook();
-        this.playerManager = this.bdsAutoEnable.getPlayerManager();
-        this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
-        this.consoleService = Executors.newScheduledThreadPool(2, new ThreadUtil("Console"));
-        this.prefix = "&b[&3ServerProcess&b] ";
-
-    }
+    private long startTime;
+    private Scanner consoleOutput;
 
     public void initWatchDog(final WatchDog watchDog){
         this.watchDog = watchDog;
@@ -92,6 +82,18 @@ public class ServerProcess {
         return false;
     }
 
+    public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
+        this.bdsAutoEnable = bdsAutoEnable;
+        this.logger = this.bdsAutoEnable.getLogger();
+        this.config = this.bdsAutoEnable.getConfig();
+        this.discord = this.bdsAutoEnable.getDiscord();
+        this.playerManager = this.bdsAutoEnable.getPlayerManager();
+        this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
+        this.consoleService = Executors.newScheduledThreadPool(2, new ThreadUtil("Console"));
+        this.prefix = "&b[&3ServerProcess&b] ";
+
+    }
+
     public void startProcess() {
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
         this.processService.execute(() -> {
@@ -120,14 +122,16 @@ public class ServerProcess {
                     }
                     this.playerManager.clearPlayers();
                     this.process = this.processBuilder.start();
+                    this.startTime = System.currentTimeMillis();
                     this.logger.info("Uruchomiono proces ");
-                    this.webHook.sendDiscordMessage(this.config.getMessages().get("Started"));
+                    this.discord.sendEnabledMessage();
 
                     this.consoleService.execute(this::readConsoleOutput);
                     this.consoleService.execute(this::writeConsoleInput);
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
-                    this.webHook.sendDiscordMessage(this.config.getMessages().get("Disabled"));
+                    this.consoleOutput.close();
+                    this.discord.sendDisabledMessage();
                     ThreadUtil.sleep(5);
                     this.startProcess();
 
@@ -142,21 +146,28 @@ public class ServerProcess {
     }
 
     private void readConsoleOutput() {
-        final Scanner consoleOutput = new Scanner(this.process.getInputStream());
+        this.consoleOutput = new Scanner(this.process.getInputStream());
         try {
-            while (consoleOutput.hasNextLine()) {
-                if (!consoleOutput.hasNext()) continue;
-                final String line = consoleOutput.nextLine();
+            while (this.consoleOutput.hasNextLine()) {
+                try {
+                    // it fixing no writing console bug
+                    if (!this.consoleOutput.hasNext()) continue;
+                } catch (final IllegalStateException stateException) {
+                    break;
+                }
+
+                final String line = this.consoleOutput.nextLine();
                 if (this.containsNotAllowedToLog(line) || line.isEmpty()) continue;
                 this.lastLine = line;
                 System.out.println(line);
                 this.logger.instantLogToFile(line);
-                this.playerManager.updatePlayerList(line);
+                this.playerManager.initFromLog(line);
+                this.discord.writeConsole(line);
             }
         } catch (final Exception exception) {
             this.logger.critical(exception);
             exception.printStackTrace();
-            consoleOutput.close();
+            this.consoleOutput.close();
             ThreadUtil.sleep(1);
             this.readConsoleOutput();
         }
@@ -187,6 +198,7 @@ public class ServerProcess {
                 } else {
                     this.sendToConsole(input);
                 }
+                this.discord.writeConsole(input);
             }
         } catch (final Exception exception) {
             this.logger.critical(exception);
@@ -213,7 +225,7 @@ public class ServerProcess {
 
     public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
-        this.webHook.sendDiscordMessage(this.config.getMessages().get("Disabling"));
+        this.discord.sendDisablingMessage();
         if (this.consoleService != null && !this.consoleService.isTerminated()) {
             this.logger.info("Zatrzymywanie wątków konsoli");
             try {
@@ -260,7 +272,7 @@ public class ServerProcess {
             try {
                 this.process.destroy();
                 this.logger.info("Zniszczeno proces servera");
-                this.webHook.sendDiscordMessage(this.config.getMessages().get("Disabled"));
+                this.discord.sendDestroyedMessage();
             } catch (final Exception exception) {
                 this.logger.error("Nie udało się zniszczyć procesu servera");
                 exception.printStackTrace();
@@ -275,7 +287,7 @@ public class ServerProcess {
             this.logger.critical("Nie można zapisać configu");
             exception.printStackTrace();
         }
-
+        this.discord.disableBot();
         Runtime.getRuntime().halt(129);
     }
 
@@ -288,7 +300,7 @@ public class ServerProcess {
                         this.watchDog.getBackupModule().forceBackup();
                     }
                     while (this.watchDog.getBackupModule().isBackuping()) {
-                        //it so bugged without this , idk why
+                        //it so bugged without this , I don't know why
                     }
                     while (!this.watchDog.getBackupModule().isBackuping()) {
                         MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aBackup zrobiony!", LogState.INFO);
@@ -310,6 +322,10 @@ public class ServerProcess {
             }
         }
         return false;
+    }
+
+    public long getStartTime() {
+        return this.startTime;
     }
 
     public Process getProcess() {

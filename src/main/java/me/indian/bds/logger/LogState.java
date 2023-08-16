@@ -11,7 +11,7 @@ public enum LogState {
 
     private final String colorCode;
 
-    LogState(String colorCode) {
+    LogState(final String colorCode) {
         this.colorCode = colorCode;
     }
 
