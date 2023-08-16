@@ -11,6 +11,8 @@ public interface DiscordIntegration {
 
     void sendPlayerMessage(final String playerName, final String playerMessage);
 
+    void sendDeathMessage(final String playerName, final String deathMessage);
+
     void sendDisabledMessage();
 
     void sendDisablingMessage();

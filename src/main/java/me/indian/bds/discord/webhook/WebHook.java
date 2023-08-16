@@ -14,16 +14,14 @@ import java.util.concurrent.Executors;
 
 public class WebHook implements DiscordIntegration {
 
-    private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Config config;
     private final String webhookURL;
     private final ExecutorService service;
 
     public WebHook(final BDSAutoEnable bdsAutoEnable) {
-        this.bdsAutoEnable = bdsAutoEnable;
-        this.logger = this.bdsAutoEnable.getLogger();
-        this.config = this.bdsAutoEnable.getConfig();
+        this.logger = bdsAutoEnable.getLogger();
+        this.config = bdsAutoEnable.getConfig();
         this.webhookURL = this.config.getWebHookChatUrl();
         this.service = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-WebHook"));
     }
@@ -59,6 +57,7 @@ public class WebHook implements DiscordIntegration {
         });
     }
 
+
     @Override
     public void sendJoinMessage(final String playerName) {
         this.sendMessage(this.config.getMessages().get("Join").replaceAll("<name>", playerName));
@@ -71,7 +70,18 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendPlayerMessage(final String playerName, final String playerMessage) {
+        this.sendMessage(this.config.getMessages().get("MinecraftToDiscord")
+                .replaceAll("<name>", playerName)
+                .replaceAll("<msg>", playerMessage)
+        );
+    }
 
+    @Override
+    public void sendDeathMessage(final String playerName, final String deathMessage) {
+        this.sendMessage(this.config.getMessages().get("Death")
+                .replaceAll("<name>", playerName)
+                .replaceAll("<casue>", deathMessage)
+        );
     }
 
     @Override

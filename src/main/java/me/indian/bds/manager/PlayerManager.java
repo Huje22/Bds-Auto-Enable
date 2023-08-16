@@ -29,7 +29,8 @@ public class PlayerManager {
 
     public void initFromLog(final String logEntry) {
         this.updatePlayerList(logEntry);
-        this.getChatMessage(logEntry);
+        this.chatMessage(logEntry);
+        this.deathMessage(logEntry);
     }
 
 
@@ -58,7 +59,7 @@ public class PlayerManager {
         }
     }
 
-    private void getChatMessage(final String logEntry) {
+    private void chatMessage(final String logEntry) {
         final String patternString = "PlayerChat:([^,]+) Message:([^,]+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
@@ -69,6 +70,19 @@ public class PlayerManager {
             this.discord.sendPlayerMessage(playerChat, message);
         }
     }
+
+    private void deathMessage(final String logEntry) {
+        final String patternString = "PlayerDeath:([^,]+) Casue:([^,]+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerChat = matcher.group(1);
+            final String message = matcher.group(2);
+            this.discord.sendDeathMessage(playerChat, message);
+        }
+    }
+
 
     public void clearPlayers() {
         this.onlinePlayers.clear();

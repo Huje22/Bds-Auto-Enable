@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -109,36 +110,38 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     @Override
     public void onMessageReceived(final MessageReceivedEvent event) {
         final Member member = event.getMember();
+        final User author = event.getAuthor();
         final Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
         final TextChannel channel = event.getChannel().asTextChannel();
 
-        if (event.getAuthor().isBot() || member == null) {
+        if (event.getAuthor().isBot()) {
             return;
         }
 
         if (rawMessage.contains(event.getJDA().getSelfUser().getAsMention())) {
             event.getChannel().sendMessage("Mój prefix to `" + this.prefix + "` \n").queue(msg -> {
                 msg.delete().queueAfter(10, TimeUnit.SECONDS);
-                message.delete().queueAfter(10, TimeUnit.SECONDS);
+                message.delete().queueAfter(9, TimeUnit.SECONDS);
             });
             return;
         }
 
         if (channel == this.consoleChannel) {
+            if (member == null) return;
             if (member.hasPermission(Permission.ADMINISTRATOR)) {
                 this.serverProcess.sendToConsole(rawMessage);
             } else {
                 event.getChannel().sendMessage("Nie masz uprawnień administratora aby wysłać tu wiadomość").queue(msg -> {
                     msg.delete().queueAfter(5, TimeUnit.SECONDS);
-                    message.delete().queueAfter(5, TimeUnit.SECONDS);
+                    message.delete().queueAfter(4, TimeUnit.SECONDS);
                 });
             }
             return;
         }
         if (channel == this.textChannel && !rawMessage.startsWith(this.prefix)) {
             this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.config.getMessages().get("DiscordToMinecraft")
-                    .replaceAll("<name>", member.getNickname())
+                    .replaceAll("<name>", author.getName())
                     .replaceAll("<msg>", rawMessage.toString())));
         }
 
@@ -150,7 +153,6 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                 message.delete().queueAfter(1, TimeUnit.SECONDS);
                 return;
             }
-
 
             final String command = rawMessage.substring(this.prefix.length());
             switch (command.toLowerCase()) {
@@ -164,7 +166,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                                     "`" + this.prefix + "ip` - ip ustawione w config\n"
                             )
                             .setColor(Color.BLUE)
-                            .setFooter("Wywołane przez " + member.getNickname(), member.getEffectiveAvatarUrl())
+                            .setFooter("Wywołane przez " + author.getName(), author.getEffectiveAvatarUrl())
                             .build();
 
                     event.getChannel().sendMessageEmbeds(embed).queue(msg -> {
@@ -175,13 +177,13 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                 case "ping" -> {
                     event.getChannel().sendMessage("Ping: " + this.jda.getGatewayPing() + " ms").queue(msg -> {
                         msg.delete().queueAfter(10, TimeUnit.SECONDS);
-                        message.delete().queueAfter(10, TimeUnit.SECONDS);
+                        message.delete().queueAfter(9, TimeUnit.SECONDS);
                     });
                 }
                 case "ip" -> {
                     event.getChannel().sendMessage(MessageUtil.listToSpacedString(this.config.getIPmessage())).queue(msg -> {
                         msg.delete().queueAfter(10, TimeUnit.SECONDS);
-                        message.delete().queueAfter(10, TimeUnit.SECONDS);
+                        message.delete().queueAfter(9, TimeUnit.SECONDS);
                     });
                 }
                 case "uptime" -> {
@@ -190,12 +192,12 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                             .setDescription("Czas działania aplikacij `" + MathUtil.formatTime(System.currentTimeMillis() - this.bdsAutoEnable.getStartTime()) + "`\n" +
                                     "Czas działania servera `" + MathUtil.formatTime(System.currentTimeMillis() - this.serverProcess.getStartTime()) + "`\n")
                             .setColor(Color.BLUE)
-                            .setFooter("Wywołane przez " + member.getNickname(), member.getEffectiveAvatarUrl())
+                            .setFooter("Wywołane przez " + author.getName(), author.getEffectiveAvatarUrl())
                             .build();
 
                     event.getChannel().sendMessageEmbeds(embed).queue(msg -> {
                         msg.delete().queueAfter(10, TimeUnit.SECONDS);
-                        event.getMessage().delete().queueAfter(10, TimeUnit.SECONDS);
+                        event.getMessage().delete().queueAfter(9, TimeUnit.SECONDS);
                     });
                 }
 
@@ -206,12 +208,12 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                             .setDescription(players.size() + "/" + this.bdsAutoEnable.getServerProperties().getMaxPlayers() + "\n`" +
                                     players.toString().replaceAll("\\[\\]", "") + "`\n")
                             .setColor(Color.BLUE)
-                            .setFooter("Wywołane przez " + member.getNickname(), member.getEffectiveAvatarUrl())
+                            .setFooter("Wywołane przez " + author.getName(), author.getEffectiveAvatarUrl())
                             .build();
 
                     event.getChannel().sendMessageEmbeds(embed).queue(msg -> {
                         msg.delete().queueAfter(10, TimeUnit.SECONDS);
-                        event.getMessage().delete().queueAfter(10, TimeUnit.SECONDS);
+                        event.getMessage().delete().queueAfter(9, TimeUnit.SECONDS);
                     });
 
                 }
@@ -252,6 +254,14 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         this.sendMessage(this.config.getMessages().get("MinecraftToDiscord")
                 .replaceAll("<name>", playerName)
                 .replaceAll("<msg>", playerMessage)
+        );
+    }
+
+    @Override
+    public void sendDeathMessage(final String playerName, final String deathMessage) {
+        this.sendMessage(this.config.getMessages().get("Death")
+                .replaceAll("<name>", playerName)
+                .replaceAll("<casue>", deathMessage)
         );
     }
 

@@ -37,10 +37,9 @@ public class BDSAutoEnable {
     private String runDate;
 
     public BDSAutoEnable() {
-        System.setProperty("file.encoding", "UTF-8");
+        this.initRunDate();
         this.startTime = System.currentTimeMillis();
         this.projectVersion = "1.0.0-Dev";
-        this.initRunDate();
         this.scanner = new Scanner(System.in);
         this.config = ConfigManager.create(Config.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
@@ -89,6 +88,7 @@ public class BDSAutoEnable {
     }
 
     private void initRunDate() {
+        System.setProperty("file.encoding", "UTF-8");
         final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         this.runDate = now.format(formatter).replaceAll(":", "-");
