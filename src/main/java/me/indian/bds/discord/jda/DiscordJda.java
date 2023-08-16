@@ -171,19 +171,33 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
                     event.getChannel().sendMessageEmbeds(embed).queue(msg -> {
                         msg.delete().queueAfter(10, TimeUnit.SECONDS);
-                        event.getMessage().delete().queueAfter(10, TimeUnit.SECONDS);
+                        event.getMessage().delete().queueAfter(9, TimeUnit.SECONDS);
                     });
                 }
                 case "ping" -> {
-                    event.getChannel().sendMessage("Ping: " + this.jda.getGatewayPing() + " ms").queue(msg -> {
+                    final MessageEmbed embed = new EmbedBuilder()
+                            .setTitle("Lista poleceń")
+                            .setDescription("Aktualny ping z serverami discord wynosi: " + this.jda.getGatewayPing() + " ms")
+                            .setColor(Color.BLUE)
+                            .setFooter("Wywołane przez " + author.getName(), author.getEffectiveAvatarUrl())
+                            .build();
+
+                    event.getChannel().sendMessageEmbeds(embed).queue(msg -> {
                         msg.delete().queueAfter(10, TimeUnit.SECONDS);
-                        message.delete().queueAfter(9, TimeUnit.SECONDS);
+                        event.getMessage().delete().queueAfter(9, TimeUnit.SECONDS);
                     });
                 }
                 case "ip" -> {
-                    event.getChannel().sendMessage(MessageUtil.listToSpacedString(this.config.getIPmessage())).queue(msg -> {
+                    final MessageEmbed embed = new EmbedBuilder()
+                            .setTitle("Nasze ip!")
+                            .setDescription(MessageUtil.listToSpacedString(this.config.getIPmessage()))
+                            .setColor(Color.BLUE)
+                            .setFooter("Wywołane przez " + author.getName(), author.getEffectiveAvatarUrl())
+                            .build();
+
+                    event.getChannel().sendMessageEmbeds(embed).queue(msg -> {
                         msg.delete().queueAfter(10, TimeUnit.SECONDS);
-                        message.delete().queueAfter(9, TimeUnit.SECONDS);
+                        event.getMessage().delete().queueAfter(9, TimeUnit.SECONDS);
                     });
                 }
                 case "uptime" -> {
@@ -215,7 +229,6 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                         msg.delete().queueAfter(10, TimeUnit.SECONDS);
                         event.getMessage().delete().queueAfter(9, TimeUnit.SECONDS);
                     });
-
                 }
                 default -> event.getChannel().sendMessage("Nieznana komenda: " + command).queue(msg -> {
                     msg.delete().queueAfter(5, TimeUnit.SECONDS);
