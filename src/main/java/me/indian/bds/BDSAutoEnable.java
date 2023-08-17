@@ -96,8 +96,8 @@ public class BDSAutoEnable {
     private void checkEncoding(){
         final String encoding = System.getProperty("file.encoding");
         if (!encoding.equalsIgnoreCase("UTF-8")) {
-            this.logger.critical("&cTwoje kodowanie to:&b " + encoding + "&cmy wspieramy tylko&b UTF-8");
-            this.logger.info("Prosimy ustawić swoje kodowanie na&b UTF-8&r abyśmy mogli dalej kontunować!");
+            this.logger.critical("&cTwoje kodowanie to:&b " + encoding + " &cmy wspieramy tylko&b UTF-8");
+            this.logger.critical("&cProsimy ustawić swoje kodowanie na&b UTF-8&4 abyśmy mogli dalej kontunować!");
             System.exit(-2137);
         } else {
             this.logger.debug("Wykryto wspierane kodowanie");
