@@ -23,7 +23,7 @@ import java.util.List;
 public class Config extends OkaeriConfig {
     @Comment({""})
     @Comment({"Versia która jest załadowana"})
-    private String version = "1.20.14.01";
+    private String version = "1.20.15.01";
     private boolean loaded = false;
 
     @Comment({""})
