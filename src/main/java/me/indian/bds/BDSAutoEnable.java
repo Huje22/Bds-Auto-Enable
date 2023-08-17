@@ -51,7 +51,7 @@ public class BDSAutoEnable {
         Defaults.init(this);
         this.logger = new Logger(this);
         this.logger.alert("Numer wersji projektu: " + this.projectVersion);
-
+        this.checkEncoding();
         switch (this.config.getIntegrationType()) {
             case WEBHOOK -> this.discord = new WebHook(this);
             case JDA -> this.discord = new DiscordJda(this);
@@ -88,10 +88,21 @@ public class BDSAutoEnable {
     }
 
     private void initRunDate() {
-        System.setProperty("file.encoding", "UTF-8");
         final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         this.runDate = now.format(formatter).replaceAll(":", "-");
+    }
+
+    private void checkEncoding(){
+        System.setProperty("file.encoding", "UTF-8");
+        final String encoding = System.getProperty("file.encoding");
+        if(!encoding.equalsIgnoreCase("UTF-8")){
+            this.logger.critical("&cTwoje kodowanie to:&b " + encoding + "&cmy wspieramy tylko&b UTF-8");
+            this.logger.info("Prosimy ustawić swoje kodowanie na&b UTF-8&r abyśmy mogli dalej kontunować!");
+            System.exit(-2137);
+        } else {
+            this.logger.debug("Wykryto wspierane kodowanie");
+        }
     }
 
     public long getStartTime() {
