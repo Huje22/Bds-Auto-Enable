@@ -5,7 +5,6 @@ import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MinecraftUtil;
@@ -21,7 +20,6 @@ import java.util.concurrent.Executors;
 
 public class BackupModule {
 
-    private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final ExecutorService service;
     private final Timer timer;
@@ -35,16 +33,15 @@ public class BackupModule {
     private boolean backuping;
 
     public BackupModule(final BDSAutoEnable bdsAutoEnable) {
-        this.bdsAutoEnable = bdsAutoEnable;
-        this.logger = this.bdsAutoEnable.getLogger();
-        this.config = this.bdsAutoEnable.getConfig();
+        this.logger = bdsAutoEnable.getLogger();
+        this.config = bdsAutoEnable.getConfig();
         this.service = Executors.newScheduledThreadPool(5, new ThreadUtil("Watchdog-BackupModule"));
         this.timer = new Timer();
         if (this.config.isBackup()) {
             final String version = this.config.getVersion();
             this.logger.alert("Backupy są włączone");
             this.backupFolder = new File("BDS-Auto-Enable/backup/" + version);
-            this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
+            this.worldName = bdsAutoEnable.getServerProperties().getWorldName();
             this.worldPath = Defaults.getWorldsPath() + this.worldName;
             this.worldFile = new File(this.worldPath);
             if (!this.backupFolder.exists()) {

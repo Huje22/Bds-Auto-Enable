@@ -1,5 +1,7 @@
 package me.indian.bds.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.ThreadFactory;
 
@@ -47,7 +49,7 @@ public class ThreadUtil extends Thread implements ThreadFactory {
     }
 
     @Override
-    public Thread newThread(final Runnable runnable) {
+    public Thread newThread(@NotNull final Runnable runnable) {
         Thread thread = new Thread(runnable);
         thread.setName(generateThreadName());
         return thread;

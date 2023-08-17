@@ -85,6 +85,7 @@ public class Logger {
     public void debug(final Object log) {
         if (this.config.isDebug()) {
             this.logState = LogState.DEBUG;
+            this.updatePrefix();
             this.logToFile(log);
             System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         }

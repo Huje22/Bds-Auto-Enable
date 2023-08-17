@@ -6,7 +6,7 @@ public class Messages extends OkaeriConfig {
 
     private String joinMessage = "Gracz **<name>** dołączył do gry";
     private String leaveMessage = "Gracz **<name>** opuścił gre";
-    private String deathMessage = "Gracz **<name>** zabity przez <cause>";
+    private String deathMessage = "Gracz **<name>** zabity przez <casue>";
     private String minecraftToDiscordMessage = "**<name>** »» <msg>";
     private String discordToMinecraftMessage = "&7[&bDiscord&7]  &l<name>&r »» <msg>";
     private String enabledMessage = ":white_check_mark: Server włączony";

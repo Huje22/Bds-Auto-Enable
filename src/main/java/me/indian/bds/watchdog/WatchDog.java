@@ -1,10 +1,9 @@
 package me.indian.bds.watchdog;
 
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.server.ServerProcess;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
@@ -12,14 +11,12 @@ import me.indian.bds.watchdog.module.BackupModule;
 public class WatchDog {
 
     private final BackupModule backupModule;
-    private final Logger logger;
     private final Config config;
     private final String watchDogPrefix;
     private final ServerProcess serverProcess;
 
     public WatchDog(final BDSAutoEnable bdsAutoEnable) {
         this.backupModule = new BackupModule(bdsAutoEnable);
-        this.logger = bdsAutoEnable.getLogger();
         this.config = bdsAutoEnable.getConfig();
         this.watchDogPrefix = "&b[&3WatchDog&b]";
         this.serverProcess = bdsAutoEnable.getServerProcess();
