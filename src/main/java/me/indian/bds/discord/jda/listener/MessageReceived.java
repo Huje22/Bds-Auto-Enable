@@ -95,10 +95,7 @@ public class MessageReceived extends ListenerAdapter {
             }
 
             final String command = rawMessage.substring(this.prefix.length());
-            channel.sendMessage(command).queue(msg ->
-                    msg.delete().queueAfter(5, TimeUnit.SECONDS));
-            message.delete().queueAfter(4, TimeUnit.SECONDS);
-            switch (command.toLowerCase()) {
+             switch (command.toLowerCase()) {
                 case "help", "pomoc" -> {
                     final MessageEmbed embed = new EmbedBuilder()
                             .setTitle("Lista poleceń")
