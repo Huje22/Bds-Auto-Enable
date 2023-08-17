@@ -1,5 +1,13 @@
 package me.indian.bds.server;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
@@ -10,15 +18,6 @@ import me.indian.bds.manager.PlayerManager;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class ServerProcess {
 
@@ -123,10 +122,16 @@ public class ServerProcess {
                     this.logger.info("Uruchomiono proces ");
                     this.discord.sendEnabledMessage();
 
-                    new ThreadUtil("Console-Output", this::readConsoleOutput).newThread().start();
-                    new ThreadUtil("Console-Input", this::writeConsoleInput).newThread().start();
+                    final ThreadUtil output = new ThreadUtil("Console-Output");
+                    final ThreadUtil input = new ThreadUtil("Console-Input");
+
+                    output.newThread(this::readConsoleOutput).start();
+                    input.newThread(this::writeConsoleInput).start();
+
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
+                    output.interrupt();
+                    input.interrupt();
                     this.discord.sendDisabledMessage();
                     ThreadUtil.sleep(5);
                     this.startProcess();

@@ -57,9 +57,9 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS, CacheFlag.ONLINE_STATUS).enableCache(CacheFlag.EMOJI)
                     .setActivity(Activity.playing("Minecraft"))
                     .setEnableShutdownHook(false)
-                    .addEventListeners(this.messageReceived)
                     .build();
             this.jda.awaitReady();
+
             this.logger.info("&aZaładowano bota");
         } catch (final Exception exception) {
             this.logger.critical("&aNie można uruchomic bota , sprawdź podany &bTOKEN");
@@ -86,8 +86,9 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
         } catch (final Exception exception) {
             this.logger.info("(konola) Nie można odnaleźc kanału z ID &a" + this.consoleID);
-            this.jda.shutdown();
         }
+        this.messageReceived.initChannels();
+        this.jda.addEventListener(this.messageReceived);
 
     }
 

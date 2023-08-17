@@ -1,5 +1,8 @@
 package me.indian.bds.discord.jda.listener;
 
+import java.awt.Color;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -18,11 +21,6 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-
-import java.awt.Color;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 public class MessageReceived extends ListenerAdapter {
 
     private final DiscordJda discordJda;
@@ -30,8 +28,8 @@ public class MessageReceived extends ListenerAdapter {
     private final BDSAutoEnable bdsAutoEnable;
     private final Config config;
     private final String prefix;
-    private final TextChannel textChannel;
-    private final TextChannel consoleChannel;
+    private TextChannel textChannel;
+    private TextChannel consoleChannel;
     private ServerProcess serverProcess;
 
     public MessageReceived(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
@@ -40,10 +38,11 @@ public class MessageReceived extends ListenerAdapter {
         this.bdsAutoEnable = bdsAutoEnable;
         this.config = this.bdsAutoEnable.getConfig();
         this.prefix = this.config.getDiscordBot().getPrefix();
+    }
+
+    public void initChannels() {
         this.textChannel = this.discordJda.getTextChannel();
         this.consoleChannel = this.discordJda.getConsoleChannel();
-
-
     }
 
     public void initServerProcess(final ServerProcess serverProcess) {
@@ -58,9 +57,7 @@ public class MessageReceived extends ListenerAdapter {
         final String rawMessage = message.getContentRaw();
         final TextChannel channel = event.getChannel().asTextChannel();
 
-        if (event.getAuthor().isBot()) {
-            return;
-        }
+        if (event.getAuthor().isBot()) return;
 
         if (rawMessage.contains(event.getJDA().getSelfUser().getAsMention())) {
             event.getChannel().sendMessage("Mój prefix to `" + this.prefix + "` \n").queue(msg -> {
@@ -83,21 +80,24 @@ public class MessageReceived extends ListenerAdapter {
             return;
         }
         if (channel == this.textChannel && !rawMessage.startsWith(this.prefix)) {
+            this.bdsAutoEnable.getLogger().debug(this.serverProcess);
             this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.config.getMessages().getDiscordToMinecraftMessage()
                     .replaceAll("<name>", author.getName())
                     .replaceAll("<msg>", rawMessage)));
         }
 
-
         if (rawMessage.startsWith(this.prefix)) {
             if (channel != this.textChannel) {
                 channel.sendMessage("Polecenia można wykonywać tylko na kanale czatu <#" + this.discordJda.getChannelID() + ">").queue(msg ->
                         msg.delete().queueAfter(5, TimeUnit.SECONDS));
-                message.delete().queueAfter(1, TimeUnit.SECONDS);
+                message.delete().queueAfter(4, TimeUnit.SECONDS);
                 return;
             }
 
             final String command = rawMessage.substring(this.prefix.length());
+            channel.sendMessage(command).queue(msg ->
+                    msg.delete().queueAfter(5, TimeUnit.SECONDS));
+            message.delete().queueAfter(4, TimeUnit.SECONDS);
             switch (command.toLowerCase()) {
                 case "help", "pomoc" -> {
                     final MessageEmbed embed = new EmbedBuilder()
@@ -119,7 +119,7 @@ public class MessageReceived extends ListenerAdapter {
                 }
                 case "ping" -> {
                     final MessageEmbed embed = new EmbedBuilder()
-                            .setTitle("Lista poleceń")
+                            .setTitle("Ping Bot <-> Discord")
                             .setDescription("Aktualny ping z serverami discord wynosi: " + this.jda.getGatewayPing() + " ms")
                             .setColor(Color.BLUE)
                             .setFooter("Wywołane przez " + author.getName(), author.getEffectiveAvatarUrl())
