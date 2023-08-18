@@ -44,7 +44,6 @@ public class ServerProcess {
         this.playerManager = this.bdsAutoEnable.getPlayerManager();
         this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
         this.prefix = "&b[&3ServerProcess&b] ";
-
     }
 
     public void initWatchDog(final WatchDog watchDog) {
@@ -98,7 +97,6 @@ public class ServerProcess {
                 this.instantShutdown();
             } else {
                 this.logger.info("Proces " + this.config.getFileName() + " nie jest uruchomiony. Uruchamianie...");
-
                 try {
                     switch (this.config.getSystem()) {
                         case LINUX -> {
@@ -165,9 +163,8 @@ public class ServerProcess {
                 if (!this.containsNotAllowedToConsoleLog(line)) {
                     System.out.println(line);
                     this.lastLine = line;
+                    this.playerManager.initFromLog(line);
                 }
-                this.playerManager.initFromLog(line);
-                this.discord.writeConsole(line);
             }
 
         } catch (final Exception exception) {
@@ -204,7 +201,6 @@ public class ServerProcess {
                 } else {
                     this.sendToConsole(input);
                 }
-                this.discord.writeConsole(input);
             }
         } catch (final Exception exception) {
             this.logger.critical(exception);
@@ -232,7 +228,7 @@ public class ServerProcess {
     public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
         this.discord.sendDisablingMessage();
-
+        this.watchDog.saveAndResume();
         if (this.processService != null && !this.processService.isTerminated()) {
             this.logger.info("Zatrzymywanie wątków procesu servera");
             try {
@@ -311,7 +307,7 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {
-        for (final String s : this.config.getNoFileLog()) {
+        for (final String s : this.config.getNoLog().getFile()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
             }
@@ -320,7 +316,7 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToConsoleLog(final String msg) {
-        for (final String s : this.config.getNoConsoleLog()) {
+        for (final String s : this.config.getNoLog().getConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
             }

@@ -1,15 +1,20 @@
 package me.indian.bds.discord.jda;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.listener.MessageReceived;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.ThreadUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -25,6 +30,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     private final long channelID;
     private final long consoleID;
     private final MessageReceived messageReceived;
+    private final ExecutorService consoleService;
     private JDA jda;
     private Guild guild;
     private TextChannel textChannel;
@@ -39,6 +45,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         this.channelID = this.config.getDiscordBot().getChannelID();
         this.consoleID = this.config.getDiscordBot().getConsoleID();
         this.messageReceived = new MessageReceived(this, this.bdsAutoEnable);
+        this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
     }
 
     public void initServerProcess(final ServerProcess serverProcess) {
@@ -87,9 +94,20 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         } catch (final Exception exception) {
             this.logger.info("(konola) Nie można odnaleźc kanału z ID &a" + this.consoleID);
         }
-        this.messageReceived.initChannels();
+        this.messageReceived.init();
         this.jda.addEventListener(this.messageReceived);
+    }
 
+    public Role getHighestRole(final long memberID) {
+        final Member member = this.guild.getMemberById(memberID);
+        if (member == null) return null;
+        Role highestRole = null;
+        for (final Role role : member.getRoles()) {
+            if (highestRole == null || role.getPosition() > highestRole.getPosition()) {
+                highestRole = role;
+            }
+        }
+        return highestRole;
     }
 
     private void sendMessage(final String message) {
@@ -98,12 +116,12 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         }
     }
 
-    @Override
-    public void writeConsole(final String message) {
-        if (this.jda != null && this.consoleChannel != null) {
-            this.consoleChannel.sendMessage(message).queue();
-        }
-    }
+    // public void writeConsole(final String message) {
+    //     if (this.jda != null && this.consoleChannel != null) {
+    //        this.consoleService.execute(() -> this.consoleChannel.sendMessage(message).queue());
+    //     }
+    // }
+    //
 
     @Override
     public void sendJoinMessage(final String playerName) {
@@ -130,8 +148,6 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         this.sendMessage(this.config.getMessages().getDeathMessage()
                 .replaceAll("<name>", playerName)
                 .replaceAll("<casue>", deathMessage)
-                .replaceAll("@everyone", "/everyone/")
-                .replaceAll("@here", "/here/")
         );
     }
 

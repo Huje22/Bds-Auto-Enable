@@ -1,14 +1,12 @@
 package me.indian.bds;
 
+import java.util.Arrays;
+import java.util.Scanner;
 import me.indian.bds.config.Config;
 import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ScannerUtil;
 import me.indian.bds.util.SystemOs;
-import me.indian.bds.util.ThreadUtil;
-
-import java.util.Arrays;
-import java.util.Scanner;
 
 public class Settings {
 
@@ -42,6 +40,7 @@ public class Settings {
             this.init(scannerUtil);
         }
     }
+
 
     private void init(final ScannerUtil scannerUtil) {
         final long startTime = System.currentTimeMillis();
@@ -106,7 +105,7 @@ public class Settings {
         }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&1 " + input)));
 
         final int threads = scannerUtil.addQuestion((defaultValue) -> {
-            this.logger.info("&lLiczba wątków używana przez server&r (Dostępna liczba wątków to około " + ThreadUtil.getThreadsCount() + ") ");
+            this.logger.info("&lLiczba wątków używana przez server&r ");
             this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
         }, 0, (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + (Integer.parseInt(input) <= -1 ? 0 : input)));
 

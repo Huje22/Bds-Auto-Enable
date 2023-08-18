@@ -23,7 +23,5 @@ public interface DiscordIntegration {
 
     void sendDestroyedMessage();
 
-    void writeConsole(final String message);
-
     void disableBot();
 }
