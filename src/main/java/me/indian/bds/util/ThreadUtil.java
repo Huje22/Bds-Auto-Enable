@@ -1,9 +1,8 @@
 package me.indian.bds.util;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.ThreadFactory;
+import org.jetbrains.annotations.NotNull;
 
 public class ThreadUtil extends Thread implements ThreadFactory {
 

@@ -23,7 +23,6 @@ public class DateUtil {
         return localDate.toEpochDay();
     }
 
-
     public static LocalDate longToLocalDate(final long days) {
         return LocalDate.ofEpochDay(days);
     }

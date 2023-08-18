@@ -37,10 +37,10 @@ public class MathUtil {
     }
 
     public static double bytesToKb(final long bytes) {
-        final DecimalFormat df = new DecimalFormat();
-        df.setMaximumFractionDigits(0);
-        final String kb = df.format((double) bytes / 1024);
+        return format(((double) bytes / 1024), 2);
+    }
 
-        return Double.parseDouble(kb);
+    public static long bytesToMB(long bytes) {
+        return bytes / (1024 * 1024);
     }
 }

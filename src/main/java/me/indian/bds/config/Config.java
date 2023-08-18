@@ -5,11 +5,9 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.Header;
 import me.indian.bds.config.sub.discord.DiscordBot;
 import me.indian.bds.config.sub.discord.Messages;
+import me.indian.bds.config.sub.log.NoLog;
 import me.indian.bds.discord.DiscordType;
 import me.indian.bds.util.SystemOs;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 @Header("################################################################")
@@ -51,24 +49,17 @@ public class Config extends OkaeriConfig {
     private boolean backup = true;
     private int backupFrequency = 60;
     private double lastBackupTime = 20;
+
     @Comment({""})
-    @Comment({"Konsola i Plik .log"})
-    @Comment({"Nie zapisuje tych informacj które zawierają:"})
-    @Comment({"W pliku"})
-    private List<String> noFileLog = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]",
-            "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
-            " ERROR]", "WARN]",
-            "\"component_groups\"");
-    @Comment({"W konsoli"})
-    private List<String> noConsoleLog = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]",
-            "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
-            "\"component_groups\"");
+    @Comment({"Ustawienia logowania"})
+    @Comment({"Nie zapisuje tych informacj które zawierają dane znaki i słowa"})
+    private NoLog noLog = new NoLog();
 
     @Comment({""})
     @Comment({"Ustawienia discord"})
     @Comment({"Implementacija Bota / WebHooku"})
     @Comment({"WEBHOOK - Możliwe tylko wysyłanie wiadomości do discord z uzyciem webhooku"})
-    @Comment({"JDA - Bot discord przy uzyciu biblioteki Java Cord"})
+    @Comment({"JDA - Bot discord przy uzyciu biblioteki JDA"})
     private DiscordType integrationType = DiscordType.JDA;
     @Comment({"Ustawienia webhooka"})
     private String webHookChatUrl = "https://discord.com/api/webhooks/....";
@@ -92,6 +83,10 @@ public class Config extends OkaeriConfig {
 
     public boolean isLoaded() {
         return loaded;
+    }
+
+    public NoLog getNoLog() {
+        return this.noLog;
     }
 
     public void setLoaded(boolean loaded) {
@@ -160,22 +155,6 @@ public class Config extends OkaeriConfig {
 
     public void setLastBackupTime(double lastBackupTime) {
         this.lastBackupTime = lastBackupTime;
-    }
-
-    public List<String> getNoFileLog() {
-        return noFileLog;
-    }
-
-    public void setNoFileLog(List<String> noFileLog) {
-        this.noFileLog = noFileLog;
-    }
-
-    public List<String> getNoConsoleLog() {
-        return noConsoleLog;
-    }
-
-    public void setNoConsoleLog(List<String> noConsoleLog) {
-        this.noConsoleLog = noConsoleLog;
     }
 
     public DiscordType getIntegrationType() {
