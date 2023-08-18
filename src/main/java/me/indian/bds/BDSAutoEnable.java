@@ -2,6 +2,9 @@ package me.indian.bds;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
+import java.lang.management.ManagementFactory;
+import java.util.List;
+import java.util.Scanner;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -11,13 +14,9 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.PlayerManager;
 import me.indian.bds.manager.VersionManager;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.watchdog.WatchDog;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.Scanner;
 
 
 public class BDSAutoEnable {
@@ -52,6 +51,7 @@ public class BDSAutoEnable {
         this.logger = new Logger(this);
         this.logger.alert("Numer wersji projektu: " + this.projectVersion);
         this.checkEncoding();
+        this.checkFlags();
         switch (this.config.getIntegrationType()) {
             case WEBHOOK -> this.discord = new WebHook(this);
             case JDA -> this.discord = new DiscordJda(this);
@@ -88,17 +88,27 @@ public class BDSAutoEnable {
     }
 
     private void initRunDate() {
-        final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        this.runDate = now.format(formatter).replaceAll(":", "-");
+        this.runDate = DateUtil.getDate().replaceAll(":", "-");
     }
 
-    private void checkEncoding(){
+    private void checkFlags() {
+        final List<String> flags = ManagementFactory.getRuntimeMXBean().getInputArguments();
+        if (flags.isEmpty()) return;
+        this.logger.debug("Wykryte flagi startowe:&b " + flags.toString().replaceAll("\\[", "")
+                .replaceAll("\\]", "")
+                .replaceAll(",", " &a,&b"));
+    }
+
+    private void checkEncoding() {
         final String encoding = System.getProperty("file.encoding");
         if (!encoding.equalsIgnoreCase("UTF-8")) {
-            this.logger.critical("&cTwoje kodowanie to:&b " + encoding + " &cmy wspieramy tylko&b UTF-8");
-            this.logger.critical("&cProsimy ustawić swoje kodowanie na&b UTF-8&4 abyśmy mogli dalej kontunować!");
-            System.exit(-2137);
+            this.logger.critical("&cTwoje kodowanie to:&b " + encoding + ", &cmy wspieramy tylko&b: UTF-8");
+            this.logger.critical("&cProsimy ustawić swoje kodowanie na&b UTF-8&c abyśmy mogli dalej kontunować!");
+            if (!this.config.isDebug()) {
+                System.exit(-2137);
+            } else {
+                this.logger.debug("&aDebug włączony, omijasz wymóg &bUTF-8&a na własne ryzyko&c!");
+            }
         } else {
             this.logger.debug("Wykryto wspierane kodowanie");
         }
@@ -113,7 +123,7 @@ public class BDSAutoEnable {
             try {
                 if (this.scanner != null) this.scanner.close();
                 this.serverProcess.instantShutdown();
-            } catch (Exception e) {
+            } catch (final Exception e) {
                 e.printStackTrace();
             }
         });
