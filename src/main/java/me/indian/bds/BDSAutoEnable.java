@@ -3,6 +3,7 @@ package me.indian.bds;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
 import java.util.List;
 import java.util.Scanner;
 import me.indian.bds.config.Config;
@@ -15,6 +16,7 @@ import me.indian.bds.manager.PlayerManager;
 import me.indian.bds.manager.VersionManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.watchdog.WatchDog;
 
@@ -52,6 +54,7 @@ public class BDSAutoEnable {
         this.logger.alert("Numer wersji projektu: " + this.projectVersion);
         this.checkEncoding();
         this.checkFlags();
+        this.checkMemory();
         switch (this.config.getIntegrationType()) {
             case WEBHOOK -> this.discord = new WebHook(this);
             case JDA -> this.discord = new DiscordJda(this);
@@ -95,7 +98,7 @@ public class BDSAutoEnable {
         final List<String> flags = ManagementFactory.getRuntimeMXBean().getInputArguments();
         if (flags.isEmpty()) return;
         this.logger.debug("Wykryte flagi startowe:&b " + flags.toString().replaceAll("\\[", "")
-                .replaceAll("\\]", "")
+                .replaceAll("]", "")
                 .replaceAll(",", " &a,&b"));
     }
 
@@ -112,6 +115,12 @@ public class BDSAutoEnable {
         } else {
             this.logger.debug("Wykryto wspierane kodowanie");
         }
+    }
+
+    private void checkMemory() {
+        final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+        final long maxMem = MathUtil.bytesToMB(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax());
+        if (maxMem < 1000) this.logger.critical("&cWykryto małą ilość pamieci przeznaczonej dla aplikacij! &b(&a" + maxMem + " mb&b)");
     }
 
     public long getStartTime() {
