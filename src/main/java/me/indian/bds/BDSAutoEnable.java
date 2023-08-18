@@ -118,7 +118,6 @@ public class BDSAutoEnable {
     }
 
     private void checkMemory() {
-        final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         final long maxMem = MathUtil.bytesToMB(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax());
         if (maxMem < 1000) this.logger.critical("&cWykryto małą ilość pamieci przeznaczonej dla aplikacij! &b(&a" + maxMem + " mb&b)");
     }
