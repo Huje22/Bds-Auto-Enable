@@ -111,16 +111,15 @@ public class ServerProcess {
                     this.logger.info("Uruchomiono proces ");
                     this.discord.sendEnabledMessage();
 
-                    final ThreadUtil output = new ThreadUtil("Console-Output");
-                    final ThreadUtil input = new ThreadUtil("Console-Input");
+                    final Thread output = new ThreadUtil("Console-Output").newThread(this::readConsoleOutput);
+                    final Thread input = new ThreadUtil("Console-Input").newThread(this::writeConsoleInput);
 
-                    output.newThread(this::readConsoleOutput).start();
-                    input.newThread(this::writeConsoleInput).start();
-
+                    output.start();
+                    input.start();
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
-                    output.interrupt();
                     input.interrupt();
+                    output.interrupt();
                     this.discord.sendDisabledMessage();
                     ThreadUtil.sleep(5);
                     this.startProcess();
@@ -134,7 +133,6 @@ public class ServerProcess {
             }
         });
     }
-
 
     private void readConsoleOutput() {
         final Scanner consoleOutput = new Scanner(this.process.getInputStream());
@@ -219,7 +217,6 @@ public class ServerProcess {
     public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
         this.discord.sendDisablingMessage();
-        this.watchDog.saveAndResume();
         if (this.processService != null && !this.processService.isTerminated()) {
             this.logger.info("Zatrzymywanie wątków procesu servera");
             try {
@@ -237,6 +234,8 @@ public class ServerProcess {
             }
             ThreadUtil.sleep(3);
         }
+
+        if (this.process != null && this.process.isAlive()) this.watchDog.saveAndResume();
 
         if (this.writer != null) {
             this.logger.info("Zatrzymywanie writera");
