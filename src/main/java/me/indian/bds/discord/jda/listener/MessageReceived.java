@@ -167,7 +167,7 @@ public class MessageReceived extends ListenerAdapter {
                      final String committedMemory = "Przydzielone " + MathUtil.bytesToMB(this.heapMemoryUsage.getCommitted()) + " MB";
                      final String maxMemory = "Dostępne " + MathUtil.bytesToMB(this.heapMemoryUsage.getMax()) + " MB";
                      final MessageEmbed embed = new EmbedBuilder()
-                             .setTitle("Czas działania")
+                             .setTitle("Statystyki ")
                              .setDescription("Czas działania servera `" + MathUtil.formatTime(System.currentTimeMillis() - this.serverProcess.getStartTime()) + "`\n" +
                                      "**Statystyki aplikacij**\n" +
                                      "Czas działania `" + MathUtil.formatTime(System.currentTimeMillis() - this.bdsAutoEnable.getStartTime()) + "`\n" +
@@ -185,7 +185,7 @@ public class MessageReceived extends ListenerAdapter {
 
                  case "list" -> {
                      final List<String> players = this.bdsAutoEnable.getPlayerManager().getOnlinePlayers();
-                     final String list = "`" + players.toString().replaceAll("\\[", "").replaceAll("\\]", "") + "`";
+                     final String list = "`" + players.toString().replaceAll("\\[", "").replaceAll("]", "") + "`";
                      final MessageEmbed embed = new EmbedBuilder()
                              .setTitle("Lista Graczy")
                              .setDescription(players.size() + "/" + this.bdsAutoEnable.getServerProperties().getMaxPlayers() + "\n" +

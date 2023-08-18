@@ -21,7 +21,6 @@ import me.indian.bds.watchdog.WatchDog;
 
 public class ServerProcess {
 
-    private WatchDog watchDog;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Config config;
@@ -35,6 +34,7 @@ public class ServerProcess {
     private PrintWriter writer;
     private String lastLine;
     private long startTime;
+    private WatchDog watchDog;
 
     public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -51,7 +51,6 @@ public class ServerProcess {
     }
 
     private boolean isProcessRunning() {
-        BufferedReader reader = null;
         try {
             String command = "";
             switch (this.config.getSystem()) {
@@ -64,8 +63,7 @@ public class ServerProcess {
             }
 
             final Process checkProcessIsRunning = Runtime.getRuntime().exec(command);
-
-            reader = new BufferedReader(new InputStreamReader(checkProcessIsRunning.getInputStream()));
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(checkProcessIsRunning.getInputStream()));
             String line;
             while ((line = reader.readLine()) != null) {
                 if (!line.isEmpty() && !line.equalsIgnoreCase("INFO: No tasks are running which match the specified criteria.")) {
@@ -73,18 +71,11 @@ public class ServerProcess {
                 }
             }
             checkProcessIsRunning.waitFor();
+            reader.close();
         } catch (final IOException | InterruptedException exception) {
             this.logger.critical(exception);
             exception.printStackTrace();
             this.instantShutdown();
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (final IOException ioException) {
-                    throw new RuntimeException(ioException);
-                }
-            }
         }
         return false;
     }
@@ -182,24 +173,24 @@ public class ServerProcess {
             this.writer = new PrintWriter(this.process.getOutputStream());
             while (consoleInput.hasNextLine()) {
                 final String input = consoleInput.nextLine();
-                if (input.equalsIgnoreCase("stop")) {
-                    MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
-                    if (!this.playerManager.getOnlinePlayers().isEmpty()) {
-                        for (final String name : this.playerManager.getOnlinePlayers()) {
-                            this.sendToConsole(MinecraftUtil.kickCommand(name, this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem"));
+                switch (input.toLowerCase()) {
+                    case "stop" -> {
+                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
+                        if (!this.playerManager.getOnlinePlayers().isEmpty()) {
+                            for (final String name : this.playerManager.getOnlinePlayers()) {
+                                this.sendToConsole(MinecraftUtil.kickCommand(name, this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem"));
+                            }
                         }
+                        ThreadUtil.sleep(2);
+                        this.sendToConsole("stop");
                     }
-                    ThreadUtil.sleep(2);
-                    this.sendToConsole("stop");
-                } else if (input.equalsIgnoreCase("backup")) {
-                    this.watchDog.getBackupModule().forceBackup();
-                } else if (input.equalsIgnoreCase(".end")) {
-                    this.endServerProcess(true);
-                } else if (input.equalsIgnoreCase("version")) {
-                    MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija minecraft:&b " + this.config.getVersion(), LogState.INFO);
-                    MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija BDS-Auro-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
-                } else {
-                    this.sendToConsole(input);
+                    case "version" -> {
+                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija minecraft:&b " + this.config.getVersion(), LogState.INFO);
+                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija BDS-Auro-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
+                    }
+                    case "backup" -> this.watchDog.getBackupModule().forceBackup();
+                    case ".end" -> this.endServerProcess(true);
+                    default -> this.sendToConsole(input);
                 }
             }
         } catch (final Exception exception) {
