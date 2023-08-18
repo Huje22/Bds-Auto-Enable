@@ -1,15 +1,13 @@
 package me.indian.bds.file;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ConsoleColors;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.Config;
+import me.indian.bds.logger.Logger;
 
 public class ServerProperties {
 

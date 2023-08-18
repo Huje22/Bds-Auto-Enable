@@ -1,13 +1,11 @@
 package me.indian.bds.logger;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
-import me.indian.bds.util.ConsoleColors;
-import me.indian.bds.util.DateUtil;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.Config;
+import me.indian.bds.util.DateUtil;
 
 public class Logger {
 

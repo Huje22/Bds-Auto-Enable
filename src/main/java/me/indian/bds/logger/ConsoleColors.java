@@ -1,4 +1,4 @@
-package me.indian.bds.util;
+package me.indian.bds.logger;
 
 import java.util.HashMap;
 import java.util.Map;
