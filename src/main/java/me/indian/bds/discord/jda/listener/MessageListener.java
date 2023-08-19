@@ -1,8 +1,6 @@
 package me.indian.bds.discord.jda.listener;
 
 import java.awt.Color;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryUsage;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
@@ -11,15 +9,13 @@ import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.MinecraftUtil;
-import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.StatusUtil;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -27,13 +23,12 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-public class MessageReceived extends ListenerAdapter {
+public class MessageListener extends ListenerAdapter {
 
     private final DiscordJda discordJda;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Config config;
-    private final MemoryUsage heapMemoryUsage;
     private final String prefix;
     private JDA jda;
     private TextChannel textChannel;
@@ -41,12 +36,11 @@ public class MessageReceived extends ListenerAdapter {
     private ServerProcess serverProcess;
 
 
-    public MessageReceived(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
+    public MessageListener(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
         this.discordJda = discordJda;
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
-        this.heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         this.prefix = this.config.getDiscordBot().getPrefix();
     }
 
@@ -65,7 +59,7 @@ public class MessageReceived extends ListenerAdapter {
     public void onMessageReceived(final MessageReceivedEvent event) {
         final Member member = event.getMember();
         final User author = event.getAuthor();
-        final Message message = event.getMessage();
+        final net.dv8tion.jda.api.entities.Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
         final TextChannel channel = event.getChannel().asTextChannel();
 
@@ -163,16 +157,9 @@ public class MessageReceived extends ListenerAdapter {
                     });
                 }
                  case "stats" -> {
-                     final String usedMemory = "Użyte " + MathUtil.bytesToMB(this.heapMemoryUsage.getUsed()) + " MB";
-                     final String committedMemory = "Przydzielone " + MathUtil.bytesToMB(this.heapMemoryUsage.getCommitted()) + " MB";
-                     final String maxMemory = "Dostępne " + MathUtil.bytesToMB(this.heapMemoryUsage.getMax()) + " MB";
                      final MessageEmbed embed = new EmbedBuilder()
                              .setTitle("Statystyki ")
-                             .setDescription("Czas działania servera `" + MathUtil.formatTime(System.currentTimeMillis() - this.serverProcess.getStartTime()) + "`\n" +
-                                     "**Statystyki aplikacij**\n" +
-                                     "Czas działania `" + MathUtil.formatTime(System.currentTimeMillis() - this.bdsAutoEnable.getStartTime()) + "`\n" +
-                                     "Pamięc RAM `" + usedMemory + " / " + committedMemory + " / " + maxMemory + "`\n" +
-                                     "Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`")
+                             .setDescription(MessageUtil.listToSpacedString(StatusUtil.getStatus(true)))
                              .setColor(Color.BLUE)
                              .setFooter("Wywołane przez: " + author.getName(), author.getEffectiveAvatarUrl())
                              .build();
