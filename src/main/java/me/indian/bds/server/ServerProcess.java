@@ -16,6 +16,7 @@ import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.PlayerManager;
 import me.indian.bds.util.MinecraftUtil;
+import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
 
@@ -111,6 +112,7 @@ public class ServerProcess {
                     this.logger.info("Uruchomiono proces ");
                     this.discord.sendEnabledMessage();
 
+
                     final Thread output = new ThreadUtil("Console-Output").newThread(this::readConsoleOutput);
                     final Thread input = new ThreadUtil("Console-Input").newThread(this::writeConsoleInput);
 
@@ -118,12 +120,11 @@ public class ServerProcess {
                     input.start();
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
-                    input.interrupt();
                     output.interrupt();
+                    input.interrupt();
                     this.discord.sendDisabledMessage();
                     ThreadUtil.sleep(5);
                     this.startProcess();
-
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można uruchomic procesu");
                     this.logger.critical(exception);
@@ -137,7 +138,7 @@ public class ServerProcess {
     private void readConsoleOutput() {
         final Scanner consoleOutput = new Scanner(this.process.getInputStream());
         try {
-            while (consoleOutput.hasNextLine()) {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
                     if (!consoleOutput.hasNext()) continue;
                 } catch (final IllegalStateException stateException) {
@@ -169,7 +170,13 @@ public class ServerProcess {
         final Scanner consoleInput = new Scanner(System.in);
         try {
             this.writer = new PrintWriter(this.process.getOutputStream());
-            while (consoleInput.hasNextLine()) {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
+                    if (!consoleInput.hasNext()) continue;
+                } catch (final IllegalStateException stateException) {
+                    break;
+                }
+
                 final String input = consoleInput.nextLine();
                 switch (input.toLowerCase()) {
                     case "stop" -> {
@@ -179,7 +186,7 @@ public class ServerProcess {
                                 this.sendToConsole(MinecraftUtil.kickCommand(name, this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem"));
                             }
                         }
-                        ThreadUtil.sleep(2);
+                        if(!ThreadUtil.interrupted()) ThreadUtil.sleep(2);
                         this.sendToConsole("stop");
                     }
                     case "version" -> {
@@ -188,6 +195,11 @@ public class ServerProcess {
                     }
                     case "backup" -> this.watchDog.getBackupModule().forceBackup();
                     case ".end" -> this.endServerProcess(true);
+                    case "stats" -> {
+                        for (final String s : StatusUtil.getStatus(false)) {
+                            this.logger.info(s);
+                        }
+                    }
                     default -> this.sendToConsole(input);
                 }
             }
