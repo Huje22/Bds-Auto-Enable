@@ -26,4 +26,20 @@ public class DateUtil {
     public static LocalDate longToLocalDate(final long days) {
         return LocalDate.ofEpochDay(days);
     }
+
+    public static String formatTime(final long millis) {
+        final long totalSeconds = millis / 1000;
+        final long milliseconds = millis % 1000;
+
+        final long totalMinutes = totalSeconds / 60;
+        final long seconds = totalSeconds % 60;
+
+        final long totalHours = totalMinutes / 60;
+        final long minutes = totalMinutes % 60;
+
+        final long days = totalHours / 24;
+        final long hours = totalHours % 24;
+
+        return days + " dni " + hours + " godzin " + minutes + " minut " + seconds + " sekund " + milliseconds + " milisekund";
+    }
 }
