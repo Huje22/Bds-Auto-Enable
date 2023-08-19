@@ -18,6 +18,7 @@ Dodatkowe polecenia(Tylko w konsoli): <br/>
 * `.end` - zatrzymuje proces servera i aplikacije
 * `backup` - natychmiastowo wywołuje tworzenie backupa
 * `version` - pokazuje załadowaną versie minecraft + versie oprogramowania (w konsoli i graczom online)
+* `stats` - statystyki servera i aplikacij
 
 Program nie wspiera: <br/>
 * Wtyczek
