@@ -26,7 +26,7 @@ public class ThreadUtil extends Thread implements ThreadFactory {
         try {
             Thread.sleep(1000 * seconds);
         } catch (final InterruptedException exception) {
-            throw new RuntimeException(exception);
+            exception.printStackTrace();
         }
     }
 
@@ -34,7 +34,7 @@ public class ThreadUtil extends Thread implements ThreadFactory {
         try {
             Thread.sleep(millis);
         } catch (final InterruptedException exception) {
-            throw new RuntimeException(exception);
+            exception.printStackTrace();;
         }
     }
 

@@ -18,6 +18,7 @@ import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MinecraftUtil;
+import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.WatchDog;
 
 
@@ -68,6 +69,7 @@ public class BDSAutoEnable {
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
         MinecraftUtil.initMinecraftUtil(this);
+        StatusUtil.init(this , this.serverProcess);
         if (this.discord instanceof DiscordJda jda) jda.initServerProcess(this.serverProcess);
 
         this.init();

@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.jda.listener.MessageReceived;
+import me.indian.bds.discord.jda.listener.MessageListener;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.ThreadUtil;
@@ -29,7 +29,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     private final long serverID;
     private final long channelID;
     private final long consoleID;
-    private final MessageReceived messageReceived;
+    private final MessageListener messageListener;
     private final ExecutorService consoleService;
     private JDA jda;
     private Guild guild;
@@ -44,12 +44,12 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         this.serverID = this.config.getDiscordBot().getServerID();
         this.channelID = this.config.getDiscordBot().getChannelID();
         this.consoleID = this.config.getDiscordBot().getConsoleID();
-        this.messageReceived = new MessageReceived(this, this.bdsAutoEnable);
+        this.messageListener = new MessageListener(this, this.bdsAutoEnable);
         this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
     }
 
     public void initServerProcess(final ServerProcess serverProcess) {
-        this.messageReceived.initServerProcess(serverProcess);
+        this.messageListener.initServerProcess(serverProcess);
     }
 
     @Override
@@ -94,8 +94,8 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         } catch (final Exception exception) {
             this.logger.info("(konola) Nie można odnaleźc kanału z ID &a" + this.consoleID);
         }
-        this.messageReceived.init();
-        this.jda.addEventListener(this.messageReceived);
+        this.messageListener.init();
+        this.jda.addEventListener(this.messageListener);
     }
 
     public Role getHighestRole(final long memberID) {
