@@ -27,19 +27,48 @@ public class DateUtil {
         return LocalDate.ofEpochDay(days);
     }
 
-    public static String formatTime(final long millis) {
+    public static String formatDays(final long millis) {
         final long totalSeconds = millis / 1000;
-        final long milliseconds = millis % 1000;
-
         final long totalMinutes = totalSeconds / 60;
-        final long seconds = totalSeconds % 60;
-
         final long totalHours = totalMinutes / 60;
-        final long minutes = totalMinutes % 60;
-
         final long days = totalHours / 24;
+
+        return days + " dni";
+    }
+
+    public static String formatHours(final long millis) {
+        final long totalSeconds = millis / 1000;
+        final long totalMinutes = totalSeconds / 60;
+        final long totalHours = totalMinutes / 60;
         final long hours = totalHours % 24;
 
-        return days + " dni " + hours + " godzin " + minutes + " minut " + seconds + " sekund " + milliseconds + " milisekund";
+        return hours + " godzin";
+    }
+
+    public static String formatMinutes(final long millis) {
+        final long totalSeconds = millis / 1000;
+        final long totalMinutes = totalSeconds / 60;
+        final long minutes = totalMinutes % 60;
+
+        return minutes + " minut";
+    }
+
+    public static String formatSeconds(final long millis) {
+        final long totalSeconds = millis / 1000;
+        final long seconds = totalSeconds % 60;
+
+        return seconds + " sekund";
+    }
+
+    public static String formatTime(long millis) {
+        String formattedTime = "";
+
+        formattedTime += formatDays(millis) + " ";
+        formattedTime += formatHours(millis) + " ";
+        formattedTime += formatMinutes(millis) + " ";
+        formattedTime += formatSeconds(millis) + " ";
+        formattedTime += millis % 1000 + " milisekund";
+
+        return formattedTime;
     }
 }
