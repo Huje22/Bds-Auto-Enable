@@ -3,7 +3,6 @@ package me.indian.bds;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryUsage;
 import java.util.List;
 import java.util.Scanner;
 import me.indian.bds.config.Config;
@@ -84,7 +83,7 @@ public class BDSAutoEnable {
         this.shutdownHook();
         this.watchDog = new WatchDog(this);
         this.serverProcess.initWatchDog(this.watchDog);
-        this.watchDog.getBackupModule().initBackupModule(this.watchDog);
+        this.watchDog.getBackupModule().initBackupModule(this.watchDog, this.serverProcess);
         this.watchDog.getBackupModule().backup();
         this.versionManager.loadVersion();
         this.config.save();
