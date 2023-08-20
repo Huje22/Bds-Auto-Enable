@@ -66,7 +66,6 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                     .setEnableShutdownHook(false)
                     .build();
             this.jda.awaitReady();
-
             this.logger.info("&aZaładowano bota");
         } catch (final Exception exception) {
             this.logger.critical("&aNie można uruchomic bota , sprawdź podany &bTOKEN");
@@ -79,6 +78,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         } catch (final Exception exception) {
             this.logger.info("Nie można odnaleźc servera z ID &a" + this.serverID);
             this.jda.shutdown();
+            this.jda = null;
             return;
         }
 
@@ -87,6 +87,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         } catch (final Exception exception) {
             this.logger.info("Nie można odnaleźc kanału z ID &a" + this.channelID);
             this.jda.shutdown();
+            this.jda = null;
             return;
         }
         try {

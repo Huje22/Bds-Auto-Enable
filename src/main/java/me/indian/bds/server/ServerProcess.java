@@ -43,7 +43,7 @@ public class ServerProcess {
         this.config = this.bdsAutoEnable.getConfig();
         this.discord = this.bdsAutoEnable.getDiscord();
         this.playerManager = this.bdsAutoEnable.getPlayerManager();
-        this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
+        this.processService = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Server process"));
         this.prefix = "&b[&3ServerProcess&b] ";
     }
 
@@ -186,7 +186,7 @@ public class ServerProcess {
                                 this.sendToConsole(MinecraftUtil.kickCommand(name, this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem"));
                             }
                         }
-                        if(!ThreadUtil.interrupted()) ThreadUtil.sleep(2);
+                        if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
                         this.sendToConsole("stop");
                     }
                     case "version" -> {
@@ -294,7 +294,9 @@ public class ServerProcess {
                     }
                     while (this.watchDog.getBackupModule().isBackuping()) {
                         //it so bugged without this , I don't know why
+//                        this.logger.info("");
                     }
+                    ThreadUtil.sleep(1);
                     while (!this.watchDog.getBackupModule().isBackuping()) {
                         MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aBackup zrobiony!", LogState.INFO);
                         ThreadUtil.sleep(1);

@@ -4,7 +4,7 @@ import java.lang.management.ManagementFactory;
 import java.util.concurrent.ThreadFactory;
 import org.jetbrains.annotations.NotNull;
 
-public class ThreadUtil extends Thread implements ThreadFactory {
+public class ThreadUtil implements ThreadFactory {
 
     private final String threadName;
     private final Runnable runnable;
