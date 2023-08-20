@@ -1,6 +1,7 @@
 package me.indian.bds.util;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.time.Duration;
 import java.util.Locale;
 
 public class MathUtil {
@@ -12,8 +13,8 @@ public class MathUtil {
         df.setDecimalFormatSymbols(decimalFormatSymbols);
     }
 
-    public static int minutesToMilliseconds(int minutes) {
-        return minutes * 60000;
+    public static long minutesToMilliseconds(int minutes) {
+        return Duration.ofMinutes(minutes).toMillis();
     }
 
     public static double format(final double decimal, final int format) {
