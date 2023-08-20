@@ -7,7 +7,6 @@ import java.util.List;
 public class DiscordBot extends OkaeriConfig {
 
     private String token = "";
-    private String prefix = "$";
     private long channelID = 1L;
     private long consoleID = 1L;
     private long serverID = 1L;
@@ -15,10 +14,6 @@ public class DiscordBot extends OkaeriConfig {
 
     public String getToken() {
         return this.token;
-    }
-
-    public String getPrefix() {
-        return this.prefix;
     }
 
     public long getChannelID() {
