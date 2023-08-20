@@ -21,6 +21,7 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
@@ -28,6 +29,7 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
@@ -70,10 +72,31 @@ public class MessageListener extends ListenerAdapter {
     }
 
     @Override
+    public void onMessageUpdate(final MessageUpdateEvent event) {
+        final User author = event.getAuthor();
+        final Message message = event.getMessage();
+        final String rawMessage = message.getContentRaw();
+        final TextChannel channel = event.getChannel().asTextChannel();
+
+        if (channel == this.textChannel && !rawMessage.startsWith(this.prefix)) {
+            final Role role = this.discordJda.getHighestRole(author.getIdLong());
+            String higestRole = "";
+            if (role != null) {
+                higestRole = role.getName();
+            }
+            this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.config.getMessages().getDiscordToMinecraftMessage()
+                            .replaceAll("<name>", author.getName())
+                            .replaceAll("<msg>", rawMessage) + "&r (edytowane)")
+                    .replaceAll("<role>", higestRole));
+            this.logger.info("&7[&bDiscord&e ->&a Minecraft&7] " + author.getName() + " »» " + rawMessage + "&r (edytowane)");
+        }
+    }
+
+    @Override
     public void onMessageReceived(final MessageReceivedEvent event) {
         final Member member = event.getMember();
         final User author = event.getAuthor();
-        final net.dv8tion.jda.api.entities.Message message = event.getMessage();
+        final Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
         final TextChannel channel = event.getChannel().asTextChannel();
 
