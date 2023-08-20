@@ -25,7 +25,8 @@ public class StatusUtil {
         final String usedMemory = "Użyte " + MathUtil.bytesToMB(heapMemoryUsage.getUsed()) + " MB";
         final String committedMemory = "Przydzielone " + MathUtil.bytesToMB(heapMemoryUsage.getCommitted()) + " MB";
         final String maxMemory = "Dostępne " + MathUtil.bytesToMB(heapMemoryUsage.getMax()) + " MB";
-        status.add("Czas działania servera `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime()) + "`");
+        status.add("**Statystyki servera**");
+        status.add("Czas działania `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime()) + "`");
         status.add("**Statystyki aplikacij**");
         status.add("Czas działania `" + DateUtil.formatTime(System.currentTimeMillis() - bdsAutoEnable.getStartTime()) + "`");
         status.add("Pamięc RAM `" + usedMemory + " / " + committedMemory + " / " + maxMemory + "`");
