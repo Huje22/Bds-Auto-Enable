@@ -9,6 +9,7 @@ import me.indian.bds.discord.jda.listener.CommandListener;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.watchdog.module.PackModule;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -56,11 +57,18 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     @Override
     public void init() {
+        final PackModule packModule = this.bdsAutoEnable.getWatchDog().getPackModule();
         this.logger.info("&aŁadowanie bota....");
         if (this.config.getDiscordBot().getToken().isEmpty()) {
             this.logger.alert("&aNie znaleziono tokenu , pomijanie ładowania.");
             return;
         }
+        if (!packModule.isLoaded()) {
+            this.logger.error("&cNie załadowano paczki&b " + packModule.getPackName() + "&4.&cBot nie może bez niej normalnie działać");
+            this.logger.error("Możesz znaleźć ją tu:&b https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack");
+            return;
+        }
+
         try {
             this.jda = JDABuilder.create(this.config.getDiscordBot().getToken(), GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.MESSAGE_CONTENT)
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS, CacheFlag.ONLINE_STATUS).enableCache(CacheFlag.EMOJI)

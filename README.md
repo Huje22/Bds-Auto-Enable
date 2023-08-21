@@ -21,10 +21,14 @@ Dodatkowe polecenia(Tylko w konsoli): <br/>
 * `stats` - statystyki servera i aplikacij
 
 Program nie wspiera: <br/>
+
 * Wtyczek
 
 Todo: <br/>
 
-* Przesyłanie listy graczy do bazy danych (Jeśli chcesz możemy to dla ciebie zaimplementowac lecz narazie jest to nam nie potrzebne)
+* Przesyłanie listy graczy do bazy danych (Jeśli chcesz możemy to dla ciebie zaimplementowac lecz narazie jest to nam
+  nie potrzebne)
 
+**Szybkie info**:
 
+* Paczke wystarczy tylko dodac do katalogu `TWÓJ ŚWIAT \behavior_backs` a program sam ją załaduje

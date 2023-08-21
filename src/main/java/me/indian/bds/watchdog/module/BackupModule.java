@@ -141,6 +141,10 @@ public class BackupModule {
         return this.status;
     }
 
+    public File getWorldFile() {
+        return this.worldFile;
+    }
+
     public boolean isBackuping() {
         return this.backuping;
     }

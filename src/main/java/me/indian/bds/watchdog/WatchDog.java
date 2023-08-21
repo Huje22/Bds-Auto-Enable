@@ -7,16 +7,19 @@ import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
+import me.indian.bds.watchdog.module.PackModule;
 
 public class WatchDog {
 
     private final BackupModule backupModule;
+    private final PackModule packModule;
     private final Config config;
     private final String watchDogPrefix;
     private final ServerProcess serverProcess;
 
     public WatchDog(final BDSAutoEnable bdsAutoEnable) {
         this.backupModule = new BackupModule(bdsAutoEnable);
+        this.packModule = new PackModule(bdsAutoEnable);
         this.config = bdsAutoEnable.getConfig();
         this.watchDogPrefix = "&b[&3WatchDog&b]";
         this.serverProcess = bdsAutoEnable.getServerProcess();
@@ -24,6 +27,15 @@ public class WatchDog {
 
     public BackupModule getBackupModule() {
         return this.backupModule;
+    }
+
+    public PackModule getPackModule() {
+        return this.packModule;
+    }
+
+    public void init(final ServerProcess serverProcess) {
+        this.backupModule.initBackupModule(this, serverProcess);
+        this.packModule.initBackupModule(this);
     }
 
     public void saveWorld() {

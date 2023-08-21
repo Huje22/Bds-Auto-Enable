@@ -83,7 +83,7 @@ public class BDSAutoEnable {
         this.shutdownHook();
         this.watchDog = new WatchDog(this);
         this.serverProcess.initWatchDog(this.watchDog);
-        this.watchDog.getBackupModule().initBackupModule(this.watchDog, this.serverProcess);
+        this.watchDog.init(this.serverProcess);
         this.watchDog.getBackupModule().backup();
         this.versionManager.loadVersion();
         this.config.save();
