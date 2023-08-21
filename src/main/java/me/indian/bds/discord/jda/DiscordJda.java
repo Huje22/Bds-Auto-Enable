@@ -112,11 +112,11 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         this.guild.updateCommands().addCommands(
                 Commands.slash("list", "lista graczy online."),
                 Commands.slash("backup", "tworzenie bądź ostatni czas backupa"),
-                Commands.slash("ping", "aktualny ping bot."),
+                Commands.slash("ping", "aktualny ping bot z serverami discord"),
                 Commands.slash("stats", "Statystyki Servera i aplikacij."),
                 Commands.slash("cmd", "Wykonuje polecenie w konsoli.")
                         .addOption(OptionType.STRING, "command", "Polecenie które zostanie wysłane do konsoli.", true),
-                Commands.slash("ip", "ip ustawione w config")
+                Commands.slash("ip", "Informacje o ip ustawione w config")
         ).queue();
 
     }
