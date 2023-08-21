@@ -215,7 +215,8 @@ public class CommandListener extends ListenerAdapter {
                                 "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
                                 "Dostepa pamięć: `" + gbSpace + " GB " + mbSpace + " MB`\n" +
                                 "**Dostępne backupy z wersij " + this.config.getVersion() + "**:\n" +
-                                availableBackups
+                                availableBackups + "\n" +
+                                (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : "")
                         )
                         .setColor(Color.BLUE)
                         .setFooter("Wywołane przez: " + user.getName(), user.getEffectiveAvatarUrl())

@@ -21,6 +21,7 @@ import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MinecraftUtil;
+import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.ZipUtil;
 import me.indian.bds.watchdog.WatchDog;
@@ -110,6 +111,11 @@ public class BackupModule {
             this.logger.error("Nie można zrobić kopi podczas robienia już jednej");
             return;
         }
+        if(StatusUtil.availableGbSpace() < 10){
+            this.logger.error("Wykryto zbyt małą ilość pamięci aby wykonać&b backup&c!");
+            return;
+        }
+
         if (this.serverProcess.getProcess() == null || !this.serverProcess.getProcess().isAlive()) return;
         final long startTime = System.currentTimeMillis();
         this.service.execute(() -> {
