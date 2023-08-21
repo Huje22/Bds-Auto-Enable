@@ -1,5 +1,6 @@
 package me.indian.bds.util;
 
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
@@ -11,8 +12,10 @@ public class StatusUtil {
 
     private static final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
     private static final List<String> status = new ArrayList<>();
+    private static final File file = new File("/");
     private static ServerProcess serverProcess;
     private static BDSAutoEnable bdsAutoEnable;
+
 
     public static void init(final BDSAutoEnable bdsAutoEnable, final ServerProcess serverProcess) {
         StatusUtil.bdsAutoEnable = bdsAutoEnable;
@@ -25,6 +28,7 @@ public class StatusUtil {
         final String usedMemory = "Użyte " + MathUtil.bytesToMB(heapMemoryUsage.getUsed()) + " MB";
         final String committedMemory = "Przydzielone " + MathUtil.bytesToMB(heapMemoryUsage.getCommitted()) + " MB";
         final String maxMemory = "Dostępne " + MathUtil.bytesToMB(heapMemoryUsage.getMax()) + " MB";
+
         status.add("**Statystyki servera**");
         status.add("Czas działania `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime()) + "`");
         status.add("**Statystyki aplikacij**");
@@ -32,11 +36,22 @@ public class StatusUtil {
         status.add("Pamięc RAM `" + usedMemory + " / " + committedMemory + " / " + maxMemory + "`");
         status.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
 
-
         if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", ""));
 
         return status;
     }
 
+    public static long availableGbSpace() {
+        if (file.exists()) {
+            return file.getUsableSpace() / (1024 * 1024 * 1024);
+        }
+        return 0;
+    }
 
+    public static long availableMbSpace() {
+        if (file.exists()) {
+            return file.getUsableSpace() / (1024 * 1024);
+        }
+        return 0;
+    }
 }

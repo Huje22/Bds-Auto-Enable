@@ -46,7 +46,7 @@ public class CommandListener extends ListenerAdapter {
     private TextChannel consoleChannel;
     private ServerProcess serverProcess;
     private BackupModule backupModule;
-    
+
     public CommandListener(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
         this.discordJda = discordJda;
         this.bdsAutoEnable = bdsAutoEnable;
@@ -204,11 +204,18 @@ public class CommandListener extends ListenerAdapter {
                 event.replyEmbeds(embed).setEphemeral(true).queue();
             }
             case "backup" -> {
-                final String bakupStatus = "`" + this.backupModule.getStatus() + "`\n";
+                final String backupStatus = "`" + this.backupModule.getStatus() + "`\n";
+                final long gbSpace = StatusUtil.availableGbSpace();
+                final long mbSpace = StatusUtil.availableMbSpace() % 1024;
+                final String availableBackups = MessageUtil.listToSpacedString(this.backupModule.getBackups());
+
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Backup info")
-                        .setDescription("Status ostatniego backup: " + bakupStatus +
-                                "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n"
+                        .setDescription("Status ostatniego backup: " + backupStatus +
+                                "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
+                                "Dostepa pamięć: `" + gbSpace + " GB " + mbSpace + " MB`\n" +
+                                "**Dostępne backupy z wersij " + this.config.getVersion() + "**:\n" +
+                                availableBackups
                         )
                         .setColor(Color.BLUE)
                         .setFooter("Wywołane przez: " + user.getName(), user.getEffectiveAvatarUrl())

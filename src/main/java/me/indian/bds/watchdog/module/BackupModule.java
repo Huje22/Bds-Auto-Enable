@@ -1,6 +1,13 @@
 package me.indian.bds.watchdog.module;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
@@ -25,6 +32,7 @@ public class BackupModule {
     private final ExecutorService service;
     private final Timer timer;
     private final Config config;
+    private final List<String> backups;
     private WatchDog watchDog;
     private ServerProcess serverProcess;
     private String prefix;
@@ -40,6 +48,7 @@ public class BackupModule {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
+        this.backups = new ArrayList<>();
         this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Watchdog-BackupModule"));
         this.timer = new Timer();
         if (this.config.isBackup()) {
@@ -129,8 +138,25 @@ public class BackupModule {
             }
             this.backuping = false;
             this.watchDog.saveResume();
+            this.loadAvailableBackups();
             this.config.save();
         });
+    }
+
+    private void loadAvailableBackups() {
+        this.backups.clear();
+        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(this.backupFolder.getPath()))) {
+            for (final Path path : directoryStream) {
+                if (Files.isRegularFile(path)) {
+                    final String name = String.valueOf(path.getFileName());
+                    if (name.endsWith(".zip")) {
+                        this.backups.add(name.replaceAll(".zip", ""));
+                    }
+                }
+            }
+        } catch (final IOException exception) {
+            exception.printStackTrace();
+        }
     }
 
     public long calculateMillisUntilNextBackup() {
@@ -143,6 +169,10 @@ public class BackupModule {
 
     public File getWorldFile() {
         return this.worldFile;
+    }
+
+    public List<String> getBackups() {
+        return this.backups;
     }
 
     public boolean isBackuping() {
