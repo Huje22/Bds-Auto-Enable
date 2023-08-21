@@ -38,7 +38,7 @@ public class Logger {
                 if (!logsDir.mkdir()) logsDir.mkdirs();
             }
             this.logFile = new File(logsDir, "ServerLog-" + this.bdsAutoEnable.getRunDate() + ".log");
-            final FileOutputStream fileOutputStream = new FileOutputStream(logFile, true);
+            final FileOutputStream fileOutputStream = new FileOutputStream(this.logFile, true);
             this.printStream = new PrintStream(fileOutputStream);
         } catch (final Exception e) {
             e.printStackTrace();
