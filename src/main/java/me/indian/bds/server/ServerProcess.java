@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -195,6 +196,19 @@ public class ServerProcess {
                     }
                     case "backup" -> this.watchDog.getBackupModule().forceBackup();
                     case ".end" -> this.endServerProcess(true);
+                    case "test" -> {
+                        final Map<Thread, StackTraceElement[]> allThreads = Thread.getAllStackTraces();
+
+                        for (final Map.Entry<Thread, StackTraceElement[]> entry : allThreads.entrySet()) {
+                            final Thread thread = entry.getKey();
+
+                            System.out.println("Thread ID: " + thread.getId());
+                            System.out.println("Thread Name: " + thread.getName());
+                            System.out.println("Thread State: " + thread.getState());
+                            System.out.println("Thread is Alive: " + thread.isAlive());
+                            System.out.println("-----------------------------");
+                        }
+                    }
                     case "stats" -> {
                         for (final String s : StatusUtil.getStatus(false)) {
                             this.logger.info(s);
