@@ -22,11 +22,15 @@ public class MathUtil {
         return Double.parseDouble(df.format(decimal));
     }
 
-    public static double bytesToKb(final long bytes) {
-        return format(((double) bytes / 1024), 2);
+    public static long bytesToKB(final long bytes) {
+        return bytes / 1024;
     }
 
-    public static long bytesToMB(long bytes) {
+    public static long bytesToMB(final long bytes) {
         return bytes / (1024 * 1024);
+    }
+
+    public static long bytesToGB(final long bytes) {
+        return bytes / (1024 * 1024 * 1024);
     }
 }
