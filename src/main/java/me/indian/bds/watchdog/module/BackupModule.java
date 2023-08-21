@@ -33,7 +33,7 @@ public class BackupModule {
     private final ExecutorService service;
     private final Timer timer;
     private final Config config;
-    private final List<String> backups;
+    private final List<Path> backups;
     private WatchDog watchDog;
     private ServerProcess serverProcess;
     private String prefix;
@@ -53,19 +53,18 @@ public class BackupModule {
         this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Watchdog-BackupModule"));
         this.timer = new Timer();
         if (this.config.isBackup()) {
-            final String version = this.config.getVersion();
             this.logger.alert("Backupy są włączone");
-            this.backupFolder = new File("BDS-Auto-Enable/backup/" + version);
+            this.backupFolder = new File("BDS-Auto-Enable/backup/");
             this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
             this.worldPath = Defaults.getWorldsPath() + this.worldName;
             this.worldFile = new File(this.worldPath);
             if (!this.backupFolder.exists()) {
-                this.logger.alert("Nie znaleziono foldera backupów dla versij " + version);
-                this.logger.info("Tworzenie folderu backupów dla versij " + version);
+                this.logger.alert("Nie znaleziono foldera backupów");
+                this.logger.info("Tworzenie folderu backupów");
                 if (this.backupFolder.mkdirs()) {
-                    this.logger.info("Utworzono folder backupów dla versij " + version);
+                    this.logger.info("Utworzono folder backupów");
                 } else {
-                    this.logger.error("Nie można utworzyć folderu backupów dla versij " + version);
+                    this.logger.error("Nie można utworzyć folderu backupów");
                 }
             }
             if (!this.worldFile.exists()) {
@@ -86,6 +85,7 @@ public class BackupModule {
         this.watchDog = watchDog;
         this.prefix = this.watchDog.getWatchDogPrefix();
         this.serverProcess = serverProcess;
+        this.loadAvailableBackups();
     }
 
     public void backup() {
@@ -112,7 +112,7 @@ public class BackupModule {
             return;
         }
         if(StatusUtil.availableGbSpace() < 10){
-            this.logger.error("Wykryto zbyt małą ilość pamięci aby wykonać&b backup&c!");
+            MinecraftUtil.tellrawToAllAndLogger(this.prefix, "Wykryto zbyt małą ilość pamięci aby wykonać&b backup&c!", LogState.ERROR);
             return;
         }
 
@@ -153,11 +153,8 @@ public class BackupModule {
         this.backups.clear();
         try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(this.backupFolder.getPath()))) {
             for (final Path path : directoryStream) {
-                if (Files.isRegularFile(path)) {
-                    final String name = String.valueOf(path.getFileName());
-                    if (name.endsWith(".zip")) {
-                        this.backups.add(name.replaceAll(".zip", ""));
-                    }
+                if (Files.isRegularFile(path) && path.toString().endsWith(".zip")) {
+                    this.backups.add(path);
                 }
             }
         } catch (final IOException exception) {
@@ -177,7 +174,7 @@ public class BackupModule {
         return this.worldFile;
     }
 
-    public List<String> getBackups() {
+    public List<Path> getBackups() {
         return this.backups;
     }
 

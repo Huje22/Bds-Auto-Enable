@@ -1,6 +1,10 @@
 package me.indian.bds.discord.jda.listener;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,6 +16,7 @@ import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.StatusUtil;
@@ -32,6 +37,7 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class CommandListener extends ListenerAdapter {
@@ -41,6 +47,7 @@ public class CommandListener extends ListenerAdapter {
     private final ExecutorService reserve;
     private final Logger logger;
     private final Config config;
+    private final List<Button> backupButtons;
     private JDA jda;
     private TextChannel textChannel;
     private TextChannel consoleChannel;
@@ -53,6 +60,7 @@ public class CommandListener extends ListenerAdapter {
         this.reserve = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-reserve"));
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
+        this.backupButtons = new ArrayList<>();
     }
 
     public void init() {
@@ -127,7 +135,6 @@ public class CommandListener extends ListenerAdapter {
 
     @Override
     public void onSlashCommandInteraction(final SlashCommandInteractionEvent event) {
-        final User user = event.getUser();
         final Member member = event.getMember();
         if (event.getChannel() != this.textChannel) {
             event.reply("Polecenia mogą zostać użyte tylko na <#" + this.textChannel.getId() + ">").setEphemeral(true).queue();
@@ -148,7 +155,6 @@ public class CommandListener extends ListenerAdapter {
                                 .setTitle("Ostatnia linijka z kosoli")
                                 .setDescription(this.serverProcess.commandAndResponse(command))
                                 .setColor(Color.BLUE)
-                                .setFooter("Wywołane przez: " + user.getName(), user.getEffectiveAvatarUrl())
                                 .build();
                         event.replyEmbeds(embed).setEphemeral(true).queue();
                     } catch (final BadThreadException exception) {
@@ -165,7 +171,6 @@ public class CommandListener extends ListenerAdapter {
                         .setTitle("Ping Bot <-> Discord")
                         .setDescription("Aktualny ping z serverami discord wynosi: " + this.jda.getGatewayPing() + " ms")
                         .setColor(Color.BLUE)
-                        .setFooter("Wywołane przez: " + user.getName(), user.getEffectiveAvatarUrl())
                         .build();
 
                 event.replyEmbeds(embed).setEphemeral(true).queue();
@@ -175,7 +180,6 @@ public class CommandListener extends ListenerAdapter {
                         .setTitle("Nasze ip!")
                         .setDescription(MessageUtil.listToSpacedString(this.config.getDiscordBot().getIpMessage()))
                         .setColor(Color.BLUE)
-                        .setFooter("Wywołane przez: " + user.getName(), user.getEffectiveAvatarUrl())
                         .build();
 
                 event.replyEmbeds(embed).setEphemeral(true).queue();
@@ -185,7 +189,6 @@ public class CommandListener extends ListenerAdapter {
                         .setTitle("Statystyki ")
                         .setDescription(MessageUtil.listToSpacedString(StatusUtil.getStatus(true)))
                         .setColor(Color.BLUE)
-                        .setFooter("Wywołane przez: " + user.getName(), user.getEffectiveAvatarUrl())
                         .build();
 
                 event.replyEmbeds(embed).setEphemeral(true).queue();
@@ -198,33 +201,13 @@ public class CommandListener extends ListenerAdapter {
                         .setDescription(players.size() + "/" + this.bdsAutoEnable.getServerProperties().getMaxPlayers() + "\n" +
                                 (players.isEmpty() ? " " : list) + "\n")
                         .setColor(Color.BLUE)
-                        .setFooter("Wywołane przez: " + user.getName(), user.getEffectiveAvatarUrl())
                         .build();
 
                 event.replyEmbeds(embed).setEphemeral(true).queue();
             }
-            case "backup" -> {
-                final String backupStatus = "`" + this.backupModule.getStatus() + "`\n";
-                final long gbSpace = StatusUtil.availableGbSpace();
-                final long mbSpace = StatusUtil.availableMbSpace() % 1024;
-                final String availableBackups = MessageUtil.listToSpacedString(this.backupModule.getBackups());
-
-                final MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Backup info")
-                        .setDescription("Status ostatniego backup: " + backupStatus +
-                                "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
-                                "Dostepa pamięć: `" + gbSpace + " GB " + mbSpace + " MB`\n" +
-                                "**Dostępne backupy z wersij " + this.config.getVersion() + "**:\n" +
-                                availableBackups + "\n" +
-                                (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : "")
-                        )
-                        .setColor(Color.BLUE)
-                        .setFooter("Wywołane przez: " + user.getName(), user.getEffectiveAvatarUrl())
-                        .build();
-
-                event.replyEmbeds(embed).addActionRow(
-                        Button.primary("backup", "Backup").withEmoji(Emoji.fromFormatted("<:bds:1138355151258783745>"))).setEphemeral(true).queue();
-            }
+            case "backup" -> event.replyEmbeds(this.getBackupEmbed())
+                    .addActionRow(ActionRow.of(this.backupButtons).getComponents())
+                    .setEphemeral(true).queue();
         }
     }
 
@@ -233,18 +216,85 @@ public class CommandListener extends ListenerAdapter {
         final Member member = event.getMember();
         if (member == null) return;
 
+        for (final Path path : this.backupModule.getBackups()) {
+            final String fileName = path.getFileName().toString();
+            if (event.getComponentId().equals("delete_backup:" + fileName)) {
+                if (!member.hasPermission(Permission.ADMINISTRATOR)) {
+                    event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
+                    return;
+                }
+                try {
+                    if (!Files.deleteIfExists(path)) {
+                        event.reply("Nie udało się usunąć backupa " + fileName).setEphemeral(true).queue();
+                        return;
+                    }
+                    this.backupModule.getBackups().remove(path);
+                    event.replyEmbeds(this.getBackupEmbed())
+                            .addActionRow(ActionRow.of(this.backupButtons).getComponents())
+                            .setEphemeral(true).queue();
+                    return;
+                } catch (final Exception exception) {
+                    event.reply("Nie udało się usunąć backupa " + fileName + " " + exception.getMessage()).setEphemeral(true).queue();
+                    exception.printStackTrace();
+                }
+            }
+        }
+
         switch (event.getComponentId()) {
             case "backup" -> {
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
                     this.backupModule.forceBackup();
                     this.reserve.execute(() -> {
                         ThreadUtil.sleep((int) this.config.getLastBackupTime() + 2);
-                        event.reply("Status backupa: `" + this.backupModule.getStatus() + "`").setEphemeral(true).queue();
+                        event.replyEmbeds(this.getBackupEmbed())
+                                .addActionRow(ActionRow.of(this.backupButtons).getComponents())
+                                .setEphemeral(true).queue();
                     });
                 } else {
                     event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
                 }
             }
+            default -> event.reply("Nie znaleziono guzika").setEphemeral(true).queue();
         }
+    }
+
+    private MessageEmbed getBackupEmbed() {
+        final String backupStatus = "`" + this.backupModule.getStatus() + "`\n";
+        final long gbSpace = StatusUtil.availableGbSpace();
+        final long mbSpace = StatusUtil.availableMbSpace() % 1024;
+        final List<String> description = new ArrayList<>();
+        this.backupButtons.clear();
+        this.backupButtons.add(Button.primary("backup", "Backup").withEmoji(Emoji.fromFormatted("<:bds:1138355151258783745>")));
+
+        for (final Path path : this.backupModule.getBackups()) {
+            final String fileName = path.getFileName().toString();
+            if (!(this.backupButtons.size() == 5)) {
+                this.backupButtons.add(Button.danger("delete_backup:" + fileName, "Usuń " + fileName)
+                        .withEmoji(Emoji.fromUnicode("🗑️")));
+            }
+            long fileSizeBytes;
+            try {
+                fileSizeBytes = Files.size(path);
+            } catch (final IOException exception) {
+                fileSizeBytes = -1;
+            }
+            
+            long gigabytes = MathUtil.bytesToGB(fileSizeBytes);
+            long remainderBytes = fileSizeBytes % (1024 * 1024 * 1024);
+            long megabytes = MathUtil.bytesToMB(remainderBytes);
+            long kilobytes = MathUtil.bytesToKB(remainderBytes % (1024 * 1024));
+            description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + gigabytes + "` GB `" + megabytes + "` MB `" + kilobytes + "` KB");
+        }
+
+        return new EmbedBuilder()
+                .setTitle("Backup info")
+                .setDescription("Status ostatniego backup: " + backupStatus +
+                        "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
+                        "Dostepa pamięć: `" + gbSpace + " GB " + mbSpace + " MB`\n" +
+                        (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
+                        (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : "")
+                )
+                .setColor(Color.BLUE)
+                .build();
     }
 }
