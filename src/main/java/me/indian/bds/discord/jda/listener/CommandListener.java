@@ -1,27 +1,6 @@
 package me.indian.bds.discord.jda.listener;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
-import me.indian.bds.discord.jda.DiscordJda;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.*;
-import me.indian.bds.watchdog.module.BackupModule;
-import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.entities.emoji.Emoji;
-import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
-import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
-
-import java.awt.*;
+import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -29,19 +8,38 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.Config;
+import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.watchdog.module.BackupModule;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.emoji.Emoji;
+import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class CommandListener extends ListenerAdapter {
 
     private final DiscordJda discordJda;
     private final BDSAutoEnable bdsAutoEnable;
     private final ExecutorService reserve;
-    private final Logger logger;
     private final Config config;
     private final List<Button> backupButtons;
     private JDA jda;
     private TextChannel textChannel;
-    private TextChannel consoleChannel;
     private ServerProcess serverProcess;
     private BackupModule backupModule;
 
@@ -49,75 +47,18 @@ public class CommandListener extends ListenerAdapter {
         this.discordJda = discordJda;
         this.bdsAutoEnable = bdsAutoEnable;
         this.reserve = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-reserve"));
-        this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
         this.backupButtons = new ArrayList<>();
     }
 
     public void init() {
         this.textChannel = this.discordJda.getTextChannel();
-        this.consoleChannel = this.discordJda.getConsoleChannel();
         this.jda = this.discordJda.getJda();
         this.backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
     }
 
     public void initServerProcess(final ServerProcess serverProcess) {
         this.serverProcess = serverProcess;
-    }
-
-    @Override
-    public void onMessageUpdate(final MessageUpdateEvent event) {
-        final User author = event.getAuthor();
-        final Message message = event.getMessage();
-        final String rawMessage = message.getContentRaw();
-        final TextChannel channel = event.getChannel().asTextChannel();
-
-        if (channel == this.textChannel) {
-            final Role role = this.discordJda.getHighestRole(author.getIdLong());
-            String higestRole = "";
-            if (role != null) {
-                higestRole = role.getName();
-            }
-            this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.config.getMessages().getDiscordToMinecraftMessage()
-                            .replaceAll("<name>", author.getName())
-                            .replaceAll("<msg>", rawMessage) + "&r (edytowane)")
-                    .replaceAll("<role>", higestRole));
-            this.logger.info("&7[&bDiscord&e ->&a Minecraft&7] " + author.getName() + " »» " + rawMessage + "&r (edytowane)");
-        }
-    }
-
-    @Override
-    public void onMessageReceived(final MessageReceivedEvent event) {
-        final Member member = event.getMember();
-        final User author = event.getAuthor();
-        final Message message = event.getMessage();
-        final String rawMessage = message.getContentRaw();
-        final TextChannel channel = event.getChannel().asTextChannel();
-
-        if (event.getAuthor().isBot() || event.isWebhookMessage()) return;
-
-        if (channel == this.consoleChannel) {
-            if (member == null) return;
-            if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                    event.getChannel().sendMessage(this.serverProcess.commandAndResponse(rawMessage)).queue();
-            } else {
-                event.getChannel().sendMessage("Nie masz uprawnień administratora aby wysłać tu wiadomość").queue(msg -> {
-                    msg.delete().queueAfter(5, TimeUnit.SECONDS);
-                    message.delete().queueAfter(4, TimeUnit.SECONDS);
-                });
-            }
-            return;
-        }
-        if (channel == this.textChannel) {
-            final Role role = this.discordJda.getHighestRole(author.getIdLong());
-            String higestRole = "";
-            if (role != null) higestRole = role.getName();
-            this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(this.config.getMessages().getDiscordToMinecraftMessage()
-                            .replaceAll("<name>", author.getName())
-                            .replaceAll("<msg>", rawMessage))
-                    .replaceAll("<role>", higestRole));
-            this.logger.info("&7[&bDiscord&e ->&a Minecraft&7] " + author.getName() + " »» " + rawMessage);
-        }
     }
 
     @Override

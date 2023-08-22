@@ -6,6 +6,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.listener.CommandListener;
+import me.indian.bds.discord.jda.listener.MessageListener;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.ThreadUtil;
@@ -33,6 +34,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     private final long channelID;
     private final long consoleID;
     private final CommandListener commandListener;
+    private final MessageListener messageListener;
     private final ExecutorService consoleService;
     private JDA jda;
     private Guild guild;
@@ -48,11 +50,13 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         this.channelID = this.config.getDiscordBot().getChannelID();
         this.consoleID = this.config.getDiscordBot().getConsoleID();
         this.commandListener = new CommandListener(this, this.bdsAutoEnable);
+        this.messageListener = new MessageListener(this, this.bdsAutoEnable);
         this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
     }
 
     public void initServerProcess(final ServerProcess serverProcess) {
         this.commandListener.initServerProcess(serverProcess);
+        this.messageListener.initServerProcess(serverProcess);
     }
 
     @Override
@@ -106,7 +110,9 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             this.logger.info("(konola) Nie można odnaleźc kanału z ID &a" + this.consoleID);
         }
         this.commandListener.init();
+        this.messageListener.init();
         this.jda.addEventListener(this.commandListener);
+        this.jda.addEventListener(this.messageListener);
 
 
         this.guild.updateCommands().addCommands(
