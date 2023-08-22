@@ -12,7 +12,6 @@ import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.PlayerManager;
@@ -230,10 +229,10 @@ public class ServerProcess {
         this.writer.flush();
     }
 
-    public String commandAndResponse(final String command) throws BadThreadException {
+    public String commandAndResponse(final String command)  {
         final String threadName = Thread.currentThread().getName();
         if (threadName.contains("Console") || threadName.contains("Server process")) {
-            throw new BadThreadException("Nie możesz wykonac tego na tym wątku!");
+            throw new IllegalThreadStateException("Nie możesz wykonac tego na tym wątku!");
         }
         this.sendToConsole(command);
         ThreadUtil.sleep(1);

@@ -1,35 +1,16 @@
 package me.indian.bds.discord.jda.listener;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.jda.DiscordJda;
-import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.MinecraftUtil;
-import me.indian.bds.util.StatusUtil;
-import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.*;
 import me.indian.bds.watchdog.module.BackupModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
@@ -39,6 +20,16 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+
+import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class CommandListener extends ListenerAdapter {
 
@@ -108,11 +99,7 @@ public class CommandListener extends ListenerAdapter {
         if (channel == this.consoleChannel) {
             if (member == null) return;
             if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                try {
                     event.getChannel().sendMessage(this.serverProcess.commandAndResponse(rawMessage)).queue();
-                } catch (final BadThreadException e) {
-                    throw new RuntimeException(e);
-                }
             } else {
                 event.getChannel().sendMessage("Nie masz uprawnień administratora aby wysłać tu wiadomość").queue(msg -> {
                     msg.delete().queueAfter(5, TimeUnit.SECONDS);
@@ -150,17 +137,12 @@ public class CommandListener extends ListenerAdapter {
                         event.reply("Polecenie nie może być puste!").setEphemeral(true).queue();
                         return;
                     }
-                    try {
                         final MessageEmbed embed = new EmbedBuilder()
                                 .setTitle("Ostatnia linijka z kosoli")
                                 .setDescription(this.serverProcess.commandAndResponse(command))
                                 .setColor(Color.BLUE)
                                 .build();
                         event.replyEmbeds(embed).setEphemeral(true).queue();
-                    } catch (final BadThreadException exception) {
-                        exception.printStackTrace();
-                        event.reply("Wystąpił błąd! " + exception.getMessage()).setEphemeral(true).queue();
-                    }
                 } else {
                     event.reply("Nie posiadasz permisij!!").setEphemeral(true).queue();
                 }
