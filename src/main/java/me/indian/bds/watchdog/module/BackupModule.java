@@ -8,6 +8,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
@@ -157,6 +158,7 @@ public class BackupModule {
                     this.backups.add(path);
                 }
             }
+            Collections.sort(this.backups, Collections.reverseOrder()); 
         } catch (final IOException exception) {
             exception.printStackTrace();
         }
