@@ -35,6 +35,16 @@ public class VersionManager {
         this.importantFiles = new ArrayList<>();
         this.versionFolder = new File("BDS-Auto-Enable/versions");
         this.availableVersions = new ArrayList<>();
+
+        if (!this.versionFolder.exists()) {
+            if (this.versionFolder.mkdirs()) {
+                this.logger.info("Utworzono miejsce na wersjie");
+            } else {
+                this.logger.error("Nie można utworzyć mnieisca na wersjie");
+                return;
+            }
+        }
+
         this.loadVersionsInfo();
 
         this.importantFiles.add("allowlist.json");
@@ -60,15 +70,6 @@ public class VersionManager {
     }
 
     public void loadVersion(final String version) {
-        if (!this.versionFolder.exists()) {
-            if (this.versionFolder.mkdirs()) {
-                this.logger.info("Utworzono miejsce na wersjie");
-            } else {
-                this.logger.error("Nie można utworzyć mnieisca na wersjie");
-                return;
-            }
-        }
-
         final File verFile = new File(this.versionFolder.getPath() + File.separator + version + ".zip");
         if (!verFile.exists()) {
             this.logger.info("Nie znaleziono wersji:&1 " + version);
