@@ -4,7 +4,7 @@ import eu.okaeri.configs.OkaeriConfig;
 
 public class Messages extends OkaeriConfig {
 
-    private int allowedLength = 50;
+    private int allowedLength = 200;
     private boolean deleteOnReachLimit = true;
     private String reachedMessage = "Osiągnięto dozwoloną ilosc znaków!";
     private String replyStatement = " (&dOdpowiada na&a: &a<author> &r»»&b <msg> &r)";
