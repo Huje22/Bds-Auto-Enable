@@ -5,7 +5,8 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.Header;
 import me.indian.bds.config.sub.discord.DiscordBot;
 import me.indian.bds.config.sub.discord.Messages;
-import me.indian.bds.config.sub.log.NoLog;
+import me.indian.bds.config.sub.discord.WebHook;
+import me.indian.bds.config.sub.log.Log;
 import me.indian.bds.discord.DiscordType;
 import me.indian.bds.util.SystemOs;
 
@@ -53,7 +54,7 @@ public class Config extends OkaeriConfig {
     @Comment({""})
     @Comment({"Ustawienia logowania"})
     @Comment({"Nie zapisuje tych informacj które zawierają dane znaki i słowa"})
-    private NoLog noLog = new NoLog();
+    private Log log = new Log();
 
     @Comment({""})
     @Comment({"Ustawienia discord"})
@@ -61,11 +62,13 @@ public class Config extends OkaeriConfig {
     @Comment({"WEBHOOK - Możliwe tylko wysyłanie wiadomości do discord z uzyciem webhooku"})
     @Comment({"JDA - Bot discord przy uzyciu biblioteki JDA"})
     private DiscordType integrationType = DiscordType.JDA;
+    @Comment({""})
     @Comment({"Ustawienia webhooka"})
-    private String webHookChatUrl = "https://discord.com/api/webhooks/....";
+    private WebHook webHook = new WebHook();
+    @Comment({""})
     @Comment({"Ustawienia Bota"})
     private DiscordBot discordBot = new DiscordBot();
-
+    @Comment({""})
     @Comment({"Konfiguracija dostępnych wiadomości "})
     private Messages messages = new Messages();
     @Comment({""})
@@ -85,8 +88,8 @@ public class Config extends OkaeriConfig {
         return loaded;
     }
 
-    public NoLog getNoLog() {
-        return this.noLog;
+    public Log getNoLog() {
+        return this.log;
     }
 
     public void setLoaded(boolean loaded) {
@@ -161,24 +164,12 @@ public class Config extends OkaeriConfig {
         return integrationType;
     }
 
-    public void setIntegrationType(DiscordType integrationType) {
-        this.integrationType = integrationType;
-    }
-
-    public String getWebHookChatUrl() {
-        return webHookChatUrl;
-    }
-
-    public void setWebHookChatUrl(String webHookChatUrl) {
-        this.webHookChatUrl = webHookChatUrl;
+    public WebHook getWebHook() {
+        return this.webHook;
     }
 
     public DiscordBot getDiscordBot() {
         return discordBot;
-    }
-
-    public void setDiscordBot(DiscordBot discordBot) {
-        this.discordBot = discordBot;
     }
 
     public Messages getMessages() {

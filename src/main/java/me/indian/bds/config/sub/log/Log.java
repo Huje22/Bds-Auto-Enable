@@ -5,15 +5,16 @@ import eu.okaeri.configs.annotation.Comment;
 import java.util.Arrays;
 import java.util.List;
 
-public class NoLog extends OkaeriConfig {
+public class Log extends OkaeriConfig {
 
-
+    @Comment({""})
     @Comment({"Nie zapisuje tych informacj które zawierają:"})
     @Comment({"W pliku"})
     private List<String> file = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]",
             "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
             " ERROR]", " WARN]",
             "\"component_groups\"");
+    @Comment({""})
     @Comment("W konsoli")
     private List<String> console = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]",
             "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",

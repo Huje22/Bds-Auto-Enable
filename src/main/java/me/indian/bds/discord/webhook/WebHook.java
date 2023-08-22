@@ -5,6 +5,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
@@ -15,14 +18,18 @@ public class WebHook implements DiscordIntegration {
 
     private final Logger logger;
     private final Config config;
-    private final String webhookURL;
+    private final String name, webhookURL , avatarUrl;
     private final ExecutorService service;
+    private final Gson gson;
 
     public WebHook(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
         this.config = bdsAutoEnable.getConfig();
-        this.webhookURL = this.config.getWebHookChatUrl();
+        this.name =this.config.getWebHook().getName();
+        this.webhookURL = this.config.getWebHook().getUrl();
+        this.avatarUrl = this.config.getWebHook().getAvatarUrl();
         this.service = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-WebHook"));
+        this.gson = new Gson();
     }
 
     @Override
@@ -32,17 +39,19 @@ public class WebHook implements DiscordIntegration {
     private void sendMessage(final String message) {
         this.service.execute(() -> {
             try {
-                // need improvements
                 final HttpURLConnection connection = (HttpURLConnection) new URL(this.webhookURL).openConnection();
                 connection.setRequestProperty("User-Agent", "Mozilla/5.0");
                 connection.setRequestProperty("Content-Type", "application/json");
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
 
-                final String jsonPayload = "{\"content\":\"" + message + "\"}";
+                final JsonObject jsonPayload = new JsonObject();
+                jsonPayload.addProperty("content", message);
+                jsonPayload.addProperty("username", this.name);
+                jsonPayload.addProperty("avatar_url", this.avatarUrl);
 
                 final OutputStream os = connection.getOutputStream();
-                os.write(jsonPayload.getBytes());
+                os.write(this.gson.toJson(jsonPayload).getBytes());
                 os.flush();
                 os.close();
 
@@ -51,7 +60,7 @@ public class WebHook implements DiscordIntegration {
                     this.logger.info("Kod odpowiedzi: " + responseCode);
                 }
             } catch (final Exception exception) {
-                this.logger.critical("Nie można wyslać wiadomości do discord: " + exception);
+                this.logger.critical("Nie można wysłać wiadomości do Discord: " + exception);
             }
         });
     }
