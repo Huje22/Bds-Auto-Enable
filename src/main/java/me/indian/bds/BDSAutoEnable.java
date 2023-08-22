@@ -58,9 +58,7 @@ public class BDSAutoEnable {
         switch (this.config.getIntegrationType()) {
             case WEBHOOK -> this.discord = new WebHook(this);
             case JDA -> this.discord = new DiscordJda(this);
-            default -> {
-
-            }
+            default -> this.logger.error("Nie znany typ integracij discord! (" + this.config.getIntegrationType() + ")");
         }
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
