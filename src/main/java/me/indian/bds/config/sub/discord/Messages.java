@@ -1,15 +1,9 @@
 package me.indian.bds.config.sub.discord;
 
 import eu.okaeri.configs.OkaeriConfig;
-import eu.okaeri.configs.annotation.Comment;
 
 public class Messages extends OkaeriConfig {
 
-    @Comment({""})
-    @Comment({"Pamiętaj że oznaczenie kogoś zawiera jego ID a ono jest długie!"})
-    private int allowedLength = 200;
-    private boolean deleteOnReachLimit = true;
-    private String reachedMessage = "Osiągnięto dozwoloną ilosc znaków!";
     private String replyStatement = " (&dOdpowiada na&a: &a<author> &r»»&b <msg> &r)";
     private String edited = " (Edytowano)";
     private String joinMessage = "Gracz **<name>** dołączył do gry";
@@ -21,18 +15,6 @@ public class Messages extends OkaeriConfig {
     private String disablingMessage = ":octagonal_sign: Server jest w trakcje wyłączania";
     private String disabledMessage = ":octagonal_sign: Server wyłączony";
     private String destroyedMessage = "Proces servera został zabity";
-
-    public int getAllowedLength() {
-        return this.allowedLength;
-    }
-
-    public boolean isDeleteOnReachLimit() {
-        return this.deleteOnReachLimit;
-    }
-
-    public String getReachedMessage() {
-        return this.reachedMessage;
-    }
 
     public String getReplyStatement() {
         return this.replyStatement;

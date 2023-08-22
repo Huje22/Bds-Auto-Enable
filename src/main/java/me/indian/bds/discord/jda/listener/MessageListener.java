@@ -102,9 +102,9 @@ public class MessageListener extends ListenerAdapter {
 
 
     private boolean checkLength(final Message message) {
-        if (message.getContentRaw().length() >= this.config.getMessages().getAllowedLength()) {
-            this.sendPrivateMessage(message.getAuthor(), this.config.getMessages().getReachedMessage());
-            if (this.config.getMessages().isDeleteOnReachLimit()) {
+        if (message.getContentRaw().length() >= this.config.getDiscordBot().getAllowedLength()) {
+            this.sendPrivateMessage(message.getAuthor(), this.config.getDiscordBot().getReachedMessage());
+            if (this.config.getDiscordBot().isDeleteOnReachLimit()) {
                 message.delete().queue();
                 this.sendPrivateMessage(message.getAuthor(), "`" + message.getContentRaw() + "`");
             }
