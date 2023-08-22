@@ -1,9 +1,12 @@
 package me.indian.bds.config.sub.discord;
 
 import eu.okaeri.configs.OkaeriConfig;
+import eu.okaeri.configs.annotation.Comment;
 
 public class Messages extends OkaeriConfig {
 
+    @Comment({""})
+    @Comment({"Pamiętaj że oznaczenie kogoś zawiera jego ID a ono jest długie!"})
     private int allowedLength = 200;
     private boolean deleteOnReachLimit = true;
     private String reachedMessage = "Osiągnięto dozwoloną ilosc znaków!";
