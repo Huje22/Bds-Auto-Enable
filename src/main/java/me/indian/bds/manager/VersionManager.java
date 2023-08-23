@@ -113,8 +113,7 @@ public class VersionManager {
     public void downloadServerFiles(final String version) {
         try {
             final long startTime = System.currentTimeMillis();
-            final URL url = new URL(this.getServerDownloadUrl(version));
-            final HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            final HttpURLConnection connection = (HttpURLConnection) new URL(this.getServerDownloadUrl(version)).openConnection();
             final int response = connection.getResponseCode();
             if (response == HttpURLConnection.HTTP_OK) {
                 this.logger.info("Pobieranie wersji: &1" + version);
