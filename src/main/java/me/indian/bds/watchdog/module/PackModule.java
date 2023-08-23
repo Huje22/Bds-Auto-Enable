@@ -30,7 +30,7 @@ public class PackModule {
         this.packName = "BDS-Auto-Enable-Managment-Pack";
     }
 
-    public void initBackupModule(final WatchDog watchDog) {
+    public void initPackModule(final WatchDog watchDog) {
         final BackupModule backupModule = watchDog.getBackupModule();
         this.pack = new File(backupModule.getWorldFile().getPath() + File.separator + "behavior_packs" + File.separator + "BDS-Auto-Enable-Managment-Pack");
         this.worldBehaviors = new File(backupModule.getWorldFile().getPath() + File.separator + "world_behavior_packs.json");
