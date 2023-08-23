@@ -1,32 +1,30 @@
 package me.indian.bds.watchdog.module;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.watchdog.WatchDog;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.watchdog.WatchDog;
 
 public class PackModule {
 
     private final Logger logger;
-    private final Gson gson;
     private final String packName;
     private File pack, worldBehaviors;
     private String id;
     private int[] version;
     private boolean loaded;
 
-
     public PackModule(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
-        this.gson = new Gson();
         this.packName = "BDS-Auto-Enable-Managment-Pack";
     }
 
@@ -137,7 +135,7 @@ public class PackModule {
             jsonArray.add(newEntry);
 
             try (final FileWriter writer = new FileWriter(this.worldBehaviors.getPath())) {
-                this.gson.toJson(jsonArray, writer);
+                GsonUtil.getGson().toJson(jsonArray, writer);
                 this.logger.info("Załadowano paczke!");
             }
         } catch (final IOException exception) {

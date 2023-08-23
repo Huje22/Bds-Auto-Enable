@@ -1,17 +1,18 @@
 package me.indian.bds.discord.webhook;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.Config;
+import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.ThreadUtil;
+
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
-import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ThreadUtil;
 
 public class WebHook implements DiscordIntegration {
 
@@ -19,7 +20,6 @@ public class WebHook implements DiscordIntegration {
     private final Config config;
     private final String name, webhookURL , avatarUrl;
     private final ExecutorService service;
-    private final Gson gson;
 
     public WebHook(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
@@ -28,7 +28,6 @@ public class WebHook implements DiscordIntegration {
         this.webhookURL = this.config.getWebHook().getUrl();
         this.avatarUrl = this.config.getWebHook().getAvatarUrl();
         this.service = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-WebHook"));
-        this.gson = new Gson();
     }
 
     @Override
@@ -50,7 +49,7 @@ public class WebHook implements DiscordIntegration {
                 jsonPayload.addProperty("avatar_url", this.avatarUrl);
 
                 final OutputStream os = connection.getOutputStream();
-                os.write(this.gson.toJson(jsonPayload).getBytes());
+                os.write(GsonUtil.getGson().toJson(jsonPayload).getBytes());
                 os.flush();
                 os.close();
 
