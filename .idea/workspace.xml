@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="6f57eb4c-9a7f-418c-afff-b4129e5ac4bd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/worlds/Bedrock level/behavior_packs/BDS-Auto-Enable-Managment-Pack/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/test/worlds/Bedrock level/behavior_packs/BDS-Auto-Enable-Managment-Pack/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/worlds/Bedrock level/behavior_packs/BDS-Auto-Enable-Managment-Pack/manifest.json" beforeDir="false" afterPath="$PROJECT_DIR$/test/worlds/Bedrock level/behavior_packs/BDS-Auto-Enable-Managment-Pack/manifest.json" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="useMavenConfig" value="true" />
+      </MavenGeneralSettings>
+    </option>
+  </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectId" id="2SZXMzKd1R368XbwlFl7GVBRCmC" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "C:/Users/g.IT/IdeaProjects/Allowlist Generator",
+    "onboarding.tips.debug.path": "C:/Users/g.IT/IdeaProjects/Bds autorestart/src/main/java/me/indian/bds/Main.java",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.15429688",
+    "project.structure.side.proportion": "0.17919075",
+    "settings.editor.selected.configurable": "preferences.sourceCode.Java"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\g.IT\IdeaProjects\Bds-autorestart\BDS-Auto-Enable\versions" />
+      <recent name="C:\Users\g.IT\IdeaProjects\Bds-autorestart\test" />
+      <recent name="C:\Users\g.IT\IdeaProjects\Bds-autorestart\testServer\versions" />
+      <recent name="C:\Users\g.IT\IdeaProjects\Bds-autorestart" />
+      <recent name="C:\Users\g.IT\IdeaProjects\Bds autorestart" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\g.IT\IdeaProjects\Bds-autorestart\BDS-Auto-Enable" />
+      <recent name="C:\Users\g.IT\IdeaProjects\Bds-autorestart\testServer" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Application.test">
+    <configuration name="BDSAutoEnable" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="me.indian.bds.BDSAutoEnable" />
+      <module name="BDS-Auto-Enable" />
+      <option name="VM_PARAMETERS" value="-Xmx1g" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="me.indian.bds.process.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RamMonitor (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="me.indian.bds.watchdog.monitor.RamMonitor" />
+      <module name="BDS-Auto-Enable" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="me.indian.bds.watchdog.monitor.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="RamMonitor" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="me.indian.bds.watchdog.monitor.RamMonitor" />
+      <module name="BDS-Auto-Enable" />
+      <option name="VM_PARAMETERS" value="-Xmx4m" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="me.indian.bds.watchdog.monitor.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="StatusUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="me.indian.bds.util.StatusUtil" />
+      <module name="BDS-Auto-Enable" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="me.indian.bds.util.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="test" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="me.indian.bds.test" />
+      <module name="BDS-Auto-Enable" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="me.indian.bds.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.test" />
+        <item itemvalue="Application.BDSAutoEnable" />
+        <item itemvalue="Application.RamMonitor" />
+        <item itemvalue="Application.RamMonitor (1)" />
+        <item itemvalue="Application.StatusUtil" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="6f57eb4c-9a7f-418c-afff-b4129e5ac4bd" name="Changes" comment="" />
+      <created>1689355034257</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1689355034257</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <breakpoint enabled="true" type="java-exception">
+          <properties class="java.lang.NullPointerException" package="java.lang" />
+          <option name="timeStamp" value="1" />
+        </breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+  </component>
+</project>
