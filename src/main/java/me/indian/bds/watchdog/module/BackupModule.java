@@ -52,7 +52,7 @@ public class BackupModule {
         this.config = this.bdsAutoEnable.getConfig();
         this.backups = new ArrayList<>();
         this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Watchdog-BackupModule"));
-        this.timer = new Timer();
+        this.timer = new Timer(true);
         if (this.config.isBackup()) {
             this.logger.alert("Backupy są włączone");
             this.backupFolder = new File("BDS-Auto-Enable/backup/");

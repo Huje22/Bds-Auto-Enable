@@ -26,7 +26,6 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
-
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Config config;
@@ -170,12 +169,13 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         }
     }
 
-    // public void writeConsole(final String message) {
-    //     if (this.jda != null && this.consoleChannel != null) {
-    //        this.consoleService.execute(() -> this.consoleChannel.sendMessage(message).queue());
-    //     }
-    // }
-    //
+    @Override
+    public void writeConsole(final String message) {
+        if (this.jda != null && this.consoleChannel != null) {
+            this.consoleService.execute(() -> this.consoleChannel.sendMessage(message).queue());
+        }
+    }
+
 
     @Override
     public void sendJoinMessage(final String playerName) {
@@ -228,6 +228,11 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     @Override
     public void sendDestroyedMessage() {
         this.sendMessage(this.config.getMessages().getDestroyedMessage());
+    }
+
+    @Override
+    public void sendServerFire(final String message) {
+        this.sendMessage("<@" + this.guild.getOwner().getIdLong() + "> " + this.config.getMessages().getFire());
     }
 
     @Override

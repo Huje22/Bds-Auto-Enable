@@ -7,10 +7,17 @@ import java.util.List;
 
 public class DiscordBot extends OkaeriConfig {
 
+    @Comment({""})
+    @Comment({"Zostaw puste aby nie uruchamiać "})
     private String token = "";
+    @Comment({""})
     private long channelID = 1L;
+    @Comment({""})
+    @Comment({"Zostaw puste aby nie uruchamiać "})
     private long consoleID = 1L;
+    @Comment({""})
     private long serverID = 1L;
+    @Comment({""})
     private List<String> ipMessage = Arrays.asList("Nasze IP: 127.0.0.1", "Nasz Port: 19132");
     @Comment({""})
     @Comment({"Pamiętaj że oznaczenie kogoś zawiera jego ID a ono jest długie!"})

@@ -76,7 +76,7 @@ public class MessageListener extends ListenerAdapter {
         if (event.getChannel().asTextChannel() == this.consoleChannel) {
             if (member == null) return;
             if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                event.getChannel().sendMessage(this.serverProcess.commandAndResponse(rawMessage)).queue();
+                this.serverProcess.sendToConsole(rawMessage);
             } else {
                 event.getChannel().sendMessage("Nie masz uprawnień administratora aby wysłać tu wiadomość").queue(msg -> {
                     msg.delete().queueAfter(5, TimeUnit.SECONDS);

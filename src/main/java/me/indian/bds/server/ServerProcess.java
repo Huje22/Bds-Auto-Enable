@@ -155,6 +155,9 @@ public class ServerProcess {
                     this.lastLine = line;
                     this.playerManager.initFromLog(line);
                 }
+                if (!this.containsNotAllowedToDiscordConsoleLog(line)) {
+                    this.discord.writeConsole(line);
+                }
             }
 
         } catch (final Exception exception) {
@@ -325,7 +328,7 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {
-        for (final String s : this.config.getNoLog().getFile()) {
+        for (final String s : this.config.getNoLog().getNoFile()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
             }
@@ -334,7 +337,16 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToConsoleLog(final String msg) {
-        for (final String s : this.config.getNoLog().getConsole()) {
+        for (final String s : this.config.getNoLog().getNoConsole()) {
+            if (msg.toLowerCase().contains(s.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean containsNotAllowedToDiscordConsoleLog(final String msg) {
+        for (final String s : this.config.getNoLog().getNoDiscordConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
             }

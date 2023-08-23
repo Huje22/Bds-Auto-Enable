@@ -81,8 +81,9 @@ public class BDSAutoEnable {
         this.shutdownHook();
         this.watchDog = new WatchDog(this);
         this.serverProcess.initWatchDog(this.watchDog);
-        this.watchDog.init(this.serverProcess);
+        this.watchDog.init(this.serverProcess, this.discord);
         this.watchDog.getBackupModule().backup();
+        this.watchDog.getRamMonitor().monitRamUsage();
         this.versionManager.loadVersion();
         this.config.save();
         this.discord.init();

@@ -15,6 +15,7 @@ public class Messages extends OkaeriConfig {
     private String disablingMessage = ":octagonal_sign: Server jest w trakcje wyłączania";
     private String disabledMessage = ":octagonal_sign: Server wyłączony";
     private String destroyedMessage = "Proces servera został zabity";
+    private String fire = "Aplikacija płonie 🔥🔥🔥 , może wpłynąć to na prace servera!!!!";
 
     public String getReplyStatement() {
         return this.replyStatement;
@@ -58,6 +59,10 @@ public class Messages extends OkaeriConfig {
 
     public String getDestroyedMessage() {
         return this.destroyedMessage;
+    }
+
+    public String getFire() {
+        return fire;
     }
 }
 
