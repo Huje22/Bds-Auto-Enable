@@ -1,6 +1,15 @@
 <div align="center">
 
 # BDS-Auto-Enable
+![Latest Tag](https://img.shields.io/github/v/tag/Huje22/Bds-Auto-Enable?label=LATEST%20TAG&style=for-the-badge) 
+[![License](https://img.shields.io/github/license/Huje22/Bds-Auto-Enable?style=for-the-badge)](https://github.com/Huje22/Bds-Auto-Enable/blob/main/License)
+![GitHub commit activity](https://img.shields.io/github/commit-activity/m/Huje22/Bds-Auto-Enable?color=brightgreen&style=for-the-badge)
+[![Last Commit](https://img.shields.io/github/last-commit/Huje22/Bds-Auto-Enable?style=for-the-badge)](https://github.com/Huje22/Bds-Auto-Enable/commits/main)
+![Commits since latest release (by date)](https://img.shields.io/github/commits-since/Huje22/Bds-Auto-Enable/latest?style=for-the-badge)
+![GitHub commits since latest release (by date including pre-releases)](https://img.shields.io/github/commits-since/Huje22/Bds-Auto-Enable/latest?include_prereleases&style=for-the-badge) 
+[![Repo size](https://img.shields.io/github/repo-size/Huje22/Bds-Auto-Enable?style=for-the-badge)](https://github.com/Huje22/Bds-Auto-Enable)
+[![Contributors](https://img.shields.io/github/contributors/Huje22/Bds-Auto-Enable?color=blue&style=for-the-badge)](https://github.com/Huje22/Bds-Auto-Enable/graphs/contributors)
+
 
 Jest to program do uruchamiania BDS zawsze gdy się wyłaczy wykorzystywany na serverze Huje22
 
