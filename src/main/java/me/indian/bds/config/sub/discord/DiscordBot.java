@@ -17,10 +17,28 @@ public class DiscordBot extends OkaeriConfig {
     private int allowedLength = 200;
     private boolean deleteOnReachLimit = true;
     private String reachedMessage = "Osiągnięto dozwoloną ilosc znaków!";
+    @Comment({""})
+    @Comment({"Aktywność"})
+    @Comment({"Dostępne aktywności:  PLAYING, STREAMING, LISTENING, WATCHING, COMPETING"})
+    private String activity = "PLAYING";
+    private String activityMessage = "Minecraft";
+    private String streamUrl = "hhttps://www.youtube.com/@IndianBartonka?sub_confirmation=1";
 
 
     public String getToken() {
         return this.token;
+    }
+
+    public String getActivity() {
+        return this.activity;
+    }
+
+    public String getActivityMessage() {
+        return this.activityMessage;
+    }
+
+    public String getStreamUrl() {
+        return this.streamUrl;
     }
 
     public long getChannelID() {

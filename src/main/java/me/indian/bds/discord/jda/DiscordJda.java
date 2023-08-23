@@ -76,7 +76,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         try {
             this.jda = JDABuilder.create(this.config.getDiscordBot().getToken(), GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.MESSAGE_CONTENT)
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS, CacheFlag.ONLINE_STATUS).enableCache(CacheFlag.EMOJI)
-                    .setActivity(Activity.playing("Minecraft"))
+                    .setActivity(this.getCustomActivity())
                     .setEnableShutdownHook(false)
                     .build();
             this.jda.awaitReady();
@@ -137,6 +137,31 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             }
         }
         return highestRole;
+    }
+
+    private Activity getCustomActivity(){
+        final String activityMessage = this.config.getDiscordBot().getActivityMessage();
+        switch (Activity.ActivityType.valueOf(this.config.getDiscordBot().getActivity().toUpperCase())){
+            case PLAYING -> {
+                return Activity.playing(activityMessage);
+            }
+            case WATCHING -> {
+                return Activity.watching(activityMessage);
+            }
+            case COMPETING -> {
+                return Activity.competing(activityMessage);
+            }
+            case LISTENING -> {
+                return Activity.listening(activityMessage);
+            }
+            case STREAMING -> {
+                return Activity.streaming(activityMessage , this.config.getDiscordBot().getStreamUrl());
+            }
+            default -> {
+                this.logger.error("Wykryto nie wspierany status! ");
+                return Activity.playing(activityMessage);
+            }
+        }
     }
 
     private void sendMessage(final String message) {
