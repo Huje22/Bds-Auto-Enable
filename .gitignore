@@ -33,7 +33,7 @@ out/
 *.ipr
 *.iws
 .idea/*
-!.idea/discord.xml
+
 
 ##############################
 ## This Project
