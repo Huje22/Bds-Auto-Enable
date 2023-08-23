@@ -10,7 +10,6 @@ import me.indian.bds.server.ServerProcess;
 
 public class StatusUtil {
 
-    private static final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
     private static final List<String> status = new ArrayList<>();
     private static final File file = new File("/");
     private static ServerProcess serverProcess;
@@ -25,6 +24,7 @@ public class StatusUtil {
 
     public static List<String> getStatus(boolean forDiscord) {
         status.clear();
+        final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         final String usedMemory = "Użyte " + MathUtil.bytesToMB(heapMemoryUsage.getUsed()) + " MB";
         final String committedMemory = "Przydzielone " + MathUtil.bytesToMB(heapMemoryUsage.getCommitted()) + " MB";
         final String maxMemory = "Dostępne " + MathUtil.bytesToMB(heapMemoryUsage.getMax()) + " MB";
