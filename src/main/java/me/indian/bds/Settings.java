@@ -30,6 +30,9 @@ public class Settings {
             scannerUtil.addQuestion((defaultValue) -> this.logger.info("Zastosować wcześnejsze ustawienia? (true/false) (Enter = true) "), true, (settings) -> {
                 if (settings) {
                     this.serverProperties.loadProperties();
+                    if (this.config.isLoaded()) {
+                        this.anotherVersionQuestion(scannerUtil);
+                    }
                     this.currentSettings(scanner);
                 } else {
                     this.logger.info("Zaczynamy od nowa");
@@ -71,16 +74,6 @@ public class Settings {
 
         this.config.setFilesPath(scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lPodaj ścieżkę do plików servera&r  (Domyślnie: " + defaultValue + "): " + this.enter), Defaults.getJarPath(), (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)));
         this.config.save();
-
-        if (this.config.isLoaded())
-            scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lZaładować jakąś inną versie&r (Domyślnie: " + defaultValue + "): " + this.enter),
-                    false,
-                    (input) -> {
-                        if (input) {
-                            this.config.setLoaded(false);
-                            this.config.save();
-                        }
-                    });
 
         if (!this.config.isLoaded()) this.versionQuestion(scannerUtil);
         this.serverProperties.loadProperties();
@@ -172,5 +165,17 @@ public class Settings {
                 this.config.getVersion(), (input) -> this.logger.info("Wersia do załadowania ustawiona na:&1 " + input)
         ));
         this.bdsAutoEnable.getVersionManager().loadVersion();
+    }
+
+    private void anotherVersionQuestion(final ScannerUtil scannerUtil) {
+        scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lZaładować jakąś inną versie&r (Domyślnie: " + defaultValue + "): " + this.enter),
+                false,
+                (input) -> {
+                    if (input) {
+                        this.config.setLoaded(false);
+                        this.config.save();
+                        this.versionQuestion(scannerUtil);
+                    }
+                });
     }
 }
