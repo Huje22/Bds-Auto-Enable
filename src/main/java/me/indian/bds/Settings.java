@@ -115,9 +115,11 @@ public class Settings {
         this.serverProperties.setClientSideChunkGeneration(scannerUtil.addQuestion(
                 (defaultValue) -> {
                     this.logger.info("&lClient Side Chunks&r (Domyślnie: " + defaultValue + ")? " + this.enter);
+                    this.logger.alert("Może być to bardzo lagujące dla starszych i słabszych urządzeń");
                     this.logger.info("Jeśli jest &1true&r serwer poinformuje klientów, " + "że mają możliwość generowania chunków poziomu wizualnego poza odległościami interakcji graczy. ");
-                },
-                true, (input) -> this.logger.info("Ustawiono Client Side Chunks na:&1 " + input)
+
+                    },
+                false, (input) -> this.logger.info("Ustawiono Client Side Chunks na:&1 " + input)
         ));
 
         this.logger.info("Ukończono odpowiedzi w&a " + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
