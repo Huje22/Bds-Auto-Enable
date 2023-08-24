@@ -9,7 +9,7 @@ public class ScannerUtil {
         this.scanner = scanner;
     }
 
-    public String addQuestion(final ResponseConsumer question, final String defaultValue, final ResponseConsumer response) {
+    public String addQuestion(final StringResponseConsumer question, final String defaultValue, final StringResponseConsumer response) {
         question.accept(defaultValue);
         String input = getInput();
         input = input.isEmpty() ? defaultValue : input;
@@ -18,21 +18,20 @@ public class ScannerUtil {
         return input;
     }
 
-
-    public boolean addQuestion(final ResponseConsumer question, final boolean defaultValue, final ResponseConsumer response) {
-        question.accept(String.valueOf(defaultValue));
+    public boolean addQuestion(final BooleanResponseConsumer question, final boolean defaultValue, final BooleanResponseConsumer response) {
+        question.accept(defaultValue);
         final String input = getInput();
         boolean userInput = input.isEmpty() ? defaultValue : Boolean.parseBoolean(input);
-        response.accept(String.valueOf(userInput));
+        response.accept(userInput);
         System.out.println();
         return userInput;
     }
 
-    public int addQuestion(final ResponseConsumer question, final int defaultValue, final ResponseConsumer response) {
-        question.accept(String.valueOf(defaultValue));
+    public int addQuestion(final IntegerResponseConsumer question, final int defaultValue, final IntegerResponseConsumer response) {
+        question.accept(defaultValue);
         final String input = getInput();
         int userInput = input.isEmpty() ? defaultValue : Integer.parseInt(input);
-        response.accept(String.valueOf(userInput));
+        response.accept(userInput);
         System.out.println();
         return userInput;
     }
@@ -46,7 +45,17 @@ public class ScannerUtil {
     }
 
     @FunctionalInterface
-    public interface ResponseConsumer {
-        void accept(final String string);
+    public interface StringResponseConsumer {
+        void accept(final String consumer);
+    }
+
+    @FunctionalInterface
+    public interface BooleanResponseConsumer {
+        void accept(final boolean consumer);
+    }
+
+    @FunctionalInterface
+    public interface IntegerResponseConsumer {
+        void accept(final int consumer);
     }
 }
