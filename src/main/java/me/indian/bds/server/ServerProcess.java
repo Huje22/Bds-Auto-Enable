@@ -197,7 +197,6 @@ public class ServerProcess {
                         MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija BDS-Auro-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
                     }
                     case "backup" -> this.watchDog.getBackupModule().forceBackup();
-                    case ".end" -> this.endServerProcess(true);
                     case "test" -> {
                         final Map<Thread, StackTraceElement[]> allThreads = Thread.getAllStackTraces();
 
@@ -299,32 +298,6 @@ public class ServerProcess {
         }
         this.discord.disableBot();
         Runtime.getRuntime().halt(129);
-    }
-
-    public void endServerProcess(final boolean backup) {
-        if (this.process != null && this.process.isAlive()) {
-            this.processService.execute(() -> {
-                try {
-                    if (backup) {
-                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aWyłączanie servera , prosze poczekac pierw zostanie utworzony backup", LogState.ALERT);
-                        this.watchDog.getBackupModule().forceBackup();
-                    }
-                    while (this.watchDog.getBackupModule().isBackuping()) {
-                        //it so bugged without this , I don't know why
-//                        this.logger.info("");
-                    }
-                    ThreadUtil.sleep(1);
-                    while (!this.watchDog.getBackupModule().isBackuping()) {
-                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aBackup zrobiony!", LogState.INFO);
-                        ThreadUtil.sleep(1);
-                        this.instantShutdown();
-                    }
-                } catch (final Exception exception) {
-                    this.logger.critical(exception);
-                    exception.printStackTrace();
-                }
-            });
-        }
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {
