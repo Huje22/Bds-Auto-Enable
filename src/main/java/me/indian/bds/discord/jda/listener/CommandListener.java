@@ -39,7 +39,6 @@ public class CommandListener extends ListenerAdapter {
     private final Config config;
     private final List<Button> backupButtons;
     private JDA jda;
-    private TextChannel textChannel;
     private ServerProcess serverProcess;
     private BackupModule backupModule;
 
@@ -52,7 +51,6 @@ public class CommandListener extends ListenerAdapter {
     }
 
     public void init() {
-        this.textChannel = this.discordJda.getTextChannel();
         this.jda = this.discordJda.getJda();
         this.backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
     }
@@ -64,10 +62,6 @@ public class CommandListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(final SlashCommandInteractionEvent event) {
         final Member member = event.getMember();
-        if (event.getChannel() != this.textChannel) {
-            event.reply("Polecenia mogą zostać użyte tylko na <#" + this.textChannel.getId() + ">").setEphemeral(true).queue();
-            return;
-        }
 
         switch (event.getName()) {
             case "cmd" -> {
