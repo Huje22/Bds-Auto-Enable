@@ -7,8 +7,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Collections;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
@@ -52,7 +52,7 @@ public class BackupModule {
         this.config = this.bdsAutoEnable.getConfig();
         this.backups = new ArrayList<>();
         this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Watchdog-BackupModule"));
-        this.timer = new Timer(true);
+        this.timer = new Timer("Backup", true);
         if (this.config.isBackup()) {
             this.logger.alert("Backupy są włączone");
             this.backupFolder = new File("BDS-Auto-Enable/backup/");

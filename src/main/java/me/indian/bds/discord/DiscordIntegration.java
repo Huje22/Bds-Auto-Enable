@@ -23,7 +23,7 @@ public interface DiscordIntegration {
 
     void sendDestroyedMessage();
 
-    void sendServerFire(final String message);
+    void sendServerFire();
 
     void writeConsole(final String message);
 

@@ -1,10 +1,5 @@
 package me.indian.bds.manager;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ZipUtil;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,6 +13,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.Config;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.ZipUtil;
 
 public class VersionManager {
 
@@ -83,23 +82,22 @@ public class VersionManager {
                 this.downloadServerFiles(version);
             }
             final long startTime = System.currentTimeMillis();
-            ZipUtil.unzipFile(verFile.getAbsolutePath(), this.config.getFilesPath(), this.importantFiles);
+            ZipUtil.unzipFile(verFile.getAbsolutePath(), this.config.getFilesPath(), false, this.importantFiles);
             this.logger.info("Załadowano versie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final IOException exception) {
-            this.logger.error("Nie można załadować wersji: " + version);
-            this.logger.critical(exception);
+            this.logger.critical("Nie można załadować wersji: " + version);
+            exception.printStackTrace();
             throw new RuntimeException(exception);
-
         }
         this.config.setLoaded(true);
         this.config.setVersion(version);
+        this.config.load();
         this.config.save();
     }
 
     public void loadVersion() {
         final File bedrockFile = new File(this.config.getFilesPath() + File.separator + this.config.getFileName());
         if (!bedrockFile.exists()) {
-            this.logger.critical("Nie można odnaleźć pliku " + this.config.getFileName() + " na ścieżce " + this.config.getFilesPath());
             this.config.setLoaded(false);
             this.config.save();
         }
@@ -172,16 +170,17 @@ public class VersionManager {
 
     private String getServerDownloadUrl(final String version) {
         switch (this.config.getSystem()) {
-            case LINUX:
+            case LINUX -> {
                 if (this.config.isWine()) {
                     return "https://minecraft.azureedge.net/bin-win/bedrock-server-" + version + ".zip";
                 } else {
                     return "https://minecraft.azureedge.net/bin-linux/bedrock-server-" + version + ".zip";
                 }
-            case WINDOWS:
+            }
+            case WINDOWS -> {
                 return "https://minecraft.azureedge.net/bin-win/bedrock-server-" + version + ".zip";
-            default:
-                throw new RuntimeException("Nieprawidłowy system");
+            }
+            default -> throw new RuntimeException("Nieprawidłowy system");
         }
     }
 

@@ -18,7 +18,7 @@ public class RamMonitor {
     private boolean running = false;
 
     public RamMonitor(final WatchDog watchDog) {
-        this.timer = new Timer(true);
+        this.timer = new Timer("RamMonitor", true);
         this.prefix = watchDog.getWatchDogPrefix();
     }
 
@@ -36,7 +36,7 @@ public class RamMonitor {
                 if (MathUtil.bytesToMB(heapMemoryUsage.getUsed()) >= ((long) (MathUtil.bytesToMB(heapMemoryUsage.getMax()) * 0.80))) {
                     MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix, "&cAplikacija używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!", LogState.CRITICAL);
                     MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix, "&cMoże to prowadzić do poważnych błędów&4!!", LogState.CRITICAL);
-                    RamMonitor.this.discord.sendServerFire("");
+                    RamMonitor.this.discord.sendServerFire();
                 }
             }
         };

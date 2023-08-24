@@ -164,7 +164,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     }
 
     private void sendMessage(final String message) {
-        if (this.jda != null) {
+        if (this.jda != null && this.textChannel != null) {
             this.textChannel.sendMessage(message).queue();
         }
     }
@@ -231,7 +231,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     }
 
     @Override
-    public void sendServerFire(final String message) {
+    public void sendServerFire() {
         this.sendMessage("<@" + this.guild.getOwner().getIdLong() + "> " + this.config.getMessages().getFire());
     }
 
