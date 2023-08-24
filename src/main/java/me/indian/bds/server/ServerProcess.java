@@ -198,9 +198,7 @@ public class ServerProcess {
                     }
                     case "backup" -> this.watchDog.getBackupModule().forceBackup();
                     case "test" -> {
-                        final Map<Thread, StackTraceElement[]> allThreads = Thread.getAllStackTraces();
-
-                        for (final Map.Entry<Thread, StackTraceElement[]> entry : allThreads.entrySet()) {
+                     for (final Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
                             final Thread thread = entry.getKey();
 
                             System.out.println("Thread ID: " + thread.getId());
