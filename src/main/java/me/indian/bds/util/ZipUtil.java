@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -44,8 +44,9 @@ public class ZipUtil {
         fos.close();
     }
 
-    public static void unzipFile(final String zipFilePatch, final String targetDirectory) throws IOException {
-        try (final ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(Paths.get(zipFilePatch)))) {
+    public static void unzipFile(final String zipFilePath, final String targetDirectory, final boolean deleteOnEnd) throws IOException {
+        final Path path = Path.of(zipFilePath);
+        try (final ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(path))) {
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 final String entryName = zipEntry.getName();
@@ -63,10 +64,14 @@ public class ZipUtil {
                 }
             }
         }
+        if (deleteOnEnd) {
+            Files.deleteIfExists(path);
+        }
     }
 
-    public static void unzipFile(final String zipFilePath, final String targetDirectory, final List<String> skipFiles) throws IOException {
-        try (final ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(Paths.get(zipFilePath)))) {
+    public static void unzipFile(final String zipFilePath, final String targetDirectory, final boolean deleteOnEnd, final List<String> skipFiles) throws IOException {
+        final Path path = Path.of(zipFilePath);
+        try (final ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(path))) {
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 final String entryName = zipEntry.getName();
@@ -87,6 +92,9 @@ public class ZipUtil {
                     }
                 }
             }
+        }
+        if (deleteOnEnd) {
+            Files.deleteIfExists(path);
         }
     }
 
