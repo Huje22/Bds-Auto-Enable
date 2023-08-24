@@ -295,7 +295,7 @@ public class ServerProcess {
             exception.printStackTrace();
         }
         this.discord.disableBot();
-        Runtime.getRuntime().halt(129);
+        Runtime.getRuntime().halt(2137);
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {

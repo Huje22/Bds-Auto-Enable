@@ -73,7 +73,7 @@ public class Config extends OkaeriConfig {
     private Messages messages = new Messages();
     @Comment({""})
     @Comment({"Debug"})
-    private boolean debug = true;
+    private boolean debug = false;
 
 
     public String getVersion() {

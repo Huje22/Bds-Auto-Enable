@@ -160,7 +160,7 @@ public class Settings {
                     } else {
                         this.logger.info("Pobrane versije: " + this.bdsAutoEnable.getVersionManager().getAvailableVersions());
                     }
-                    this.logger.info("Aby pobrać jakaś versie wpisz jej numer (niektóre mogą mieć .01 / .02 na końcu)");
+                    this.logger.info("Aby pobrać jakąś versie wpisz jej numer (niektóre mogą mieć .01 / .02 na końcu)");
                 },
                 this.config.getVersion(), (input) -> this.logger.info("Wersia do załadowania ustawiona na:&1 " + input)
         ));
