@@ -22,6 +22,18 @@ public final  class MathUtil {
         return Double.parseDouble(df.format(decimal));
     }
 
+    public static long kilobytesToMb(long kilobytes) {
+        return kilobytes / 1024;
+    }
+
+    public static long kilobytesToGb(long kilobytes) {
+        return kilobytes / (1024 * 1024);
+    }
+
+    public static long kilobytesToBytes(long kilobytes) {
+        return kilobytes * 1024;
+    }
+
     public static long bytesToKB(final long bytes) {
         return bytes / 1024;
     }
