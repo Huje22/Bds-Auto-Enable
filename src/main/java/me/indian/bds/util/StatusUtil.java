@@ -1,5 +1,6 @@
 package me.indian.bds.util;
 
+import com.sun.management.OperatingSystemMXBean;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -31,41 +32,39 @@ public final class StatusUtil {
     public static List<String> getStatus(boolean forDiscord) {
         status.clear();
         final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-        final String usedMemory = "Użyte " + MathUtil.bytesToMB(heapMemoryUsage.getUsed()) + " MB";
-        final String committedMemory = "Przydzielone " + MathUtil.bytesToMB(heapMemoryUsage.getCommitted()) + " MB";
-        final String maxMemory = "Dostępne " + MathUtil.bytesToMB(heapMemoryUsage.getMax()) + " MB";
 
+        final long memorySize = getAvailableRam();
         final String usedServerMemory = "Użyte " + MathUtil.kilobytesToMb(getServerRamUsage()) + " MB";
+        final String maxComputerMemory = "Ram maszyny " + getFormattedRam();
 
-        status.add("**Statystyki servera**");
-        status.add("Pamięc RAM `" + usedServerMemory + "`");
+
+        final String usedAppMemory = "Użyte " + MathUtil.bytesToMB(heapMemoryUsage.getUsed()) + " MB";
+        final String committedAppMemory = "Przydzielone " + MathUtil.bytesToMB(heapMemoryUsage.getCommitted()) + " MB";
+        final String maxAppMemory = "Dostępne " + MathUtil.bytesToMB(heapMemoryUsage.getMax()) + " MB";
+
+        status.add("> **Statystyki servera**");
+        status.add("Pamięc RAM `" + usedServerMemory + " / " + maxComputerMemory + "`");
         status.add("Czas działania `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime()) + "`");
-        status.add("**Statystyki aplikacij**");
+        status.add("");
+        status.add("> **Statystyki aplikacji**");
         status.add("Czas działania `" + DateUtil.formatTime(System.currentTimeMillis() - bdsAutoEnable.getStartTime()) + "`");
-        status.add("Pamięc RAM `" + usedMemory + " / " + committedMemory + " / " + maxMemory + "`");
+        status.add("Pamięc RAM `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
         status.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
 
-        if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", ""));
+        if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
 
         return status;
     }
 
-    public static long availableGbSpace() {
+    public static long availableDiskSpace() {
         if (file.exists()) {
-            return file.getUsableSpace() / (1024 * 1024 * 1024);
-        }
-        return 0;
-    }
-
-    public static long availableMbSpace() {
-        if (file.exists()) {
-            return file.getUsableSpace() / (1024 * 1024);
+            return file.getUsableSpace();
         }
         return 0;
     }
 
     public static long getServerRamUsage() {
-        if (!serverProcess.getProcess().isAlive()) return -1;
+        if (!serverProcess.getProcess().isAlive()) return 0;
         try {
             switch (config.getSystem()) {
                 case WINDOWS -> {
@@ -81,6 +80,15 @@ public final class StatusUtil {
         return 0;
     }
 
+    public static long getAvailableRam() {
+        return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalMemorySize();
+    }
+
+    public static String getFormattedRam() {
+        final long memorySize = getAvailableRam();
+        return MathUtil.bytesToGB(memorySize) + "GB " +
+                MathUtil.bytesToMB(memorySize - (MathUtil.bytesToGB(memorySize) * 1024 * 1024 * 1024)) + "MB";
+    }
 
     private static long getMemoryUsageWindows(long pid) throws IOException {
         final Process process = Runtime.getRuntime().exec("tasklist /NH /FI \"PID eq " + pid + "\"");

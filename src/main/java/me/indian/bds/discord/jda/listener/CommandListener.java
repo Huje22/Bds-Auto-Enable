@@ -23,7 +23,6 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -177,8 +176,9 @@ public class CommandListener extends ListenerAdapter {
 
     private MessageEmbed getBackupEmbed() {
         final String backupStatus = "`" + this.backupModule.getStatus() + "`\n";
-        final long gbSpace = StatusUtil.availableGbSpace();
-        final long mbSpace = StatusUtil.availableMbSpace() % 1024;
+        final long gbSpace = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
+        final long mbSpace = MathUtil.bytesToMB(StatusUtil.availableDiskSpace() - (gbSpace * 1024 * 1024 * 1024));
+
         final List<String> description = new ArrayList<>();
         this.backupButtons.clear();
         this.backupButtons.add(Button.primary("backup", "Backup").withEmoji(Emoji.fromFormatted("<:bds:1138355151258783745>")));

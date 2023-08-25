@@ -8,6 +8,7 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MinecraftUtil;
+import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.WatchDog;
 
 public class RamMonitor {
@@ -36,11 +37,15 @@ public class RamMonitor {
                 final long freeMem = MathUtil.bytesToMB(heapMemoryUsage.getMax() - heapMemoryUsage.getUsed());
                 if (MathUtil.bytesToMB(heapMemoryUsage.getUsed()) >= ((long) (MathUtil.bytesToMB(heapMemoryUsage.getMax()) * 0.80))) {
                     MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
-                            "&cAplikacija używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!" + "&a(&c Wolne:&b " + freeMem + " &eMB&a )",
+                            "&cAplikacija używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!" + "&d(&c Wolne:&b " + freeMem + " &aMB&d )",
                             LogState.CRITICAL);
                     MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
-                            "&cWiększe użycje może to prowadzić do crashy servera&4!!",
+                            "&cWiększe użycje może to prowadzić do crashy aplikacij a w tym servera&4!!",
                             LogState.CRITICAL);
+                    MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                            "&cServer używa:&b " + MathUtil.kilobytesToMb(StatusUtil.getServerRamUsage()) + " &aMB &d(&aTen ram to ram używany przez proces servera&d)",
+                            LogState.ALERT);
+
                     RamMonitor.this.discord.sendServerFire();
                 }
             }

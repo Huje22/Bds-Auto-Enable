@@ -108,7 +108,7 @@ public class BackupModule {
             this.logger.error("Nie można zrobić kopi podczas robienia już jednej");
             return;
         }
-        if(StatusUtil.availableGbSpace() < 10){
+        if (StatusUtil.availableDiskSpace() < 10) {
             MinecraftUtil.tellrawToAllAndLogger(this.prefix, "Wykryto zbyt małą ilość pamięci aby wykonać&b backup&c!", LogState.ERROR);
             return;
         }
