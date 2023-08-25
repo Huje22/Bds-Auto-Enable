@@ -60,11 +60,7 @@ public class BackupModule {
             this.worldPath = Defaults.getWorldsPath() + this.worldName;
             this.worldFile = new File(this.worldPath);
             if (!this.backupFolder.exists()) {
-                this.logger.alert("Nie znaleziono foldera backupów");
-                this.logger.info("Tworzenie folderu backupów");
-                if (this.backupFolder.mkdirs()) {
-                    this.logger.info("Utworzono folder backupów");
-                } else {
+                if (!this.backupFolder.mkdirs()) {
                     this.logger.error("Nie można utworzyć folderu backupów");
                 }
             }

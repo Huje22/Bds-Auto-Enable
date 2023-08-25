@@ -173,7 +173,7 @@ public class PackModule {
         return versionArray;
     }
 
-    public void downloadPack() {
+    private void downloadPack() {
         try {
             final long startTime = System.currentTimeMillis();
             final HttpURLConnection connection = (HttpURLConnection) new URL("https://raw.githubusercontent.com/Huje22/BDS-Auto-Enable-Managment-Pack/main/BDS-Auto-Enable-Managment-Pack.zip").openConnection();

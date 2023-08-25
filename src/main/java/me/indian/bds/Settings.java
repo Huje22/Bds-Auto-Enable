@@ -121,7 +121,6 @@ public class Settings {
     }
 
     private void currentSettings(final Scanner scanner) {
-        System.out.println();
         this.logger.info("Aktualne informacije");
         this.logger.info("System:&1 " + this.config.getSystem());
         this.logger.info("Nazwa pliku:&1 " + this.config.getFileName());

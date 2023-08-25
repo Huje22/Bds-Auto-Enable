@@ -83,15 +83,14 @@ public class VersionManager {
             }
             final long startTime = System.currentTimeMillis();
             ZipUtil.unzipFile(verFile.getAbsolutePath(), this.config.getFilesPath(), false, this.importantFiles);
+            this.config.setLoaded(true);
+            this.config.setVersion(version);
             this.logger.info("Załadowano versie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final IOException exception) {
             this.logger.critical("Nie można załadować wersji: " + version);
             exception.printStackTrace();
             throw new RuntimeException(exception);
         }
-        this.config.setLoaded(true);
-        this.config.setVersion(version);
-        this.config.load();
         this.config.save();
     }
 

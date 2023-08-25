@@ -1,7 +1,6 @@
 package me.indian.bds.file;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
@@ -25,22 +24,22 @@ public class ServerProperties {
 
     public void loadProperties() {
         try {
-            final InputStream input = Files.newInputStream(Paths.get(this.config.getFilesPath() + "/server.properties"));
             this.properties.clear();
-            this.properties.load(input);
+            this.properties.load(Files.newInputStream(Paths.get(this.config.getFilesPath() + "/server.properties")));
         } catch (final IOException exception) {
             this.logger.critical("&cWystąpił krytyczny błąd podczas ładowania &aserver.properties");
-            throw new RuntimeException(exception);
+            this.logger.critical(exception);
+            System.exit(0);
         }
     }
 
     private void saveProperties() {
         try {
             this.properties.store(Files.newOutputStream(Paths.get(this.config.getFilesPath() + "/server.properties")), null);
-        } catch (final IOException e) {
+        } catch (final IOException exception) {
             this.logger.critical("&cWystąpił krytyczny błąd podczas zapisywania&a server.properties");
-            this.bdsAutoEnable.getServerProcess().instantShutdown();
-            throw new RuntimeException(e);
+            this.logger.critical(exception);
+            System.exit(0);
         }
     }
 
@@ -64,6 +63,7 @@ public class ServerProperties {
     public int getMaxThreads() {
         return Integer.parseInt(this.properties.getProperty("max-threads"));
     }
+    
     public int getMaxPlayers() {
         return Integer.parseInt(this.properties.getProperty("max-players"));
     }

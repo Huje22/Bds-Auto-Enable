@@ -48,10 +48,9 @@ public class WatchDog {
     }
 
     public void saveWorld() {
-        final double lastSave = (this.config.getLastBackupTime() / 4.0);
-        MinecraftUtil.tellrawToAllAndLogger(this.watchDogPrefix, "&aZapisywanie świata, prosze czekać około:&b " + lastSave + "&b sekund", LogState.INFO);
+        MinecraftUtil.tellrawToAllAndLogger(this.watchDogPrefix, "&aZapisywanie świata", LogState.INFO);
         this.serverProcess.sendToConsole("save hold");
-        ThreadUtil.sleep((int) lastSave);
+        ThreadUtil.sleep(5);
     }
 
     public void saveResume() {

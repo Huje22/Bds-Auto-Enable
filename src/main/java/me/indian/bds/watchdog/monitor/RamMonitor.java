@@ -33,9 +33,14 @@ public class RamMonitor {
             @Override
             public void run() {
                 final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+                final long freeMem = MathUtil.bytesToMB(heapMemoryUsage.getMax() - heapMemoryUsage.getUsed());
                 if (MathUtil.bytesToMB(heapMemoryUsage.getUsed()) >= ((long) (MathUtil.bytesToMB(heapMemoryUsage.getMax()) * 0.80))) {
-                    MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix, "&cAplikacija używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!", LogState.CRITICAL);
-                    MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix, "&cMoże to prowadzić do poważnych błędów&4!!", LogState.CRITICAL);
+                    MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                            "&cAplikacija używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!" + "&a(&c Wolne:&b " + freeMem + " &eMB&a )",
+                            LogState.CRITICAL);
+                    MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                            "&cWiększe użycje może to prowadzić do crashy servera&4!!",
+                            LogState.CRITICAL);
                     RamMonitor.this.discord.sendServerFire();
                 }
             }
