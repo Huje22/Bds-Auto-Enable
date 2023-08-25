@@ -29,26 +29,32 @@ public final class StatusUtil {
     }
 
 
-    public static List<String> getStatus(boolean forDiscord) {
+    public static List<String> getStatus(final boolean forDiscord) {
         status.clear();
         final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
 
-        final long memorySize = getAvailableRam();
-        final String usedServerMemory = "Użyte " + MathUtil.kilobytesToMb(getServerRamUsage()) + " MB";
-        final String maxComputerMemory = "Ram maszyny " + getFormattedRam();
+        final long computerRam = getAvailableRam();
+        final long computerFreeRam = getFreeRam();
 
+        final String usedServerMemory = "Użyte " + MathUtil.kilobytesToMb(getServerRamUsage()) + " MB";
+        final String maxComputerMemory = "Całkowity " + MathUtil.bytesToGB(computerRam) + " GB " + MathUtil.getMbFromGb(computerRam) + " MB";
+        final String freeComputerMemory = "Wolny " + MathUtil.bytesToGB(computerFreeRam) + " GB " + MathUtil.getMbFromGb(computerFreeRam) + " MB";
 
         final String usedAppMemory = "Użyte " + MathUtil.bytesToMB(heapMemoryUsage.getUsed()) + " MB";
         final String committedAppMemory = "Przydzielone " + MathUtil.bytesToMB(heapMemoryUsage.getCommitted()) + " MB";
         final String maxAppMemory = "Dostępne " + MathUtil.bytesToMB(heapMemoryUsage.getMax()) + " MB";
 
+
+        status.add("> **Statystyki maszyny**");
+        status.add("Pamięc RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
+        status.add("");
         status.add("> **Statystyki servera**");
-        status.add("Pamięc RAM `" + usedServerMemory + " / " + maxComputerMemory + "`");
-        status.add("Czas działania `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime()) + "`");
+        status.add("Pamięc RAM: `" + usedServerMemory + "`");
+        status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime()) + "`");
         status.add("");
         status.add("> **Statystyki aplikacji**");
-        status.add("Czas działania `" + DateUtil.formatTime(System.currentTimeMillis() - bdsAutoEnable.getStartTime()) + "`");
-        status.add("Pamięc RAM `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
+        status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - bdsAutoEnable.getStartTime()) + "`");
+        status.add("Pamięc RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
         status.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
 
         if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
@@ -84,13 +90,11 @@ public final class StatusUtil {
         return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalMemorySize();
     }
 
-    public static String getFormattedRam() {
-        final long memorySize = getAvailableRam();
-        return MathUtil.bytesToGB(memorySize) + "GB " +
-                MathUtil.bytesToMB(memorySize - (MathUtil.bytesToGB(memorySize) * 1024 * 1024 * 1024)) + "MB";
+    public static long getFreeRam() {
+        return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getFreeMemorySize();
     }
 
-    private static long getMemoryUsageWindows(long pid) throws IOException {
+    private static long getMemoryUsageWindows(final long pid) throws IOException {
         final Process process = Runtime.getRuntime().exec("tasklist /NH /FI \"PID eq " + pid + "\"");
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             String line;
@@ -98,7 +102,7 @@ public final class StatusUtil {
                 if (line.contains(".exe")) {
                     final String[] tokens = line.split("\\s+");
                     if (tokens.length > 4) {
-                        String memoryStr = tokens[4].replaceAll("\\D", "");
+                        final String memoryStr = tokens[4].replaceAll("\\D", "");
                         return Long.parseLong(memoryStr);
                     }
                 }
@@ -107,10 +111,10 @@ public final class StatusUtil {
         return -1;
     }
 
-    private static long getMemoryUsageLinux(long pid) throws IOException {
+    private static long getMemoryUsageLinux(final long pid) throws IOException {
         final Process process = Runtime.getRuntime().exec("ps -p " + pid + " -o rss=");
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            String line = reader.readLine();
+            final String line = reader.readLine();
             return line != null ? Long.parseLong(line) : -1;
         }
     }
