@@ -8,7 +8,7 @@ import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.server.ServerProcess;
 
-public class StatusUtil {
+public final  class StatusUtil {
 
     private static final List<String> status = new ArrayList<>();
     private static final File file = new File("/");

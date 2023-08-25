@@ -4,7 +4,7 @@ import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.util.Locale;
 
-public class MathUtil {
+public final  class MathUtil {
 
     private static final DecimalFormat df = new DecimalFormat();
 

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class MessageUtil {
+public  final class MessageUtil {
 
     public static String buildMessageFromArgs(final String[] args){
         String message = "";

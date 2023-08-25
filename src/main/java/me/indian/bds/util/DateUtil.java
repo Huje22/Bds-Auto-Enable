@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-public class DateUtil {
+public  final class DateUtil {
 
     public static String getFixedDate() {
         final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));

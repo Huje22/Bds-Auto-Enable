@@ -12,7 +12,7 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 
-public class ZipUtil {
+public final class ZipUtil {
 
     public static void zipFolder(final String sourceFolderPath, final String zipFilePath) throws IOException {
         final File sourceFolder = new File(sourceFolderPath);

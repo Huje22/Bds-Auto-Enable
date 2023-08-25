@@ -6,7 +6,7 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.PlayerManager;
 import me.indian.bds.server.ServerProcess;
 
-public class MinecraftUtil {
+public  final class MinecraftUtil {
 
     private static Logger logger;
     private static ServerProcess serverProcess;

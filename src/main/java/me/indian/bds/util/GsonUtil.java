@@ -2,7 +2,7 @@ package me.indian.bds.util;
 
 import com.google.gson.Gson;
 
-public class GsonUtil {
+public final class GsonUtil {
 
     private static final Gson gson = new Gson();
 

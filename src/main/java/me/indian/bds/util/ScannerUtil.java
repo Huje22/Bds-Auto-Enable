@@ -2,7 +2,7 @@ package me.indian.bds.util;
 
 import java.util.Scanner;
 
-public class ScannerUtil {
+public final  class ScannerUtil {
     private final Scanner scanner;
 
     public ScannerUtil(final Scanner scanner) {
