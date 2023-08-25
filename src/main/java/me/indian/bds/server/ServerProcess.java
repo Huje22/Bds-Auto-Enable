@@ -51,7 +51,7 @@ public class ServerProcess {
         this.watchDog = watchDog;
     }
 
-    private boolean isProcessRunning() {
+    public boolean isProcessRunning() {
         try {
             String command = "";
             switch (this.config.getSystem()) {
@@ -64,15 +64,15 @@ public class ServerProcess {
             }
 
             final Process checkProcessIsRunning = Runtime.getRuntime().exec(command);
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(checkProcessIsRunning.getInputStream()));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (!line.isEmpty() && !line.equalsIgnoreCase("INFO: No tasks are running which match the specified criteria.")) {
-                    return true;
+            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(checkProcessIsRunning.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (!line.isEmpty() && !line.equalsIgnoreCase("INFO: No tasks are running which match the specified criteria.")) {
+                        return true;
+                    }
                 }
+                checkProcessIsRunning.waitFor();
             }
-            checkProcessIsRunning.waitFor();
-            reader.close();
         } catch (final IOException | InterruptedException exception) {
             this.logger.critical(exception);
             exception.printStackTrace();
