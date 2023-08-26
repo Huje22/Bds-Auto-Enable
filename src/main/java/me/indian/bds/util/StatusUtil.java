@@ -1,6 +1,10 @@
 package me.indian.bds.util;
 
 import com.sun.management.OperatingSystemMXBean;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.Config;
+import me.indian.bds.server.ServerProcess;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -9,9 +13,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
 import java.util.List;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
-import me.indian.bds.server.ServerProcess;
 
 public final class StatusUtil {
 
@@ -30,6 +31,9 @@ public final class StatusUtil {
     public static List<String> getStatus(final boolean forDiscord) {
         status.clear();
         final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+        final OperatingSystemMXBean operatingSystemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
+
+        final double processCpuLoad = operatingSystemMXBean.getProcessCpuLoad();
 
         final long computerRam = getAvailableRam();
         final long computerFreeRam = getFreeRam();
@@ -47,7 +51,7 @@ public final class StatusUtil {
 
         status.add("> **Statystyki maszyny**");
         status.add("Pamięc RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
-        status.add("Pamięc ROM: `" + rom + " / " + maxRom  +"`");
+        status.add("Pamięc ROM: `" + rom + " / " + maxRom + "`");
         status.add("");
         status.add("> **Statystyki servera**");
         status.add("Pamięc RAM: `" + usedServerMemory + "`");
@@ -57,6 +61,7 @@ public final class StatusUtil {
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - bdsAutoEnable.getStartTime()) + "`");
         status.add("Pamięc RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
         status.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
+        status.add("Użycje cpu: `" + (processCpuLoad * 100) + "`% (Bugged jakieś)");
 
         if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
 
