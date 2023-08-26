@@ -15,6 +15,7 @@ import me.indian.bds.manager.PlayerManager;
 import me.indian.bds.manager.VersionManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.StatusUtil;
@@ -67,7 +68,7 @@ public class BDSAutoEnable {
         this.versionManager = new VersionManager(this);
         MinecraftUtil.initMinecraftUtil(this);
         StatusUtil.init(this , this.serverProcess);
-        if (this.discord instanceof DiscordJda jda) jda.initServerProcess(this.serverProcess);
+        if (this.discord instanceof final DiscordJda jda) jda.initServerProcess(this.serverProcess);
 
         this.init();
     }
@@ -78,6 +79,7 @@ public class BDSAutoEnable {
 
     public void init() {
         this.settings.loadSettings(this.scanner);
+        this.checkExecutable();
         this.shutdownHook();
         this.watchDog = new WatchDog(this);
         this.serverProcess.initWatchDog(this.watchDog);
@@ -85,7 +87,6 @@ public class BDSAutoEnable {
         this.watchDog.getBackupModule().backup();
         this.watchDog.getRamMonitor().monitRamUsage();
         this.versionManager.loadVersion();
-        this.config.save();
         this.discord.init();
         this.serverProcess.startProcess();
     }
@@ -122,6 +123,17 @@ public class BDSAutoEnable {
         if (maxMem < 1000) this.logger.critical("&cWykryto małą ilość pamieci przeznaczonej dla aplikacij! &b(&a" + maxMem + " mb&b)");
     }
 
+    private void checkExecutable(){
+        if(!FileUtil.canExecute(this.config.getFileName())){
+            this.logger.critical("&cBrak odpowiednich uprawnień!");
+            switch (this.config.getSystem()){
+                case LINUX -> this.logger.critical("&cAby uzyskać uprawnienia do uruchomienia servera wprowadź w konsoli polecenie &echmod +x&b " + this.config.getFileName());
+                case WINDOWS -> this.logger.critical("&cPotrzebujesz wyższych uprawnień!");
+            }
+            System.exit(0);
+        }
+    }
+
     public long getStartTime() {
         return this.startTime;
     }
@@ -148,11 +160,11 @@ public class BDSAutoEnable {
     }
 
     public Config getConfig() {
-        return config;
+        return this.config;
     }
 
     public Logger getLogger() {
-        return logger;
+        return this.logger;
     }
 
     public Settings getSettings() {
