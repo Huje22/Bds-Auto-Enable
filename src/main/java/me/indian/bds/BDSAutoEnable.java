@@ -2,6 +2,7 @@ package me.indian.bds;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
+import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.Scanner;
@@ -124,10 +125,11 @@ public class BDSAutoEnable {
     }
 
     private void checkExecutable(){
-        if(!FileUtil.canExecute(this.config.getFileName())){
+        if (!FileUtil.canExecute(this.config.getFilesPath() + File.separator + this.config.getFileName())) {
             this.logger.critical("&cBrak odpowiednich uprawnień!");
-            switch (this.config.getSystem()){
-                case LINUX -> this.logger.critical("&cAby uzyskać uprawnienia do uruchomienia servera wprowadź w konsoli polecenie &echmod +x&b " + this.config.getFileName());
+            switch (this.config.getSystem()) {
+                case LINUX ->
+                        this.logger.critical("&cAby uzyskać uprawnienia do uruchomienia servera wprowadź w konsoli polecenie &echmod +x&b " + this.config.getFileName());
                 case WINDOWS -> this.logger.critical("&cPotrzebujesz wyższych uprawnień!");
             }
             System.exit(0);

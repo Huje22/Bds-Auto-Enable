@@ -49,7 +49,6 @@ public final class StatusUtil {
         status.add("Pamięc RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
         status.add("Pamięc ROM: `" + rom + " / " + maxRom  +"`");
         status.add("");
-        status.add("");
         status.add("> **Statystyki servera**");
         status.add("Pamięc RAM: `" + usedServerMemory + "`");
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime()) + "`");
