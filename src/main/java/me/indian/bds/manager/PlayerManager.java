@@ -1,7 +1,6 @@
 package me.indian.bds.manager;
 
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 
 import java.util.ArrayList;
@@ -13,26 +12,22 @@ import java.util.regex.Pattern;
 
 public class PlayerManager {
 
-    private final Config config;
     private final DiscordIntegration discord;
     private final List<String> onlinePlayers, offlinePlayers;
     private final Map<String, Long> savedPlayers;
 
     public PlayerManager(final BDSAutoEnable bdsAutoEnable) {
-        this.config = bdsAutoEnable.getConfig();
         this.discord = bdsAutoEnable.getDiscord();
         this.onlinePlayers = new ArrayList<>();
         this.offlinePlayers = new ArrayList<>();
         this.savedPlayers = new HashMap<>();
     }
 
-
     public void initFromLog(final String logEntry) {
         this.updatePlayerList(logEntry);
         this.chatMessage(logEntry);
         this.deathMessage(logEntry);
     }
-
 
     private void updatePlayerList(final String logEntry) {
         final String patternString = "(Player connected|Player disconnected): ([^,]+), xuid: ([0-9]{16})";

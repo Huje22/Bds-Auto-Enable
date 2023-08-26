@@ -112,7 +112,7 @@ public class ConsoleColors {
 
     public static String removeColors(final Object input) {
         if (input instanceof String in) {
-            for (Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
+            for (final Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
                 in = in.replace(entry.getValue(), "")
                         .replaceAll(entry.getKey(), "");
             }

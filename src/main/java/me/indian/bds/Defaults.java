@@ -5,7 +5,7 @@ import me.indian.bds.util.SystemOs;
 
 import java.io.File;
 
-public class Defaults {
+public final class Defaults {
 
     private static Config config;
 
