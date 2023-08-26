@@ -84,7 +84,7 @@ public class ServerProcess {
     public void startProcess() {
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
         this.processService.execute(() -> {
-            if (isProcessRunning()) {
+            if (this.isProcessRunning()) {
                 this.logger.info("Proces " + this.config.getFileName() + " jest już uruchomiony.");
                 this.instantShutdown();
             } else {
