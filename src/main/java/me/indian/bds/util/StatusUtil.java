@@ -21,13 +21,11 @@ public final class StatusUtil {
     private static ServerProcess serverProcess;
     private static Config config;
 
-
     public static void init(final BDSAutoEnable bdsAutoEnable, final ServerProcess serverProcess) {
         StatusUtil.bdsAutoEnable = bdsAutoEnable;
         StatusUtil.serverProcess = serverProcess;
         StatusUtil.config = bdsAutoEnable.getConfig();
     }
-
 
     public static List<String> getStatus(final boolean forDiscord) {
         status.clear();
@@ -44,9 +42,13 @@ public final class StatusUtil {
         final String committedAppMemory = "Przydzielone " + MathUtil.bytesToMB(heapMemoryUsage.getCommitted()) + " MB";
         final String maxAppMemory = "Dostępne " + MathUtil.bytesToMB(heapMemoryUsage.getMax()) + " MB";
 
+        final String rom = "Dostępny: " + MathUtil.bytesToGB(availableDiskSpace()) + " GB " + MathUtil.getMbFromGb(availableDiskSpace()) + " MB";
+        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(maxDiskSpace()) + " GB " + MathUtil.getMbFromGb(maxDiskSpace()) + " MB";
 
         status.add("> **Statystyki maszyny**");
         status.add("Pamięc RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
+        status.add("Pamięc ROM: `" + rom + " / " + maxRom  +"`");
+        status.add("");
         status.add("");
         status.add("> **Statystyki servera**");
         status.add("Pamięc RAM: `" + usedServerMemory + "`");
@@ -65,6 +67,13 @@ public final class StatusUtil {
     public static long availableDiskSpace() {
         if (file.exists()) {
             return file.getUsableSpace();
+        }
+        return 0;
+    }
+
+    public static long maxDiskSpace() {
+        if (file.exists()) {
+            return file.getTotalSpace();
         }
         return 0;
     }

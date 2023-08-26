@@ -177,7 +177,9 @@ public class CommandListener extends ListenerAdapter {
     private MessageEmbed getBackupEmbed() {
         final String backupStatus = "`" + this.backupModule.getStatus() + "`\n";
         final long gbSpace = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
-        final long mbSpace = MathUtil.bytesToMB(StatusUtil.availableDiskSpace() - (gbSpace * 1024 * 1024 * 1024));
+        final String rom = "Dostępny: " + gbSpace + " GB " + MathUtil.getMbFromGb(StatusUtil.availableDiskSpace()) + " MB";
+        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(StatusUtil.maxDiskSpace()) + " GB " + MathUtil.getMbFromGb(StatusUtil.maxDiskSpace()) + " MB";
+
 
         final List<String> description = new ArrayList<>();
         this.backupButtons.clear();
@@ -196,10 +198,10 @@ public class CommandListener extends ListenerAdapter {
                 fileSizeBytes = -1;
             }
             
-            long gigabytes = MathUtil.bytesToGB(fileSizeBytes);
-            long remainderBytes = fileSizeBytes % (1024 * 1024 * 1024);
-            long megabytes = MathUtil.bytesToMB(remainderBytes);
-            long kilobytes = MathUtil.bytesToKB(remainderBytes % (1024 * 1024));
+            final long gigabytes = MathUtil.bytesToGB(fileSizeBytes);
+            final long remainderBytes = fileSizeBytes % (1024 * 1024 * 1024);
+            final long megabytes = MathUtil.bytesToMB(remainderBytes);
+            final long kilobytes = MathUtil.bytesToKB(remainderBytes % (1024 * 1024));
             description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + gigabytes + "` GB `" + megabytes + "` MB `" + kilobytes + "` KB");
         }
 
@@ -207,7 +209,7 @@ public class CommandListener extends ListenerAdapter {
                 .setTitle("Backup info")
                 .setDescription("Status ostatniego backup: " + backupStatus +
                         "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
-                        "Dostepa pamięć: `" + gbSpace + " GB " + mbSpace + " MB`\n" +
+                        "Pamięc ROM: `" + rom + " / " + maxRom  +"`\n" +
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
                         (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : "")
                 )
