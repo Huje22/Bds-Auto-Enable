@@ -92,7 +92,7 @@ public class Settings {
             this.logger.info("#cPamiętaj że twoja siec musi miec dostepny ten port");
         }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na:&1 " + input)));
 
-        System.out.println(serverProperties.getServerPort());
+        System.out.println(this.serverProperties.getServerPort());
 
         this.serverProperties.setServerPortV6(scannerUtil.addQuestion((defaultValue) -> {
             this.logger.info("&lUstaw port v6?&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
@@ -128,7 +128,7 @@ public class Settings {
         this.logger.info("Ścieżka plików: " + this.config.getFilesPath());
         this.logger.info("Wersija:&1 " + this.config.getVersion());
 
-        boolean backup = this.config.isBackup();
+        final boolean backup = this.config.isBackup();
         this.logger.info("Backup:&1 " + backup);
 
         if (backup) {

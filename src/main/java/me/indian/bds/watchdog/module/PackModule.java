@@ -130,7 +130,7 @@ public class PackModule {
     public void loadPack() {
         try (final FileReader reader = new FileReader(this.worldBehaviorsJson.getPath())) {
             this.logger.info("Ładowanie paczki...");
-            JsonArray jsonArray;
+            final JsonArray jsonArray;
             try {
                 jsonArray = JsonParser.parseReader(reader).getAsJsonArray();
             } catch (final IllegalStateException exception) {

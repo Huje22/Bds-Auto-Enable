@@ -1,7 +1,6 @@
 package me.indian.bds.watchdog;
 
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.server.ServerProcess;
@@ -16,7 +15,6 @@ public class WatchDog {
     private final BackupModule backupModule;
     private final PackModule packModule;
     private final RamMonitor ramMonitor;
-    private final Config config;
     private final String watchDogPrefix;
     private final ServerProcess serverProcess;
 
@@ -24,7 +22,6 @@ public class WatchDog {
         this.backupModule = new BackupModule(bdsAutoEnable);
         this.packModule = new PackModule(bdsAutoEnable);
         this.ramMonitor = new RamMonitor(this);
-        this.config = bdsAutoEnable.getConfig();
         this.watchDogPrefix = "&b[&3WatchDog&b]";
         this.serverProcess = bdsAutoEnable.getServerProcess();
     }

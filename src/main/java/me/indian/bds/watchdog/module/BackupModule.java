@@ -154,7 +154,7 @@ public class BackupModule {
                     this.backups.add(path);
                 }
             }
-            Collections.sort(this.backups, Collections.reverseOrder()); 
+            this.backups.sort(Collections.reverseOrder());
         } catch (final IOException exception) {
             exception.printStackTrace();
         }

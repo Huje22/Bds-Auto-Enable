@@ -3,7 +3,7 @@ package me.indian.bds.logger;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ConsoleColors {
+public final class ConsoleColors {
 
     private static final Map<String, String> COLOR_MAP = new HashMap<>();
 

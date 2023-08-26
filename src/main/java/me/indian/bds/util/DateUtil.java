@@ -60,7 +60,7 @@ public  final class DateUtil {
         return seconds + " sekund";
     }
 
-    public static String formatTime(long millis) {
+    public static String formatTime(final long millis) {
         String formattedTime = "";
 
         formattedTime += formatDays(millis) + " ";

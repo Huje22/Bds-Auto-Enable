@@ -24,7 +24,7 @@ public final class ThreadUtil implements ThreadFactory {
 
     public static void sleep(final int seconds) {
         try {
-            Thread.sleep(1000 * seconds);
+            Thread.sleep(1000L * seconds);
         } catch (final InterruptedException exception) {
             exception.printStackTrace();
         }
@@ -34,7 +34,7 @@ public final class ThreadUtil implements ThreadFactory {
         try {
             Thread.sleep(millis);
         } catch (final InterruptedException exception) {
-            exception.printStackTrace();;
+            exception.printStackTrace();
         }
     }
 
@@ -49,19 +49,19 @@ public final class ThreadUtil implements ThreadFactory {
 
     @Override
     public Thread newThread(@NotNull final Runnable runnable) {
-        Thread thread = new Thread(runnable);
-        thread.setName(generateThreadName());
+        final Thread thread = new Thread(runnable);
+        thread.setName(this.generateThreadName());
         return thread;
     }
 
     public Thread newThread() {
-        Thread thread = new Thread(runnable);
-        thread.setName(generateThreadName());
+        final Thread thread = new Thread(this.runnable);
+        thread.setName(this.generateThreadName());
         return thread;
     }
 
     private String generateThreadName() {
         this.threadCount++;
-        return this.threadName.replace("%b", String.valueOf(threadCount));
+        return this.threadName.replace("%b", String.valueOf(this.threadCount));
     }
 }
