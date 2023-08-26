@@ -29,7 +29,7 @@ Todo: <br/>
 
 **Szybkie info**:
 
-* Paczke wystarczy tylko dodac do katalogu `TWÓJ ŚWIAT \behavior_backs` a program sam ją załaduje
+* Paczka sama się pobierze do twojego świata i załaduje , potrzebujesz jedynie włączonych experymentów w tym świecie!
 
 
 
