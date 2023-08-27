@@ -1,25 +1,24 @@
 package me.indian.bds.file;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Properties;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Properties;
+
 public class ServerProperties {
 
-    private final BDSAutoEnable bdsAutoEnable;
     private final Properties properties;
     private final Logger logger;
     private final Config config;
 
     public ServerProperties(final BDSAutoEnable bdsAutoEnable) {
-        this.bdsAutoEnable = bdsAutoEnable;
         this.properties = new Properties();
-        this.config = this.bdsAutoEnable.getConfig();
-        this.logger = this.bdsAutoEnable.getLogger();
+        this.config = bdsAutoEnable.getConfig();
+        this.logger = bdsAutoEnable.getLogger();
     }
 
     public void loadProperties() {
@@ -52,14 +51,21 @@ public class ServerProperties {
         try {
             return this.properties.getProperty("level-name");
         } catch (final Exception exception) {
+            this.setWorldName("Bedrock level");
             return "Bedrock level";
         }
+    }
+
+    public void setWorldName(final String name) {
+        this.properties.setProperty("level-name", name);
+        this.reloadServerProperties();
     }
 
     public int getServerPort() {
         try {
             return Integer.parseInt(this.properties.getProperty("server-port"));
         } catch (final Exception exception) {
+            this.setServerPort(19132);
             return 19132;
         }
     }
@@ -68,6 +74,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("server-portv6"));
         } catch (final Exception exception) {
+            this.setServerPortV6(19133);
             return 19133;
         }
     }
@@ -76,24 +83,23 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("max-threads"));
         } catch (final Exception exception) {
+            this.setMaxThreads(8);
             return 8;
         }
     }
-    
+
     public int getMaxPlayers() {
         try {
             return Integer.parseInt(this.properties.getProperty("max-players"));
         } catch (final Exception exception) {
+            this.setMaxPlayers(10);
             return 10;
         }
     }
 
-    public boolean isClientSideChunkGeneration() {
-        try {
-            return Boolean.parseBoolean(this.properties.getProperty("client-side-chunk-generation-enabled"));
-        } catch (final Exception exception) {
-            return true;
-        }
+    public void setMaxPlayers(final int players) {
+        this.properties.setProperty("max-players", String.valueOf(players));
+        this.reloadServerProperties();
     }
 
     public void setServerPort(final int port) {
@@ -109,6 +115,15 @@ public class ServerProperties {
     public void setMaxThreads(final int threads) {
         this.properties.setProperty("max-threads", String.valueOf(threads));
         this.reloadServerProperties();
+    }
+
+    public boolean isClientSideChunkGeneration() {
+        try {
+            return Boolean.parseBoolean(this.properties.getProperty("client-side-chunk-generation-enabled"));
+        } catch (final Exception exception) {
+            this.setClientSideChunkGeneration(true);
+            return true;
+        }
     }
 
     public void setClientSideChunkGeneration(final boolean clientSide) {

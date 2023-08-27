@@ -1,8 +1,5 @@
 package me.indian.bds.discord.jda;
 
-import java.util.Objects;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
@@ -24,6 +21,9 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
@@ -233,13 +233,13 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     @Override
     public void sendAppRamAlert() {
-        final String owner =  "<@" + Objects.requireNonNull(this.guild.getOwner()).getIdLong() + "> ";
+        final String owner = (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");
         this.sendMessage(owner + this.config.getMessages().getAppRamAlter());
     }
 
     @Override
     public void sendMachineRamAlert() {
-        final String owner =  "<@" + Objects.requireNonNull(this.guild.getOwner()).getIdLong() + "> ";
+        final String owner = (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");
         this.sendMessage(owner + this.config.getMessages().getMachineRamAlter());
     }
 
