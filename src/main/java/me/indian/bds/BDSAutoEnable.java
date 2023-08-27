@@ -2,10 +2,6 @@ package me.indian.bds;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.util.List;
-import java.util.Scanner;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -18,11 +14,16 @@ import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.*;
 import me.indian.bds.watchdog.WatchDog;
 
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.util.List;
+import java.util.Scanner;
+
 
 public class BDSAutoEnable {
 
     private final long startTime;
-    private final String projectVersion;
+    private final String projectVersion, runDate;
     private final Scanner scanner;
     private final Logger logger;
     private final ServerProperties serverProperties;
@@ -33,10 +34,9 @@ public class BDSAutoEnable {
     private final VersionManager versionManager;
     private DiscordIntegration discord;
     private WatchDog watchDog;
-    private String runDate;
 
     public BDSAutoEnable() {
-        this.initRunDate();
+        this.runDate = DateUtil.getFixedDate();
         this.startTime = System.currentTimeMillis();
         this.projectVersion = "1.0.0-Dev";
         this.scanner = new Scanner(System.in);
@@ -86,10 +86,6 @@ public class BDSAutoEnable {
         this.versionManager.loadVersion();
         this.discord.init();
         this.serverProcess.startProcess();
-    }
-
-    private void initRunDate() {
-        this.runDate = DateUtil.getDate().replaceAll(":", "-");
     }
 
     private void checkFlags() {

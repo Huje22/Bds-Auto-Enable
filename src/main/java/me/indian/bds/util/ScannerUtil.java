@@ -2,7 +2,7 @@ package me.indian.bds.util;
 
 import java.util.Scanner;
 
-public final  class ScannerUtil {
+public final class ScannerUtil {
     private final Scanner scanner;
 
     public ScannerUtil(final Scanner scanner) {
@@ -11,7 +11,7 @@ public final  class ScannerUtil {
 
     public String addQuestion(final StringResponseConsumer question, final String defaultValue, final StringResponseConsumer response) {
         question.accept(defaultValue);
-        String input = getInput();
+        String input = this.getInput();
         input = input.isEmpty() ? defaultValue : input;
         response.accept(input);
         System.out.println();
@@ -20,8 +20,8 @@ public final  class ScannerUtil {
 
     public boolean addQuestion(final BooleanResponseConsumer question, final boolean defaultValue, final BooleanResponseConsumer response) {
         question.accept(defaultValue);
-        final String input = getInput();
-        boolean userInput = input.isEmpty() ? defaultValue : Boolean.parseBoolean(input);
+        final String input = this.getInput();
+        final boolean userInput = input.isEmpty() ? defaultValue : Boolean.parseBoolean(input);
         response.accept(userInput);
         System.out.println();
         return userInput;
@@ -29,8 +29,8 @@ public final  class ScannerUtil {
 
     public int addQuestion(final IntegerResponseConsumer question, final int defaultValue, final IntegerResponseConsumer response) {
         question.accept(defaultValue);
-        final String input = getInput();
-        int userInput = input.isEmpty() ? defaultValue : Integer.parseInt(input);
+        final String input = this.getInput();
+        final int userInput = input.isEmpty() ? defaultValue : Integer.parseInt(input);
         response.accept(userInput);
         System.out.println();
         return userInput;
@@ -41,7 +41,7 @@ public final  class ScannerUtil {
     }
 
     private String getInput() {
-        return scanner.nextLine();
+        return this.scanner.nextLine();
     }
 
     @FunctionalInterface

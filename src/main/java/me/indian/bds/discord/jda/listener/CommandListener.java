@@ -1,22 +1,10 @@
 package me.indian.bds.discord.jda.listener;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.StatusUtil;
-import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.*;
 import me.indian.bds.watchdog.module.BackupModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -29,6 +17,15 @@ import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+
+import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CommandListener extends ListenerAdapter {
 
@@ -111,7 +108,7 @@ public class CommandListener extends ListenerAdapter {
             }
             case "list" -> {
                 final List<String> players = this.bdsAutoEnable.getPlayerManager().getOnlinePlayers();
-                final String list = "`" + players.toString().replaceAll("\\[", "").replaceAll("]", "") + "`";
+                final String list = "`" + MessageUtil.listToString(players, "`, `") + "`";
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Lista Graczy")
                         .setDescription(players.size() + "/" + this.bdsAutoEnable.getServerProperties().getMaxPlayers() + "\n" +
@@ -180,7 +177,6 @@ public class CommandListener extends ListenerAdapter {
         final String rom = "Dostępny: " + gbSpace + " GB " + MathUtil.getMbFromGb(StatusUtil.availableDiskSpace()) + " MB";
         final String maxRom = "Całkowity: " + MathUtil.bytesToGB(StatusUtil.maxDiskSpace()) + " GB " + MathUtil.getMbFromGb(StatusUtil.maxDiskSpace()) + " MB";
 
-
         final List<String> description = new ArrayList<>();
         this.backupButtons.clear();
         this.backupButtons.add(Button.primary("backup", "Backup").withEmoji(Emoji.fromFormatted("<:bds:1138355151258783745>")));
@@ -209,10 +205,9 @@ public class CommandListener extends ListenerAdapter {
                 .setTitle("Backup info")
                 .setDescription("Status ostatniego backup: " + backupStatus +
                         "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
-                        "Pamięc ROM: `" + rom + " / " + maxRom  +"`\n" +
+                        "Pamięc ROM: `" + rom + " / " + maxRom + "`\n" +
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
-                        (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : "")
-                )
+                        (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
                 .setColor(Color.BLUE)
                 .build();
     }
