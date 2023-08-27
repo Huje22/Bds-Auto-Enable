@@ -193,7 +193,7 @@ public class ServerProcess {
                     }
                     case "version" -> {
                         MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija minecraft:&b " + this.config.getVersion(), LogState.INFO);
-                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija BDS-Auro-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
+                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
                     }
                     case "backup" -> this.watchDog.getBackupModule().forceBackup();
                     case "test" -> {
