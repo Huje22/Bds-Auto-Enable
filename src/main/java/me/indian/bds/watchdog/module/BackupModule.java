@@ -35,13 +35,12 @@ public class BackupModule {
     private final Timer timer;
     private final Config config;
     private final List<Path> backups;
+    private final String worldPath, worldName;
+    private final File worldFile;
     private WatchDog watchDog;
     private ServerProcess serverProcess;
     private String prefix;
-    private String worldPath;
     private File backupFolder;
-    private File worldFile;
-    private String worldName;
     private boolean backuping;
     private String status;
     private long lastBackupMillis;
@@ -51,7 +50,7 @@ public class BackupModule {
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
         this.backups = new ArrayList<>();
-        this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Watchdog-BackupModule"));
+        this.service = Executors.newScheduledThreadPool(5, new ThreadUtil("Watchdog-BackupModule"));
         this.timer = new Timer("Backup", true);
         this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
         this.worldPath = Defaults.getWorldsPath() + this.worldName;
