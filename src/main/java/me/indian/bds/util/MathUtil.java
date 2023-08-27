@@ -17,6 +17,10 @@ public final class MathUtil {
         return Duration.ofMinutes(minutes).toMillis();
     }
 
+    public static long secondToMilliseconds(final int seconds) {
+        return Duration.ofSeconds(seconds).toMillis();
+    }
+
     public static double format(final double decimal, final int format) {
         df.setMaximumFractionDigits(format);
         return Double.parseDouble(df.format(decimal));
