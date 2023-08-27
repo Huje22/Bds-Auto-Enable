@@ -114,7 +114,6 @@ public class Settings {
                     },
                 false, (input) -> this.logger.info("Ustawiono Client Side Chunks na:&1 " + input)
         ));
-
         this.logger.info("Ukończono odpowiedzi w&a " + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         this.config.save();
         this.currentSettings(scannerUtil.getScanner());
@@ -125,7 +124,7 @@ public class Settings {
         this.logger.info("System:&1 " + this.config.getSystem());
         this.logger.info("Nazwa pliku:&1 " + this.config.getFileName());
         this.logger.info("Wine:&1 " + this.config.isWine());
-        this.logger.info("Ścieżka plików: " + this.config.getFilesPath());
+        this.logger.info("Ścieżka plików:&b " + this.config.getFilesPath());
         this.logger.info("Wersija:&1 " + this.config.getVersion());
 
         final boolean backup = this.config.getWatchDogConfig().getBackup().isBackup();
@@ -141,6 +140,7 @@ public class Settings {
         this.logger.info("Liczba wątków używana przez server:&1 " + this.serverProperties.getMaxThreads());
         this.logger.info("Czy klient generuje chunki:&1 " + this.serverProperties.isClientSideChunkGeneration());
 
+        this.logger.alert("&cWięcej opcij &ekonfiguracij&c znajdziesz w config");
         this.logger.info("Kliknij enter aby kontunować");
         scanner.nextLine();
 
