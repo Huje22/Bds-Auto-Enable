@@ -142,6 +142,7 @@ public class ServerProcess {
                 try {
                     if (!consoleOutput.hasNext()) continue;
                 } catch (final IllegalStateException stateException) {
+                    stateException.printStackTrace();
                     break;
                 }
 
@@ -159,13 +160,10 @@ public class ServerProcess {
                     this.discord.writeConsole(line);
                 }
             }
-
         } catch (final Exception exception) {
             this.logger.critical(exception);
             exception.printStackTrace();
             consoleOutput.close();
-        } finally {
-            Thread.currentThread().interrupt();
         }
     }
 
@@ -177,6 +175,7 @@ public class ServerProcess {
                 try {
                     if (!consoleInput.hasNext()) continue;
                 } catch (final IllegalStateException stateException) {
+                    stateException.printStackTrace();
                     break;
                 }
 
