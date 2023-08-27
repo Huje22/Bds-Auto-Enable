@@ -53,12 +53,12 @@ public class BackupModule {
         this.backups = new ArrayList<>();
         this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Watchdog-BackupModule"));
         this.timer = new Timer("Backup", true);
+        this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
+        this.worldPath = Defaults.getWorldsPath() + this.worldName;
+        this.worldFile = new File(this.worldPath);
         if (this.config.getWatchDogConfig().getBackup().isBackup()) {
             this.logger.alert("Backupy są włączone");
             this.backupFolder = new File("BDS-Auto-Enable/backup/");
-            this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
-            this.worldPath = Defaults.getWorldsPath() + this.worldName;
-            this.worldFile = new File(this.worldPath);
             if (!this.backupFolder.exists()) {
                 if (!this.backupFolder.mkdirs()) {
                     this.logger.error("Nie można utworzyć folderu backupów");
@@ -147,6 +147,7 @@ public class BackupModule {
     }
 
     private void loadAvailableBackups() {
+        if (!this.config.getWatchDogConfig().getBackup().isBackup()) return;
         this.backups.clear();
         try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(this.backupFolder.getPath()))) {
             for (final Path path : directoryStream) {
