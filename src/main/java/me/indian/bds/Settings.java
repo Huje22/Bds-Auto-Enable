@@ -79,10 +79,10 @@ public class Settings {
         this.serverProperties.loadProperties();
 
         final boolean backup = scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lWłączyć Backupy&r (Domyślnie: " + defaultValue + ")? " + this.enter), true, (input) -> this.logger.info("Backupy ustawione na:&1 " + input));
-        this.config.setBackup(backup);
+        this.config.getWatchDogConfig().getBackup().setBackup(backup);
         if (backup) {
             final int backupFrequency = scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lCo ile minut robic backup?&r (Domyślnie: " + defaultValue + ")? " + this.enter), 60, (input) -> this.logger.info("Backup bedzie robiony co:&1 " + (input == 0 ? 60 : input + "&a minut")));
-            this.config.setBackupFrequency(backupFrequency == 0 ? 60 : backupFrequency);
+            this.config.getWatchDogConfig().getBackup().setBackupFrequency(backupFrequency == 0 ? 60 : backupFrequency);
         }
 
         this.logger.info("&aKonfiguracija servera&r");
@@ -128,11 +128,11 @@ public class Settings {
         this.logger.info("Ścieżka plików: " + this.config.getFilesPath());
         this.logger.info("Wersija:&1 " + this.config.getVersion());
 
-        final boolean backup = this.config.isBackup();
+        final boolean backup = this.config.getWatchDogConfig().getBackup().isBackup();
         this.logger.info("Backup:&1 " + backup);
 
         if (backup) {
-            this.logger.info("Częstotliwość robienia backup:&1 " + this.config.getBackupFrequency() + "&a minut");
+            this.logger.info("Częstotliwość robienia backup:&1 " + this.config.getWatchDogConfig().getBackup().getBackupFrequency() + "&a minut");
             this.logger.info("Nazwa świata:&1 " + this.serverProperties.getWorldName());
         }
 

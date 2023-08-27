@@ -2,11 +2,13 @@ package me.indian.bds.config;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
 import me.indian.bds.config.sub.discord.DiscordBot;
 import me.indian.bds.config.sub.discord.Messages;
 import me.indian.bds.config.sub.discord.WebHook;
 import me.indian.bds.config.sub.log.Log;
+import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.discord.DiscordType;
 import me.indian.bds.util.SystemOs;
 
@@ -46,10 +48,9 @@ public class Config extends OkaeriConfig {
     private String filesPath = "./";
 
     @Comment({""})
-    @Comment({"Backups"})
-    private boolean backup = true;
-    private int backupFrequency = 60;
-    private double lastBackupTime = 20;
+    @Comment({"Watch dog"}) @CustomKey("watchDog")
+    private WatchDogConfig watchDogConfig = new WatchDogConfig();
+
 
     @Comment({""})
     @Comment({"Ustawienia logowania"})
@@ -77,114 +78,114 @@ public class Config extends OkaeriConfig {
 
 
     public String getVersion() {
-        return version;
+        return this.version;
     }
 
-    public void setVersion(String version) {
+    public void setVersion(final String version) {
         this.version = version;
     }
 
     public boolean isLoaded() {
-        return loaded;
+        return this.loaded;
     }
 
-    public Log getNoLog() {
-        return this.log;
-    }
-
-    public void setLoaded(boolean loaded) {
+    public void setLoaded(final boolean loaded) {
         this.loaded = loaded;
     }
 
     public boolean isFirstRun() {
-        return firstRun;
+        return this.firstRun;
     }
 
-    public void setFirstRun(boolean firstRun) {
+    public void setFirstRun(final boolean firstRun) {
         this.firstRun = firstRun;
     }
 
     public SystemOs getSystem() {
-        return system;
+        return this.system;
     }
 
-    public void setSystem(SystemOs system) {
+    public void setSystem(final SystemOs system) {
         this.system = system;
     }
 
     public String getFileName() {
-        return fileName;
+        return this.fileName;
     }
 
-    public void setFileName(String fileName) {
+    public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
 
     public boolean isWine() {
-        return wine;
+        return this.wine;
     }
 
-    public void setWine(boolean wine) {
+    public void setWine(final boolean wine) {
         this.wine = wine;
     }
 
     public String getFilesPath() {
-        return filesPath;
+        return this.filesPath;
     }
 
-    public void setFilesPath(String filesPath) {
+    public void setFilesPath(final String filesPath) {
         this.filesPath = filesPath;
     }
 
-    public boolean isBackup() {
-        return backup;
+    public WatchDogConfig getWatchDogConfig() {
+        return this.watchDogConfig;
     }
 
-    public void setBackup(boolean backup) {
-        this.backup = backup;
+    public void setWatchDogConfig(final WatchDogConfig watchDogConfig) {
+        this.watchDogConfig = watchDogConfig;
     }
 
-    public int getBackupFrequency() {
-        return backupFrequency;
+    public Log getLog() {
+        return this.log;
     }
 
-    public void setBackupFrequency(int backupFrequency) {
-        this.backupFrequency = backupFrequency;
-    }
-
-    public double getLastBackupTime() {
-        return lastBackupTime;
-    }
-
-    public void setLastBackupTime(double lastBackupTime) {
-        this.lastBackupTime = lastBackupTime;
+    public void setLog(final Log log) {
+        this.log = log;
     }
 
     public DiscordType getIntegrationType() {
-        return integrationType;
+        return this.integrationType;
+    }
+
+    public void setIntegrationType(final DiscordType integrationType) {
+        this.integrationType = integrationType;
     }
 
     public WebHook getWebHook() {
         return this.webHook;
     }
 
+    public void setWebHook(final WebHook webHook) {
+        this.webHook = webHook;
+    }
+
     public DiscordBot getDiscordBot() {
-        return discordBot;
+        return this.discordBot;
+    }
+
+    public void setDiscordBot(final DiscordBot discordBot) {
+        this.discordBot = discordBot;
     }
 
     public Messages getMessages() {
-        return messages;
+        return this.messages;
     }
 
-    public void setMessages(Messages messages) {
+    public void setMessages(final Messages messages) {
         this.messages = messages;
     }
 
     public boolean isDebug() {
-        return debug;
+        return this.debug;
     }
 
-    public void setDebug(boolean debug) {
+    public void setDebug(final boolean debug) {
         this.debug = debug;
     }
 }

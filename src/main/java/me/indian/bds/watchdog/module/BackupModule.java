@@ -53,7 +53,7 @@ public class BackupModule {
         this.backups = new ArrayList<>();
         this.service = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Watchdog-BackupModule"));
         this.timer = new Timer("Backup", true);
-        if (this.config.isBackup()) {
+        if (this.config.getWatchDogConfig().getBackup().isBackup()) {
             this.logger.alert("Backupy są włączone");
             this.backupFolder = new File("BDS-Auto-Enable/backup/");
             this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
@@ -87,7 +87,7 @@ public class BackupModule {
 
     public void backup() {
         this.service.execute(() -> {
-            if (this.config.isBackup()) {
+            if (this.config.getWatchDogConfig().getBackup().isBackup()) {
                 this.logger.debug("Ścieżka świata backupów " + Defaults.getWorldsPath() + this.worldName);
                 final TimerTask backupTask = new TimerTask() {
                     @Override
@@ -96,13 +96,13 @@ public class BackupModule {
                         BackupModule.this.lastBackupMillis = System.currentTimeMillis();
                     }
                 };
-                this.timer.scheduleAtFixedRate(backupTask, 0, MathUtil.minutesToMilliseconds(this.config.getBackupFrequency()));
+                this.timer.scheduleAtFixedRate(backupTask, 0, MathUtil.minutesToMilliseconds(this.config.getWatchDogConfig().getBackup().getBackupFrequency()));
             }
         });
     }
 
     public void forceBackup() {
-        if (!this.config.isBackup()) return;
+        if (!this.config.getWatchDogConfig().getBackup().isBackup()) return;
         if (!this.worldFile.exists()) return;
         if (this.backuping) {
             this.logger.error("Nie można zrobić kopi podczas robienia już jednej");
@@ -120,12 +120,12 @@ public class BackupModule {
             try {
                 this.backuping = true;
                 this.watchDog.saveWorld();
-                final double lastBackUpTime = this.config.getLastBackupTime();
+                final double lastBackUpTime = this.config.getWatchDogConfig().getBackup().getLastBackupTime();
                 MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aTworzenie kopij zapasowej ostatnio trwało to&b " + lastBackUpTime + "&a sekund", LogState.INFO);
                 this.status = "Tworzenie backupa...";
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 final double backUpTime = ((System.currentTimeMillis() - startTime) / 1000.0);
-                this.config.setLastBackupTime(backUpTime);
+                this.config.getWatchDogConfig().getBackup().setLastBackupTime(backUpTime);
                 MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund", LogState.INFO);
                 this.status = "Utworzono backup";
             } catch (final Exception exception) {
@@ -161,7 +161,7 @@ public class BackupModule {
     }
 
     public long calculateMillisUntilNextBackup() {
-        return Math.max(0, MathUtil.minutesToMilliseconds(this.config.getBackupFrequency()) - (System.currentTimeMillis() - this.lastBackupMillis));
+        return Math.max(0, MathUtil.minutesToMilliseconds(this.config.getWatchDogConfig().getBackup().getBackupFrequency()) - (System.currentTimeMillis() - this.lastBackupMillis));
     }
 
     public String getStatus() {

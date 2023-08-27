@@ -298,7 +298,7 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {
-        for (final String s : this.config.getNoLog().getNoFile()) {
+        for (final String s : this.config.getLog().getNoFile()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
             }
@@ -307,7 +307,7 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToConsoleLog(final String msg) {
-        for (final String s : this.config.getNoLog().getNoConsole()) {
+        for (final String s : this.config.getLog().getNoConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
             }
@@ -316,7 +316,7 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToDiscordConsoleLog(final String msg) {
-        for (final String s : this.config.getNoLog().getNoDiscordConsole()) {
+        for (final String s : this.config.getLog().getNoDiscordConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
             }

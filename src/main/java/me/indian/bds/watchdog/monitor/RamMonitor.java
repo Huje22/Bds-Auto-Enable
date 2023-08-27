@@ -1,9 +1,7 @@
 package me.indian.bds.watchdog.monitor;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryUsage;
-import java.util.Timer;
-import java.util.TimerTask;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.sub.watchdog.RamMonitorConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.util.MathUtil;
@@ -11,16 +9,25 @@ import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.WatchDog;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
+import java.util.Timer;
+import java.util.TimerTask;
+
 public class RamMonitor {
 
-    private final Timer timer;
+    private final Timer appRamTimer, machineRamTimer;
     private final String prefix;
+    private final RamMonitorConfig ramMonitorConfig;
     private DiscordIntegration discord;
     private boolean running = false;
 
-    public RamMonitor(final WatchDog watchDog) {
-        this.timer = new Timer("RamMonitor", true);
+    public RamMonitor(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
+        this.appRamTimer = new Timer("AppRamMonitor", true);
+        this.machineRamTimer = new Timer("ComputerRamMonitor", true);
         this.prefix = watchDog.getWatchDogPrefix();
+        this.ramMonitorConfig = bdsAutoEnable.getConfig().getWatchDogConfig().getRamMonitor();
+
     }
 
     public void initRamMonitor(final DiscordIntegration discord) {
@@ -30,26 +37,54 @@ public class RamMonitor {
     public void monitRamUsage() {
         if (this.running) return;
         this.running = true;
-        final TimerTask task = new TimerTask() {
+        final TimerTask appRamMonitor = new TimerTask() {
             @Override
             public void run() {
-                final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-                final long freeMem = MathUtil.bytesToMB(heapMemoryUsage.getMax() - heapMemoryUsage.getUsed());
-                if (MathUtil.bytesToMB(heapMemoryUsage.getUsed()) >= ((long) (MathUtil.bytesToMB(heapMemoryUsage.getMax()) * 0.80))) {
-                    MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
-                            "&cAplikacija używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!" + "&d(&c Wolne:&b " + freeMem + " &aMB&d )",
-                            LogState.CRITICAL);
-                    MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
-                            "&cWiększe użycje może to prowadzić do crashy aplikacij a w tym servera&4!!",
-                            LogState.CRITICAL);
-                    MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
-                            "&cServer używa:&b " + MathUtil.kilobytesToMb(StatusUtil.getServerRamUsage()) + " &aMB &d(&aTen ram to ram używany przez proces servera&d)",
-                            LogState.ALERT);
-
-                    RamMonitor.this.discord.sendServerFire();
+                if (RamMonitor.this.ramMonitorConfig.isApp()) {
+                    final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+                    final long freeMem = MathUtil.bytesToMB(heapMemoryUsage.getMax() - heapMemoryUsage.getUsed());
+                    if (MathUtil.bytesToMB(heapMemoryUsage.getUsed()) >= ((long) (MathUtil.bytesToMB(heapMemoryUsage.getMax()) * 0.80))) {
+                        MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                                "&cAplikacija używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!" + "&d(&c Wolne:&b " + freeMem + " &aMB&d )",
+                                LogState.CRITICAL);
+                        MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                                "&cWiększe użycje może to prowadzić do crashy aplikacij a w tym servera&4!!",
+                                LogState.CRITICAL);
+                        if (RamMonitor.this.ramMonitorConfig.isDiscordAlters()) {
+                            RamMonitor.this.discord.sendAppRamAlert();
+                        }
+                    }
                 }
             }
         };
-        this.timer.scheduleAtFixedRate(task, 0, 5000);
+
+        final TimerTask machineRamMonitor = new TimerTask() {
+            @Override
+            public void run() {
+                if (RamMonitor.this.ramMonitorConfig.isMachine()) {
+                    final long computerRam = StatusUtil.getAvailableRam();
+                    final long computerFreeRam = StatusUtil.getFreeRam();
+
+                    final long computerFreeRamGb = MathUtil.bytesToGB(computerFreeRam);
+                    final String freeComputerMemory = "&eWolne:&a " + computerFreeRamGb + "&b GB&a " + MathUtil.getMbFromGb(computerFreeRam) + "&b MB";
+                    final String maxComputerMemory = "&eCałkowite:&a " + MathUtil.bytesToGB(computerRam) + "&b GB&a " + MathUtil.getMbFromGb(computerRam) + "&b MB";
+
+                    if (computerFreeRamGb < 1) {
+                        MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                                "&cMaszyna posiada mniej niż&b 1GB&c wolej pamięci ram!",
+                                LogState.ALERT);
+                        MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                                freeComputerMemory + " / " + maxComputerMemory,
+                                LogState.ALERT);
+                        if (RamMonitor.this.ramMonitorConfig.isDiscordAlters()) {
+                            RamMonitor.this.discord.sendMachineRamAlert();
+                        }
+                    }
+                }
+            }
+        };
+
+        this.machineRamTimer.scheduleAtFixedRate(machineRamMonitor, 0, MathUtil.secondToMilliseconds(this.ramMonitorConfig.getCheckMachineTime()));
+        this.appRamTimer.scheduleAtFixedRate(appRamMonitor, 0, MathUtil.secondToMilliseconds(this.ramMonitorConfig.getCheckAppTime()));
     }
 }

@@ -61,7 +61,7 @@ public final class StatusUtil {
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - bdsAutoEnable.getStartTime()) + "`");
         status.add("Pamięc RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
         status.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
-        status.add("Użycje cpu: `" + (processCpuLoad * 100) + "`% (Bugged jakieś)");
+        status.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100) , 2)+ "`% (Bugged jakieś)");
 
         if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
 
@@ -83,7 +83,7 @@ public final class StatusUtil {
     }
 
     public static long getServerRamUsage() {
-        if (!serverProcess.getProcess().isAlive()) return 0;
+        if (serverProcess.getProcess() == null || !serverProcess.getProcess().isAlive()) return 0;
         try {
             switch (config.getSystem()) {
                 case WINDOWS -> {

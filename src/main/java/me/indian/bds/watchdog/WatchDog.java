@@ -21,7 +21,7 @@ public class WatchDog {
     public WatchDog(final BDSAutoEnable bdsAutoEnable) {
         this.backupModule = new BackupModule(bdsAutoEnable);
         this.packModule = new PackModule(bdsAutoEnable);
-        this.ramMonitor = new RamMonitor(this);
+        this.ramMonitor = new RamMonitor(bdsAutoEnable, this);
         this.watchDogPrefix = "&b[&3WatchDog&b]";
         this.serverProcess = bdsAutoEnable.getServerProcess();
     }

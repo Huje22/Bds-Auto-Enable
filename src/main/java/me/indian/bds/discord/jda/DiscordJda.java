@@ -1,5 +1,6 @@
 package me.indian.bds.discord.jda;
 
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
@@ -231,8 +232,15 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     }
 
     @Override
-    public void sendServerFire() {
-        this.sendMessage("<@" + this.guild.getOwner().getIdLong() + "> " + this.config.getMessages().getFire());
+    public void sendAppRamAlert() {
+        final String owner =  "<@" + Objects.requireNonNull(this.guild.getOwner()).getIdLong() + "> ";
+        this.sendMessage(owner + this.config.getMessages().getAppRamAlter());
+    }
+
+    @Override
+    public void sendMachineRamAlert() {
+        final String owner =  "<@" + Objects.requireNonNull(this.guild.getOwner()).getIdLong() + "> ";
+        this.sendMessage(owner + this.config.getMessages().getMachineRamAlter());
     }
 
     @Override

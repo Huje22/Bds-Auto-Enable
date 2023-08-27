@@ -161,7 +161,7 @@ public class CommandListener extends ListenerAdapter {
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
                     this.backupModule.forceBackup();
                     this.reserve.execute(() -> {
-                        ThreadUtil.sleep((int) this.config.getLastBackupTime() + 2);
+                        ThreadUtil.sleep((int) this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2);
                         event.replyEmbeds(this.getBackupEmbed())
                                 .addActionRow(ActionRow.of(this.backupButtons).getComponents())
                                 .setEphemeral(true).queue();

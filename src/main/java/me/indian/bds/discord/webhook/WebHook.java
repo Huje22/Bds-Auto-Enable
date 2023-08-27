@@ -115,8 +115,13 @@ public class WebHook implements DiscordIntegration {
     }
 
     @Override
-    public void sendServerFire() {
-        this.sendMessage(this.config.getMessages().getFire());
+    public void sendAppRamAlert() {
+        this.sendMessage(this.config.getMessages().getAppRamAlter());
+    }
+
+    @Override
+    public void sendMachineRamAlert() {
+        this.sendMessage(this.config.getMessages().getMachineRamAlter());
     }
 
     @Override
