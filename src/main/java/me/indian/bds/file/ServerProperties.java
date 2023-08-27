@@ -49,27 +49,51 @@ public class ServerProperties {
     }
 
     public String getWorldName() {
-        return this.properties.getProperty("level-name");
+        try {
+            return this.properties.getProperty("level-name");
+        } catch (final Exception exception) {
+            return "Bedrock level";
+        }
     }
 
     public int getServerPort() {
-        return Integer.parseInt(this.properties.getProperty("server-port"));
+        try {
+            return Integer.parseInt(this.properties.getProperty("server-port"));
+        } catch (final Exception exception) {
+            return 19132;
+        }
     }
 
     public int getServerPortV6() {
-        return Integer.parseInt(this.properties.getProperty("server-portv6"));
+        try {
+            return Integer.parseInt(this.properties.getProperty("server-portv6"));
+        } catch (final Exception exception) {
+            return 19133;
+        }
     }
 
     public int getMaxThreads() {
-        return Integer.parseInt(this.properties.getProperty("max-threads"));
+        try {
+            return Integer.parseInt(this.properties.getProperty("max-threads"));
+        } catch (final Exception exception) {
+            return 8;
+        }
     }
     
     public int getMaxPlayers() {
-        return Integer.parseInt(this.properties.getProperty("max-players"));
+        try {
+            return Integer.parseInt(this.properties.getProperty("max-players"));
+        } catch (final Exception exception) {
+            return 10;
+        }
     }
 
     public boolean isClientSideChunkGeneration() {
-        return Boolean.parseBoolean(this.properties.getProperty("client-side-chunk-generation-enabled"));
+        try {
+            return Boolean.parseBoolean(this.properties.getProperty("client-side-chunk-generation-enabled"));
+        } catch (final Exception exception) {
+            return true;
+        }
     }
 
     public void setServerPort(final int port) {
