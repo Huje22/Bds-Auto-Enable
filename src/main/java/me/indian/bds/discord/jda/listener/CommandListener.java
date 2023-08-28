@@ -197,12 +197,11 @@ public class CommandListener extends ListenerAdapter {
             } catch (final IOException exception) {
                 fileSizeBytes = -1;
             }
-            
-            final long gigabytes = MathUtil.bytesToGB(fileSizeBytes);
-            final long remainderBytes = fileSizeBytes % (1024 * 1024 * 1024);
-            final long megabytes = MathUtil.bytesToMB(remainderBytes);
-            final long kilobytes = MathUtil.bytesToKB(remainderBytes % (1024 * 1024));
-            description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + gigabytes + "` GB `" + megabytes + "` MB `" + kilobytes + "` KB");
+
+            final long gb = MathUtil.bytesToGB(fileSizeBytes);
+            final long mb = MathUtil.getMbFromBytesGb(fileSizeBytes);
+            final long kb = MathUtil.getKbFromBytesGb(fileSizeBytes);
+            description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + gb + "` GB `" + mb + "` MB `" + kb+ "` KB");
         }
 
         return new EmbedBuilder()
