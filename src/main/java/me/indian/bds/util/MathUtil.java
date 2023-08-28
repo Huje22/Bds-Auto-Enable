@@ -59,4 +59,8 @@ public final class MathUtil {
         final long gb = kilobytesToGb(kilobytes);
         return kilobytesToMb(kilobytes - (gb * 1024 * 1024));
     }
+
+    public static long getKbFromBytesGb(final long bytes) {
+        return (bytes % (1024 * 1024)) / 1024;
+    }
 }
