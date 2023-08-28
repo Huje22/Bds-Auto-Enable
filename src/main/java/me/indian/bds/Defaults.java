@@ -44,7 +44,6 @@ public final class Defaults {
         return System.getProperty("user.dir");
     }
 
-
     public static String getWorldsPath() {
         return config.getFilesPath() + File.separator + "worlds" + File.separator;
     }
