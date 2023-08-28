@@ -66,8 +66,8 @@ public class RamMonitor {
                     final long computerFreeRam = StatusUtil.getFreeRam();
 
                     final long computerFreeRamGb = MathUtil.bytesToGB(computerFreeRam);
-                    final String freeComputerMemory = "&eWolne:&a " + computerFreeRamGb + "&b GB&a " + MathUtil.getMbFromGb(computerFreeRam) + "&b MB";
-                    final String maxComputerMemory = "&eCałkowite:&a " + MathUtil.bytesToGB(computerRam) + "&b GB&a " + MathUtil.getMbFromGb(computerRam) + "&b MB";
+                    final String freeComputerMemory = "&eWolne:&a " + computerFreeRamGb + "&b GB&a " + MathUtil.getMbFromBytesGb(computerFreeRam) + "&b MB";
+                    final String maxComputerMemory = "&eCałkowite:&a " + MathUtil.bytesToGB(computerRam) + "&b GB&a " + MathUtil.getMbFromBytesGb(computerRam) + "&b MB";
 
                     if (computerFreeRamGb < 1) {
                         MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,

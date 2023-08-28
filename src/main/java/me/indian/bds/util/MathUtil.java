@@ -50,8 +50,13 @@ public final class MathUtil {
         return bytes / (1024 * 1024 * 1024);
     }
 
-    public static long getMbFromGb(final long bytes) {
+    public static long getMbFromBytesGb(final long bytes) {
         final long gb = bytesToGB(bytes);
         return bytesToMB(bytes - (gb * 1024 * 1024 * 1024));
+    }
+
+    public static long getMbFromKilobytesGb(final long kilobytes) {
+        final long gb = kilobytesToGb(kilobytes);
+        return kilobytesToMb(kilobytes - (gb * 1024 * 1024));
     }
 }

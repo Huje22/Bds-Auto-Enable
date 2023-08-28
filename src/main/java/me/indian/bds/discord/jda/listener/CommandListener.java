@@ -178,8 +178,8 @@ public class CommandListener extends ListenerAdapter {
     private MessageEmbed getBackupEmbed() {
         final String backupStatus = "`" + this.backupModule.getStatus() + "`\n";
         final long gbSpace = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
-        final String rom = "Dostępny: " + gbSpace + " GB " + MathUtil.getMbFromGb(StatusUtil.availableDiskSpace()) + " MB";
-        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(StatusUtil.maxDiskSpace()) + " GB " + MathUtil.getMbFromGb(StatusUtil.maxDiskSpace()) + " MB";
+        final String rom = "Dostępny: " + gbSpace + " GB " + MathUtil.getMbFromBytesGb(StatusUtil.availableDiskSpace()) + " MB";
+        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(StatusUtil.maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(StatusUtil.maxDiskSpace()) + " MB";
 
         final List<String> description = new ArrayList<>();
         this.backupButtons.clear();
