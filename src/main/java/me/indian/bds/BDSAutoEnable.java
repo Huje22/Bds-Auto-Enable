@@ -91,6 +91,7 @@ public class BDSAutoEnable {
         this.versionManager.loadVersion();
         this.discord.init();
         this.serverProcess.startProcess();
+        new AutoMessages(this, this.serverProcess).start();
     }
 
     private void checkFlags() {

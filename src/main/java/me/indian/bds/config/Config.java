@@ -4,6 +4,7 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
+import me.indian.bds.config.sub.AutoMessagesConfig;
 import me.indian.bds.config.sub.discord.DiscordBot;
 import me.indian.bds.config.sub.discord.Messages;
 import me.indian.bds.config.sub.discord.WebHook;
@@ -22,6 +23,7 @@ import me.indian.bds.util.SystemOs;
 //@Names(strategy = NameStrategy.SNAKE_CASE, modifier = NameModifier.TO_UPPER_CASE)
 
 public class Config extends OkaeriConfig {
+    @Comment("UWAGA , WSZYTKIE ZMIANY TUTAJ WYMAGAJĄ RESTARTU APLIKACJI")
     @Comment({""})
     @Comment({"Versia która jest załadowana"})
     private String version = "1.20.15.01";
@@ -48,9 +50,14 @@ public class Config extends OkaeriConfig {
     private String filesPath = "./";
 
     @Comment({""})
-    @Comment({"Watch dog"}) @CustomKey("watchDog")
+    @Comment({"Watch dog"})
+    @CustomKey("watchDog")
     private WatchDogConfig watchDogConfig = new WatchDogConfig();
 
+    @Comment({""})
+    @Comment({"Automessages"})
+    @CustomKey("autoMessages")
+    private AutoMessagesConfig autoMessagesConfig = new AutoMessagesConfig();
 
     @Comment({""})
     @Comment({"Ustawienia logowania"})
@@ -111,6 +118,10 @@ public class Config extends OkaeriConfig {
 
     public String getFileName() {
         return this.fileName;
+    }
+
+    public AutoMessagesConfig getAutoMessagesConfig() {
+        return this.autoMessagesConfig;
     }
 
     public void setFileName(final String fileName) {
