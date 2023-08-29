@@ -37,7 +37,7 @@ public class ServerProcess {
     private String lastLine;
     private long startTime;
     private WatchDog watchDog;
-    private boolean canRun = true;
+    private boolean canRun;
 
     public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -47,6 +47,7 @@ public class ServerProcess {
         this.playerManager = this.bdsAutoEnable.getPlayerManager();
         this.processService = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Server process"));
         this.prefix = "&b[&3ServerProcess&b] ";
+        this.canRun = true;
     }
 
     public void initWatchDog(final WatchDog watchDog) {
@@ -85,7 +86,7 @@ public class ServerProcess {
 
     public void startProcess() {
         if (!this.canRun) {
-            this.logger.alert("Nie można uruchomić procesu ponieważ&b canRun&r jest ustawione na:&b " + false);
+            this.logger.debug("Nie można uruchomić procesu ponieważ&b canRun&r jest ustawione na:&b " + false);
             return;
         }
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
@@ -242,6 +243,7 @@ public class ServerProcess {
     public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
         this.discord.sendDisablingMessage();
+        this.setCanRun(false);
         if (this.processService != null && !this.processService.isTerminated()) {
             this.logger.info("Zatrzymywanie wątków procesu servera");
             try {
@@ -253,14 +255,13 @@ public class ServerProcess {
                 exception.printStackTrace();
             }
         }
-        if (!this.playerManager.getOnlinePlayers().isEmpty()) {
-            for (final String name : this.playerManager.getOnlinePlayers()) {
-                this.sendToConsole(MinecraftUtil.kickCommand(name, this.prefix + "&cServer jest zamykany"));
-            }
-            ThreadUtil.sleep(3);
-        }
+
+        this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
+        ThreadUtil.sleep(3);
 
         if (this.process != null && this.process.isAlive()) this.watchDog.saveAndResume();
+
+        this.sendToConsole("stop");
 
         if (this.writer != null) {
             this.logger.info("Zatrzymywanie writera");
@@ -295,7 +296,6 @@ public class ServerProcess {
             exception.printStackTrace();
         }
         this.discord.disableBot();
-        Runtime.getRuntime().halt(2137);
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {
