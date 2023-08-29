@@ -1,18 +1,5 @@
 package me.indian.bds.watchdog.module;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
@@ -26,6 +13,20 @@ import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.ZipUtil;
 import me.indian.bds.watchdog.WatchDog;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class BackupModule {
 
@@ -145,8 +146,37 @@ public class BackupModule {
         });
     }
 
-    //TODO: Add load backup method
-
+    public void loadBackup(final String backupName) {
+        this.service.execute(() -> {
+            for (final Path path : this.backups) {
+                final String fileName = path.getFileName().toString().replaceAll(".zip", "");
+                if (backupName.equalsIgnoreCase(fileName)) {
+                    this.logger.info("&aOdnaleziono backup: &b" + backupName);
+                    if (this.serverProcess.getProcess() != null) {
+                        if (this.serverProcess.getProcess().isAlive()) {
+                            this.serverProcess.kickAllPlayers(this.prefix + " &aBackup&b " + backupName + " &a jest ładowany!");
+                            this.serverProcess.setCanRun(false);
+                            this.serverProcess.sendToConsole("stop");
+                            try {
+                                this.serverProcess.getProcess().waitFor();
+                                ThreadUtil.sleep(10); //Usypiam ten wątek aby nie doprowadzić do awarii chunk bo juz tak mi sie wydarzyło
+                                ZipUtil.unzipFile(path.toFile().getPath(), Defaults.getWorldsPath(), false);
+                            } catch (final Exception ioException) {
+                                this.bdsAutoEnable.getDiscord().sendMessage("Świat prawdopodobnie uległ awarii podczas próby załadowania backup");
+                                System.exit(0);
+                                throw new RuntimeException(ioException);
+                            }
+                            this.logger.info("&aZaładowano backup: &b" + backupName);
+                            this.serverProcess.setCanRun(true);
+                            this.serverProcess.startProcess();
+                        }
+                    }
+                    return;
+                }
+            }
+            this.logger.info("&cNie można odnaleźć backupa: &b" + backupName);
+        });
+    }
 
     private void loadAvailableBackups() {
         if (!this.config.getWatchDogConfig().getBackup().isBackup()) return;

@@ -19,6 +19,7 @@ import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
@@ -30,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class CommandListener extends ListenerAdapter {
 
@@ -122,9 +124,31 @@ public class CommandListener extends ListenerAdapter {
 
                 event.replyEmbeds(embed).setEphemeral(true).queue();
             }
-            case "backup" -> event.replyEmbeds(this.getBackupEmbed())
-                    .addActionRow(ActionRow.of(this.backupButtons).getComponents())
-                    .setEphemeral(true).queue();
+            case "backup" -> {
+                final OptionMapping command = event.getOption("load");
+                if (command != null && !command.getAsString().isEmpty()) {
+                    if (member != null && member.hasPermission(Permission.ADMINISTRATOR)) {
+                        final String backupName = command.getAsString();
+
+                        for (final Path path : this.backupModule.getBackups()) {
+                            final String fileName = path.getFileName().toString().replaceAll(".zip", "");
+                            if (backupName.equalsIgnoreCase(fileName)) {
+                                event.reply("Znaleziono: " + backupName).setEphemeral(true).queue();
+                                this.backupModule.loadBackup(backupName);
+                                return;
+                            }
+                        }
+                        event.reply("Nie można znależć: " + backupName).setEphemeral(true).queue();
+                        return;
+                    } else {
+                        event.reply("Nie posiadasz permisji").setEphemeral(true).queue();
+                    }
+                }
+
+                event.replyEmbeds(this.getBackupEmbed())
+                        .addActionRow(ActionRow.of(this.backupButtons).getComponents())
+                        .setEphemeral(true).queue();
+            }
         }
     }
 
@@ -162,10 +186,11 @@ public class CommandListener extends ListenerAdapter {
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
                     this.backupModule.forceBackup();
                     this.reserve.execute(() -> {
-                        ThreadUtil.sleep((int) this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2);
-                        event.replyEmbeds(this.getBackupEmbed())
-                                .addActionRow(ActionRow.of(this.backupButtons).getComponents())
-                                .setEphemeral(true).queue();
+//                        ThreadUtil.sleep((int) this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2);
+                        event.deferReply().addEmbeds(this.getBackupEmbed()).addActionRow(ActionRow.of(this.backupButtons)
+                                        .getComponents()).setEphemeral(true)
+                                .queueAfter((long) (this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2), TimeUnit.SECONDS);
+//ZBAGOWANE GÓWNO
                     });
                 } else {
                     event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();

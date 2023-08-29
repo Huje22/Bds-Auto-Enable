@@ -117,7 +117,8 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
         this.guild.updateCommands().addCommands(
                 Commands.slash("list", "lista graczy online."),
-                Commands.slash("backup", "tworzenie bądź ostatni czas backupa"),
+                Commands.slash("backup", "tworzenie bądź ostatni czas backupa")
+                        .addOption(OptionType.STRING, "load", "Załaduj backup po jego pełnej nazwie", false),
                 Commands.slash("ping", "aktualny ping bot z serverami discord"),
                 Commands.slash("stats", "Statystyki Servera i aplikacij."),
                 Commands.slash("cmd", "Wykonuje polecenie w konsoli.")
@@ -155,7 +156,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                 return Activity.listening(activityMessage);
             }
             case STREAMING -> {
-                return Activity.streaming(activityMessage , this.config.getDiscordBot().getStreamUrl());
+                return Activity.streaming(activityMessage, this.config.getDiscordBot().getStreamUrl());
             }
             default -> {
                 this.logger.error("Wykryto nie wspierany status! ");
@@ -164,7 +165,8 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         }
     }
 
-    private void sendMessage(final String message) {
+    @Override
+    public void sendMessage(final String message) {
         if (this.jda != null && this.textChannel != null) {
             this.textChannel.sendMessage(message).queue();
         }

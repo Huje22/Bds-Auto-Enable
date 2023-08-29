@@ -1,11 +1,6 @@
 package me.indian.bds.discord.webhook;
 
 import com.google.gson.JsonObject;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
@@ -13,17 +8,23 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.ThreadUtil;
 
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 public class WebHook implements DiscordIntegration {
 
     private final Logger logger;
     private final Config config;
-    private final String name, webhookURL , avatarUrl;
+    private final String name, webhookURL, avatarUrl;
     private final ExecutorService service;
 
     public WebHook(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
         this.config = bdsAutoEnable.getConfig();
-        this.name =this.config.getWebHook().getName();
+        this.name = this.config.getWebHook().getName();
         this.webhookURL = this.config.getWebHook().getUrl();
         this.avatarUrl = this.config.getWebHook().getAvatarUrl();
         this.service = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-WebHook"));
@@ -33,7 +34,9 @@ public class WebHook implements DiscordIntegration {
     public void init() {
     }
 
-    private void sendMessage(final String message) {
+    @Override
+    public void sendMessage(final String message) {
+        // Nadal potrzeba by to ulepszyć
         this.service.execute(() -> {
             try {
                 final HttpURLConnection connection = (HttpURLConnection) new URL(this.webhookURL).openConnection();

@@ -5,6 +5,8 @@ public interface DiscordIntegration {
 
     void init();
 
+    void sendMessage(final String message);
+
     void sendJoinMessage(final String playerName);
 
     void sendLeaveMessage(final String playerName);

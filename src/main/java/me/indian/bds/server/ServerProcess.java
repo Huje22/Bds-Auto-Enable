@@ -1,14 +1,5 @@
 package me.indian.bds.server;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
@@ -19,6 +10,16 @@ import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ServerProcess {
 
@@ -36,6 +37,7 @@ public class ServerProcess {
     private String lastLine;
     private long startTime;
     private WatchDog watchDog;
+    private boolean canRun = true;
 
     public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -82,6 +84,10 @@ public class ServerProcess {
     }
 
     public void startProcess() {
+        if (!this.canRun) {
+            this.logger.alert("Nie można uruchomić procesu ponieważ&b canRun&r jest ustawione na:&b " + false);
+            return;
+        }
         this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
         this.processService.execute(() -> {
             if (this.isProcessRunning()) {
@@ -123,7 +129,6 @@ public class ServerProcess {
                     output.interrupt();
                     input.interrupt();
                     this.discord.sendDisabledMessage();
-                    ThreadUtil.sleep(5);
                     this.startProcess();
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można uruchomic procesu");
@@ -183,11 +188,7 @@ public class ServerProcess {
                 switch (input.toLowerCase()) {
                     case "stop" -> {
                         MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
-                        if (!this.playerManager.getOnlinePlayers().isEmpty()) {
-                            for (final String name : this.playerManager.getOnlinePlayers()) {
-                                this.sendToConsole(MinecraftUtil.kickCommand(name, this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem"));
-                            }
-                        }
+                        this.kickAllPlayers(this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem");
                         if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
                         this.sendToConsole("stop");
                     }
@@ -197,7 +198,7 @@ public class ServerProcess {
                     }
                     case "backup" -> this.watchDog.getBackupModule().forceBackup();
                     case "test" -> {
-                     for (final Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+                        for (final Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
                             final Thread thread = entry.getKey();
 
                             System.out.println("Thread ID: " + thread.getId());
@@ -322,6 +323,20 @@ public class ServerProcess {
             }
         }
         return false;
+    }
+
+    public void kickAllPlayers(final String msg) {
+        if (!this.playerManager.getOnlinePlayers().isEmpty()) {
+            this.playerManager.getOnlinePlayers().forEach(name -> this.sendToConsole(MinecraftUtil.kickCommand(name, msg)));
+        }
+    }
+
+    public boolean isCanRun() {
+        return this.canRun;
+    }
+
+    public void setCanRun(final boolean canRun) {
+        this.canRun = canRun;
     }
 
     public long getStartTime() {
