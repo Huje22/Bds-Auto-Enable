@@ -140,9 +140,13 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         return highestRole;
     }
 
-    private Activity getCustomActivity(){
+    public String getOwnerMention() {
+        return (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");
+    }
+
+    private Activity getCustomActivity() {
         final String activityMessage = this.config.getDiscordBot().getActivityMessage();
-        switch (Activity.ActivityType.valueOf(this.config.getDiscordBot().getActivity().toUpperCase())){
+        switch (Activity.ActivityType.valueOf(this.config.getDiscordBot().getActivity().toUpperCase())) {
             case PLAYING -> {
                 return Activity.playing(activityMessage);
             }
@@ -168,14 +172,14 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     @Override
     public void sendMessage(final String message) {
         if (this.jda != null && this.textChannel != null) {
-            this.textChannel.sendMessage(message).queue();
+            this.textChannel.sendMessage(message.replaceAll("<owner>" , this.getOwnerMention())).queue();
         }
     }
 
     @Override
     public void writeConsole(final String message) {
         if (this.jda != null && this.consoleChannel != null) {
-            this.consoleService.execute(() -> this.consoleChannel.sendMessage(message).queue());
+            this.consoleService.execute(() -> this.consoleChannel.sendMessage(message.replaceAll("<owner>" , this.getOwnerMention())).queue());
         }
     }
 
@@ -235,14 +239,12 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     @Override
     public void sendAppRamAlert() {
-        final String owner = (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");
-        this.sendMessage(owner + this.config.getMessages().getAppRamAlter());
+        this.sendMessage(this.getOwnerMention() + this.config.getMessages().getAppRamAlter());
     }
 
     @Override
     public void sendMachineRamAlert() {
-        final String owner = (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");
-        this.sendMessage(owner + this.config.getMessages().getMachineRamAlter());
+        this.sendMessage(this.getOwnerMention() + this.config.getMessages().getMachineRamAlter());
     }
 
     @Override

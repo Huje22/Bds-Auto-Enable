@@ -46,7 +46,7 @@ public class WebHook implements DiscordIntegration {
                 connection.setDoOutput(true);
 
                 final JsonObject jsonPayload = new JsonObject();
-                jsonPayload.addProperty("content", message);
+                jsonPayload.addProperty("content", message.replaceAll("<owner>", ""));
                 jsonPayload.addProperty("username", this.name);
                 jsonPayload.addProperty("avatar_url", this.avatarUrl);
 
@@ -129,7 +129,7 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void writeConsole(final String message) {
-
+        //.replaceAll("<owner>" , this.getOwnerMention())
     }
 
     @Override
