@@ -148,6 +148,7 @@ public class ServerProcess {
                 try {
                     if (!consoleOutput.hasNext()) continue;
                 } catch (final IllegalStateException stateException) {
+                    this.discord.writeConsole("<owner> Czytanie konsoli uległo awarii \n" + stateException);
                     stateException.printStackTrace();
                     break;
                 }
@@ -181,11 +182,15 @@ public class ServerProcess {
                 try {
                     if (!consoleInput.hasNext()) continue;
                 } catch (final IllegalStateException stateException) {
+                    this.discord.writeConsole("<owner> Wypisywanie konsoli uległo awarii \n" + stateException);
                     stateException.printStackTrace();
                     break;
                 }
 
                 final String input = consoleInput.nextLine();
+
+                if (input.startsWith("say")) this.discord.sendPlayerMessage("say", input.substring(3));
+
                 switch (input.toLowerCase()) {
                     case "stop" -> {
                         MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
