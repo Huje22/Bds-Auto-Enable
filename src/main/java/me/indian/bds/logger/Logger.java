@@ -1,11 +1,13 @@
 package me.indian.bds.logger;
 
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.Defaults;
+import me.indian.bds.config.Config;
+import me.indian.bds.util.DateUtil;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
-import me.indian.bds.util.DateUtil;
 
 public class Logger {
 
@@ -33,7 +35,7 @@ public class Logger {
 
     private void initializeLogFile() {
         try {
-            final File logsDir = new File("BDS-Auto-Enable/logs");
+            final File logsDir = new File(Defaults.getAppDir() + File.separator + "logs");
             if (!logsDir.exists()) {
                 if (!logsDir.mkdir()) logsDir.mkdirs();
             }

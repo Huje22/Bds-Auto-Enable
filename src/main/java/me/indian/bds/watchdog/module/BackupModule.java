@@ -57,7 +57,7 @@ public class BackupModule {
         this.worldFile = new File(this.worldPath);
         if (this.config.getWatchDogConfig().getBackup().isBackup()) {
             this.logger.alert("Backupy są włączone");
-            this.backupFolder = new File("BDS-Auto-Enable/backup/");
+            this.backupFolder = new File(Defaults.getAppDir() + File.separator + "backup");
             if (!this.backupFolder.exists()) {
                 if (!this.backupFolder.mkdirs()) {
                     this.logger.error("Nie można utworzyć folderu backupów");

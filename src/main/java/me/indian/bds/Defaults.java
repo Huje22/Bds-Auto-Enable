@@ -40,8 +40,12 @@ public final class Defaults {
         return "";
     }
 
-    public static String getJarPath() {
+    public static String getJarDir() {
         return System.getProperty("user.dir");
+    }
+
+    public static String getAppDir() {
+        return System.getProperty("user.dir") + File.separator + "BDS-Auto-Enable";
     }
 
     public static String getWorldsPath() {

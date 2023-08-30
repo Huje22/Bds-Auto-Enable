@@ -36,7 +36,7 @@ public class Player implements Serializable {
 //    }
 //
 //    public void serializePlayer() throws IOException {
-//        final String directoryPath = "BDS-Auto-Enable/players/";
+//        final String directoryPath = Defaults.getAppDir() + File.separator +"players/";
 //        final String filePath = directoryPath + this.xuid + ".ser";
 //
 //        final Path path = Paths.get(filePath);
@@ -48,12 +48,12 @@ public class Player implements Serializable {
 //    }
 //
 //    public static Map<String, Player> deserializePlayers() throws IOException, ClassNotFoundException {
-//        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get("BDS-Auto-Enable/players/"))) {
+//        try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(Defaults.getAppDir() + File.separator +"players/"))) {
 //            for (final Path path : directoryStream) {
 //                if (Files.isRegularFile(path)) {
 //                    final String name = String.valueOf(path.getFileName());
 //                    if (name.endsWith(".ser")) {
-//                        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream("BDS-Auto-Enable/players/" + name))) {
+//                        try (ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(Defaults.getAppDir() + File.separator +"players/" + name))) {
 //                            final Player player = (Player) inputStream.readObject();
 //                            players.put(player.getName(), player);
 //                        }

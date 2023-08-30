@@ -1,6 +1,7 @@
 package me.indian.bds.manager;
 
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ZipUtil;
@@ -33,7 +34,7 @@ public class VersionManager {
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
         this.importantFiles = new ArrayList<>();
-        this.versionFolder = new File("BDS-Auto-Enable/versions");
+        this.versionFolder = new File(Defaults.getAppDir() + File.separator + "versions");
         this.availableVersions = new ArrayList<>();
 
         if (!this.versionFolder.exists()) {

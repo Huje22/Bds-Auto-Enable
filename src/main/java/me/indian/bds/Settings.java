@@ -72,7 +72,7 @@ public class Settings {
             }
         }));
 
-        this.config.setFilesPath(scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lPodaj ścieżkę do plików servera&r  (Domyślnie: " + defaultValue + "): " + this.enter), Defaults.getJarPath(), (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)));
+        this.config.setFilesPath(scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lPodaj ścieżkę do plików servera&r  (Domyślnie: " + defaultValue + "): " + this.enter), Defaults.getJarDir(), (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)));
         this.config.save();
 
         if (!this.config.isLoaded()) this.versionQuestion(scannerUtil);
