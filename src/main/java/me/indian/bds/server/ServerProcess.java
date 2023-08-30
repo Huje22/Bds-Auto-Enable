@@ -272,6 +272,7 @@ public class ServerProcess {
 
         this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
         ThreadUtil.sleep(3);
+        this.playerManager.savePlayTime();
 
         if (this.process != null && this.process.isAlive()) this.watchDog.saveAndResume();
 
