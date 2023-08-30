@@ -23,6 +23,7 @@ import me.indian.bds.util.SystemOs;
 //@Names(strategy = NameStrategy.SNAKE_CASE, modifier = NameModifier.TO_UPPER_CASE)
 
 public class Config extends OkaeriConfig {
+    @Comment({""})
     @Comment("UWAGA , WSZYTKIE ZMIANY TUTAJ WYMAGAJĄ RESTARTU APLIKACJI")
     @Comment({""})
     @Comment({"Versia która jest załadowana"})
@@ -82,7 +83,6 @@ public class Config extends OkaeriConfig {
     @Comment({""})
     @Comment({"Debug"})
     private boolean debug = false;
-
 
     public String getVersion() {
         return this.version;
