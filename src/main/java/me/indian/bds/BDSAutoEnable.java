@@ -46,7 +46,7 @@ public class BDSAutoEnable {
         this.scanner = new Scanner(System.in);
         this.config = ConfigManager.create(Config.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile("BDS-Auto-Enable/config.yml");
+            it.withBindFile(Defaults.getJarPath() + File.separator + "BDS-Auto-Enable" + File.separator + "config.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
