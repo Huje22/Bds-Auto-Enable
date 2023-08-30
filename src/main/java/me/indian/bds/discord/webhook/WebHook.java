@@ -50,10 +50,10 @@ public class WebHook implements DiscordIntegration {
                 jsonPayload.addProperty("username", this.name);
                 jsonPayload.addProperty("avatar_url", this.avatarUrl);
 
-                final OutputStream os = connection.getOutputStream();
-                os.write(GsonUtil.getGson().toJson(jsonPayload).getBytes());
-                os.flush();
-                os.close();
+                try (final OutputStream os = connection.getOutputStream()) {
+                    os.write(GsonUtil.getGson().toJson(jsonPayload).getBytes());
+                    os.flush();
+                }
 
                 final int responseCode = connection.getResponseCode();
                 if (responseCode != HttpURLConnection.HTTP_NO_CONTENT) {

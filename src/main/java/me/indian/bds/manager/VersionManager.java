@@ -117,27 +117,27 @@ public class VersionManager {
             if (response == HttpURLConnection.HTTP_OK) {
                 this.logger.info("Pobieranie wersji: &1" + version);
                 final int fileSize = connection.getContentLength();
-                final InputStream inputStream = new BufferedInputStream(connection.getInputStream());
-                final FileOutputStream outputStream = new FileOutputStream(this.versionFolder.getPath() + File.separator + version + ".zip");
 
-                final byte[] buffer = new byte[1024];
-                int bytesRead;
-                long totalBytesRead = 0;
+                try (final InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
+                    try (final FileOutputStream outputStream = new FileOutputStream(this.versionFolder.getPath() + File.separator + version + ".zip")) {
 
-                int tempProgres = -1;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                    totalBytesRead += bytesRead;
-                    final int progress = Math.toIntExact((totalBytesRead * 100) / fileSize);
+                        final byte[] buffer = new byte[1024];
+                        int bytesRead;
+                        long totalBytesRead = 0;
 
-                    if (progress != tempProgres) {
-                        tempProgres = progress;
-                        this.logger.info("Pobrano w:&b " + progress + "&a%");
+                        int tempProgres = -1;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                            totalBytesRead += bytesRead;
+                            final int progress = Math.toIntExact((totalBytesRead * 100) / fileSize);
+
+                            if (progress != tempProgres) {
+                                tempProgres = progress;
+                                this.logger.info("Pobrano w:&b " + progress + "&a%");
+                            }
+                        }
                     }
                 }
-
-                inputStream.close();
-                outputStream.close();
 
                 this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
                 this.loadVersionsInfo();

@@ -4,6 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.ZipUtil;
+import me.indian.bds.watchdog.WatchDog;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,11 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.ZipUtil;
-import me.indian.bds.watchdog.WatchDog;
 
 public class PackModule {
 
@@ -181,31 +182,31 @@ public class PackModule {
             if (response == HttpURLConnection.HTTP_OK) {
                 this.logger.info("Pobieranie Paczki");
                 final int fileSize = connection.getContentLength();
-                final InputStream inputStream = new BufferedInputStream(connection.getInputStream());
-                final FileOutputStream outputStream = new FileOutputStream(this.pack.getPath() + ".zip");
 
-                final byte[] buffer = new byte[1024];
-                int bytesRead;
-                long totalBytesRead = 0;
+                try (final InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
+                    try (final FileOutputStream outputStream = new FileOutputStream(this.pack.getPath() + ".zip")) {
 
-                int tempProgres = -1;
-                while ((bytesRead = inputStream.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, bytesRead);
-                    totalBytesRead += bytesRead;
-                    final int progress = Math.toIntExact((totalBytesRead * 100) / fileSize);
+                        final byte[] buffer = new byte[1024];
+                        int bytesRead;
+                        long totalBytesRead = 0;
 
-                    if (progress != tempProgres) {
-                        if (fileSize <= 0) {
-                            this.logger.error("Nie można odczytać prawidłowego rozmiaru pliku.");
-                            continue;
+                        int tempProgres = -1;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                            totalBytesRead += bytesRead;
+                            final int progress = Math.toIntExact((totalBytesRead * 100) / fileSize);
+
+                            if (progress != tempProgres) {
+                                if (fileSize <= 0) {
+                                    this.logger.error("Nie można odczytać prawidłowego rozmiaru pliku.");
+                                    continue;
+                                }
+                                tempProgres = progress;
+                                this.logger.info("Pobrano w:&b " + progress + "&a%");
+                            }
                         }
-                        tempProgres = progress;
-                        this.logger.info("Pobrano w:&b " + progress + "&a%");
                     }
                 }
-
-                inputStream.close();
-                outputStream.close();
                 this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
                 ZipUtil.unzipFile(this.pack.getPath() + ".zip", this.behaviorsFolder.getPath(), true);
                 this.getPackInfo();
