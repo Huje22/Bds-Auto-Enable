@@ -8,7 +8,6 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.ZipUtil;
@@ -109,7 +108,7 @@ public class BackupModule {
             return;
         }
         if (StatusUtil.availableDiskSpace() < 10) {
-            MinecraftUtil.tellrawToAllAndLogger(this.prefix, "Wykryto zbyt małą ilość pamięci aby wykonać&b backup&c!", LogState.ERROR);
+            this.serverProcess.tellrawToAllAndLogger(this.prefix, "Wykryto zbyt małą ilość pamięci aby wykonać&b backup&c!", LogState.ERROR);
             return;
         }
 
@@ -121,22 +120,22 @@ public class BackupModule {
                 this.backuping = true;
                 this.watchDog.saveWorld();
                 final double lastBackUpTime = this.config.getWatchDogConfig().getBackup().getLastBackupTime();
-                MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aTworzenie kopij zapasowej ostatnio trwało to&b " + lastBackUpTime + "&a sekund", LogState.INFO);
+                this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aTworzenie kopij zapasowej ostatnio trwało to&b " + lastBackUpTime + "&a sekund", LogState.INFO);
                 this.status = "Tworzenie backupa...";
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 final double backUpTime = ((System.currentTimeMillis() - startTime) / 1000.0);
                 this.config.getWatchDogConfig().getBackup().setLastBackupTime(backUpTime);
-                MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund", LogState.INFO);
+                this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund", LogState.INFO);
                 this.status = "Utworzono backup";
             } catch (final Exception exception) {
-                MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&4Nie można utworzyć kopii zapasowej", LogState.CRITICAL);
+                this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można utworzyć kopii zapasowej", LogState.CRITICAL);
                 this.status = "Nie udało sie utworzyć kopij zapasowej";
                 this.logger.critical(exception);
                 exception.printStackTrace();
                 if (backup.delete()) {
-                    MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aUsunięto błędny backup", LogState.INFO);
+                    this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUsunięto błędny backup", LogState.INFO);
                 } else {
-                    MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&4Nie można usunać błędnego backupa", LogState.INFO);
+                    this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można usunać błędnego backupa", LogState.INFO);
                 }
             }
             this.backuping = false;

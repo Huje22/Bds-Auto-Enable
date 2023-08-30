@@ -3,7 +3,6 @@ package me.indian.bds;
 import me.indian.bds.config.Config;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.MinecraftUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -41,9 +40,9 @@ public class AutoMessages {
                     final int message = AutoMessages.this.random.nextInt(AutoMessages.this.messages.size());
 
                     if (AutoMessages.this.config.getAutoMessagesConfig().isRandom()) {
-                        AutoMessages.this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(prefix + AutoMessages.this.messages.get(message)));
+                        AutoMessages.this.serverProcess.tellrawToAll(prefix + AutoMessages.this.messages.get(message));
                     } else {
-                        AutoMessages.this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(prefix + this.iterator.next()));
+                        AutoMessages.this.serverProcess.tellrawToAll(prefix + this.iterator.next());
                     }
                 }
             }

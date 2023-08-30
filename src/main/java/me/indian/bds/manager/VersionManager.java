@@ -1,5 +1,10 @@
 package me.indian.bds.manager;
 
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.Config;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.ZipUtil;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,10 +18,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ZipUtil;
 
 public class VersionManager {
 
@@ -142,7 +143,7 @@ public class VersionManager {
             } else {
                 this.logger.error("Kod odpowiedzi strony: " + response);
                 this.logger.error("Prawdopodobnie nie ma takiej wersij jak: " + version);
-                this.bdsAutoEnable.getServerProcess().instantShutdown();
+                System.exit(1);
             }
         } catch (final IOException ioException) {
             this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version);

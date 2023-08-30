@@ -4,7 +4,6 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
 import me.indian.bds.watchdog.module.PackModule;
@@ -41,11 +40,11 @@ public class WatchDog {
     public void init(final ServerProcess serverProcess, final DiscordIntegration discord) {
         this.backupModule.initBackupModule(this, serverProcess);
         this.packModule.initPackModule(this);
-        this.ramMonitor.initRamMonitor(discord);
+        this.ramMonitor.initRamMonitor(discord, serverProcess);
     }
 
     public void saveWorld() {
-        MinecraftUtil.tellrawToAllAndLogger(this.watchDogPrefix, "&aZapisywanie świata", LogState.INFO);
+        this.serverProcess.tellrawToAllAndLogger(this.watchDogPrefix, "&aZapisywanie świata", LogState.INFO);
         this.serverProcess.sendToConsole("save hold");
         ThreadUtil.sleep(5);
     }

@@ -6,7 +6,7 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.PlayerManager;
-import me.indian.bds.util.MinecraftUtil;
+import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
@@ -62,7 +62,7 @@ public class ServerProcess {
                 case WINDOWS -> command = "tasklist /NH /FI \"IMAGENAME eq " + this.config.getFileName() + "\"";
                 default -> {
                     this.logger.critical("Musisz podać odpowiedni system");
-                    this.instantShutdown();
+                    System.exit(0);
                 }
             }
 
@@ -79,7 +79,7 @@ public class ServerProcess {
         } catch (final IOException | InterruptedException exception) {
             this.logger.critical(exception);
             exception.printStackTrace();
-            this.instantShutdown();
+            System.exit(0);
         }
         return false;
     }
@@ -93,7 +93,7 @@ public class ServerProcess {
         this.processService.execute(() -> {
             if (this.isProcessRunning()) {
                 this.logger.info("Proces " + this.config.getFileName() + " jest już uruchomiony.");
-                this.instantShutdown();
+                System.exit(0);
             } else {
                 this.logger.info("Proces " + this.config.getFileName() + " nie jest uruchomiony. Uruchamianie...");
                 try {
@@ -110,7 +110,7 @@ public class ServerProcess {
                         case WINDOWS -> this.processBuilder = new ProcessBuilder(this.finalFilePath);
                         default -> {
                             this.logger.critical("Musisz podać odpowiedni system");
-                            this.instantShutdown();
+                            System.exit(0);
                         }
                     }
                     this.playerManager.clearPlayers();
@@ -135,7 +135,7 @@ public class ServerProcess {
                     this.logger.critical("Nie można uruchomic procesu");
                     this.logger.critical(exception);
                     exception.printStackTrace();
-                    this.instantShutdown();
+                    System.exit(0);
                 }
             }
         });
@@ -193,14 +193,14 @@ public class ServerProcess {
 
                 switch (input.toLowerCase()) {
                     case "stop" -> {
-                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
+                        this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
                         this.kickAllPlayers(this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem");
                         if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
                         this.sendToConsole("stop");
                     }
                     case "version" -> {
-                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija minecraft:&b " + this.config.getVersion(), LogState.INFO);
-                        MinecraftUtil.tellrawToAllAndLogger(this.prefix, "&aVersija BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
+                        this.tellrawToAllAndLogger(this.prefix, "&aVersija minecraft:&b " + this.config.getVersion(), LogState.INFO);
+                        this.tellrawToAllAndLogger(this.prefix, "&aVersija BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
                     }
                     case "backup" -> this.watchDog.getBackupModule().forceBackup();
                     case "test" -> {
@@ -231,6 +231,15 @@ public class ServerProcess {
     }
 
     public void sendToConsole(final String command) {
+        if (this.writer == null) {
+            this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ, Writer jest&c nullem&r!");
+            return;
+        }
+        if (this.process == null || !this.process.isAlive()) {
+            this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&b nullem&r albo nie jest aktywny");
+            return;
+        }
+
         this.writer.println(command);
         this.writer.flush();
     }
@@ -331,9 +340,40 @@ public class ServerProcess {
     }
 
     public void kickAllPlayers(final String msg) {
-        if (!this.playerManager.getOnlinePlayers().isEmpty()) {
-            this.playerManager.getOnlinePlayers().forEach(name -> this.sendToConsole(MinecraftUtil.kickCommand(name, msg)));
+        if (this.playerManager.getOnlinePlayers().isEmpty()) {
+            this.logger.info("Lista graczy jest pusta");
+            return;
         }
+        this.playerManager.getOnlinePlayers().forEach(name -> this.kick(name, msg));
+    }
+
+    public void kick(final String who, final String reason) {
+        if (this.playerManager.getOnlinePlayers().isEmpty()) {
+            this.logger.info("Lista graczy jest pusta");
+            return;
+        }
+        this.sendToConsole("kick " + who + " " + MessageUtil.colorize(reason));
+    }
+
+    public void tellrawToAll(final String msg) {
+        if (this.playerManager.getOnlinePlayers().isEmpty()) {
+            this.logger.info("Lista graczy jest pusta");
+            return;
+        }
+        this.sendToConsole(MessageUtil.colorize("tellraw @a {\"rawtext\":[{\"text\":\"" + msg + "\"}]}"));
+    }
+
+    public void tellrawToPlayer(final String playerName, final String msg) {
+        if (this.playerManager.getOnlinePlayers().isEmpty()) {
+            this.logger.info("Lista graczy jest pusta");
+            return;
+        }
+        this.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + msg + "\"}]}"));
+    }
+
+    public void tellrawToAllAndLogger(final String prefix, final String msg, final LogState logState) {
+        this.logger.logByState("[To Minecraft] " + msg, logState);
+        if (!this.playerManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
     }
 
     public boolean isCanRun() {

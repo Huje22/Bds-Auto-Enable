@@ -1,12 +1,10 @@
 package me.indian.bds.discord.jda.listener;
 
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.MinecraftUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -16,6 +14,8 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter {
 
@@ -58,7 +58,7 @@ public class MessageListener extends ListenerAdapter {
                     .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
                     .replaceAll("<role>", role == null ? "" : role.getName()) + this.config.getMessages().getEdited();
 
-            this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(msg));
+            this.serverProcess.tellrawToAll(msg);
             this.logger.info(msg);
         }
     }
@@ -95,7 +95,7 @@ public class MessageListener extends ListenerAdapter {
                     .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
                     .replaceAll("<role>", role == null ? "" : role.getName());
 
-            this.serverProcess.sendToConsole(MinecraftUtil.tellrawToAllMessage(msg));
+            this.serverProcess.tellrawToAll(msg);
             this.logger.info(msg);
         }
     }

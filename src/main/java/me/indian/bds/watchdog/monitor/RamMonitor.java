@@ -4,8 +4,8 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.RamMonitorConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
+import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.WatchDog;
 
@@ -20,6 +20,7 @@ public class RamMonitor {
     private final String prefix;
     private final RamMonitorConfig ramMonitorConfig;
     private DiscordIntegration discord;
+    private ServerProcess serverProcess;
     private boolean running = false;
 
     public RamMonitor(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
@@ -30,8 +31,9 @@ public class RamMonitor {
 
     }
 
-    public void initRamMonitor(final DiscordIntegration discord) {
+    public void initRamMonitor(final DiscordIntegration discord, final ServerProcess serverProcess) {
         this.discord = discord;
+        this.serverProcess = serverProcess;
     }
 
     public void monitRamUsage() {
@@ -44,10 +46,10 @@ public class RamMonitor {
                     final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
                     final long freeMem = MathUtil.bytesToMB(heapMemoryUsage.getMax() - heapMemoryUsage.getUsed());
                     if (MathUtil.bytesToMB(heapMemoryUsage.getUsed()) >= ((long) (MathUtil.bytesToMB(heapMemoryUsage.getMax()) * 0.80))) {
-                        MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                        RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
                                 "&cAplikacija używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!" + "&d(&c Wolne:&b " + freeMem + " &aMB&d )",
                                 LogState.CRITICAL);
-                        MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                        RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
                                 "&cWiększe użycje może to prowadzić do crashy aplikacij a w tym servera&4!!",
                                 LogState.CRITICAL);
                         if (RamMonitor.this.ramMonitorConfig.isDiscordAlters()) {
@@ -70,10 +72,10 @@ public class RamMonitor {
                     final String maxComputerMemory = "&eCałkowite:&a " + MathUtil.bytesToGB(computerRam) + "&b GB&a " + MathUtil.getMbFromBytesGb(computerRam) + "&b MB";
 
                     if (computerFreeRamGb < 1) {
-                        MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                        RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
                                 "&cMaszyna posiada mniej niż&b 1GB&c wolej pamięci ram!",
                                 LogState.ALERT);
-                        MinecraftUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                        RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
                                 freeComputerMemory + " / " + maxComputerMemory,
                                 LogState.ALERT);
                         if (RamMonitor.this.ramMonitorConfig.isDiscordAlters()) {

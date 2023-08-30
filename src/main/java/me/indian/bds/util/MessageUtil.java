@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public  final class MessageUtil {
+public final class MessageUtil {
 
-    public static String buildMessageFromArgs(final String[] args){
+    public static String colorize(final String msg) {
+        return msg.replaceAll("&", "§");
+    }
+
+    public static String buildMessageFromArgs(final String[] args) {
         String message = "";
         for (final String arg : args) {
             message = message.concat(arg + " ");
@@ -15,7 +19,7 @@ public  final class MessageUtil {
         return message;
     }
 
-    public static String buildMessageFromArgs(final String[] args , final String includeArg){
+    public static String buildMessageFromArgs(final String[] args, final String includeArg) {
         String message = "";
         for (final String arg : args) {
             if (arg.equals(includeArg)) continue;
