@@ -1,12 +1,13 @@
 package me.indian.bds;
 
-import java.util.Arrays;
-import java.util.Scanner;
 import me.indian.bds.config.Config;
 import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ScannerUtil;
 import me.indian.bds.util.SystemOs;
+
+import java.util.Arrays;
+import java.util.Scanner;
 
 public class Settings {
 
@@ -89,30 +90,32 @@ public class Settings {
 
         this.serverProperties.setServerPort(scannerUtil.addQuestion((defaultValue) -> {
             this.logger.info("&lUstaw port v4?&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-            this.logger.info("#cPamiętaj że twoja siec musi miec dostepny ten port");
+            this.logger.info("&cPamiętaj że twoja siec musi miec dostepny ten port");
         }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na:&1 " + input)));
 
         System.out.println(this.serverProperties.getServerPort());
 
         this.serverProperties.setServerPortV6(scannerUtil.addQuestion((defaultValue) -> {
             this.logger.info("&lUstaw port v6?&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-            this.logger.info("#cJeśli twoja maszyna obsługuje ipv6 ustaw go na dostepny z puli portów");
+            this.logger.info("&cJeśli twoja maszyna obsługuje&b ipv6&v ustaw go na dostepny z puli portów");
         }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&1 " + input)));
 
         final int threads = scannerUtil.addQuestion((defaultValue) -> {
-            this.logger.info("&lLiczba wątków używana przez server&r ");
-            this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
-        }, 0, (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + (input <= -1 ? 0 : input)));
+                    this.logger.info("&lLiczba wątków używana przez server&r ");
+                    this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
+                }, 0,
+                (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + (input <= -1 ? 0 : input)));
 
         this.serverProperties.setMaxThreads(threads <= -1 ? 0 : threads);
         this.serverProperties.setClientSideChunkGeneration(scannerUtil.addQuestion(
                 (defaultValue) -> {
                     this.logger.info("&lClient Side Chunks&r (Domyślnie: " + defaultValue + ")? " + this.enter);
                     this.logger.alert("Może być to bardzo lagujące dla starszych i słabszych urządzeń");
+                    this.logger.alert("Także gdy server przeznaczony jest pod większą ilość osób jest to zalecane!");
                     this.logger.info("Jeśli jest &1true&r serwer poinformuje klientów, " + "że mają możliwość generowania chunków poziomu wizualnego poza odległościami interakcji graczy. ");
-
-                    },
-                false, (input) -> this.logger.info("Ustawiono Client Side Chunks na:&1 " + input)
+                },
+                true,
+                (input) -> this.logger.info("Ustawiono Client Side Chunks na:&1 " + input)
         ));
         this.logger.info("Ukończono odpowiedzi w&a " + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         this.config.save();
