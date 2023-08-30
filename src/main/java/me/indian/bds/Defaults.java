@@ -1,7 +1,6 @@
 package me.indian.bds;
 
 import me.indian.bds.config.Config;
-import me.indian.bds.util.SystemOs;
 
 import java.io.File;
 
@@ -29,15 +28,18 @@ public final class Defaults {
         }
     }
 
-
     public static String getDefaultFileName() {
-        if (config.getSystem() == SystemOs.LINUX) {
-            return "bedrock_server";
+        switch (config.getSystem()) {
+            case LINUX -> {
+                return "bedrock_server";
+            }
+            case WINDOWS -> {
+                return "bedrock_server.exe";
+            }
+            default -> {
+                return "";
+            }
         }
-        if (config.getSystem() == SystemOs.WINDOWS) {
-            return "bedrock_server.exe";
-        }
-        return "";
     }
 
     public static String getJarDir() {
