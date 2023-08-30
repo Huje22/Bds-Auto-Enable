@@ -29,7 +29,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -151,6 +153,30 @@ public class CommandListener extends ListenerAdapter {
                 event.replyEmbeds(this.getBackupEmbed())
                         .addActionRow(ActionRow.of(this.backupButtons).getComponents())
                         .setEphemeral(true).queue();
+            }
+
+            case "playtime" -> {
+                final Map<String, Long> playTimeMap = this.bdsAutoEnable.getPlayerManager().getPlayTime();
+                final List<String> top10 = new ArrayList<>();
+
+                final List<Map.Entry<String, Long>> sortedEntries = playTimeMap.entrySet().stream()
+                        .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                        .limit(20)
+                        .toList();
+
+                int place = 1;
+                for (final Map.Entry<String, Long> entry : sortedEntries) {
+                    top10.add(place + ". **" + entry.getKey() + "**: `" + DateUtil.formatTime(entry.getValue()) + "`");
+                    place++;
+                }
+
+                final MessageEmbed embed = new EmbedBuilder()
+                        .setTitle("Top 20 Czasu gry")
+                        .setDescription(MessageUtil.listToSpacedString(top10))
+                        .setColor(Color.BLUE)
+                        .build();
+
+                event.replyEmbeds(embed).setEphemeral(true).queue();
             }
         }
     }
