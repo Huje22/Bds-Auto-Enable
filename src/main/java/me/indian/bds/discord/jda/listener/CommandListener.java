@@ -15,6 +15,7 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -65,6 +66,8 @@ public class CommandListener extends ListenerAdapter {
     public void onSlashCommandInteraction(final SlashCommandInteractionEvent event) {
         final Member member = event.getMember();
 
+        this.discordJda.logCommand(this.getCommandEmbed(event));
+
         switch (event.getName()) {
             case "cmd" -> {
                 if (member == null) return;
@@ -74,11 +77,11 @@ public class CommandListener extends ListenerAdapter {
                         event.reply("Polecenie nie może być puste!").setEphemeral(true).queue();
                         return;
                     }
-                        final MessageEmbed embed = new EmbedBuilder()
-                                .setTitle("Ostatnia linijka z kosoli")
-                                .setDescription(this.serverProcess.commandAndResponse(command))
-                                .setColor(Color.BLUE)
-                                .build();
+                    final MessageEmbed embed = new EmbedBuilder()
+                            .setTitle("Ostatnia linijka z kosoli")
+                            .setDescription(this.serverProcess.commandAndResponse(command))
+                            .setColor(Color.BLUE)
+                            .build();
                         event.replyEmbeds(embed).setEphemeral(true).queue();
                 } else {
                     event.reply("Nie posiadasz permisij!!").setEphemeral(true).queue();
@@ -237,6 +240,16 @@ public class CommandListener extends ListenerAdapter {
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
                         (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
                 .setColor(Color.BLUE)
+                .build();
+    }
+
+    private MessageEmbed getCommandEmbed(final SlashCommandInteractionEvent event) {
+        final User user = event.getUser();
+        return new EmbedBuilder()
+                .setTitle("Command info")
+                .setDescription("`" + user.getName() + "` **używa** `/" + event.getName() + "`")
+                .setColor(Color.BLUE)
+                .setFooter(user.getName(), user.getAvatarUrl())
                 .build();
     }
 }

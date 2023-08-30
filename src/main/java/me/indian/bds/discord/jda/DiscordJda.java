@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -30,16 +31,13 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Config config;
-    private final long serverID;
-    private final long channelID;
-    private final long consoleID;
+    private final long serverID, channelID, consoleID, logID;
     private final CommandListener commandListener;
     private final MessageListener messageListener;
     private final ExecutorService consoleService;
     private JDA jda;
     private Guild guild;
-    private TextChannel textChannel;
-    private TextChannel consoleChannel;
+    private TextChannel textChannel, consoleChannel, logChannel;
 
 
     public DiscordJda(final BDSAutoEnable bdsAutoEnable) {
@@ -49,6 +47,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         this.serverID = this.config.getDiscordBot().getServerID();
         this.channelID = this.config.getDiscordBot().getChannelID();
         this.consoleID = this.config.getDiscordBot().getConsoleID();
+        this.logID = this.config.getDiscordBot().getLogID();
         this.commandListener = new CommandListener(this, this.bdsAutoEnable);
         this.messageListener = new MessageListener(this, this.bdsAutoEnable);
         this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
@@ -104,11 +103,19 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             this.jda = null;
             return;
         }
+
         try {
             this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
         } catch (final Exception exception) {
             this.logger.info("(konola) Nie można odnaleźc kanału z ID &a" + this.consoleID);
         }
+
+        try {
+            this.logChannel = this.guild.getTextChannelById(this.logID);
+        } catch (final Exception exception) {
+            this.logger.info("(log) Nie można odnaleźc kanału z ID &a" + this.logID);
+        }
+
         this.commandListener.init();
         this.messageListener.init();
         this.jda.addEventListener(this.commandListener);
@@ -169,10 +176,16 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         }
     }
 
+    public void logCommand(final MessageEmbed embed) {
+        if (this.jda != null && this.logChannel != null) {
+            this.consoleService.execute(() -> this.logChannel.sendMessageEmbeds(embed).queue());
+        }
+    }
+
     @Override
     public void sendMessage(final String message) {
         if (this.jda != null && this.textChannel != null) {
-            this.textChannel.sendMessage(message.replaceAll("<owner>" , this.getOwnerMention())).queue();
+            this.textChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue();
         }
     }
 
