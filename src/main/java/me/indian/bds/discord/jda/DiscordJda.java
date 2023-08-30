@@ -67,7 +67,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             return;
         }
         if (!packModule.isLoaded()) {
-            this.logger.error("&cNie załadowano paczki&b " + packModule.getPackName() + "&4.&cBot nie może bez niej normalnie działać");
+            this.logger.error("&cNie załadowano paczki&b " + packModule.getPackName() +  "&4.&cBot nie może bez niej normalnie działać");
             this.logger.error("Możesz znaleźć ją tu:&b https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack");
             return;
         }
@@ -196,7 +196,6 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             this.consoleService.execute(() -> this.consoleChannel.sendMessage(message.replaceAll("<owner>" , this.getOwnerMention())).queue());
         }
     }
-
 
     @Override
     public void sendJoinMessage(final String playerName) {
