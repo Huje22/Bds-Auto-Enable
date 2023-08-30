@@ -41,8 +41,8 @@ public class BDSAutoEnable {
     private WatchDog watchDog;
 
     public BDSAutoEnable() {
-        this.runDate = DateUtil.getFixedDate();
         this.startTime = System.currentTimeMillis();
+        this.runDate = DateUtil.getFixedDate();
         this.projectVersion = "1.0.0-Dev";
         this.scanner = new Scanner(System.in);
         this.config = ConfigManager.create(Config.class, (it) -> {
