@@ -112,7 +112,7 @@ public class ServerProcess {
                             this.logger.critical("Musisz podać odpowiedni system");
                             System.exit(0);
                         }
-                }
+                    }
                     this.process = this.processBuilder.start();
                     this.startTime = System.currentTimeMillis();
                     this.logger.info("Uruchomiono proces ");
@@ -126,8 +126,8 @@ public class ServerProcess {
                     input.start();
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
-                   this.playerManager.clearPlayers();
-                output.interrupt();
+                    this.playerManager.clearPlayers();
+                    output.interrupt();
                     input.interrupt();
                     this.discord.sendDisabledMessage();
                     this.startProcess();
@@ -148,7 +148,8 @@ public class ServerProcess {
                 try {
                     if (!consoleOutput.hasNext()) continue;
                 } catch (final IllegalStateException stateException) {
-                    this.discord.writeConsole("<owner> Czytanie konsoli uległo awarii \n" + stateException);
+                    this.discord.sendMessage("<owner> Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji \n" + stateException);
+                    System.exit(0);
                     stateException.printStackTrace();
                     break;
                 }
@@ -182,7 +183,8 @@ public class ServerProcess {
                 try {
                     if (!consoleInput.hasNext()) continue;
                 } catch (final IllegalStateException stateException) {
-                    this.discord.writeConsole("<owner> Wypisywanie konsoli uległo awarii \n" + stateException);
+                    this.discord.sendMessage("<owner> Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji  \n" + stateException);
+                    System.exit(0);
                     stateException.printStackTrace();
                     break;
                 }
@@ -272,7 +274,7 @@ public class ServerProcess {
 
         this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
         ThreadUtil.sleep(3);
-        this.playerManager.savePlayTime();
+        this.bdsAutoEnable.getPlayerStatsManager().savePlayTime();
 
         if (this.process != null && this.process.isAlive()) this.watchDog.saveAndResume();
 
