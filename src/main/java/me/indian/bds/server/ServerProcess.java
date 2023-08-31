@@ -112,8 +112,7 @@ public class ServerProcess {
                             this.logger.critical("Musisz podać odpowiedni system");
                             System.exit(0);
                         }
-                    }
-                    this.playerManager.clearPlayers();
+                }
                     this.process = this.processBuilder.start();
                     this.startTime = System.currentTimeMillis();
                     this.logger.info("Uruchomiono proces ");
@@ -127,7 +126,8 @@ public class ServerProcess {
                     input.start();
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
-                    output.interrupt();
+                   this.playerManager.clearPlayers();
+                output.interrupt();
                     input.interrupt();
                     this.discord.sendDisabledMessage();
                     this.startProcess();
