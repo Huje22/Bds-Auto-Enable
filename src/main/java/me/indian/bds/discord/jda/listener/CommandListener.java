@@ -156,7 +156,7 @@ public class CommandListener extends ListenerAdapter {
             }
 
             case "playtime" -> {
-                final Map<String, Long> playTimeMap = this.bdsAutoEnable.getPlayerManager().getPlayTime();
+                final Map<String, Long> playTimeMap = this.bdsAutoEnable.getPlayerStatsManager().getPlayTime();
                 final List<String> top10 = new ArrayList<>();
 
                 final List<Map.Entry<String, Long>> sortedEntries = playTimeMap.entrySet().stream()
@@ -166,7 +166,7 @@ public class CommandListener extends ListenerAdapter {
 
                 int place = 1;
                 for (final Map.Entry<String, Long> entry : sortedEntries) {
-                    top10.add(place + ". **" + entry.getKey() + "**: `" + DateUtil.formatTime(entry.getValue()) + "`");
+                    top10.add(place + ". **" + entry.getKey() + "**: `" + DateUtil.formatTimeWithoutMillis(entry.getValue()) + "`");
                     place++;
                 }
 

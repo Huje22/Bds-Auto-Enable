@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
-public  final class DateUtil {
+public final class DateUtil {
 
     public static String getFixedDate() {
         final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
@@ -58,6 +58,17 @@ public  final class DateUtil {
         final long seconds = totalSeconds % 60;
 
         return seconds + " sekund";
+    }
+
+    public static String formatTimeWithoutMillis(final long millis) {
+        String formattedTime = "";
+
+        formattedTime += formatDays(millis) + " ";
+        formattedTime += formatHours(millis) + " ";
+        formattedTime += formatMinutes(millis) + " ";
+        formattedTime += formatSeconds(millis) + " ";
+
+        return formattedTime;
     }
 
     public static String formatTime(final long millis) {

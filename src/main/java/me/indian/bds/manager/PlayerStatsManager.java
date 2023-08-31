@@ -1,0 +1,90 @@
+package me.indian.bds.manager;
+
+import com.google.gson.reflect.TypeToken;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.Defaults;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.MathUtil;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+
+public class PlayerStatsManager {
+
+    private final Logger logger;
+    private final Timer timer;
+    private final File playTimeJson;
+    private final Map<String, Long> playTime;
+    private final PlayerManager playerManager;
+
+    public PlayerStatsManager(final BDSAutoEnable bdsAutoEnable) {
+        this.logger = bdsAutoEnable.getLogger();
+        this.timer = new Timer("PlayTime", true);
+        this.playTimeJson = new File(Defaults.getAppDir() + File.separator + "stats" + File.separator + "playtime.json");
+        if (!this.playTimeJson.exists()) {
+            try {
+                if (!this.playTimeJson.exists()) {
+                    Files.createDirectories(this.playTimeJson.getParentFile().toPath());
+                    if (!this.playTimeJson.createNewFile()) {
+                        this.logger.critical("Nie można utworzyć&b playtime.json");
+                    }
+                }
+            } catch (final IOException exception) {
+                this.logger.critical("Nie można utworzyć&b playtime.json");
+            }
+        }
+        this.playTime = this.loadPlayTime();
+        this.playerManager = bdsAutoEnable.getPlayerManager();
+    }
+
+    public void countPlayTime() {
+        final long second = MathUtil.secondToMilliseconds(1);
+        final TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                for (final String playerName : PlayerStatsManager.this.playerManager.getOnlinePlayers()) {
+                    PlayerStatsManager.this.playTime.put(playerName, PlayerStatsManager.this.getPlayTimeByName(playerName) + second);
+                }
+            }
+        };
+        this.timer.scheduleAtFixedRate(timerTask, 0, second);
+    }
+
+    public Map<String, Long> getPlayTime() {
+        return this.playTime;
+    }
+
+    public long getPlayTimeByName(final String playerName) {
+        return (this.playTime.get(playerName) == null ? 0 : this.playTime.get(playerName));
+    }
+
+    public void savePlayTime() {
+        try (final FileWriter writer = new FileWriter(this.playTimeJson)) {
+            writer.write(GsonUtil.getGson().toJson(this.playTime));
+            this.logger.info("Zapisano pomyślnie czas gry graczy");
+        } catch (final IOException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private HashMap<String, Long> loadPlayTime() {
+        try (final FileReader reader = new FileReader(this.playTimeJson)) {
+            final Type type = new TypeToken<HashMap<String, Long>>() {
+            }.getType();
+            final HashMap<String, Long> loadedMap = GsonUtil.getGson().fromJson(reader, type);
+            return (loadedMap == null ? new HashMap<>() : loadedMap);
+        } catch (final IOException exception) {
+            exception.printStackTrace();
+        }
+        return new HashMap<>();
+    }
+}
