@@ -7,6 +7,7 @@ import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
@@ -20,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
@@ -158,12 +160,14 @@ public class BackupModule {
                             this.serverProcess.sendToConsole("stop");
                             try {
                                 this.serverProcess.getProcess().waitFor();
+//                                FileUtil.renameFolder(Path.of(this.worldPath), Path.of(Defaults.getWorldsPath() + "OLD_" + this.worldName));
                                 ThreadUtil.sleep(10); //Usypiam ten wątek aby nie doprowadzić do awarii chunk bo juz tak mi sie wydarzyło
                                 ZipUtil.unzipFile(path.toFile().getPath(), Defaults.getWorldsPath(), false);
                             } catch (final Exception ioException) {
                                 this.bdsAutoEnable.getDiscord().sendMessage("Świat prawdopodobnie uległ awarii podczas próby załadowania backup");
-                                System.exit(0);
-                                throw new RuntimeException(ioException);
+                                ioException.printStackTrace();
+                                this.serverProcess.instantShutdown();
+                                return;
                             }
                             this.logger.info("&aZaładowano backup: &b" + backupName);
                             this.serverProcess.setCanRun(true);

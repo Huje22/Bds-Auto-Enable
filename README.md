@@ -14,7 +14,7 @@ Jest to program do uruchamiania BDS zawsze gdy się wyłaczy wykorzystywany na s
 Program zawiera: <br/>
 
 * Automatyczne włączenie servera po wyłączeniu
-* Tworzenie backupów świata
+* Tworzenie backupów świata (Ładowanie backup wymaga nadal poprawy)
 * Pisanie w konsoli w 80% (Mogą wystąpić małe błedy)
 * AutoMessages
 * Liczony czas gry gracza (Wymaga usprawnień , wasza pomoc mile widziana)
