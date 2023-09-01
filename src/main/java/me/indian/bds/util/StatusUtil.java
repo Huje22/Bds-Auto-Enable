@@ -3,6 +3,7 @@ package me.indian.bds.util;
 import com.sun.management.OperatingSystemMXBean;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
+import me.indian.bds.manager.PlayerStatsManager;
 import me.indian.bds.server.ServerProcess;
 
 import java.io.BufferedReader;
@@ -12,7 +13,9 @@ import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public final class StatusUtil {
 
@@ -20,11 +23,13 @@ public final class StatusUtil {
     private static final File file = new File("/");
     private static BDSAutoEnable bdsAutoEnable;
     private static ServerProcess serverProcess;
+    private static PlayerStatsManager playerStatsManager;
     private static Config config;
 
-    public static void init(final BDSAutoEnable bdsAutoEnable, final ServerProcess serverProcess) {
+    public static void init(final BDSAutoEnable bdsAutoEnable) {
         StatusUtil.bdsAutoEnable = bdsAutoEnable;
-        StatusUtil.serverProcess = serverProcess;
+        StatusUtil.serverProcess = bdsAutoEnable.getServerProcess();
+        StatusUtil.playerStatsManager = bdsAutoEnable.getPlayerStatsManager();
         StatusUtil.config = bdsAutoEnable.getConfig();
     }
 
@@ -61,11 +66,51 @@ public final class StatusUtil {
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - bdsAutoEnable.getStartTime()) + "`");
         status.add("Pamięc RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
         status.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
-        status.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100) , 2)+ "`% (Bugged jakieś)");
+        status.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
 
         if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
 
         return status;
+    }
+
+    public static List<String> getTopPlayTime(final boolean forDiscord, final int top) {
+        final Map<String, Long> playTimeMap = playerStatsManager.getPlayTime();
+        final List<String> topPlayTime = new ArrayList<>();
+
+        final List<Map.Entry<String, Long>> sortedEntries = playTimeMap.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .limit(top)
+                .toList();
+
+        int place = 1;
+        for (final Map.Entry<String, Long> entry : sortedEntries) {
+            topPlayTime.add(place + ". **" + entry.getKey() + "**: `" + DateUtil.formatTimeWithoutMillis(entry.getValue()) + "`");
+            place++;
+        }
+
+        if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+
+        return topPlayTime;
+    }
+
+    public static List<String> getTopDeaths(final boolean forDiscord, final int top) {
+        final Map<String, Long> deathsMap = playerStatsManager.getDeaths();
+        final List<String> topDeaths = new ArrayList<>();
+
+        final List<Map.Entry<String, Long>> sortedEntries = deathsMap.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .limit(top)
+                .toList();
+
+        int place = 1;
+        for (final Map.Entry<String, Long> entry : sortedEntries) {
+            topDeaths.add(place + ". **" + entry.getKey() + "**: `" + entry.getValue() + "`");
+            place++;
+        }
+
+        if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+
+        return topDeaths;
     }
 
     public static long availableDiskSpace() {

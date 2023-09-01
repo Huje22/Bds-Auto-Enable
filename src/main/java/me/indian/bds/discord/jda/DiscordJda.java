@@ -131,7 +131,8 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                 Commands.slash("cmd", "Wykonuje polecenie w konsoli.")
                         .addOption(OptionType.STRING, "command", "Polecenie które zostanie wysłane do konsoli.", true),
                 Commands.slash("ip", "Informacje o ip ustawione w config"),
-                Commands.slash("playtime", "Top 20 graczy z największą ilością przegranego czasu")
+                Commands.slash("playtime", "Top 20 graczy z największą ilością przegranego czasu"),
+                Commands.slash("deaths", "Top 20 graczy z największą ilością śmierci")
         ).queue();
 
     }

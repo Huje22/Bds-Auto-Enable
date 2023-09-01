@@ -19,6 +19,7 @@ public class PlayerManager {
     private final DiscordIntegration discord;
     private final ExecutorService service;
     private final List<String> onlinePlayers, offlinePlayers;
+    private PlayerStatsManager playerStatsManager;
 
     public PlayerManager(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
@@ -26,6 +27,10 @@ public class PlayerManager {
         this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Player Manager"));
         this.onlinePlayers = new ArrayList<>();
         this.offlinePlayers = new ArrayList<>();
+    }
+
+    public void init(final PlayerStatsManager playerStatsManager) {
+        this.playerStatsManager = playerStatsManager;
     }
 
     public void initFromLog(final String logEntry) {
@@ -77,9 +82,10 @@ public class PlayerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerChat = matcher.group(1);
-            final String message = matcher.group(2);
-            this.discord.sendDeathMessage(playerChat, message);
+            final String playerDeath = matcher.group(1);
+            final String casue = matcher.group(2);
+            this.discord.sendDeathMessage(playerDeath, casue);
+            this.playerStatsManager.addDeaths(playerDeath, 1);
         }
     }
 

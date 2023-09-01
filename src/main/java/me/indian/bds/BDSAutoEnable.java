@@ -68,9 +68,10 @@ public class BDSAutoEnable {
         this.settings = new Settings(this);
         this.playerManager = new PlayerManager(this);
         this.playerStatsManager = new PlayerStatsManager(this);
+        this.playerManager.init(this.playerStatsManager);
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
-        StatusUtil.init(this , this.serverProcess);
+        StatusUtil.init(this);
         if (this.discord instanceof final DiscordJda jda) jda.initServerProcess(this.serverProcess);
 
         this.playerStatsManager.countPlayTime();

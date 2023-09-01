@@ -29,9 +29,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -156,23 +154,21 @@ public class CommandListener extends ListenerAdapter {
             }
 
             case "playtime" -> {
-                final Map<String, Long> playTimeMap = this.bdsAutoEnable.getPlayerStatsManager().getPlayTime();
-                final List<String> top10 = new ArrayList<>();
-
-                final List<Map.Entry<String, Long>> sortedEntries = playTimeMap.entrySet().stream()
-                        .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
-                        .limit(20)
-                        .toList();
-
-                int place = 1;
-                for (final Map.Entry<String, Long> entry : sortedEntries) {
-                    top10.add(place + ". **" + entry.getKey() + "**: `" + DateUtil.formatTimeWithoutMillis(entry.getValue()) + "`");
-                    place++;
-                }
-
+                final List<String> playTime = StatusUtil.getTopPlayTime(true, 20);
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Top 20 Czasu gry")
-                        .setDescription(MessageUtil.listToSpacedString(top10))
+                        .setDescription((playTime.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(playTime)))
+                        .setColor(Color.BLUE)
+                        .build();
+
+                event.replyEmbeds(embed).setEphemeral(true).queue();
+            }
+
+            case "deaths" -> {
+                final List<String> deaths = StatusUtil.getTopDeaths(true, 20);
+                final MessageEmbed embed = new EmbedBuilder()
+                        .setTitle("Top 20 ilości śmierci")
+                        .setDescription((deaths.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(deaths)))
                         .setColor(Color.BLUE)
                         .build();
 

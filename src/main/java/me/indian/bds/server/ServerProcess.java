@@ -274,7 +274,7 @@ public class ServerProcess {
 
         this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
         ThreadUtil.sleep(3);
-        this.bdsAutoEnable.getPlayerStatsManager().savePlayTime();
+        this.bdsAutoEnable.getPlayerStatsManager().saveAllData();
 
         if (this.process != null && this.process.isAlive()) this.watchDog.saveAndResume();
 
