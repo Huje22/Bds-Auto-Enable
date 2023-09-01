@@ -150,6 +150,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     }
 
     public String getOwnerMention() {
+        if(this.guild == null) return "";
         return (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");
     }
 
