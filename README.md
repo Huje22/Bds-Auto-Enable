@@ -2,39 +2,47 @@
 
 # BDS-Auto-Enable
 
-Jest to program do uruchamiania BDS zawsze gdy się wyłaczy wykorzystywany na serverze Huje22
+Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
 </div>
 
 
-**Uwaga**:
+# **Uwaga**:
 
 * Program wymaga przynajmniej `1GB` ram do działania
+* Zaleca się używać integracii z discord (JDA)
 
-Program zawiera: <br/>
+# Program zawiera: <br/>
 
-* Automatyczne włączenie servera po wyłączeniu
-* Tworzenie backupów świata (Ładowanie backup wymaga nadal poprawy)
-* Pisanie w konsoli w 80% (Mogą wystąpić małe błedy)
+* Automatyczne włączenie servera po crashu
+* Łatwe załadowanie innej wersji 
+* Tworzenie backupów świata co dany czas i manuałalnie (___Ładowanie backup wymaga nadal poprawy___)
+* Pisanie w konsoli w 99% (**Mogą wystąpić małe błędy**)
 * AutoMessages
-* Liczony czas gry gracza (Wymaga usprawnień , wasza pomoc mile widziana)
+* Licznik czasu gry gracza
+* Licznik śmierci (Wymaga [BDS-Auto-Enable-Managment-Pack](https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack))
 * Integracje z Discordem
   (Wymaga [BDS-Auto-Enable-Managment-Pack](https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack) do obsługi wiekszej
   ilosci funkcij)
 
-Dodatkowe polecenia(Tylko w konsoli): <br/>
+# Polecenia: <br/>
+### W konsoli
 * `backup` - natychmiastowo wywołuje tworzenie backupa
 * `version` - pokazuje załadowaną versie minecraft + versie oprogramowania (w konsoli i graczom online)
 * `stats` - statystyki servera i aplikacij
+### W Bocie
+* Wszystkie je jak i także ich opisy znajdziesz po wpisaniu `/` (Wymaga dodania bota z ___&scope=bot+applications.commands___ inaczej mogą wystąpić problemy)
 
-Program nie wspiera: <br/>
+# Program nie wspiera: <br/>
 
-* Wtyczek
+* Wtyczek do Minecraft 
 
 
-**Szybkie info**:
+# **Szybkie info**:
 
 * Paczka sama się pobierze do twojego świata i załaduje , potrzebujesz jedynie włączonych experymentów w tym świecie!
+
+  ----
 
 
 
