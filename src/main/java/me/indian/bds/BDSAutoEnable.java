@@ -8,9 +8,8 @@ import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.webhook.WebHook;
 import me.indian.bds.file.ServerProperties;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.PlayerManager;
-import me.indian.bds.manager.PlayerStatsManager;
 import me.indian.bds.manager.VersionManager;
+import me.indian.bds.manager.player.PlayerManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.FileUtil;
@@ -36,7 +35,6 @@ public class BDSAutoEnable {
     private final Settings settings;
     private final ServerProcess serverProcess;
     private final PlayerManager playerManager;
-    private final PlayerStatsManager playerStatsManager;
     private final VersionManager versionManager;
     private DiscordIntegration discord;
     private WatchDog watchDog;
@@ -67,14 +65,10 @@ public class BDSAutoEnable {
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
         this.playerManager = new PlayerManager(this);
-        this.playerStatsManager = new PlayerStatsManager(this);
-        this.playerManager.init(this.playerStatsManager);
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
         StatusUtil.init(this);
         if (this.discord instanceof final DiscordJda jda) jda.initServerProcess(this.serverProcess);
-
-        this.playerStatsManager.countPlayTime();
 
         this.init();
     }
@@ -85,6 +79,7 @@ public class BDSAutoEnable {
 
     public void init() {
         this.settings.loadSettings(this.scanner);
+        this.playerManager.getStatsManager().startTasks();
         this.checkExecutable();
         this.shutdownHook();
         this.watchDog = new WatchDog(this);
@@ -183,10 +178,6 @@ public class BDSAutoEnable {
 
     public PlayerManager getPlayerManager() {
         return this.playerManager;
-    }
-
-    public PlayerStatsManager getPlayerStatsManager() {
-        return this.playerStatsManager;
     }
 
     public DiscordIntegration getDiscord() {

@@ -1,4 +1,4 @@
-package me.indian.bds.manager;
+package me.indian.bds.manager.player;
 
 import com.google.gson.reflect.TypeToken;
 import me.indian.bds.BDSAutoEnable;
@@ -12,42 +12,56 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class PlayerStatsManager {
+public class StatsManager {
 
     private final Logger logger;
-    private final Timer playTimeTimer;
+    private final Timer playerStatsManagerTimer;
     private final File statsFolder, playTimeJson, deathsJson;
     private final Map<String, Long> playTime, deaths;
     private final PlayerManager playerManager;
+    private boolean timerWorking = false;
 
-    public PlayerStatsManager(final BDSAutoEnable bdsAutoEnable) {
+    public StatsManager(final BDSAutoEnable bdsAutoEnable, final PlayerManager playerManager) {
         this.logger = bdsAutoEnable.getLogger();
-        this.playTimeTimer = new Timer("PlayTime", true);
+        this.playerStatsManagerTimer = new Timer("PlayerStatsMonitorTimer", true);
         this.statsFolder = new File(Defaults.getAppDir() + File.separator + "stats");
         this.playTimeJson = new File(this.statsFolder.getPath() + File.separator + "playtime.json");
         this.deathsJson = new File(this.statsFolder.getPath() + File.separator + "deaths.json");
-        this.createJsons();
+        this.createFiles();
         this.playTime = this.loadPlayTime();
         this.deaths = this.loadDeaths();
-        this.playerManager = bdsAutoEnable.getPlayerManager();
+        this.playerManager = playerManager;
     }
 
-    public void countPlayTime() {
-        final long second = MathUtil.secondToMilliseconds(1);
-        final TimerTask timerTask = new TimerTask() {
+    public void startTasks() {
+        if (this.timerWorking) return;
+        final long second = MathUtil.secondToMillis(1);
+        final TimerTask playTimeTask = new TimerTask() {
             @Override
             public void run() {
-                for (final String playerName : PlayerStatsManager.this.playerManager.getOnlinePlayers()) {
-                    PlayerStatsManager.this.playTime.put(playerName, PlayerStatsManager.this.getPlayTimeByName(playerName) + second);
+                for (final String playerName : StatsManager.this.playerManager.getOnlinePlayers()) {
+                    StatsManager.this.playTime.put(playerName, StatsManager.this.getPlayTimeByName(playerName) + second);
                 }
             }
         };
-        this.playTimeTimer.scheduleAtFixedRate(timerTask, 0, second);
+
+        final TimerTask saveDataTask = new TimerTask() {
+            @Override
+            public void run() {
+                StatsManager.this.saveAllData();
+            }
+        };
+
+        this.playerStatsManagerTimer.scheduleAtFixedRate(saveDataTask, 0, MathUtil.hoursToMillis(2));
+        this.playerStatsManagerTimer.scheduleAtFixedRate(playTimeTask, 0, second);
+        this.timerWorking = true;
     }
 
     public Map<String, Long> getPlayTime() {
@@ -115,31 +129,41 @@ public class PlayerStatsManager {
             final HashMap<String, Long> loadedMap = GsonUtil.getGson().fromJson(reader, type);
             return (loadedMap == null ? new HashMap<>() : loadedMap);
         } catch (final IOException exception) {
-            this.logger.critical("Nie udało się załadować ilości&b śmierci&r graczy");
+            this.logger.critical("Nie udało się załadować liczby&b śmierci&r graczy");
             exception.printStackTrace();
         }
         return new HashMap<>();
     }
 
-    private void createJsons() {
+    private void createFiles() {
         if (!this.statsFolder.exists()) {
             try {
-                if (!this.statsFolder.mkdir())
-                    if (!this.statsFolder.mkdirs()) {
-                        this.logger.critical("Nie udało się utworzyć folderu statystyk!");
-                    }
+                if (!this.statsFolder.mkdir()) if (!this.statsFolder.mkdirs()) {
+                    this.logger.critical("Nie udało się utworzyć folderu statystyk!");
+                }
             } catch (final Exception exception) {
                 this.logger.critical("Nie udało się utworzyć folderu statystyk!");
                 exception.printStackTrace();
             }
         }
 
+        final Path path = Path.of(this.statsFolder.toPath() + File.separator + "readme.txt");
+        if (!Files.exists(path)) {
+            try {
+                Files.createFile(path);
+                try (final FileWriter writer = new FileWriter(path.toFile())) {
+                    writer.write("Jeśli aplikacja jest włączony edycja tych JSON nic nie da :D.");
+                    writer.write("\nDane są zapisywane do pliku co 2 godziny albo co restart aplikacj.");
+                }
+            } catch (final IOException exception) {
+                this.logger.debug("Nie udało się stwrozyć pliku informacyjnego w katalogu&b stats&r" + exception);
+            }
+        }
+
         if (!this.playTimeJson.exists()) {
             try {
-                if (!this.playTimeJson.exists()) {
-                    if (!this.playTimeJson.createNewFile()) {
-                        this.logger.critical("Nie można utworzyć&b playtime.json");
-                    }
+                if (!this.playTimeJson.createNewFile()) {
+                    this.logger.critical("Nie można utworzyć&b playtime.json");
                 }
             } catch (final IOException exception) {
                 this.logger.critical("Nie udało się utworzyć&b playtime.json");
@@ -149,10 +173,8 @@ public class PlayerStatsManager {
 
         if (!this.deathsJson.exists()) {
             try {
-                if (!this.deathsJson.exists()) {
-                    if (!this.deathsJson.createNewFile()) {
-                        this.logger.critical("Nie udało się  utworzyć&b playtime.json");
-                    }
+                if (!this.deathsJson.createNewFile()) {
+                    this.logger.critical("Nie udało się  utworzyć&b playtime.json");
                 }
             } catch (final IOException exception) {
                 this.logger.critical("Nie można utworzyć&b deaths.json");

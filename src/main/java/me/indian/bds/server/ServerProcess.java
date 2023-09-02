@@ -5,7 +5,7 @@ import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.PlayerManager;
+import me.indian.bds.manager.player.PlayerManager;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
@@ -249,7 +249,7 @@ public class ServerProcess {
     public String commandAndResponse(final String command)  {
         final String threadName = Thread.currentThread().getName();
         if (threadName.contains("Console") || threadName.contains("Server process")) {
-            throw new IllegalThreadStateException("Nie możesz wykonac tego na tym wątku!");
+            throw new IllegalAccessError("Nie możesz wykonac tego na tym wątku!");
         }
         this.sendToConsole(command);
         ThreadUtil.sleep(1);
@@ -274,7 +274,7 @@ public class ServerProcess {
 
         this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
         ThreadUtil.sleep(3);
-        this.bdsAutoEnable.getPlayerStatsManager().saveAllData();
+        this.bdsAutoEnable.getPlayerManager().getStatsManager().saveAllData();
 
         if (this.process != null && this.process.isAlive()) this.watchDog.saveAndResume();
 

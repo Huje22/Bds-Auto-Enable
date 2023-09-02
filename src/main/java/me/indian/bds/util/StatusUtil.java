@@ -3,7 +3,7 @@ package me.indian.bds.util;
 import com.sun.management.OperatingSystemMXBean;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
-import me.indian.bds.manager.PlayerStatsManager;
+import me.indian.bds.manager.player.StatsManager;
 import me.indian.bds.server.ServerProcess;
 
 import java.io.BufferedReader;
@@ -23,13 +23,13 @@ public final class StatusUtil {
     private static final File file = new File("/");
     private static BDSAutoEnable bdsAutoEnable;
     private static ServerProcess serverProcess;
-    private static PlayerStatsManager playerStatsManager;
+    private static StatsManager statsManager;
     private static Config config;
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         StatusUtil.bdsAutoEnable = bdsAutoEnable;
         StatusUtil.serverProcess = bdsAutoEnable.getServerProcess();
-        StatusUtil.playerStatsManager = bdsAutoEnable.getPlayerStatsManager();
+        StatusUtil.statsManager = bdsAutoEnable.getPlayerManager().getStatsManager();
         StatusUtil.config = bdsAutoEnable.getConfig();
     }
 
@@ -74,7 +74,7 @@ public final class StatusUtil {
     }
 
     public static List<String> getTopPlayTime(final boolean forDiscord, final int top) {
-        final Map<String, Long> playTimeMap = playerStatsManager.getPlayTime();
+        final Map<String, Long> playTimeMap = statsManager.getPlayTime();
         final List<String> topPlayTime = new ArrayList<>();
 
         final List<Map.Entry<String, Long>> sortedEntries = playTimeMap.entrySet().stream()
@@ -94,7 +94,7 @@ public final class StatusUtil {
     }
 
     public static List<String> getTopDeaths(final boolean forDiscord, final int top) {
-        final Map<String, Long> deathsMap = playerStatsManager.getDeaths();
+        final Map<String, Long> deathsMap = statsManager.getDeaths();
         final List<String> topDeaths = new ArrayList<>();
 
         final List<Map.Entry<String, Long>> sortedEntries = deathsMap.entrySet().stream()

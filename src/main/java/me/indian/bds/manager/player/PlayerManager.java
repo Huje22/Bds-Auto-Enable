@@ -1,4 +1,4 @@
-package me.indian.bds.manager;
+package me.indian.bds.manager.player;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.discord.DiscordIntegration;
@@ -19,7 +19,7 @@ public class PlayerManager {
     private final DiscordIntegration discord;
     private final ExecutorService service;
     private final List<String> onlinePlayers, offlinePlayers;
-    private PlayerStatsManager playerStatsManager;
+    private final StatsManager statsManager;
 
     public PlayerManager(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
@@ -27,10 +27,7 @@ public class PlayerManager {
         this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Player Manager"));
         this.onlinePlayers = new ArrayList<>();
         this.offlinePlayers = new ArrayList<>();
-    }
-
-    public void init(final PlayerStatsManager playerStatsManager) {
-        this.playerStatsManager = playerStatsManager;
+        this.statsManager = new StatsManager(bdsAutoEnable, this);
     }
 
     public void initFromLog(final String logEntry) {
@@ -85,8 +82,12 @@ public class PlayerManager {
             final String playerDeath = matcher.group(1);
             final String casue = matcher.group(2);
             this.discord.sendDeathMessage(playerDeath, casue);
-            this.playerStatsManager.addDeaths(playerDeath, 1);
+            this.statsManager.addDeaths(playerDeath, 1);
         }
+    }
+
+    public StatsManager getStatsManager() {
+        return this.statsManager;
     }
 
     public void clearPlayers() {
