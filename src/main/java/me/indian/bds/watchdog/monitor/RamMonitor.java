@@ -16,7 +16,7 @@ import java.util.TimerTask;
 
 public class RamMonitor {
 
-    private final Timer appRamTimer, machineRamTimer;
+    private final Timer ramMonitorTimer;
     private final String prefix;
     private final RamMonitorConfig ramMonitorConfig;
     private DiscordIntegration discord;
@@ -24,8 +24,7 @@ public class RamMonitor {
     private boolean running = false;
 
     public RamMonitor(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
-        this.appRamTimer = new Timer("AppRamMonitor", true);
-        this.machineRamTimer = new Timer("ComputerRamMonitor", true);
+        this.ramMonitorTimer = new Timer("RamMonitorTimer", true);
         this.prefix = watchDog.getWatchDogPrefix();
         this.ramMonitorConfig = bdsAutoEnable.getConfig().getWatchDogConfig().getRamMonitor();
 
@@ -86,7 +85,7 @@ public class RamMonitor {
             }
         };
 
-        this.machineRamTimer.scheduleAtFixedRate(machineRamMonitor, 0, MathUtil.secondToMilliseconds(this.ramMonitorConfig.getCheckMachineTime()));
-        this.appRamTimer.scheduleAtFixedRate(appRamMonitor, 0, MathUtil.secondToMilliseconds(this.ramMonitorConfig.getCheckAppTime()));
+        this.ramMonitorTimer.scheduleAtFixedRate(machineRamMonitor, 0, MathUtil.secondToMilliseconds(this.ramMonitorConfig.getCheckMachineTime()));
+        this.ramMonitorTimer.scheduleAtFixedRate(appRamMonitor, 0, MathUtil.secondToMilliseconds(this.ramMonitorConfig.getCheckAppTime()));
     }
 }
