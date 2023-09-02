@@ -7,7 +7,6 @@ import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
@@ -21,13 +20,14 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class BackupModule {
 
@@ -39,11 +39,11 @@ public class BackupModule {
     private final List<Path> backups;
     private final String worldPath, worldName;
     private final File worldFile;
+    private final Lock lock;
     private WatchDog watchDog;
     private ServerProcess serverProcess;
     private String prefix;
     private File backupFolder;
-    private boolean backuping;
     private String status;
     private long lastBackupMillis;
 
@@ -57,6 +57,7 @@ public class BackupModule {
         this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
         this.worldPath = Defaults.getWorldsPath() + this.worldName;
         this.worldFile = new File(this.worldPath);
+        this.lock = new ReentrantLock();
         if (this.config.getWatchDogConfig().getBackup().isBackup()) {
             this.logger.alert("Backupy są włączone");
             this.backupFolder = new File(Defaults.getAppDir() + File.separator + "backup");
@@ -70,11 +71,9 @@ public class BackupModule {
                 this.logger.alert("Ścieżka " + this.worldPath);
                 Thread.currentThread().interrupt();
                 this.timer.cancel();
-                this.backuping = true;
                 return;
             }
         }
-        this.backuping = false;
         this.status = "Brak";
         this.lastBackupMillis = 0;
     }
@@ -105,21 +104,17 @@ public class BackupModule {
     public void forceBackup() {
         if (!this.config.getWatchDogConfig().getBackup().isBackup()) return;
         if (!this.worldFile.exists()) return;
-        if (this.backuping) {
-            this.logger.error("Nie można zrobić kopi podczas robienia już jednej");
-            return;
-        }
         if (StatusUtil.availableDiskSpace() < 10) {
             this.serverProcess.tellrawToAllAndLogger(this.prefix, "Wykryto zbyt małą ilość pamięci aby wykonać&b backup&c!", LogState.ERROR);
             return;
         }
 
         if (this.serverProcess.getProcess() == null || !this.serverProcess.getProcess().isAlive()) return;
+        this.lock.lock();
         final long startTime = System.currentTimeMillis();
         this.service.execute(() -> {
             final File backup = new File(this.backupFolder.getAbsolutePath() + File.separator + this.worldName + " " + DateUtil.getFixedDate() + ".zip");
             try {
-                this.backuping = true;
                 this.watchDog.saveWorld();
                 final double lastBackUpTime = this.config.getWatchDogConfig().getBackup().getLastBackupTime();
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aTworzenie kopij zapasowej ostatnio trwało to&b " + lastBackUpTime + "&a sekund", LogState.INFO);
@@ -129,6 +124,7 @@ public class BackupModule {
                 this.config.getWatchDogConfig().getBackup().setLastBackupTime(backUpTime);
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund", LogState.INFO);
                 this.status = "Utworzono backup";
+                this.loadAvailableBackups();
             } catch (final Exception exception) {
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można utworzyć kopii zapasowej", LogState.CRITICAL);
                 this.status = "Nie udało sie utworzyć kopij zapasowej";
@@ -139,11 +135,11 @@ public class BackupModule {
                 } else {
                     this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można usunać błędnego backupa", LogState.INFO);
                 }
+            } finally {
+                this.lock.unlock();
+                this.watchDog.saveResume();
+                this.config.save();
             }
-            this.backuping = false;
-            this.watchDog.saveResume();
-            this.loadAvailableBackups();
-            this.config.save();
         });
     }
 
@@ -210,9 +206,5 @@ public class BackupModule {
 
     public List<Path> getBackups() {
         return this.backups;
-    }
-
-    public boolean isBackuping() {
-        return this.backuping;
     }
 }
