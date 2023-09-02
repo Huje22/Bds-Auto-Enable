@@ -12,7 +12,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
@@ -22,15 +21,16 @@ public class PlayerStatsManager {
 
     private final Logger logger;
     private final Timer playTimeTimer;
-    private final File playTimeJson, deathsJson;
+    private final File statsFolder, playTimeJson, deathsJson;
     private final Map<String, Long> playTime, deaths;
     private final PlayerManager playerManager;
 
     public PlayerStatsManager(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
         this.playTimeTimer = new Timer("PlayTime", true);
-        this.playTimeJson = new File(Defaults.getAppDir() + File.separator + "stats" + File.separator + "playtime.json");
-        this.deathsJson = new File(Defaults.getAppDir() + File.separator + "stats" + File.separator + "deaths.json");
+        this.statsFolder = new File(Defaults.getAppDir() + File.separator + "stats");
+        this.playTimeJson = new File(this.statsFolder.getPath() + File.separator + "playtime.json");
+        this.deathsJson = new File(this.statsFolder.getPath() + File.separator + "deaths.json");
         this.createJsons();
         this.playTime = this.loadPlayTime();
         this.deaths = this.loadDeaths();
@@ -122,10 +122,21 @@ public class PlayerStatsManager {
     }
 
     private void createJsons() {
+        if (!this.statsFolder.exists()) {
+            try {
+                if (!this.statsFolder.mkdir())
+                    if (!this.statsFolder.mkdirs()) {
+                        this.logger.critical("Nie udało się utworzyć folderu statystyk!");
+                    }
+            } catch (final Exception exception) {
+                this.logger.critical("Nie udało się utworzyć folderu statystyk!");
+                exception.printStackTrace();
+            }
+        }
+
         if (!this.playTimeJson.exists()) {
             try {
                 if (!this.playTimeJson.exists()) {
-                    Files.createDirectories(this.playTimeJson.getParentFile().toPath());
                     if (!this.playTimeJson.createNewFile()) {
                         this.logger.critical("Nie można utworzyć&b playtime.json");
                     }
@@ -139,7 +150,6 @@ public class PlayerStatsManager {
         if (!this.deathsJson.exists()) {
             try {
                 if (!this.deathsJson.exists()) {
-                    Files.createDirectories(this.deathsJson.getParentFile().toPath());
                     if (!this.deathsJson.createNewFile()) {
                         this.logger.critical("Nie udało się  utworzyć&b playtime.json");
                     }
