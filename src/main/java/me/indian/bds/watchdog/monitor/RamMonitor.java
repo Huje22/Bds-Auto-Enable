@@ -85,7 +85,7 @@ public class RamMonitor {
             }
         };
 
-        this.ramMonitorTimer.scheduleAtFixedRate(machineRamMonitor, 0, MathUtil.secondToMilliseconds(this.ramMonitorConfig.getCheckMachineTime()));
-        this.ramMonitorTimer.scheduleAtFixedRate(appRamMonitor, 0, MathUtil.secondToMilliseconds(this.ramMonitorConfig.getCheckAppTime()));
+        this.ramMonitorTimer.scheduleAtFixedRate(machineRamMonitor, 0, MathUtil.secondToMillis(this.ramMonitorConfig.getCheckMachineTime()));
+        this.ramMonitorTimer.scheduleAtFixedRate(appRamMonitor, 0, MathUtil.secondToMillis(this.ramMonitorConfig.getCheckAppTime()));
     }
 }

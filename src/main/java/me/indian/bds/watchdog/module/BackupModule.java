@@ -96,7 +96,7 @@ public class BackupModule {
                         BackupModule.this.lastBackupMillis = System.currentTimeMillis();
                     }
                 };
-                this.timer.scheduleAtFixedRate(backupTask, 0, MathUtil.minutesToMilliseconds(this.config.getWatchDogConfig().getBackup().getBackupFrequency()));
+                this.timer.scheduleAtFixedRate(backupTask, 0, MathUtil.minutesToMillis(this.config.getWatchDogConfig().getBackup().getBackupFrequency()));
             }
         });
     }
@@ -193,7 +193,7 @@ public class BackupModule {
     }
 
     public long calculateMillisUntilNextBackup() {
-        return Math.max(0, MathUtil.minutesToMilliseconds(this.config.getWatchDogConfig().getBackup().getBackupFrequency()) - (System.currentTimeMillis() - this.lastBackupMillis));
+        return Math.max(0, MathUtil.minutesToMillis(this.config.getWatchDogConfig().getBackup().getBackupFrequency()) - (System.currentTimeMillis() - this.lastBackupMillis));
     }
 
     public String getStatus() {

@@ -13,11 +13,15 @@ public final class MathUtil {
         df.setDecimalFormatSymbols(decimalFormatSymbols);
     }
 
-    public static long minutesToMilliseconds(final int minutes) {
+    public static long hoursToMillis(final int hours) {
+        return Duration.ofHours(hours).toMillis();
+    }
+
+    public static long minutesToMillis(final int minutes) {
         return Duration.ofMinutes(minutes).toMillis();
     }
 
-    public static long secondToMilliseconds(final int seconds) {
+    public static long secondToMillis(final int seconds) {
         return Duration.ofSeconds(seconds).toMillis();
     }
 

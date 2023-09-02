@@ -48,7 +48,7 @@ public class AutoMessages {
             }
         };
         if (this.config.getAutoMessagesConfig().isEnabled()) {
-            this.timer.scheduleAtFixedRate(autoMessages, 0, MathUtil.secondToMilliseconds(this.config.getAutoMessagesConfig().getTime()));
+            this.timer.scheduleAtFixedRate(autoMessages, 0, MathUtil.secondToMillis(this.config.getAutoMessagesConfig().getTime()));
         } else {
             this.bdsAutoEnable.getLogger().debug("&aAutomessages jest &cwyłączone");
         }
