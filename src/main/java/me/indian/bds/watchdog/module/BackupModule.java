@@ -26,8 +26,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class BackupModule {
 
@@ -39,13 +37,13 @@ public class BackupModule {
     private final List<Path> backups;
     private final String worldPath, worldName;
     private final File worldFile;
-    private final Lock lock;
     private WatchDog watchDog;
     private ServerProcess serverProcess;
     private String prefix;
     private File backupFolder;
     private String status;
     private long lastBackupMillis;
+    private boolean backuping, loading;
 
     public BackupModule(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -57,7 +55,6 @@ public class BackupModule {
         this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
         this.worldPath = Defaults.getWorldsPath() + this.worldName;
         this.worldFile = new File(this.worldPath);
-        this.lock = new ReentrantLock();
         if (this.config.getWatchDogConfig().getBackup().isBackup()) {
             this.logger.alert("Backupy są włączone");
             this.backupFolder = new File(Defaults.getAppDir() + File.separator + "backup");
@@ -74,8 +71,11 @@ public class BackupModule {
                 return;
             }
         }
+
         this.status = "Brak";
         this.lastBackupMillis = 0;
+        this.backuping = false;
+        this.loading = false;
     }
 
     public void initBackupModule(final WatchDog watchDog, final ServerProcess serverProcess) {
@@ -108,9 +108,13 @@ public class BackupModule {
             this.serverProcess.tellrawToAllAndLogger(this.prefix, "Wykryto zbyt małą ilość pamięci aby wykonać&b backup&c!", LogState.ERROR);
             return;
         }
+        if (this.backuping) {
+            this.logger.error("&cNie można wykonać backup gdy jeden jest już wykonywany");
+            return;
+        }
 
         if (this.serverProcess.getProcess() == null || !this.serverProcess.getProcess().isAlive()) return;
-        this.lock.lock();
+        this.backuping = true;
         final long startTime = System.currentTimeMillis();
         this.service.execute(() -> {
             final File backup = new File(this.backupFolder.getAbsolutePath() + File.separator + this.worldName + " " + DateUtil.getFixedDate() + ".zip");
@@ -136,15 +140,21 @@ public class BackupModule {
                     this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można usunać błędnego backupa", LogState.INFO);
                 }
             } finally {
-                this.lock.unlock();
+                this.backuping = false;
                 this.watchDog.saveResume();
                 this.config.save();
             }
         });
     }
 
-    public void loadBackup(final String backupName) {
+    public synchronized void loadBackup(final String backupName) {
+        if (this.loading) {
+            this.logger.error("&cNie można zaladować backup gdy jeden jest już ładowany ");
+            return;
+        }
+
         this.service.execute(() -> {
+            this.loading = true;
             for (final Path path : this.backups) {
                 final String fileName = path.getFileName().toString().replaceAll(".zip", "");
                 if (backupName.equalsIgnoreCase(fileName)) {
@@ -164,6 +174,8 @@ public class BackupModule {
                                 ioException.printStackTrace();
                                 this.serverProcess.instantShutdown();
                                 return;
+                            } finally {
+                                this.loading = false;
                             }
                             this.logger.info("&aZaładowano backup: &b" + backupName);
                             this.serverProcess.setCanRun(true);
@@ -173,6 +185,7 @@ public class BackupModule {
                     return;
                 }
             }
+            this.loading = false;
             this.logger.info("&cNie można odnaleźć backupa: &b" + backupName);
         });
     }
