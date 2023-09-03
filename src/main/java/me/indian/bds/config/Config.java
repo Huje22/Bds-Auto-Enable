@@ -44,6 +44,7 @@ public class Config extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Czy użyć wine?"})
+    @Comment({"Aby użyć wine trzeba mieć je pobrane i dodać do ustalonej nazwy pliku .exe podczas podawania informacji"})
     private boolean wine = false;
 
     @Comment({""})

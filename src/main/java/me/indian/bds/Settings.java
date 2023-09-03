@@ -63,19 +63,17 @@ public class Settings {
         }
         this.config.setSystem(system);
         this.config.setFileName(scannerUtil.addQuestion((defaultValue) -> {
-            this.logger.info("&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + "): " + this.enter);
-            if(this.config.getSystem() == SystemOs.LINUX){
-                this.logger.alert("Jeśli chcesz użyć&b wine&r plik musi mieć w nazwie na końcu&1 .exe");
-                this.logger.alert("I oczywiscie musisz mieć zainstalowane&b wine");
-            }
-
+                    this.logger.info("&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + "): " + this.enter);
+                    if (Defaults.hasWine()) {
+                        this.logger.alert("Jeśli chcesz użyć&b WINE&r plik musi kończyć się na&1 .exe");
+                    }
                 },
                 Defaults.getDefaultFileName(),
                 (input) -> {
                     this.logger.info("Nazwa pliku ustawiona na:&1 " + input);
                     if (this.config.getSystem() == SystemOs.LINUX) {
                         if (input.contains(".exe")) {
-                            this.logger.alert("&lW tym wypadku będzie potrzebne&r&n&bWINE ");
+                            this.logger.alert("&lW tym wypadku będzie potrzebne &r&b&nWINE ");
                             this.config.setWine(true);
                         } else {
                             this.config.setWine(false);
@@ -197,7 +195,7 @@ public class Settings {
         this.logger.info("&e----------&bAplikacja&e----------");
         this.logger.info("System:&1 " + this.config.getSystem());
         this.logger.info("Nazwa pliku:&1 " + this.config.getFileName());
-        this.logger.info("Wine:&1 " + this.config.isWine());
+        this.logger.info("Wine:&1 " + this.config.isWine() + (Defaults.hasWine() ? " &d(&bPosiadasz&d)" : ""));
         this.logger.info("Ścieżka plików:&b " + this.config.getFilesPath());
         this.logger.info("Wersja:&1 " + this.config.getVersion());
 

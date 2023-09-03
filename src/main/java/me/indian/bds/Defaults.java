@@ -2,14 +2,19 @@ package me.indian.bds;
 
 import me.indian.bds.config.Config;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 
 public final class Defaults {
 
     private static Config config;
+    private static boolean wine;
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         config = bdsAutoEnable.getConfig();
+        wine = wineCheck();
     }
 
     public static String getSystem() {
@@ -52,5 +57,26 @@ public final class Defaults {
 
     public static String getWorldsPath() {
         return config.getFilesPath() + File.separator + "worlds" + File.separator;
+    }
+
+    private static boolean wineCheck() {
+        try {
+            final Process process = Runtime.getRuntime().exec("wine --version");
+            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("wine-")) {
+                        return true;
+                    }
+                }
+            }
+            if (!process.waitFor(30, TimeUnit.MILLISECONDS)) process.destroy();
+        } catch (final Exception ignore) {
+        }
+        return false;
+    }
+
+    public static boolean hasWine() {
+        return wine;
     }
 }
