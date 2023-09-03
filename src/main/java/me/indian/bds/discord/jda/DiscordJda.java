@@ -9,6 +9,7 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.PackModule;
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -23,6 +24,7 @@ import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
+import java.awt.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -187,15 +189,28 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     @Override
     public void sendMessage(final String message) {
-        if (this.jda != null && this.textChannel != null) {
+        if (this.jda != null && this.textChannel != null && this.jda.getStatus() != JDA.Status.DISCONNECTED) {
             this.textChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue();
+        }
+    }
+
+    @Override
+    public void sendEmbedMessage(final String title, final String message, final String footer) {
+        if (this.jda != null && this.textChannel != null && this.jda.getStatus() != JDA.Status.DISCONNECTED) {
+            final MessageEmbed embed = new EmbedBuilder()
+                    .setTitle(title)
+                    .setDescription(message.replaceAll("<owner>", this.getOwnerMention()))
+                    .setColor(Color.BLUE)
+                    .setFooter(footer)
+                    .build();
+            this.textChannel.sendMessageEmbeds(embed).queue();
         }
     }
 
     @Override
     public void writeConsole(final String message) {
         if (this.jda != null && this.consoleChannel != null) {
-            this.consoleService.execute(() -> this.consoleChannel.sendMessage(message.replaceAll("<owner>" , this.getOwnerMention())).queue());
+            this.consoleService.execute(() -> this.consoleChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue());
         }
     }
 
@@ -266,6 +281,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     public void disableBot() {
         if (this.jda != null) {
             if (this.jda.getStatus() == JDA.Status.CONNECTED) {
+                this.logger.alert(this.jda.getStatus());
                 this.jda.shutdown();
             }
         }

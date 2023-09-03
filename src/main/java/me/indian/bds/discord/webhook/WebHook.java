@@ -1,5 +1,6 @@
 package me.indian.bds.discord.webhook;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
@@ -65,6 +66,48 @@ public class WebHook implements DiscordIntegration {
         });
     }
 
+    @Override
+    public void sendEmbedMessage(final String title, final String message, final String footer) {
+        this.service.execute(() -> {
+            try {
+                final HttpURLConnection connection = (HttpURLConnection) new URL(this.webhookURL).openConnection();
+                connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestMethod("POST");
+                connection.setDoOutput(true);
+
+                final JsonObject jsonPayload = new JsonObject();
+                jsonPayload.addProperty("username", this.name);
+                jsonPayload.addProperty("avatar_url", this.avatarUrl);
+
+                final JsonObject embed = new JsonObject();
+                embed.addProperty("title", title);
+                embed.addProperty("description", message);
+
+                final JsonObject footerObject = new JsonObject();
+                footerObject.addProperty("text", footer);
+
+                embed.add("footer", footerObject);
+                embed.addProperty("color", 3838);
+
+                final JsonArray embeds = new JsonArray();
+                embeds.add(embed);
+                jsonPayload.add("embeds", embeds);
+
+                try (final OutputStream os = connection.getOutputStream()) {
+                    os.write(GsonUtil.getGson().toJson(jsonPayload).getBytes());
+                    os.flush();
+                }
+
+                final int responseCode = connection.getResponseCode();
+                if (responseCode != HttpURLConnection.HTTP_NO_CONTENT) {
+                    this.logger.info("Kod odpowiedzi: " + responseCode);
+                }
+            } catch (final Exception exception) {
+                this.logger.critical("Nie można wysłać wiadomości do Discord: " + exception);
+            }
+        });
+    }
 
     @Override
     public void sendJoinMessage(final String playerName) {

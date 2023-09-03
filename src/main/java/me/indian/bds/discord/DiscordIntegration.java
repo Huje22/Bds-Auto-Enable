@@ -7,6 +7,8 @@ public interface DiscordIntegration {
 
     void sendMessage(final String message);
 
+    void sendEmbedMessage(final String title, final String message, final String footer);
+
     void sendJoinMessage(final String playerName);
 
     void sendLeaveMessage(final String playerName);
