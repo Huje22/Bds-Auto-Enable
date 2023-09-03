@@ -11,6 +11,7 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
 * Program wymaga przynajmniej `1GB` ram do działania
 * Zaleca się używać integracii z discord (JDA)
+* Program wspiera użycie [**WINE**](https://github.com/wine-mirror/wine)
 
 # Program zawiera: <br/>
 
