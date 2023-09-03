@@ -3,6 +3,7 @@ package me.indian.bds.file;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.MathUtil;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -142,7 +143,7 @@ public class ServerProperties {
     }
 
     public void setTickDistance(final int tickDistance) {
-        this.properties.setProperty("tick-distance", String.valueOf(Math.max(4, Math.min(20, tickDistance))));
+        this.properties.setProperty("tick-distance", String.valueOf(MathUtil.getCorrectNumber(tickDistance , 4, 12)));
         this.reloadServerProperties();
     }
 
