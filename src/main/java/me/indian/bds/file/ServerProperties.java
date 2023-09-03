@@ -70,6 +70,11 @@ public class ServerProperties {
         }
     }
 
+    public void setServerPort(final int port) {
+        this.properties.setProperty("server-port", String.valueOf(port));
+        this.reloadServerProperties();
+    }
+
     public int getServerPortV6() {
         try {
             return Integer.parseInt(this.properties.getProperty("server-portv6"));
@@ -79,6 +84,11 @@ public class ServerProperties {
         }
     }
 
+    public void setServerPortV6(final int port) {
+        this.properties.setProperty("server-portv6", String.valueOf(port));
+        this.reloadServerProperties();
+    }
+
     public int getMaxThreads() {
         try {
             return Integer.parseInt(this.properties.getProperty("max-threads"));
@@ -86,6 +96,11 @@ public class ServerProperties {
             this.setMaxThreads(8);
             return 8;
         }
+    }
+
+    public void setMaxThreads(final int threads) {
+        this.properties.setProperty("max-threads", String.valueOf(Math.max(threads, 0)));
+        this.reloadServerProperties();
     }
 
     public int getMaxPlayers() {
@@ -98,22 +113,79 @@ public class ServerProperties {
     }
 
     public void setMaxPlayers(final int players) {
-        this.properties.setProperty("max-players", String.valueOf(players));
+        this.properties.setProperty("max-players", String.valueOf(Math.max(players, 1)));
         this.reloadServerProperties();
     }
 
-    public void setServerPort(final int port) {
-        this.properties.setProperty("server-port", String.valueOf(port));
+    public int getViewDistance() {
+        try {
+            return Integer.parseInt(this.properties.getProperty("view-distance"));
+        } catch (final Exception exception) {
+            this.setViewDistance(32);
+            return 32;
+        }
+    }
+
+    public void setViewDistance(final int tickDistance) {
+        this.properties.setProperty("view-distance", String.valueOf(Math.max(tickDistance, 5)));
         this.reloadServerProperties();
     }
 
-    public void setServerPortV6(final int port) {
-        this.properties.setProperty("server-portv6", String.valueOf(port));
+
+    public int getTickDistance() {
+        try {
+            return Integer.parseInt(this.properties.getProperty("tick-distance"));
+        } catch (final Exception exception) {
+            this.setTickDistance(4);
+            return 4;
+        }
+    }
+
+    public void setTickDistance(final int tickDistance) {
+        this.properties.setProperty("tick-distance", String.valueOf(Math.max(4, Math.min(20, tickDistance))));
         this.reloadServerProperties();
     }
 
-    public void setMaxThreads(final int threads) {
-        this.properties.setProperty("max-threads", String.valueOf(threads));
+    public boolean isAllowCheats() {
+        try {
+            return Boolean.parseBoolean(this.properties.getProperty("allow-cheats"));
+        } catch (final Exception exception) {
+            this.setAllowCheats(true);
+            return true;
+        }
+    }
+
+    public void setAllowCheats(final boolean allowCheats) {
+        this.properties.setProperty("allow-cheats", String.valueOf(allowCheats));
+        this.reloadServerProperties();
+    }
+
+    public int getPlayerIdleTimeout() {
+        try {
+            return Integer.parseInt(this.properties.getProperty("player-idle-timeout"));
+        } catch (final Exception exception) {
+            this.setPlayerIdleTimeout(30);
+            return 30;
+        }
+    }
+
+    public void setPlayerIdleTimeout(final int minutes) {
+        this.properties.setProperty("player-idle-timeout", String.valueOf(Math.max(0, minutes)));
+        this.reloadServerProperties();
+    }
+
+
+    public boolean isTexturePackRequired() {
+        try {
+            return Boolean.parseBoolean(this.properties.getProperty("texturepack-required"));
+        } catch (final Exception exception) {
+            this.setTexturePackRequired(false);
+            return false;
+        }
+    }
+
+    public void setTexturePackRequired(final boolean texturePackRequired) {
+        this.properties.setProperty("texturepack-required", String.valueOf(texturePackRequired));
         this.reloadServerProperties();
     }
 
