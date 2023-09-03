@@ -82,7 +82,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             this.jda.awaitReady();
             this.logger.info("&aZaładowano bota");
         } catch (final Exception exception) {
-            this.logger.critical("&aNie można uruchomic bota , sprawdź podany &bTOKEN");
+            this.logger.critical("&aNie można uruchomić bota , sprawdź podany &bTOKEN");
             exception.printStackTrace();
             return;
         }
@@ -90,7 +90,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         try {
             this.guild = this.jda.getGuildById(this.serverID);
         } catch (final Exception exception) {
-            this.logger.info("Nie można odnaleźc servera z ID &a" + this.serverID);
+            this.logger.info("Nie można odnaleźć servera z ID &a" + this.serverID);
             this.jda.shutdown();
             this.jda = null;
             return;
@@ -99,7 +99,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         try {
             this.textChannel = this.guild.getTextChannelById(this.channelID);
         } catch (final Exception exception) {
-            this.logger.info("Nie można odnaleźc kanału z ID &a" + this.channelID);
+            this.logger.info("Nie można odnaleźć kanału z ID &a" + this.channelID);
             this.jda.shutdown();
             this.jda = null;
             return;
@@ -108,13 +108,13 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         try {
             this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
         } catch (final Exception exception) {
-            this.logger.info("(konola) Nie można odnaleźc kanału z ID &a" + this.consoleID);
+            this.logger.info("(konsola) Nie można odnaleźć kanału z ID &a" + this.consoleID);
         }
 
         try {
             this.logChannel = this.guild.getTextChannelById(this.logID);
         } catch (final Exception exception) {
-            this.logger.info("(log) Nie można odnaleźc kanału z ID &a" + this.logID);
+            this.logger.info("(log) Nie można odnaleźć kanału z ID &a" + this.logID);
         }
 
         this.commandListener.init();
@@ -126,8 +126,8 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                 Commands.slash("list", "lista graczy online."),
                 Commands.slash("backup", "tworzenie bądź ostatni czas backupa")
                         .addOption(OptionType.STRING, "load", "Załaduj backup po jego pełnej nazwie", false),
-                Commands.slash("ping", "aktualny ping bot z serverami discord"),
-                Commands.slash("stats", "Statystyki Servera i aplikacij."),
+                Commands.slash("ping", "aktualny ping bot z serwerami discord"),
+                Commands.slash("stats", "Statystyki Servera i aplikacji."),
                 Commands.slash("cmd", "Wykonuje polecenie w konsoli.")
                         .addOption(OptionType.STRING, "command", "Polecenie które zostanie wysłane do konsoli.", true),
                 Commands.slash("ip", "Informacje o ip ustawione w config"),

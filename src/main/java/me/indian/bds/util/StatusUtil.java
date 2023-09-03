@@ -55,16 +55,16 @@ public final class StatusUtil {
         final String maxRom = "Całkowity: " + MathUtil.bytesToGB(maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(maxDiskSpace()) + " MB";
 
         status.add("> **Statystyki maszyny**");
-        status.add("Pamięc RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
-        status.add("Pamięc ROM: `" + rom + " / " + maxRom + "`");
+        status.add("Pamięć RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
+        status.add("Pamięć ROM: `" + rom + " / " + maxRom + "`");
         status.add("");
         status.add("> **Statystyki servera**");
-        status.add("Pamięc RAM: `" + usedServerMemory + "`");
+        status.add("Pamięć RAM: `" + usedServerMemory + "`");
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime()) + "`");
         status.add("");
         status.add("> **Statystyki aplikacji**");
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - bdsAutoEnable.getStartTime()) + "`");
-        status.add("Pamięc RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
+        status.add("Pamięć RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
         status.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
         status.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
 

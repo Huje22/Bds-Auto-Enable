@@ -6,7 +6,7 @@ import eu.okaeri.configs.annotation.Comment;
 public class RamMonitorConfig extends OkaeriConfig {
 
     @Comment({""})
-    @Comment({"Czy powiadomić o niskiej ilości ram aplikacij?"})
+    @Comment({"Czy powiadomić o niskiej ilości ram aplikacji?"})
     private boolean app = true;
     @Comment({""})
     @Comment({"Czy powiadomić o niskiej ilości ram maszyny?"})

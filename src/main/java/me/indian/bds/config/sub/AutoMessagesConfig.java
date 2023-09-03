@@ -12,7 +12,7 @@ public class AutoMessagesConfig extends OkaeriConfig {
     @Comment({"Włączenie jak i każda inna zmiana wymaga restartu aplikacji"})
     private boolean enabled = true;
     @Comment({""})
-    @Comment({"Jeśli włączone lista nie leci po koleij"})
+    @Comment({"Jeśli włączone lista nie leci po kolei"})
     private boolean random = false;
     @Comment({""})
     @Comment({"Odstęp czasowy w sekundach z jakim wysyłane są wiadomości"})

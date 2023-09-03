@@ -60,7 +60,7 @@ public class BDSAutoEnable {
         switch (this.config.getIntegrationType()) {
             case WEBHOOK -> this.discord = new WebHook(this);
             case JDA -> this.discord = new DiscordJda(this);
-            default -> this.logger.error("Nie znany typ integracij discord! (" + this.config.getIntegrationType() + ")");
+            default -> this.logger.error("Nie znany typ integracji discord! (" + this.config.getIntegrationType() + ")");
         }
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
@@ -103,7 +103,7 @@ public class BDSAutoEnable {
         final String encoding = System.getProperty("file.encoding");
         if (!encoding.equalsIgnoreCase("UTF-8")) {
             this.logger.critical("&cTwoje kodowanie to:&b " + encoding + ", &cmy wspieramy tylko&b: UTF-8");
-            this.logger.critical("&cProsimy ustawić swoje kodowanie na&b UTF-8&c abyśmy mogli dalej kontunować!");
+            this.logger.critical("&cProsimy ustawić swoje kodowanie na&b UTF-8&c abyśmy mogli dalej kontynuować!");
             if (!this.config.isDebug()) {
                 System.exit(-2137);
             } else {
@@ -116,7 +116,7 @@ public class BDSAutoEnable {
 
     private void checkMemory() {
         final long maxMem = MathUtil.bytesToMB(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax());
-        if (maxMem < 1000) this.logger.critical("&cWykryto małą ilość pamieci przeznaczonej dla aplikacij! &b(&a" + maxMem + " mb&b)");
+        if (maxMem < 1000) this.logger.critical("&cWykryto małą ilość pamięci przeznaczonej dla aplikacji! &b(&a" + maxMem + " mb&b)");
     }
 
     private void checkExecutable(){
@@ -124,7 +124,7 @@ public class BDSAutoEnable {
             this.logger.critical("&cBrak odpowiednich uprawnień!");
             switch (this.config.getSystem()) {
                 case LINUX ->
-                        this.logger.critical("&cAby uzyskać uprawnienia do uruchomienia servera wprowadź w konsoli polecenie &echmod +x&b " + this.config.getFileName());
+                        this.logger.critical("&cAby uzyskać uprawnienia do uruchomienia servera wprowadź w konsoli polecenie&e chmod +x&b " + this.config.getFileName());
                 case WINDOWS -> this.logger.critical("&cPotrzebujesz wyższych uprawnień!");
             }
             System.exit(0);

@@ -39,9 +39,9 @@ public class VersionManager {
 
         if (!this.versionFolder.exists()) {
             if (this.versionFolder.mkdirs()) {
-                this.logger.info("Utworzono miejsce na wersjie");
+                this.logger.info("Utworzono miejsce na wersje");
             } else {
-                this.logger.error("Nie można utworzyć mnieisca na wersjie");
+                this.logger.error("Nie można utworzyć miejsca na wersje");
                 return;
             }
         }
@@ -143,7 +143,7 @@ public class VersionManager {
                 this.loadVersionsInfo();
             } else {
                 this.logger.error("Kod odpowiedzi strony: " + response);
-                this.logger.error("Prawdopodobnie nie ma takiej wersij jak: " + version);
+                this.logger.error("Prawdopodobnie nie ma takiej wersji jak: " + version);
                 System.exit(1);
             }
         } catch (final IOException ioException) {

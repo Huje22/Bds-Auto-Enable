@@ -133,7 +133,7 @@ public class ServerProcess {
                     this.discord.sendDisabledMessage();
                     this.startProcess();
                 } catch (final Exception exception) {
-                    this.logger.critical("Nie można uruchomic procesu");
+                    this.logger.critical("Nie można uruchomić procesu");
                     this.logger.critical(exception);
                     exception.printStackTrace();
                     System.exit(0);
@@ -202,8 +202,8 @@ public class ServerProcess {
                         this.sendToConsole("stop");
                     }
                     case "version" -> {
-                        this.tellrawToAllAndLogger(this.prefix, "&aVersija minecraft:&b " + this.config.getVersion(), LogState.INFO);
-                        this.tellrawToAllAndLogger(this.prefix, "&aVersija BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
+                        this.tellrawToAllAndLogger(this.prefix, "&aWersja minecraft:&b " + this.config.getVersion(), LogState.INFO);
+                        this.tellrawToAllAndLogger(this.prefix, "&aWersja BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
                     }
                     case "backup" -> this.watchDog.getBackupModule().forceBackup();
                     case "test" -> {
@@ -278,7 +278,7 @@ public class ServerProcess {
                 ThreadUtil.sleep(2);
                 this.logger.info("Zatrzymano wątki procesu servera");
             } catch (final Exception exception) {
-                this.logger.error("Nie udało się zarzymać wątków procesu servera");
+                this.logger.error("Nie udało się zatrzymać wątków procesu servera");
                 exception.printStackTrace();
             }
         }
@@ -306,7 +306,7 @@ public class ServerProcess {
             this.logger.info("Niszczenie procesu servera");
             try {
                 this.process.destroy();
-                this.logger.info("Zniszczeno proces servera");
+                this.logger.info("Zniszczono proces servera");
                 this.discord.sendDestroyedMessage();
             } catch (final Exception exception) {
                 this.logger.error("Nie udało się zniszczyć procesu servera");

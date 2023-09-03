@@ -137,7 +137,7 @@ public class BackupModule {
                 if (backup.delete()) {
                     this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUsunięto błędny backup", LogState.INFO);
                 } else {
-                    this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można usunać błędnego backupa", LogState.INFO);
+                    this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można usunąć błędnego backupa", LogState.INFO);
                 }
             } finally {
                 this.backuping = false;
@@ -149,7 +149,7 @@ public class BackupModule {
 
     public synchronized void loadBackup(final String backupName) {
         if (this.loading) {
-            this.logger.error("&cNie można zaladować backup gdy jeden jest już ładowany ");
+            this.logger.error("&cNie można załadować backup gdy jeden jest już ładowany ");
             return;
         }
 

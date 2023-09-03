@@ -78,13 +78,13 @@ public class CommandListener extends ListenerAdapter {
                         return;
                     }
                     final MessageEmbed embed = new EmbedBuilder()
-                            .setTitle("Ostatnia linijka z kosoli")
+                            .setTitle("Ostatnia linijka z konsoli")
                             .setDescription(this.serverProcess.commandAndResponse(command))
                             .setColor(Color.BLUE)
                             .build();
                         event.replyEmbeds(embed).setEphemeral(true).queue();
                 } else {
-                    event.reply("Nie posiadasz permisij!!").setEphemeral(true).queue();
+                    event.reply("Nie posiadasz permisji!!").setEphemeral(true).queue();
                 }
             }
 
@@ -141,7 +141,7 @@ public class CommandListener extends ListenerAdapter {
                                 return;
                             }
                         }
-                        event.reply("Nie można znależć: " + backupName).setEphemeral(true).queue();
+                        event.reply("Nie można znaleźć: " + backupName).setEphemeral(true).queue();
                         return;
                     } else {
                         event.reply("Nie posiadasz permisji").setEphemeral(true).queue();
@@ -258,7 +258,7 @@ public class CommandListener extends ListenerAdapter {
                 .setTitle("Backup info")
                 .setDescription("Status ostatniego backup: " + backupStatus +
                         "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
-                        "Pamięc ROM: `" + rom + " / " + maxRom + "`\n" +
+                        "Pamięć ROM: `" + rom + " / " + maxRom + "`\n" +
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
                         (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
                 .setColor(Color.BLUE)

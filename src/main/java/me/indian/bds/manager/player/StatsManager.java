@@ -94,7 +94,7 @@ public class StatsManager {
             writer.write(GsonUtil.getGson().toJson(this.playTime));
             this.logger.info("Pomyślnie zapisano&b czas gry&r graczy");
         } catch (final IOException exception) {
-            this.logger.critical("Nie udało się zapisac&b czasu gry&r graczy");
+            this.logger.critical("Nie udało się zapisać&b czasu gry&r graczy");
             exception.printStackTrace();
         }
     }
@@ -104,7 +104,7 @@ public class StatsManager {
             writer.write(GsonUtil.getGson().toJson(this.deaths));
             this.logger.info("Pomyślnie zapisano&r liczbe&b śmierci&r graczy");
         } catch (final IOException exception) {
-            this.logger.critical("Nie udało się zapisac liczby&b śmierci&r graczy");
+            this.logger.critical("Nie udało się zapisać liczby&b śmierci&r graczy");
             exception.printStackTrace();
         }
     }
@@ -156,7 +156,7 @@ public class StatsManager {
                     writer.write("\nDane są zapisywane do pliku co 2 godziny albo co restart servera.");
                 }
             } catch (final IOException exception) {
-                this.logger.debug("Nie udało się stwrozyć pliku informacyjnego w katalogu&b stats&r" + exception);
+                this.logger.debug("Nie udało się stworzyć pliku informacyjnego w katalogu&b stats&r" + exception);
             }
         }
 

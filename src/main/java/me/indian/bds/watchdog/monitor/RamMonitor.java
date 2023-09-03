@@ -46,10 +46,10 @@ public class RamMonitor {
                     final long freeMem = MathUtil.bytesToMB(heapMemoryUsage.getMax() - heapMemoryUsage.getUsed());
                     if (MathUtil.bytesToMB(heapMemoryUsage.getUsed()) >= ((long) (MathUtil.bytesToMB(heapMemoryUsage.getMax()) * 0.80))) {
                         RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
-                                "&cAplikacija używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!" + "&d(&c Wolne:&b " + freeMem + " &aMB&d )",
+                                "&cAplikacja używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!" + "&d(&c Wolne:&b " + freeMem + " &aMB&d )",
                                 LogState.CRITICAL);
                         RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
-                                "&cWiększe użycje może to prowadzić do crashy aplikacij a w tym servera&4!!",
+                                "&cWiększe użycje może to prowadzić do crashy aplikacji a w tym servera&4!!",
                                 LogState.CRITICAL);
                         if (RamMonitor.this.ramMonitorConfig.isDiscordAlters()) {
                             RamMonitor.this.discord.sendAppRamAlert();

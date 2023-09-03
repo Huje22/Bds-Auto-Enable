@@ -16,7 +16,7 @@ public class Messages extends OkaeriConfig {
     private String disablingMessage = ":octagonal_sign: Server jest w trakcje wyłączania";
     private String disabledMessage = ":octagonal_sign: Server wyłączony";
     private String destroyedMessage = "Proces servera został zabity";
-    private String appRamAlter = "Aplikacija używa **80%** dostępnego dla niej ramu!";
+    private String appRamAlter = "Aplikacja używa **80%** dostępnego dla niej ramu!";
     private String machineRamAlter = "Maszyna ma mniej niż **1GB** dostępnego ramu!";
 
 

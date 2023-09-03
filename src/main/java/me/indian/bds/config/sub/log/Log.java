@@ -9,7 +9,7 @@ import java.util.List;
 public class Log extends OkaeriConfig {
 
     @Comment({""})
-    @Comment({"Nie zapisuje tych informacj które zawierają:"})
+    @Comment({"Nie zapisuje tych informacji które zawierają:"})
     @Comment({"W pliku"})
     private List<String> noFile = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]",
             "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
@@ -23,7 +23,7 @@ public class Log extends OkaeriConfig {
 
     @Comment({""})
     @Comment("W konsoli discord")
-    @Comment("UWAGA!!! Jeśli używasz 1gb ram dla aplikacij (co jest w miare optymalne) nie usuwaj nic z tąd albo daj wiecej ram!!!!")
+    @Comment("UWAGA!!! Jeśli używasz 1gb ram dla aplikacji (co jest w miare optymalne) nie usuwaj nic z tąd albo daj więcej ram!!!!")
     private List<String> noDiscordConsole = new ArrayList<>();
 
     public Log() {
