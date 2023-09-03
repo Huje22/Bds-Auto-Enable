@@ -30,6 +30,8 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 * `backup` - natychmiastowo wywołuje tworzenie backupa
 * `version` - pokazuje załadowaną versie minecraft + versie oprogramowania (w konsoli i graczom online)
 * `stats` - statystyki servera i aplikacij
+* `playtime` - top 20 graczy z najwiekszym czasem gry
+* `deaths` - top 20 graczy z największą ilością śmierci
 ### W Bocie
 * Wszystkie je jak i także ich opisy znajdziesz po wpisaniu `/` (Wymaga dodania bota z ___&scope=bot+applications.commands___ inaczej mogą wystąpić problemy)
 

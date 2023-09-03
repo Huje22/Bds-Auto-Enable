@@ -88,7 +88,7 @@ public final class StatusUtil {
             place++;
         }
 
-        if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+        if (!forDiscord) topPlayTime.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
 
         return topPlayTime;
     }
@@ -108,7 +108,7 @@ public final class StatusUtil {
             place++;
         }
 
-        if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+        if (!forDiscord) topDeaths.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
 
         return topDeaths;
     }

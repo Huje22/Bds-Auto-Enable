@@ -222,6 +222,16 @@ public class ServerProcess {
                             this.logger.info(s);
                         }
                     }
+                    case "playtime" -> {
+                        for (final String s : StatusUtil.getTopPlayTime(false, 20)) {
+                            this.logger.info(s);
+                        }
+                    }
+                    case "deaths" -> {
+                        for (final String s : StatusUtil.getTopDeaths(false, 20)) {
+                            this.logger.info(s);
+                        }
+                    }
                     default -> this.sendToConsole(input);
                 }
             }
