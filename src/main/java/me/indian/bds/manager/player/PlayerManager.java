@@ -32,33 +32,37 @@ public class PlayerManager {
 
     public void initFromLog(final String logEntry) {
         this.service.execute(() -> {
-            this.updatePlayerList(logEntry);
+            this.playerJoin(logEntry);
+            this.playerQuit(logEntry);
             this.chatMessage(logEntry);
             this.deathMessage(logEntry);
             this.serverEnabled(logEntry);
         });
     }
 
-    private void updatePlayerList(final String logEntry) {
-        final String patternString = "(Player connected|Player disconnected): ([^,]+), xuid: ([0-9]{16})";
+    private void playerQuit(final String logEntry) {
+        final String patternString = "Player disconnected: ([^,]+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String action = matcher.group(1);
-            final String playerName = matcher.group(2);
-            final String xuidString = matcher.group(3);
-            final Long xuid = Long.parseLong(xuidString);
+            final String playerName = matcher.group(1);
+            this.onlinePlayers.remove(playerName);
+            this.offlinePlayers.add(playerName);
+            this.discord.sendLeaveMessage(playerName);
+        }
+    }
 
-            if ("Player connected".equals(action)) {
-                this.onlinePlayers.add(playerName);
-                this.offlinePlayers.remove(playerName);
-                this.discord.sendJoinMessage(playerName);
-            } else if ("Player disconnected".equals(action)) {
-                this.onlinePlayers.remove(playerName);
-                this.offlinePlayers.add(playerName);
-                this.discord.sendLeaveMessage(playerName);
-            }
+    private void playerJoin(final String logEntry) {
+        final String patternString = "PlayerJoin:([^,]+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerName = matcher.group(1);
+            this.onlinePlayers.add(playerName);
+            this.offlinePlayers.remove(playerName);
+            this.discord.sendJoinMessage(playerName);
         }
     }
 
