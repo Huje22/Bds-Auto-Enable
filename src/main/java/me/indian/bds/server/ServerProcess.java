@@ -116,7 +116,7 @@ public class ServerProcess {
                     this.process = this.processBuilder.start();
                     this.startTime = System.currentTimeMillis();
                     this.logger.info("Uruchomiono proces ");
-                    this.discord.sendEnabledMessage();
+                    this.discord.sendProcessEnabledMessage();
 
 
                     final Thread output = new ThreadUtil("Console-Output").newThread(this::readConsoleOutput);
@@ -127,6 +127,7 @@ public class ServerProcess {
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
                     this.playerManager.clearPlayers();
+                    this.playerManager.getStatsManager().saveAllData();
                     output.interrupt();
                     input.interrupt();
                     this.discord.sendDisabledMessage();

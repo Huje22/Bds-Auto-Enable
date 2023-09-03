@@ -19,7 +19,7 @@ public interface DiscordIntegration {
 
     void sendDisablingMessage();
 
-    void sendStopMessage();
+    void sendProcessEnabledMessage();
 
     void sendEnabledMessage();
 

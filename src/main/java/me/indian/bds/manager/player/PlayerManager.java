@@ -35,6 +35,7 @@ public class PlayerManager {
             this.updatePlayerList(logEntry);
             this.chatMessage(logEntry);
             this.deathMessage(logEntry);
+            this.serverEnabled(logEntry);
         });
     }
 
@@ -83,6 +84,12 @@ public class PlayerManager {
             final String casue = matcher.group(2);
             this.discord.sendDeathMessage(playerDeath, casue);
             this.statsManager.addDeaths(playerDeath, 1);
+        }
+    }
+
+    private void serverEnabled(final String logEntry) {
+        if (logEntry.contains("Server started")) {
+            this.discord.sendEnabledMessage();
         }
     }
 

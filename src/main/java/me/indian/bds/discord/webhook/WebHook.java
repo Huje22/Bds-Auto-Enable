@@ -103,8 +103,8 @@ public class WebHook implements DiscordIntegration {
     }
 
     @Override
-    public void sendStopMessage() {
-        this.sendMessage(this.config.getMessages().getDisablingMessage());
+    public void sendProcessEnabledMessage() {
+        this.sendMessage(this.config.getMessages().getProcessEnabledMessage());
     }
 
     @Override
