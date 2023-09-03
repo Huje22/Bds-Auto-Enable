@@ -111,7 +111,7 @@ public class Settings {
            /*
         TODO:
             Dodać pełne wspracje dla:
-            "default-player-permission-level" (visitor, member, operator),
+            "default-player-permission-level" ( 0 = VISITOR , 1 = MEMBER , 2 = OPERATOR),
             "server-authoritative-movement" wraz z "correct-player-movement",
             "difficulty" (0 = peaceful, 1 = easy, 2 = normal, 3 = hard)
          */
@@ -181,7 +181,7 @@ public class Settings {
         /*
         TODO:
             Dodać pełne wspracje dla:
-            "default-player-permission-level" (visitor, member, operator),
+            "default-player-permission-level" ( 0 = VISITOR , 1 = MEMBER , 2 = OPERATOR),
             "server-authoritative-movement" wraz z "correct-player-movement",
             "difficulty" (0 = peaceful, 1 = easy, 2 = normal, 3 = hard)
          */
