@@ -47,6 +47,11 @@ public final class ThreadUtil implements ThreadFactory {
         return availableThreads;
     }
 
+    public static boolean isImportantThread(){
+        final String threadName = Thread.currentThread().getName();
+        return threadName.contains("Console") || threadName.contains("Server process");
+    }
+
     @Override
     public Thread newThread(@NotNull final Runnable runnable) {
         final Thread thread = new Thread(runnable);

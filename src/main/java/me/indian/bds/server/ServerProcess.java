@@ -258,8 +258,7 @@ public class ServerProcess {
     }
 
     public String commandAndResponse(final String command)  {
-        final String threadName = Thread.currentThread().getName();
-        if (threadName.contains("Console") || threadName.contains("Server process")) {
+        if (ThreadUtil.isImportantThread()) {
             throw new IllegalAccessError("Nie możesz wykonac tego na tym wątku!");
         }
         this.sendToConsole(command);
