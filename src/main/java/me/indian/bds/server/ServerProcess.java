@@ -402,6 +402,10 @@ public class ServerProcess {
         return this.startTime;
     }
 
+    public boolean isEnabled(){
+        return (this.process != null && this.process.isAlive());
+    }
+
     public Process getProcess() {
         return this.process;
     }

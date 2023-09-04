@@ -34,7 +34,7 @@ public class AutoMessages {
 
             @Override
             public void run() {
-                if (AutoMessages.this.serverProcess.getProcess() != null && AutoMessages.this.serverProcess.getProcess().isAlive() && !AutoMessages.this.bdsAutoEnable.getPlayerManager().getOnlinePlayers().isEmpty()) {
+                if (AutoMessages.this.serverProcess.isEnabled() && !AutoMessages.this.bdsAutoEnable.getPlayerManager().getOnlinePlayers().isEmpty()) {
                     if (!this.iterator.hasNext()) this.iterator = AutoMessages.this.messages.iterator();
                     final String prefix = AutoMessages.this.config.getAutoMessagesConfig().getPrefix();
                     final int message = AutoMessages.this.random.nextInt(AutoMessages.this.messages.size());

@@ -113,7 +113,7 @@ public class BackupModule {
             return;
         }
 
-        if (this.serverProcess.getProcess() == null || !this.serverProcess.getProcess().isAlive()) return;
+        if (this.serverProcess.isEnabled()) return;
         this.backuping = true;
         final long startTime = System.currentTimeMillis();
         this.service.execute(() -> {
@@ -160,7 +160,7 @@ public class BackupModule {
                 if (backupName.equalsIgnoreCase(fileName)) {
                     this.logger.info("&aOdnaleziono backup: &b" + backupName);
                     if (this.serverProcess.getProcess() != null) {
-                        if (this.serverProcess.getProcess().isAlive()) {
+                        if (this.serverProcess.isEnabled()) {
                             this.serverProcess.kickAllPlayers(this.prefix + " &aBackup&b " + backupName + " &a jest ładowany!");
                             this.serverProcess.setCanRun(false);
                             this.serverProcess.sendToConsole("stop");
