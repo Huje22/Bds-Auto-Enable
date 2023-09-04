@@ -3,6 +3,7 @@ package me.indian.bds.manager.player;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ public class PlayerManager {
             this.chatMessage(logEntry);
             this.deathMessage(logEntry);
             this.serverEnabled(logEntry);
+            this.checkPackDependency(logEntry);
         });
     }
 
@@ -94,6 +96,23 @@ public class PlayerManager {
     private void serverEnabled(final String logEntry) {
         if (logEntry.contains("Server started")) {
             this.discord.sendEnabledMessage();
+        }
+    }
+
+    private void checkPackDependency(final String logEntry) {
+        if (logEntry.contains("requesting dependency on beta APIs [@minecraft/server - 1.4.0-beta]")) {
+            final List<String> list = List.of("Wykryto że nie `Beta API's` nie są włączone!",
+                    "Funkcje jak: `licznik czasu gry/śmierci` nie będą działać ",
+                    "Bot też zostaje wyłączony"
+            );
+            this.discord.sendEmbedMessage("Brak wymaganych eksperymentów",
+                    MessageUtil.listToSpacedString(list),
+                    "Włącz Beta API's");
+            this.discord.sendMessage("<owner>");
+            for (final String s : list) {
+                this.logger.alert(s.replaceAll("`", ""));
+            }
+            this.discord.disableBot();
         }
     }
 
