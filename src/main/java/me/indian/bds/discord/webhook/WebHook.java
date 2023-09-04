@@ -46,10 +46,16 @@ public class WebHook implements DiscordIntegration {
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
 
+                final String finalMessage = message.replaceAll("<owner>", "");
                 final JsonObject jsonPayload = new JsonObject();
-                jsonPayload.addProperty("content", message.replaceAll("<owner>", ""));
+                jsonPayload.addProperty("content", finalMessage);
                 jsonPayload.addProperty("username", this.name);
                 jsonPayload.addProperty("avatar_url", this.avatarUrl);
+
+                if (finalMessage.isEmpty()) {
+                    this.logger.error("Nie można wysłać pustej wiadomości!");
+                    return;
+                }
 
                 try (final OutputStream os = connection.getOutputStream()) {
                     os.write(GsonUtil.getGson().toJson(jsonPayload).getBytes());
@@ -82,7 +88,7 @@ public class WebHook implements DiscordIntegration {
 
                 final JsonObject embed = new JsonObject();
                 embed.addProperty("title", title);
-                embed.addProperty("description", message);
+                embed.addProperty("description", message.replaceAll("<owner>", ""));
 
                 final JsonObject footerObject = new JsonObject();
                 footerObject.addProperty("text", footer);

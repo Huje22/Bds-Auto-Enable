@@ -189,14 +189,14 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     @Override
     public void sendMessage(final String message) {
-        if (this.jda != null && this.textChannel != null && this.jda.getStatus() != JDA.Status.DISCONNECTED) {
+        if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
             this.textChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue();
         }
     }
 
     @Override
     public void sendEmbedMessage(final String title, final String message, final String footer) {
-        if (this.jda != null && this.textChannel != null && this.jda.getStatus() != JDA.Status.DISCONNECTED) {
+        if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
             final MessageEmbed embed = new EmbedBuilder()
                     .setTitle(title)
                     .setDescription(message.replaceAll("<owner>", this.getOwnerMention()))
@@ -209,7 +209,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     @Override
     public void writeConsole(final String message) {
-        if (this.jda != null && this.consoleChannel != null) {
+        if (this.jda != null && this.consoleChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
             this.consoleService.execute(() -> this.consoleChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue());
         }
     }
@@ -281,7 +281,6 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     public void disableBot() {
         if (this.jda != null) {
             if (this.jda.getStatus() == JDA.Status.CONNECTED) {
-                this.logger.alert(this.jda.getStatus());
                 this.jda.shutdown();
             }
         }
