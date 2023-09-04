@@ -52,11 +52,11 @@ public class MessageListener extends ListenerAdapter {
             final Role role = this.discordJda.getHighestRole(author.getIdLong());
             if (this.checkLength(message)) return;
 
-            final String msg = this.config.getMessages().getDiscordToMinecraftMessage()
+            final String msg = this.config.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
                     .replaceAll("<name>", author.getName())
                     .replaceAll("<msg>", rawMessage)
                     .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
-                    .replaceAll("<role>", role == null ? "" : role.getName()) + this.config.getMessages().getEdited();
+                    .replaceAll("<role>", role == null ? "" : role.getName()) + this.config.getDiscordMessagesConfig().getEdited();
 
             this.serverProcess.tellrawToAll(msg);
             this.logger.info(msg);
@@ -89,7 +89,7 @@ public class MessageListener extends ListenerAdapter {
             final Role role = this.discordJda.getHighestRole(author.getIdLong());
             if (this.checkLength(message)) return;
 
-            final String msg = this.config.getMessages().getDiscordToMinecraftMessage()
+            final String msg = this.config.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
                     .replaceAll("<name>", author.getName())
                     .replaceAll("<msg>", rawMessage)
                     .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
@@ -102,9 +102,9 @@ public class MessageListener extends ListenerAdapter {
 
 
     private boolean checkLength(final Message message) {
-        if (message.getContentRaw().length() >= this.config.getDiscordBot().getAllowedLength()) {
-            this.sendPrivateMessage(message.getAuthor(), this.config.getDiscordBot().getReachedMessage());
-            if (this.config.getDiscordBot().isDeleteOnReachLimit()) {
+        if (message.getContentRaw().length() >= this.config.getDiscordBotConfig().getAllowedLength()) {
+            this.sendPrivateMessage(message.getAuthor(), this.config.getDiscordBotConfig().getReachedMessage());
+            if (this.config.getDiscordBotConfig().isDeleteOnReachLimit()) {
                 message.delete().queue();
                 this.sendPrivateMessage(message.getAuthor(), "`" + message.getContentRaw() + "`");
             }
@@ -121,7 +121,7 @@ public class MessageListener extends ListenerAdapter {
     }
 
     private String generatorReply(final Message messageReference) {
-        return messageReference == null ? "" : this.config.getMessages()
+        return messageReference == null ? "" : this.config.getDiscordMessagesConfig()
                 .getReplyStatement().replaceAll("<msg>", messageReference.getContentRaw())
                 .replaceAll("<author>", messageReference.getAuthor().getName());
     }

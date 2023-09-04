@@ -100,7 +100,7 @@ public class CommandListener extends ListenerAdapter {
             case "ip" -> {
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Nasze ip!")
-                        .setDescription(MessageUtil.listToSpacedString(this.config.getDiscordBot().getIpMessage()))
+                        .setDescription(MessageUtil.listToSpacedString(this.config.getDiscordBotConfig().getIpMessage()))
                         .setColor(Color.BLUE)
                         .build();
 

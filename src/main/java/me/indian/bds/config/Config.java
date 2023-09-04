@@ -5,10 +5,10 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
 import me.indian.bds.config.sub.AutoMessagesConfig;
-import me.indian.bds.config.sub.discord.DiscordBot;
-import me.indian.bds.config.sub.discord.Messages;
-import me.indian.bds.config.sub.discord.WebHook;
-import me.indian.bds.config.sub.log.Log;
+import me.indian.bds.config.sub.discord.DiscordBotConfig;
+import me.indian.bds.config.sub.discord.DiscordMessagesConfig;
+import me.indian.bds.config.sub.discord.WebHookConfig;
+import me.indian.bds.config.sub.log.LogConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.discord.DiscordType;
 import me.indian.bds.util.SystemOs;
@@ -64,7 +64,8 @@ public class Config extends OkaeriConfig {
     @Comment({""})
     @Comment({"Ustawienia logowania"})
     @Comment({"Nie zapisuje tych informacj które zawierają dane znaki i słowa"})
-    private Log log = new Log();
+    @CustomKey("log")
+    private LogConfig logConfig = new LogConfig();
 
     @Comment({""})
     @Comment({"Ustawienia discord"})
@@ -74,13 +75,16 @@ public class Config extends OkaeriConfig {
     private DiscordType integrationType = DiscordType.JDA;
     @Comment({""})
     @Comment({"Ustawienia webhooka"})
-    private WebHook webHook = new WebHook();
+    @CustomKey("webHook")
+    private WebHookConfig webHookConfig = new WebHookConfig();
     @Comment({""})
     @Comment({"Ustawienia Bota"})
-    private DiscordBot discordBot = new DiscordBot();
+    @CustomKey("discordBot")
+    private DiscordBotConfig discordBotConfig = new DiscordBotConfig();
     @Comment({""})
     @Comment({"Konfiguracija dostępnych wiadomości "})
-    private Messages messages = new Messages();
+    @CustomKey("discordMessages")
+    private DiscordMessagesConfig discordMessagesConfig = new DiscordMessagesConfig();
     @Comment({""})
     @Comment({"Debug"})
     private boolean debug = false;
@@ -121,10 +125,6 @@ public class Config extends OkaeriConfig {
         return this.fileName;
     }
 
-    public AutoMessagesConfig getAutoMessagesConfig() {
-        return this.autoMessagesConfig;
-    }
-
     public void setFileName(final String fileName) {
         this.fileName = fileName;
     }
@@ -149,48 +149,29 @@ public class Config extends OkaeriConfig {
         return this.watchDogConfig;
     }
 
-    public void setWatchDogConfig(final WatchDogConfig watchDogConfig) {
-        this.watchDogConfig = watchDogConfig;
+    public AutoMessagesConfig getAutoMessagesConfig() {
+        return this.autoMessagesConfig;
     }
 
-    public Log getLog() {
-        return this.log;
+    public LogConfig getLogConfig() {
+        return this.logConfig;
     }
 
-    public void setLog(final Log log) {
-        this.log = log;
-    }
 
     public DiscordType getIntegrationType() {
         return this.integrationType;
     }
 
-    public void setIntegrationType(final DiscordType integrationType) {
-        this.integrationType = integrationType;
+    public WebHookConfig getWebHookConfig() {
+        return this.webHookConfig;
     }
 
-    public WebHook getWebHook() {
-        return this.webHook;
+    public DiscordBotConfig getDiscordBotConfig() {
+        return this.discordBotConfig;
     }
 
-    public void setWebHook(final WebHook webHook) {
-        this.webHook = webHook;
-    }
-
-    public DiscordBot getDiscordBot() {
-        return this.discordBot;
-    }
-
-    public void setDiscordBot(final DiscordBot discordBot) {
-        this.discordBot = discordBot;
-    }
-
-    public Messages getMessages() {
-        return this.messages;
-    }
-
-    public void setMessages(final Messages messages) {
-        this.messages = messages;
+    public DiscordMessagesConfig getDiscordMessagesConfig() {
+        return this.discordMessagesConfig;
     }
 
     public boolean isDebug() {

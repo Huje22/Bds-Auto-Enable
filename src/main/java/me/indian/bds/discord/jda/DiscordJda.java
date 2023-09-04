@@ -46,10 +46,10 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
-        this.serverID = this.config.getDiscordBot().getServerID();
-        this.channelID = this.config.getDiscordBot().getChannelID();
-        this.consoleID = this.config.getDiscordBot().getConsoleID();
-        this.logID = this.config.getDiscordBot().getLogID();
+        this.serverID = this.config.getDiscordBotConfig().getServerID();
+        this.channelID = this.config.getDiscordBotConfig().getChannelID();
+        this.consoleID = this.config.getDiscordBotConfig().getConsoleID();
+        this.logID = this.config.getDiscordBotConfig().getLogID();
         this.commandListener = new CommandListener(this, this.bdsAutoEnable);
         this.messageListener = new MessageListener(this, this.bdsAutoEnable);
         this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
@@ -64,7 +64,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     public void init() {
         final PackModule packModule = this.bdsAutoEnable.getWatchDog().getPackModule();
         this.logger.info("&aŁadowanie bota....");
-        if (this.config.getDiscordBot().getToken().isEmpty()) {
+        if (this.config.getDiscordBotConfig().getToken().isEmpty()) {
             this.logger.alert("&aNie znaleziono tokenu , pomijanie ładowania.");
             return;
         }
@@ -75,7 +75,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         }
 
         try {
-            this.jda = JDABuilder.create(this.config.getDiscordBot().getToken(), GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.MESSAGE_CONTENT)
+            this.jda = JDABuilder.create(this.config.getDiscordBotConfig().getToken(), GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.MESSAGE_CONTENT)
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS, CacheFlag.ONLINE_STATUS)
                     .enableCache(CacheFlag.EMOJI)
                     .setActivity(this.getCustomActivity())
@@ -157,8 +157,8 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     }
 
     private Activity getCustomActivity() {
-        final String activityMessage = this.config.getDiscordBot().getActivityMessage();
-        switch (Activity.ActivityType.valueOf(this.config.getDiscordBot().getActivity().toUpperCase())) {
+        final String activityMessage = this.config.getDiscordBotConfig().getActivityMessage();
+        switch (Activity.ActivityType.valueOf(this.config.getDiscordBotConfig().getActivity().toUpperCase())) {
             case PLAYING -> {
                 return Activity.playing(activityMessage);
             }
@@ -172,7 +172,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                 return Activity.listening(activityMessage);
             }
             case STREAMING -> {
-                return Activity.streaming(activityMessage, this.config.getDiscordBot().getStreamUrl());
+                return Activity.streaming(activityMessage, this.config.getDiscordBotConfig().getStreamUrl());
             }
             default -> {
                 this.logger.error("Wykryto nie wspierany status! ");
@@ -216,17 +216,17 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     @Override
     public void sendJoinMessage(final String playerName) {
-        this.sendMessage(this.config.getMessages().getJoinMessage().replaceAll("<name>", playerName));
+        this.sendMessage(this.config.getDiscordMessagesConfig().getJoinMessage().replaceAll("<name>", playerName));
     }
 
     @Override
     public void sendLeaveMessage(final String playerName) {
-        this.sendMessage(this.config.getMessages().getLeaveMessage().replaceAll("<name>", playerName));
+        this.sendMessage(this.config.getDiscordMessagesConfig().getLeaveMessage().replaceAll("<name>", playerName));
     }
 
     @Override
     public void sendPlayerMessage(final String playerName, final String playerMessage) {
-        this.sendMessage(this.config.getMessages().getMinecraftToDiscordMessage()
+        this.sendMessage(this.config.getDiscordMessagesConfig().getMinecraftToDiscordMessage()
                 .replaceAll("<name>", playerName)
                 .replaceAll("<msg>", playerMessage)
                 .replaceAll("@everyone", "/everyone/")
@@ -236,7 +236,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     @Override
     public void sendDeathMessage(final String playerName, final String deathMessage) {
-        this.sendMessage(this.config.getMessages().getDeathMessage()
+        this.sendMessage(this.config.getDiscordMessagesConfig().getDeathMessage()
                 .replaceAll("<name>", playerName)
                 .replaceAll("<casue>", deathMessage)
         );
@@ -244,37 +244,37 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     @Override
     public void sendDisabledMessage() {
-        this.sendMessage(this.config.getMessages().getDisabledMessage());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getDisabledMessage());
     }
 
     @Override
     public void sendDisablingMessage() {
-        this.sendMessage(this.config.getMessages().getDisablingMessage());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getDisablingMessage());
     }
 
     @Override
     public void sendProcessEnabledMessage() {
-        this.sendMessage(this.config.getMessages().getProcessEnabledMessage());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getProcessEnabledMessage());
     }
 
     @Override
     public void sendEnabledMessage() {
-        this.sendMessage(this.config.getMessages().getEnabledMessage());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getEnabledMessage());
     }
 
     @Override
     public void sendDestroyedMessage() {
-        this.sendMessage(this.config.getMessages().getDestroyedMessage());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getDestroyedMessage());
     }
 
     @Override
     public void sendAppRamAlert() {
-        this.sendMessage(this.getOwnerMention() + this.config.getMessages().getAppRamAlter());
+        this.sendMessage(this.getOwnerMention() + this.config.getDiscordMessagesConfig().getAppRamAlter());
     }
 
     @Override
     public void sendMachineRamAlert() {
-        this.sendMessage(this.getOwnerMention() + this.config.getMessages().getMachineRamAlter());
+        this.sendMessage(this.getOwnerMention() + this.config.getDiscordMessagesConfig().getMachineRamAlter());
     }
 
     @Override

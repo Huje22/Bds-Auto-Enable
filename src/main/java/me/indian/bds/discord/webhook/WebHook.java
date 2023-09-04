@@ -25,9 +25,9 @@ public class WebHook implements DiscordIntegration {
     public WebHook(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
         this.config = bdsAutoEnable.getConfig();
-        this.name = this.config.getWebHook().getName();
-        this.webhookURL = this.config.getWebHook().getUrl();
-        this.avatarUrl = this.config.getWebHook().getAvatarUrl();
+        this.name = this.config.getWebHookConfig().getName();
+        this.webhookURL = this.config.getWebHookConfig().getUrl();
+        this.avatarUrl = this.config.getWebHookConfig().getAvatarUrl();
         this.service = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-WebHook"));
     }
 
@@ -117,17 +117,17 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendJoinMessage(final String playerName) {
-        this.sendMessage(this.config.getMessages().getJoinMessage().replaceAll("<name>", playerName));
+        this.sendMessage(this.config.getDiscordMessagesConfig().getJoinMessage().replaceAll("<name>", playerName));
     }
 
     @Override
     public void sendLeaveMessage(final String playerName) {
-        this.sendMessage(this.config.getMessages().getLeaveMessage().replaceAll("<name>", playerName));
+        this.sendMessage(this.config.getDiscordMessagesConfig().getLeaveMessage().replaceAll("<name>", playerName));
     }
 
     @Override
     public void sendPlayerMessage(final String playerName, final String playerMessage) {
-        this.sendMessage(this.config.getMessages().getMinecraftToDiscordMessage()
+        this.sendMessage(this.config.getDiscordMessagesConfig().getMinecraftToDiscordMessage()
                 .replaceAll("<name>", playerName)
                 .replaceAll("<msg>", playerMessage)
         );
@@ -135,7 +135,7 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendDeathMessage(final String playerName, final String deathMessage) {
-        this.sendMessage(this.config.getMessages().getDeathMessage()
+        this.sendMessage(this.config.getDiscordMessagesConfig().getDeathMessage()
                 .replaceAll("<name>", playerName)
                 .replaceAll("<casue>", deathMessage)
         );
@@ -143,37 +143,37 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendDisabledMessage() {
-        this.sendMessage(this.config.getMessages().getDisabledMessage());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getDisabledMessage());
     }
 
     @Override
     public void sendDisablingMessage() {
-        this.sendMessage(this.config.getMessages().getDisablingMessage());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getDisablingMessage());
     }
 
     @Override
     public void sendProcessEnabledMessage() {
-        this.sendMessage(this.config.getMessages().getProcessEnabledMessage());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getProcessEnabledMessage());
     }
 
     @Override
     public void sendEnabledMessage() {
-        this.sendMessage(this.config.getMessages().getEnabledMessage());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getEnabledMessage());
     }
 
     @Override
     public void sendDestroyedMessage() {
-        this.sendMessage(this.config.getMessages().getDestroyedMessage());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getDestroyedMessage());
     }
 
     @Override
     public void sendAppRamAlert() {
-        this.sendMessage(this.config.getMessages().getAppRamAlter());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getAppRamAlter());
     }
 
     @Override
     public void sendMachineRamAlert() {
-        this.sendMessage(this.config.getMessages().getMachineRamAlter());
+        this.sendMessage(this.config.getDiscordMessagesConfig().getMachineRamAlter());
     }
 
     @Override

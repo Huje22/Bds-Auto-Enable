@@ -2,7 +2,7 @@ package me.indian.bds.config.sub.discord;
 
 import eu.okaeri.configs.OkaeriConfig;
 
-public class WebHook extends OkaeriConfig {
+public class WebHookConfig extends OkaeriConfig {
     
     private String name = "Tezak";
     private String url = "https://discord.com/api/webhooks/....";

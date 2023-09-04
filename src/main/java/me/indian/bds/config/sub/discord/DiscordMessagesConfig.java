@@ -2,7 +2,7 @@ package me.indian.bds.config.sub.discord;
 
 import eu.okaeri.configs.OkaeriConfig;
 
-public class Messages extends OkaeriConfig {
+public class DiscordMessagesConfig extends OkaeriConfig {
 
     private String replyStatement = " (&dOdpowiada na&a: &a<author> &r»»&b <msg> &r)";
     private String edited = " (Edytowano)";

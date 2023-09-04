@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Log extends OkaeriConfig {
+public class LogConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Nie zapisuje tych informacji które zawierają:"})
@@ -26,7 +26,7 @@ public class Log extends OkaeriConfig {
     @Comment("UWAGA!!! Jeśli używasz 1gb ram dla aplikacji (co jest w miare optymalne) nie usuwaj nic z tąd albo daj więcej ram!!!!")
     private List<String> noDiscordConsole = new ArrayList<>();
 
-    public Log() {
+    public LogConfig() {
         this.noDiscordConsole.addAll(this.noConsole);
     }
 
