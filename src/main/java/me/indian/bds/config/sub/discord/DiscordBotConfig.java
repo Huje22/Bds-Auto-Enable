@@ -28,7 +28,7 @@ public class DiscordBotConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Pamiętaj że oznaczenie kogoś zawiera jego ID a ono jest długie!"})
     private int allowedLength = 500;
-    private boolean deleteOnReachLimit = true;
+    private boolean deleteOnReachLimit = false;
     private String reachedMessage = "Osiągnięto dozwoloną ilosc znaków!";
     @Comment({""})
     @Comment({"Aktywność"})
