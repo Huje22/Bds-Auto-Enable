@@ -42,6 +42,20 @@ public class PlayerManager {
         });
     }
 
+    /*
+TODO:
+Dodać do paczki generowanie kodu 5 znakowanego
+po wpisaniu na czacie !link
+i będzie to wypisywało do konsoli `PlayerLink:NAZWA Code:KOD`
+i będzie zapisywanie pierw do mapki,
+i potem gdy użytkownik wpiszę na Discord /link KOD 
+wyszuka kod w mapce i jeśli kod będzie poprawny połączy
+weźmie jego discord id i przypisze w json NICKMC:IDDISCORD, 
+pozwoli to na ustawianie nazwy z mc na discord i w dalszej przyszłości na
+Proximity Voice chat
+
+*/
+
     private void playerQuit(final String logEntry) {
         final String patternString = "Player disconnected: ([^,]+)";
         final Pattern pattern = Pattern.compile(patternString);
