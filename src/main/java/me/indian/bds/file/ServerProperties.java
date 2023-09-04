@@ -73,7 +73,7 @@ public class ServerProperties {
     public int getServerPort() {
         try {
             return Integer.parseInt(this.properties.getProperty("server-port"));
-        } catch (final Exception exception) {
+        } catch (final NumberFormatException exception) {
             this.setServerPort(19132);
             return 19132;
         }
@@ -87,7 +87,7 @@ public class ServerProperties {
     public int getServerPortV6() {
         try {
             return Integer.parseInt(this.properties.getProperty("server-portv6"));
-        } catch (final Exception exception) {
+        } catch (final NumberFormatException exception) {
             this.setServerPortV6(19133);
             return 19133;
         }
@@ -101,7 +101,7 @@ public class ServerProperties {
     public int getMaxThreads() {
         try {
             return Integer.parseInt(this.properties.getProperty("max-threads"));
-        } catch (final Exception exception) {
+        } catch (final NumberFormatException exception) {
             this.setMaxThreads(8);
             return 8;
         }
@@ -115,7 +115,7 @@ public class ServerProperties {
     public int getMaxPlayers() {
         try {
             return Integer.parseInt(this.properties.getProperty("max-players"));
-        } catch (final Exception exception) {
+        } catch (final NumberFormatException exception) {
             this.setMaxPlayers(10);
             return 10;
         }
@@ -129,7 +129,7 @@ public class ServerProperties {
     public int getViewDistance() {
         try {
             return Integer.parseInt(this.properties.getProperty("view-distance"));
-        } catch (final Exception exception) {
+        } catch (final NumberFormatException exception) {
             this.setViewDistance(32);
             return 32;
         }
@@ -144,7 +144,7 @@ public class ServerProperties {
     public int getTickDistance() {
         try {
             return Integer.parseInt(this.properties.getProperty("tick-distance"));
-        } catch (final Exception exception) {
+        } catch (final NumberFormatException exception) {
             this.setTickDistance(4);
             return 4;
         }
@@ -172,7 +172,7 @@ public class ServerProperties {
     public int getPlayerIdleTimeout() {
         try {
             return Integer.parseInt(this.properties.getProperty("player-idle-timeout"));
-        } catch (final Exception exception) {
+        } catch (final NumberFormatException exception) {
             this.setPlayerIdleTimeout(30);
             return 30;
         }
