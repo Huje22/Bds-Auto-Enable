@@ -48,6 +48,14 @@ public class ServerProperties {
         this.loadProperties();
     }
 
+    public boolean isOnlineMode() {
+        try {
+            return Boolean.parseBoolean(this.properties.getProperty("online-mode"));
+        } catch (final Exception exception) {
+            return true;
+        }
+    }
+
     public String getWorldName() {
         try {
             return this.properties.getProperty("level-name");
