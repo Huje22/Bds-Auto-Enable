@@ -59,6 +59,12 @@ public class Metrics {
     // The uuid of the server
     private static String serverUUID;
     private static Random random;
+     private static ServerProcess server;
+    private static BDSAutoEnable bdsAutoEnable;
+    // A list with all custom charts
+    private final List<CustomChart> charts = new ArrayList<>();
+    // Is bStats enabled on this server?
+    private boolean enabled;
 
     static {
         // You can use the property to disable the check in your test environment
@@ -72,13 +78,6 @@ public class Metrics {
             }
         }
     }
-
-    private static ServerProcess server;
-    private static BDSAutoEnable bdsAutoEnable;
-    // A list with all custom charts
-    private final List<CustomChart> charts = new ArrayList<>();
-    // Is bStats enabled on this server?
-    private boolean enabled;
 
     public Metrics(final BDSAutoEnable bdsAutoEnable) {
         if (bdsAutoEnable == null) {
@@ -105,7 +104,7 @@ public class Metrics {
      * @param data          The data to send.
      * @throws Exception If the request failed.
      */
-    private static void sendData(final BDSAutoEnable bdsAutoEnable, final JsonObject data) throws Exception {
+    private static void sendData(final JsonObject data) throws Exception {
         if (data == null) {
             throw new IllegalArgumentException("Data nie może być nullem!");
         }
@@ -286,11 +285,23 @@ public class Metrics {
     @SuppressWarnings("unchecked")
     private void submitData() {
         final JsonObject data = this.getServerData();
+        
+final  JsonArray pluginData = new JsonArray();
+final  JsonObject pluginObject = new JsonObject();
+
+pluginObject.addProperty("pluginName", "BDS-Auto-Enable");
+pluginObject.addProperty("pluginVersion", "1.0");
+pluginObject.addProperty("author", "IndianBartonka");
+
+pluginData.add(pluginObject);
+
+data.add("plugins", pluginData);
+
 
         new ThreadUtil("Data sender Thread", () -> {
             try {
                 // Send the data
-                sendData(bdsAutoEnable, data);
+                sendData(data);
             } catch (final Exception e) {
                 // Something went wrong! :(
                 if (logFailedRequests) {
