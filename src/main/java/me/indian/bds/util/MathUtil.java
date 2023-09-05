@@ -25,7 +25,7 @@ public final class MathUtil {
         return Duration.ofMinutes(minutes).toMillis();
     }
 
-    public static long secondToMillis(final int seconds) {
+    public static long secondToMillis(final long seconds) {
         return Duration.ofSeconds(seconds).toMillis();
     }
 

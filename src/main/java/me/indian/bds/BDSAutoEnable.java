@@ -2,6 +2,7 @@ package me.indian.bds;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
+import me.indian.bds.bstats.OurMetrics;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -91,6 +92,7 @@ public class BDSAutoEnable {
         this.discord.init();
         this.serverProcess.startProcess();
         new AutoMessages(this, this.serverProcess).start();
+        new OurMetrics(this);
     }
 
     private void checkFlags() {
