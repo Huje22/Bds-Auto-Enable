@@ -67,12 +67,11 @@ public class CommandListener extends ListenerAdapter {
     @Override
     public void onSlashCommandInteraction(final SlashCommandInteractionEvent event) {
         final Member member = event.getMember();
-
+        if (member == null) return;
         this.discordJda.logCommand(this.getCommandEmbed(event));
 
         switch (event.getName()) {
             case "cmd" -> {
-                if (member == null) return;
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
                     final String command = event.getOption("command").getAsString();
                     if (command.isEmpty()) {
@@ -132,7 +131,7 @@ public class CommandListener extends ListenerAdapter {
             case "backup" -> {
                 final OptionMapping command = event.getOption("load");
                 if (command != null && !command.getAsString().isEmpty()) {
-                    if (member != null && member.hasPermission(Permission.ADMINISTRATOR)) {
+                    if (member.hasPermission(Permission.ADMINISTRATOR)) {
                         final String backupName = command.getAsString();
 
                         for (final Path path : this.backupModule.getBackups()) {
@@ -144,15 +143,19 @@ public class CommandListener extends ListenerAdapter {
                             }
                         }
                         event.reply("Nie można znaleźć: " + backupName).setEphemeral(true).queue();
-                        return;
                     } else {
                         event.reply("Nie posiadasz permisji").setEphemeral(true).queue();
                     }
+                    return;
                 }
 
-                event.replyEmbeds(this.getBackupEmbed())
-                        .addActionRow(ActionRow.of(this.backupButtons).getComponents())
-                        .setEphemeral(true).queue();
+                if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                    event.replyEmbeds(this.getBackupEmbed())
+                            .addActionRow(ActionRow.of(this.backupButtons).getComponents())
+                            .setEphemeral(true).queue();
+                } else {
+                    event.replyEmbeds(this.getBackupEmbed()).setEphemeral(true).queue();
+                }
             }
 
             case "playtime" -> {
@@ -182,8 +185,7 @@ public class CommandListener extends ListenerAdapter {
                             .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                             .setEphemeral(true).queue();
                 } else {
-                    event.replyEmbeds(this.getDifficultyEmbed())
-                            .setEphemeral(true).queue();
+                    event.replyEmbeds(this.getDifficultyEmbed()).setEphemeral(true).queue();
                 }
             }
         }
