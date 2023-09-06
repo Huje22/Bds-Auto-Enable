@@ -86,10 +86,8 @@ public class BackupModule {
     }
 
     public void backup() {
-        this.service.execute(() -> {
-            final long time = MathUtil.minutesToMillis(this.config.getWatchDogConfig().getBackup().getBackupFrequency());
             if (this.config.getWatchDogConfig().getBackup().isBackup()) {
-                this.logger.debug("Ścieżka świata backupów " + Defaults.getWorldsPath() + this.worldName);
+                final long time = MathUtil.minutesToMillis(this.config.getWatchDogConfig().getBackup().getBackupFrequency());
                 final TimerTask backupTask = new TimerTask() {
                     @Override
                     public void run() {
@@ -99,7 +97,6 @@ public class BackupModule {
                 };
                 this.timer.scheduleAtFixedRate(backupTask, time, time);
             }
-        });
     }
 
     public void forceBackup() {
@@ -114,7 +111,7 @@ public class BackupModule {
             return;
         }
 
-        if (this.serverProcess.isEnabled()) return;
+        if (!this.serverProcess.isEnabled()) return;
         this.backuping = true;
         final long startTime = System.currentTimeMillis();
         this.service.execute(() -> {
