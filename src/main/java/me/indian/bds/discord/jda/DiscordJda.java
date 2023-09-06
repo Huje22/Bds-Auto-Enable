@@ -126,8 +126,9 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
         this.guild.updateCommands().addCommands(
                 Commands.slash("list", "lista graczy online."),
-                Commands.slash("backup", "tworzenie bądź ostatni czas backupa")
+                Commands.slash("backup", "Tworzenie bądź ostatni czas backupa")
                         .addOption(OptionType.STRING, "load", "Załaduj backup po jego pełnej nazwie", false),
+                Commands.slash("difficulty", "Zmienia poziom trudności"),
                 Commands.slash("ping", "aktualny ping bot z serwerami discord"),
                 Commands.slash("stats", "Statystyki Servera i aplikacji."),
                 Commands.slash("cmd", "Wykonuje polecenie w konsoli.")

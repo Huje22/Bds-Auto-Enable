@@ -4,6 +4,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.ServerSetting;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
@@ -40,7 +41,7 @@ public class CommandListener extends ListenerAdapter {
     private final BDSAutoEnable bdsAutoEnable;
     private final ExecutorService reserve;
     private final Config config;
-    private final List<Button> backupButtons;
+    private final List<Button> backupButtons, difficultyButtons;
     private JDA jda;
     private ServerProcess serverProcess;
     private BackupModule backupModule;
@@ -51,6 +52,7 @@ public class CommandListener extends ListenerAdapter {
         this.reserve = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-reserve"));
         this.config = this.bdsAutoEnable.getConfig();
         this.backupButtons = new ArrayList<>();
+        this.difficultyButtons = new ArrayList<>();
     }
 
     public void init() {
@@ -174,14 +176,71 @@ public class CommandListener extends ListenerAdapter {
 
                 event.replyEmbeds(embed).setEphemeral(true).queue();
             }
+            case "difficulty" -> event.replyEmbeds(this.getDifficultyEmbed())
+                    .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
+                    .setEphemeral(true).queue();
         }
     }
 
     @Override
     public void onButtonInteraction(final ButtonInteractionEvent event) {
+        this.serveDifficultyButton(event);
+        this.serveBackupButton(event);
+        this.serveDeleteBackupButton(event);
+    }
+
+
+    private void serveDifficultyButton(final ButtonInteractionEvent event) {
         final Member member = event.getMember();
         if (member == null) return;
+        switch (event.getComponentId()) {
+            case "peaceful" -> {
+                if (!member.hasPermission(Permission.ADMINISTRATOR)) {
+                    event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
+                    return;
+                }
+                this.serverProcess.changeSetting(ServerSetting.difficulty, 0);
+                event.replyEmbeds(this.getDifficultyEmbed())
+                        .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
+                        .setEphemeral(true).queue();
+            }
+            case "easy" -> {
+                if (!member.hasPermission(Permission.ADMINISTRATOR)) {
+                    event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
+                    return;
+                }
+                this.serverProcess.changeSetting(ServerSetting.difficulty, 1);
+                event.replyEmbeds(this.getDifficultyEmbed())
+                        .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
+                        .setEphemeral(true).queue();
+            }
+            case "normal" -> {
+                if (!member.hasPermission(Permission.ADMINISTRATOR)) {
+                    event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
+                    return;
+                }
+                this.serverProcess.changeSetting(ServerSetting.difficulty, 2);
+                event.replyEmbeds(this.getDifficultyEmbed())
+                        .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
+                        .setEphemeral(true).queue();
+            }
+            case "hard" -> {
+                if (!member.hasPermission(Permission.ADMINISTRATOR)) {
+                    event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
+                    return;
+                }
+                this.serverProcess.changeSetting(ServerSetting.difficulty, 3);
+                event.replyEmbeds(this.getDifficultyEmbed())
+                        .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
+                        .setEphemeral(true).queue();
+            }
+        }
+    }
 
+
+    private void serveDeleteBackupButton(final ButtonInteractionEvent event) {
+        final Member member = event.getMember();
+        if (member == null) return;
         for (final Path path : this.backupModule.getBackups()) {
             final String fileName = path.getFileName().toString();
             if (event.getComponentId().equals("delete_backup:" + fileName)) {
@@ -205,25 +264,68 @@ public class CommandListener extends ListenerAdapter {
                 }
             }
         }
+    }
 
-        switch (event.getComponentId()) {
-            case "backup" -> {
-                if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                    this.backupModule.forceBackup();
-                    this.reserve.execute(() -> {
+    private void serveBackupButton(final ButtonInteractionEvent event) {
+        final Member member = event.getMember();
+        if (member == null) return;
+        if (event.getComponentId().equals("backup")) {
+            if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                this.backupModule.forceBackup();
+                this.reserve.execute(() -> {
 //                        ThreadUtil.sleep((int) this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2);
-                        event.deferReply().addEmbeds(this.getBackupEmbed()).addActionRow(ActionRow.of(this.backupButtons)
-                                        .getComponents()).setEphemeral(true)
-                                .queueAfter((long) (this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2), TimeUnit.SECONDS);
+                    event.deferReply().addEmbeds(this.getBackupEmbed()).addActionRow(ActionRow.of(this.backupButtons)
+                                    .getComponents()).setEphemeral(true)
+                            .queueAfter((long) (this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2), TimeUnit.SECONDS);
 //ZBAGOWANE GÓWNO
-                    });
-                } else {
-                    event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
-                }
+                });
+            } else {
+                event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
             }
-            default -> event.reply("Nie znaleziono guzika").setEphemeral(true).queue();
         }
     }
+
+    private MessageEmbed getDifficultyEmbed() {
+        final int currentDifficulty = this.bdsAutoEnable.getServerProperties().getDifficulty();
+        this.difficultyButtons.clear();
+
+        final Button peaceful = Button.primary("peaceful", "Pokojowy").withEmoji(Emoji.fromUnicode("☮️"));
+        final Button easy = Button.primary("easy", "Easy").withEmoji(Emoji.fromFormatted("<:NOOB:717474733167476766>"));
+        final Button normal = Button.primary("normal", "Normalny").withEmoji(Emoji.fromFormatted("<:bao_block_grass:1019717534976577617>"));
+        final Button hard = Button.primary("hard", "Trudny").withEmoji(Emoji.fromUnicode("⚠️"));
+
+        if (currentDifficulty != 0) {
+            this.difficultyButtons.add(peaceful);
+        } else {
+            this.difficultyButtons.add(peaceful.asDisabled());
+        }
+
+        if (currentDifficulty != 1) {
+            this.difficultyButtons.add(easy);
+        } else {
+            this.difficultyButtons.add(easy.asDisabled());
+        }
+
+        if (currentDifficulty != 2) {
+            this.difficultyButtons.add(normal);
+        } else {
+            this.difficultyButtons.add(normal.asDisabled());
+        }
+
+        if (currentDifficulty != 3) {
+            this.difficultyButtons.add(hard);
+        } else {
+            this.difficultyButtons.add(hard.asDisabled());
+        }
+
+
+        return new EmbedBuilder()
+                .setTitle("Difficulty")
+                .setDescription("Aktualny poziom trudności to: " + "`" + currentDifficulty + "`")
+                .setColor(Color.BLUE)
+                .build();
+    }
+
 
     private MessageEmbed getBackupEmbed() {
         final String backupStatus = "`" + this.backupModule.getStatus() + "`\n";
