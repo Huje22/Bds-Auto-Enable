@@ -193,6 +193,12 @@ public class CommandListener extends ListenerAdapter {
 
     @Override
     public void onButtonInteraction(final ButtonInteractionEvent event) {
+        final Member member = event.getMember();
+        if (member == null) return;
+        if (!member.hasPermission(Permission.ADMINISTRATOR)) {
+            event.reply("Nie masz permisij!").setEphemeral(true).queue();
+            return;
+        }
         this.serveDifficultyButton(event);
         this.serveBackupButton(event);
         this.serveDeleteBackupButton(event);
@@ -200,7 +206,6 @@ public class CommandListener extends ListenerAdapter {
 
 
     private void serveDifficultyButton(final ButtonInteractionEvent event) {
-        if (event.getMember() != null || !event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
         switch (event.getComponentId()) {
             case "peaceful" -> {
                 this.serverProcess.changeSetting(ServerSetting.difficulty, 0);
@@ -231,8 +236,6 @@ public class CommandListener extends ListenerAdapter {
 
 
     private void serveDeleteBackupButton(final ButtonInteractionEvent event) {
-        ;
-        if (event.getMember() != null || !event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
         for (final Path path : this.backupModule.getBackups()) {
             final String fileName = path.getFileName().toString();
             if (event.getComponentId().equals("delete_backup:" + fileName)) {
@@ -255,7 +258,6 @@ public class CommandListener extends ListenerAdapter {
     }
 
     private void serveBackupButton(final ButtonInteractionEvent event) {
-        if (event.getMember() != null || !event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
         if (event.getComponentId().equals("backup")) {
             this.backupModule.forceBackup();
             this.reserve.execute(() -> {
