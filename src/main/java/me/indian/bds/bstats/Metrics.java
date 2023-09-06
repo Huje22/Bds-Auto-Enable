@@ -101,7 +101,6 @@ public class Metrics {
     /**
      * Sends the data to the bStats server.
      *
-     * @param bdsAutoEnable Any bdsAutoEnable. It's just used to get a logger instance.
      * @param data          The data to send.
      * @throws Exception If the request failed.
      */
@@ -210,6 +209,7 @@ public class Metrics {
         final int randomMinutes = 3 + random.nextInt(4); // 3 do 6 włącznie
         final int secondRandomMinutes = 3 + random.nextInt(10);
 
+//        timer.scheduleAtFixedRate(submitTask, 0, MathUtil.minutesToMillis(2));
         timer.scheduleAtFixedRate(submitTask, MathUtil.minutesToMillis(randomMinutes + secondRandomMinutes), MathUtil.minutesToMillis(30));
     }
 
@@ -270,6 +270,7 @@ public class Metrics {
         data.addProperty("onlineMode", onlineMode);
         data.addProperty("bukkitVersion", softwareVersion);
         data.addProperty("bukkitName", softwareName);
+        data.addProperty("serverSoftware" , "Okkkk");
 
         data.addProperty("javaVersion", javaVersion);
         data.addProperty("osName", osName);
