@@ -6,6 +6,7 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.player.PlayerManager;
+import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
@@ -243,29 +244,6 @@ public class ServerProcess {
         }
     }
 
-    public void sendToConsole(final String command) {
-        if (this.writer == null) {
-            this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ, Writer jest&c nullem&r!");
-            return;
-        }
-        if (this.process == null || !this.process.isAlive()) {
-            this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&b nullem&r albo nie jest aktywny");
-            return;
-        }
-
-        this.writer.println(command);
-        this.writer.flush();
-    }
-
-    public String commandAndResponse(final String command)  {
-        if (ThreadUtil.isImportantThread()) {
-            throw new IllegalAccessError("Nie możesz wykonac tego na tym wątku!");
-        }
-        this.sendToConsole(command);
-        ThreadUtil.sleep(1);
-        return this.lastLine == null ? "null" : this.lastLine;
-    }
-
     public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
         this.discord.sendDisablingMessage();
@@ -325,32 +303,51 @@ public class ServerProcess {
         this.discord.disableBot();
     }
 
-    private boolean containsNotAllowedToFileLog(final String msg) {
-        for (final String s : this.config.getLogConfig().getNoFile()) {
-            if (msg.toLowerCase().contains(s.toLowerCase())) {
-                return true;
-            }
+    public void sendToConsole(final String command) {
+        if (this.writer == null) {
+            this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ, Writer jest&c nullem&r!");
+            return;
         }
-        return false;
+        if (!this.isEnabled()) {
+            this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&b nullem&r albo nie jest aktywny");
+            return;
+        }
+
+        this.writer.println(command);
+        this.writer.flush();
     }
 
-    private boolean containsNotAllowedToConsoleLog(final String msg) {
-        for (final String s : this.config.getLogConfig().getNoConsole()) {
-            if (msg.toLowerCase().contains(s.toLowerCase())) {
-                return true;
-            }
+    public String commandAndResponse(final String command) {
+        if (ThreadUtil.isImportantThread()) {
+            throw new IllegalAccessError("Nie możesz wykonac tego na tym wątku!");
         }
-        return false;
+        this.sendToConsole(command);
+        ThreadUtil.sleep(1);
+        return this.lastLine == null ? "null" : this.lastLine;
     }
 
-    private boolean containsNotAllowedToDiscordConsoleLog(final String msg) {
-        for (final String s : this.config.getLogConfig().getNoDiscordConsole()) {
-            if (msg.toLowerCase().contains(s.toLowerCase())) {
-                return true;
+    public void changeSetting(final ServerSetting serverSetting, final Object option) {
+        switch (serverSetting) {
+            case difficulty -> {
+                if (option instanceof Integer lvl) {
+                    lvl = MathUtil.getCorrectNumber(lvl, 0, 3);
+                    this.sendToConsole("changesetting " + serverSetting.getName() + " " + lvl);
+                    this.bdsAutoEnable.getServerProperties().setDifficulty(lvl);
+                    this.logger.info("Zmieniono&b difficulty&r na:&1 " + lvl);
+                }
             }
+            case allowCheats -> {
+                if (option instanceof final Boolean opt) {
+                    this.sendToConsole("changesetting " + serverSetting.getName() + " " + opt);
+                    this.bdsAutoEnable.getServerProperties().setAllowCheats(opt);
+                    this.logger.info("Zmieniono&b difficulty&r na:&1 " + opt);
+                }
+            }
+
+            default -> this.logger.error("Nie znany typ:&1 " + serverSetting);
         }
-        return false;
     }
+
 
     public void kickAllPlayers(final String msg) {
         if (this.playerManager.getOnlinePlayers().isEmpty()) {
@@ -401,11 +398,38 @@ public class ServerProcess {
         return this.startTime;
     }
 
-    public boolean isEnabled(){
+    public boolean isEnabled() {
         return (this.process != null && this.process.isAlive());
     }
 
     public Process getProcess() {
         return this.process;
+    }
+
+    private boolean containsNotAllowedToFileLog(final String msg) {
+        for (final String s : this.config.getLogConfig().getNoFile()) {
+            if (msg.toLowerCase().contains(s.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean containsNotAllowedToConsoleLog(final String msg) {
+        for (final String s : this.config.getLogConfig().getNoConsole()) {
+            if (msg.toLowerCase().contains(s.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean containsNotAllowedToDiscordConsoleLog(final String msg) {
+        for (final String s : this.config.getLogConfig().getNoDiscordConsole()) {
+            if (msg.toLowerCase().contains(s.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
