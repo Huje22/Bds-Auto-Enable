@@ -70,6 +70,21 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
+    public int getDifficulty() {
+        try {
+            return Integer.parseInt(this.properties.getProperty("difficulty"));
+        } catch (final NumberFormatException exception) {
+            this.setDifficulty(2);
+            return 2;
+        }
+    }
+
+    public void setDifficulty(final int port) {
+        this.properties.setProperty("difficulty", String.valueOf(MathUtil.getCorrectNumber(port, 0, 3)));
+        this.reloadServerProperties();
+    }
+
+
     public int getServerPort() {
         try {
             return Integer.parseInt(this.properties.getProperty("server-port"));
