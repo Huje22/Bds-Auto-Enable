@@ -87,7 +87,7 @@ public class BackupModule {
 
     public void backup() {
         this.service.execute(() -> {
-        final long time = MathUtil.minutesToMillis(this.config.getWatchDogConfig().getBackup().getBackupFrequency());
+            final long time = MathUtil.minutesToMillis(this.config.getWatchDogConfig().getBackup().getBackupFrequency());
             if (this.config.getWatchDogConfig().getBackup().isBackup()) {
                 this.logger.debug("Ścieżka świata backupów " + Defaults.getWorldsPath() + this.worldName);
                 final TimerTask backupTask = new TimerTask() {

@@ -1,8 +1,9 @@
 package me.indian.bds.util;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.ThreadFactory;
-import org.jetbrains.annotations.NotNull;
 
 public final class ThreadUtil implements ThreadFactory {
 
@@ -47,7 +48,7 @@ public final class ThreadUtil implements ThreadFactory {
         return availableThreads;
     }
 
-    public static boolean isImportantThread(){
+    public static boolean isImportantThread() {
         final String threadName = Thread.currentThread().getName();
         return threadName.contains("Console") || threadName.contains("Server process");
     }

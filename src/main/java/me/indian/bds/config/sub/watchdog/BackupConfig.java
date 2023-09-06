@@ -12,20 +12,20 @@ public class BackupConfig extends OkaeriConfig {
         return this.backup;
     }
 
-    public int getBackupFrequency() {
-        return this.backupFrequency;
-    }
-
-    public double getLastBackupTime() {
-        return this.lastBackupTime;
-    }
-
     public void setBackup(final boolean backup) {
         this.backup = backup;
     }
 
+    public int getBackupFrequency() {
+        return this.backupFrequency;
+    }
+
     public void setBackupFrequency(final int backupFrequency) {
         this.backupFrequency = backupFrequency;
+    }
+
+    public double getLastBackupTime() {
+        return this.lastBackupTime;
     }
 
     public void setLastBackupTime(final double lastBackupTime) {

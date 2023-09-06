@@ -7,11 +7,11 @@ import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.webhook.WebHook;
-import me.indian.bds.server.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.VersionManager;
 import me.indian.bds.manager.player.PlayerManager;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.ServerProperties;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
@@ -47,7 +47,7 @@ public class BDSAutoEnable {
         this.scanner = new Scanner(System.in);
         this.config = ConfigManager.create(Config.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(Defaults.getAppDir() + File.separator +  "config.yml");
+            it.withBindFile(Defaults.getAppDir() + File.separator + "config.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
@@ -61,7 +61,8 @@ public class BDSAutoEnable {
         switch (this.config.getIntegrationType()) {
             case WEBHOOK -> this.discord = new WebHook(this);
             case JDA -> this.discord = new DiscordJda(this);
-            default -> this.logger.error("Nie znany typ integracji discord! (" + this.config.getIntegrationType() + ")");
+            default ->
+                    this.logger.error("Nie znany typ integracji discord! (" + this.config.getIntegrationType() + ")");
         }
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
@@ -98,7 +99,7 @@ public class BDSAutoEnable {
     private void checkFlags() {
         final List<String> flags = ManagementFactory.getRuntimeMXBean().getInputArguments();
         if (flags.isEmpty()) return;
-        this.logger.debug("Wykryte flagi startowe:&b " + MessageUtil.listToString(flags , " &a,&b "));
+        this.logger.debug("Wykryte flagi startowe:&b " + MessageUtil.listToString(flags, " &a,&b "));
     }
 
     private void checkEncoding() {
@@ -118,10 +119,11 @@ public class BDSAutoEnable {
 
     private void checkMemory() {
         final long maxMem = MathUtil.bytesToMB(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax());
-        if (maxMem < 1000) this.logger.critical("&cWykryto małą ilość pamięci przeznaczonej dla aplikacji! &b(&a" + maxMem + " mb&b)");
+        if (maxMem < 1000)
+            this.logger.critical("&cWykryto małą ilość pamięci przeznaczonej dla aplikacji! &b(&a" + maxMem + " mb&b)");
     }
 
-    private void checkExecutable(){
+    private void checkExecutable() {
         if (!FileUtil.canExecute(this.config.getFilesPath() + File.separator + this.config.getFileName())) {
             this.logger.critical("&cBrak odpowiednich uprawnień!");
             switch (this.config.getSystem()) {

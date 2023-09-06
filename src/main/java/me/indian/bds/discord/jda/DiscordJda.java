@@ -69,7 +69,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             return;
         }
         if (!packModule.isLoaded()) {
-            this.logger.error("&cNie załadowano paczki&b " + packModule.getPackName() +  "&4.&cBot nie może bez niej normalnie działać");
+            this.logger.error("&cNie załadowano paczki&b " + packModule.getPackName() + "&4.&cBot nie może bez niej normalnie działać");
             this.logger.error("Możesz znaleźć ją tu:&b https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack");
             return;
         }
@@ -153,7 +153,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     }
 
     public String getOwnerMention() {
-        if(this.guild == null) return "";
+        if (this.guild == null) return "";
         return (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");
     }
 

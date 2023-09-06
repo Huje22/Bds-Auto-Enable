@@ -59,12 +59,8 @@ public class Metrics {
     // The uuid of the server
     private static String serverUUID;
     private static Random random;
-     private static ServerProcess server;
+    private static ServerProcess server;
     private static BDSAutoEnable bdsAutoEnable;
-    // A list with all custom charts
-    private final List<CustomChart> charts = new ArrayList<>();
-    // Is bStats enabled on this server?
-    private boolean enabled;
 
     static {
         // You can use the property to disable the check in your test environment
@@ -78,6 +74,11 @@ public class Metrics {
             }
         }
     }
+
+    // A list with all custom charts
+    private final List<CustomChart> charts = new ArrayList<>();
+    // Is bStats enabled on this server?
+    private boolean enabled;
 
     public Metrics(final BDSAutoEnable bdsAutoEnable) {
         if (bdsAutoEnable == null) {
@@ -295,7 +296,7 @@ public class Metrics {
         pluginData.add(pluginObject);
 
         data.add("plugins", pluginData);
-        
+
         new ThreadUtil("Data sender Thread", () -> {
             try {
                 // Send the data

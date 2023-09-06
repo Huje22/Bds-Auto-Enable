@@ -8,11 +8,13 @@ public class WatchDogConfig extends OkaeriConfig {
 
 
     @Comment({""})
-    @Comment({"Backups"}) @CustomKey("backup")
+    @Comment({"Backups"})
+    @CustomKey("backup")
     private BackupConfig backupConfig = new BackupConfig();
 
     @Comment({""})
-    @Comment({"RamMonitor"}) @CustomKey("ramMonitor")
+    @Comment({"RamMonitor"})
+    @CustomKey("ramMonitor")
     private RamMonitorConfig ramMonitorConfig = new RamMonitorConfig();
 
 

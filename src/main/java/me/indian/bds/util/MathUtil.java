@@ -1,4 +1,5 @@
 package me.indian.bds.util;
+
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.Duration;
@@ -13,7 +14,7 @@ public final class MathUtil {
         df.setDecimalFormatSymbols(decimalFormatSymbols);
     }
 
-    public static int getCorrectNumber(final int number, final int mini, final int max){
+    public static int getCorrectNumber(final int number, final int mini, final int max) {
         return Math.max(mini, Math.min(max, number));
     }
 

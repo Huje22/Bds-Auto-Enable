@@ -84,7 +84,7 @@ public class CommandListener extends ListenerAdapter {
                             .setDescription(this.serverProcess.commandAndResponse(command))
                             .setColor(Color.BLUE)
                             .build();
-                        event.replyEmbeds(embed).setEphemeral(true).queue();
+                    event.replyEmbeds(embed).setEphemeral(true).queue();
                 } else {
                     event.reply("Nie posiadasz permisji!!").setEphemeral(true).queue();
                 }
@@ -353,7 +353,7 @@ public class CommandListener extends ListenerAdapter {
             final long gb = MathUtil.bytesToGB(fileSizeBytes);
             final long mb = MathUtil.getMbFromBytesGb(fileSizeBytes);
             final long kb = MathUtil.getKbFromBytesGb(fileSizeBytes);
-            description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + gb + "` GB `" + mb + "` MB `" + kb+ "` KB");
+            description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + gb + "` GB `" + mb + "` MB `" + kb + "` KB");
         }
 
         return new EmbedBuilder()

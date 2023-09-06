@@ -166,7 +166,7 @@ public class ServerProperties {
     }
 
     public void setTickDistance(final int tickDistance) {
-        this.properties.setProperty("tick-distance", String.valueOf(MathUtil.getCorrectNumber(tickDistance , 4, 12)));
+        this.properties.setProperty("tick-distance", String.valueOf(MathUtil.getCorrectNumber(tickDistance, 4, 12)));
         this.reloadServerProperties();
     }
 

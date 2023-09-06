@@ -2,6 +2,7 @@ package me.indian.bds.config.sub.log;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
