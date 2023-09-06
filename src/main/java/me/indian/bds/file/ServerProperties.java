@@ -57,7 +57,7 @@ TODO:
 Changes a server setting without having to restart the server. Currently only two settings are supported to be changed, allow-cheats (true or false) and difficulty (0, peaceful, 1, easy, 2, normal, 3 or hard). They do not modify the value that's specified in server.properties.
 "
 
-*\
+*/
 
     public boolean isOnlineMode() {
         try {
