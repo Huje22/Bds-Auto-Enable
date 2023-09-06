@@ -173,7 +173,7 @@ public class BackupModule {
                             } catch (final Exception ioException) {
                                 this.bdsAutoEnable.getDiscord().sendMessage("Świat prawdopodobnie uległ awarii podczas próby załadowania backup");
                                 ioException.printStackTrace();
-                                this.serverProcess.instantShutdown();
+                                System.exit(1);
                                 return;
                             } finally {
                                 this.loading = false;
