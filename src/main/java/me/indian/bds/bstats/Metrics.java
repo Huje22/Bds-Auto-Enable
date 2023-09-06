@@ -282,22 +282,20 @@ public class Metrics {
     /**
      * Collects the data and sends it afterward.
      */
-    @SuppressWarnings("unchecked")
     private void submitData() {
         final JsonObject data = this.getServerData();
+
+        final JsonArray pluginData = new JsonArray();
+        final JsonObject pluginObject = new JsonObject();
+
+        pluginObject.addProperty("pluginName", "BDS-Auto-Enable");
+        pluginObject.addProperty("pluginVersion", "1.0");
+        pluginObject.addProperty("author", "IndianBartonka");
+
+        pluginData.add(pluginObject);
+
+        data.add("plugins", pluginData);
         
-final  JsonArray pluginData = new JsonArray();
-final  JsonObject pluginObject = new JsonObject();
-
-pluginObject.addProperty("pluginName", "BDS-Auto-Enable");
-pluginObject.addProperty("pluginVersion", "1.0");
-pluginObject.addProperty("author", "IndianBartonka");
-
-pluginData.add(pluginObject);
-
-data.add("plugins", pluginData);
-
-
         new ThreadUtil("Data sender Thread", () -> {
             try {
                 // Send the data
