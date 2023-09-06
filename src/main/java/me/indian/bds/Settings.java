@@ -62,24 +62,29 @@ public class Settings {
             system = SystemOs.LINUX;
         }
         this.config.setSystem(system);
-        this.config.setFileName(scannerUtil.addQuestion((defaultValue) -> {
-                    this.logger.info("&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + "): " + this.enter);
-                    if (Defaults.hasWine()) {
-                        this.logger.alert("Jeśli chcesz użyć&b WINE&r plik musi kończyć się na&1 .exe");
-                    }
-                },
+        this.config.setFileName(scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + "): " + this.enter),
                 Defaults.getDefaultFileName(),
-                (input) -> {
-                    this.logger.info("Nazwa pliku ustawiona na:&1 " + input);
-                    if (this.config.getSystem() == SystemOs.LINUX) {
-                        if (input.contains(".exe")) {
-                            this.logger.alert("&lW tym wypadku będzie potrzebne &r&b&nWINE ");
-                            this.config.setWine(true);
-                        } else {
-                            this.config.setWine(false);
+                (input) -> this.logger.info("Nazwa pliku ustawiona na:&1 " + input)));
+
+        if (Defaults.hasWine()) {
+            this.config.setWine(scannerUtil.addQuestion(
+                    (defaultValue) -> {
+                        this.logger.info("&lWykryliśmy &r&bWINE&r&l czy użyć go? (Domyślnie: " + defaultValue + "): " + this.enter);
+                        this.logger.alert("Jeśli chcesz użyć&b WINE&r plik musi kończyć się na&1 .exe");
+                    },
+                    false,
+                    (input) -> {
+                        if (input) {
+                            if (!this.config.getFileName().contains(".exe")) {
+                                this.logger.alert("Plik  musi mieć końcówkę&1 .exe&r aby&b WINE&r mogło go wykonać.");
+                                this.logger.alert("Zmieniliśmy domyślną nazwe pliku na&1 bedrock_server.exe&r dla ciebie.");
+                                this.config.setFileName("bedrock_server.exe");
+                            }
+                            this.logger.info("&bWINE&r ustawione na:&1 " + input);
                         }
                     }
-                }));
+            ));
+        }
 
         this.config.setFilesPath(scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lPodaj ścieżkę do plików servera&r  (Domyślnie: " + defaultValue + "): " + this.enter),
                 Defaults.getJarDir(),
@@ -113,7 +118,7 @@ public class Settings {
             Dodać pełne wspracje dla:
             "default-player-permission-level" ( 0 = VISITOR , 1 = MEMBER , 2 = OPERATOR),
             "server-authoritative-movement" wraz z "correct-player-movement",
-            "difficulty" (0 = peaceful, 1 = easy, 2 = normal, 3 = hard)
+            "difficulty" (0 = peaceful, 1 = easy, 2 = normal, 3 = hard) METODA JUZ ISTNIEJE W "ServerProperties"
          */
 
         this.logger.info("&aKonfiguracja servera&r");
@@ -183,7 +188,7 @@ public class Settings {
             Dodać pełne wspracje dla:
             "default-player-permission-level" ( 0 = VISITOR , 1 = MEMBER , 2 = OPERATOR),
             "server-authoritative-movement" wraz z "correct-player-movement",
-            "difficulty" (0 = peaceful, 1 = easy, 2 = normal, 3 = hard)
+            "difficulty" (0 = peaceful, 1 = easy, 2 = normal, 3 = hard) METODA JUZ ISTNIEJE W "ServerProperties"
          */
     }
 
