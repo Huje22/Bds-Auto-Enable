@@ -200,6 +200,7 @@ public class CommandListener extends ListenerAdapter {
 
 
     private void serveDifficultyButton(final ButtonInteractionEvent event) {
+        if (event.getMember() != null || !event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
         switch (event.getComponentId()) {
             case "peaceful" -> {
                 this.serverProcess.changeSetting(ServerSetting.difficulty, 0);
@@ -230,15 +231,11 @@ public class CommandListener extends ListenerAdapter {
 
 
     private void serveDeleteBackupButton(final ButtonInteractionEvent event) {
-        final Member member = event.getMember();
-        if (member == null) return;
+        ;
+        if (event.getMember() != null || !event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
         for (final Path path : this.backupModule.getBackups()) {
             final String fileName = path.getFileName().toString();
             if (event.getComponentId().equals("delete_backup:" + fileName)) {
-                if (!member.hasPermission(Permission.ADMINISTRATOR)) {
-                    event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
-                    return;
-                }
                 try {
                     if (!Files.deleteIfExists(path)) {
                         event.reply("Nie udało się usunąć backupa " + fileName).setEphemeral(true).queue();
@@ -258,21 +255,16 @@ public class CommandListener extends ListenerAdapter {
     }
 
     private void serveBackupButton(final ButtonInteractionEvent event) {
-        final Member member = event.getMember();
-        if (member == null) return;
+        if (event.getMember() != null || !event.getMember().hasPermission(Permission.ADMINISTRATOR)) return;
         if (event.getComponentId().equals("backup")) {
-            if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                this.backupModule.forceBackup();
-                this.reserve.execute(() -> {
+            this.backupModule.forceBackup();
+            this.reserve.execute(() -> {
 //                        ThreadUtil.sleep((int) this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2);
-                    event.deferReply().addEmbeds(this.getBackupEmbed()).addActionRow(ActionRow.of(this.backupButtons)
-                                    .getComponents()).setEphemeral(true)
-                            .queueAfter((long) (this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2), TimeUnit.SECONDS);
+                event.deferReply().addEmbeds(this.getBackupEmbed()).addActionRow(ActionRow.of(this.backupButtons)
+                                .getComponents()).setEphemeral(true)
+                        .queueAfter((long) (this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2), TimeUnit.SECONDS);
 //ZBAGOWANE GÓWNO
-                });
-            } else {
-                event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
-            }
+            });
         }
     }
 
