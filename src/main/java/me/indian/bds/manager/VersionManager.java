@@ -4,6 +4,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.ZipUtil;
 
 import java.io.BufferedInputStream;
@@ -28,6 +29,7 @@ public class VersionManager {
     private final List<String> importantFiles;
     private final File versionFolder;
     private final List<String> availableVersions;
+    private final ServerProcess serverProcess;
 
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -36,6 +38,7 @@ public class VersionManager {
         this.importantFiles = new ArrayList<>();
         this.versionFolder = new File(Defaults.getAppDir() + File.separator + "versions");
         this.availableVersions = new ArrayList<>();
+        this.serverProcess = bdsAutoEnable.getServerProcess();
 
         if (!this.versionFolder.exists()) {
             if (this.versionFolder.mkdirs()) {
@@ -71,6 +74,10 @@ public class VersionManager {
     }
 
     public void loadVersion(final String version) {
+        if(this.serverProcess.isEnabled()){
+            this.logger.error("Nie można załadować innej wersji gdy server jest aktywny!!");
+            return;
+        }
         final File verFile = new File(this.versionFolder.getPath() + File.separator + version + ".zip");
         if (!verFile.exists()) {
             this.logger.info("Nie znaleziono wersji:&1 " + version);
