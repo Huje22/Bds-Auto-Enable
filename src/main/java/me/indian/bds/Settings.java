@@ -1,7 +1,7 @@
 package me.indian.bds;
 
 import me.indian.bds.config.Config;
-import me.indian.bds.file.ServerProperties;
+import me.indian.bds.server.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ScannerUtil;
 import me.indian.bds.util.SystemOs;

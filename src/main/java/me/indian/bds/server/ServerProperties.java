@@ -1,4 +1,4 @@
-package me.indian.bds.file;
+package me.indian.bds.server;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
@@ -47,17 +47,6 @@ public class ServerProperties {
         this.saveProperties();
         this.loadProperties();
     }
-
-
-    /*
-TODO:
-    Przenieść tą klasę do katalogu "server".
-    Dodać metode "changesting" wraz z "Settings" enum
-"
-Changes a server setting without having to restart the server. Currently only two settings are supported to be changed, allow-cheats (true or false) and difficulty (0, peaceful, 1, easy, 2, normal, 3 or hard). They do not modify the value that's specified in server.properties.
-"
-
-*/
 
     public boolean isOnlineMode() {
         try {

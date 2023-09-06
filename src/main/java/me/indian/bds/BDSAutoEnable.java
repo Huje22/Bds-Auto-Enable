@@ -7,7 +7,7 @@ import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.webhook.WebHook;
-import me.indian.bds.file.ServerProperties;
+import me.indian.bds.server.ServerProperties;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.VersionManager;
 import me.indian.bds.manager.player.PlayerManager;
