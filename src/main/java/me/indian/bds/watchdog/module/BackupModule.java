@@ -3,6 +3,7 @@ package me.indian.bds.watchdog.module;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
+import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -37,6 +38,7 @@ public class BackupModule {
     private final List<Path> backups;
     private final String worldPath, worldName;
     private final File worldFile;
+    private final DiscordIntegration discord;
     private WatchDog watchDog;
     private ServerProcess serverProcess;
     private String prefix;
@@ -55,6 +57,7 @@ public class BackupModule {
         this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
         this.worldPath = Defaults.getWorldsPath() + this.worldName;
         this.worldFile = new File(this.worldPath);
+        this.discord = bdsAutoEnable.getDiscord();
         if (this.config.getWatchDogConfig().getBackup().isBackup()) {
             this.logger.alert("Backupy są włączone");
             this.backupFolder = new File(Defaults.getAppDir() + File.separator + "backup");
@@ -125,6 +128,7 @@ public class BackupModule {
                 final double backUpTime = ((System.currentTimeMillis() - startTime) / 1000.0);
                 this.config.getWatchDogConfig().getBackup().setLastBackupTime(backUpTime);
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund", LogState.INFO);
+                this.discord.sendBackupDoneMessage();
                 this.status = "Utworzono backup";
                 this.loadAvailableBackups();
             } catch (final Exception exception) {

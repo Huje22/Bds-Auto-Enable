@@ -1,9 +1,12 @@
 package me.indian.bds.config.sub.discord;
 
 import eu.okaeri.configs.OkaeriConfig;
+import eu.okaeri.configs.annotation.Comment;
 
 public class DiscordMessagesConfig extends OkaeriConfig {
 
+    private boolean sendBackupMessage = true;
+    @Comment({""})
     private String replyStatement = " (&dOdpowiada na&a: &a<author> &r»»&b <msg> &r)";
     private String edited = " (Edytowano)";
     private String joinMessage = "Gracz **<name>** dołączył do gry";
@@ -16,6 +19,7 @@ public class DiscordMessagesConfig extends OkaeriConfig {
     private String disablingMessage = ":octagonal_sign: Server jest w trakcje wyłączania";
     private String disabledMessage = ":octagonal_sign: Server wyłączony";
     private String destroyedMessage = "Proces servera został zabity";
+    private String backupDoneMessage = "**Backup został utworzony!**";
     private String appRamAlter = "Aplikacja używa **80%** dostępnego dla niej ramu!";
     private String machineRamAlter = "Maszyna ma mniej niż **1GB** dostępnego ramu!";
 
@@ -68,11 +72,19 @@ public class DiscordMessagesConfig extends OkaeriConfig {
         return this.destroyedMessage;
     }
 
+    public String getBackupDoneMessage() {
+        return this.backupDoneMessage;
+    }
+
     public String getAppRamAlter() {
         return this.appRamAlter;
     }
 
     public String getMachineRamAlter() {
         return this.machineRamAlter;
+    }
+
+    public boolean isSendBackupMessage() {
+        return this.sendBackupMessage;
     }
 }

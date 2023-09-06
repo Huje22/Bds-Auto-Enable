@@ -27,6 +27,8 @@ public interface DiscordIntegration {
 
     void sendDestroyedMessage();
 
+    void sendBackupDoneMessage();
+
     void sendAppRamAlert();
 
     void sendMachineRamAlert();

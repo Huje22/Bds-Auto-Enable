@@ -269,6 +269,13 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     }
 
     @Override
+    public void sendBackupDoneMessage() {
+        if(this.config.getDiscordMessagesConfig().isSendBackupMessage()){
+            this.sendMessage(this.config.getDiscordMessagesConfig().getBackupDoneMessage());
+        }
+    }
+
+    @Override
     public void sendAppRamAlert() {
         this.sendMessage(this.getOwnerMention() + this.config.getDiscordMessagesConfig().getAppRamAlter());
     }
