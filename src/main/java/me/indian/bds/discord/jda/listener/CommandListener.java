@@ -176,9 +176,16 @@ public class CommandListener extends ListenerAdapter {
 
                 event.replyEmbeds(embed).setEphemeral(true).queue();
             }
-            case "difficulty" -> event.replyEmbeds(this.getDifficultyEmbed())
-                    .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
-                    .setEphemeral(true).queue();
+            case "difficulty" -> {
+                if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                    event.replyEmbeds(this.getDifficultyEmbed())
+                            .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
+                            .setEphemeral(true).queue();
+                } else {
+                    event.replyEmbeds(this.getDifficultyEmbed())
+                            .setEphemeral(true).queue();
+                }
+            }
         }
     }
 
@@ -191,44 +198,26 @@ public class CommandListener extends ListenerAdapter {
 
 
     private void serveDifficultyButton(final ButtonInteractionEvent event) {
-        final Member member = event.getMember();
-        if (member == null) return;
         switch (event.getComponentId()) {
             case "peaceful" -> {
-                if (!member.hasPermission(Permission.ADMINISTRATOR)) {
-                    event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
-                    return;
-                }
                 this.serverProcess.changeSetting(ServerSetting.difficulty, 0);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                         .setEphemeral(true).queue();
             }
             case "easy" -> {
-                if (!member.hasPermission(Permission.ADMINISTRATOR)) {
-                    event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
-                    return;
-                }
                 this.serverProcess.changeSetting(ServerSetting.difficulty, 1);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                         .setEphemeral(true).queue();
             }
             case "normal" -> {
-                if (!member.hasPermission(Permission.ADMINISTRATOR)) {
-                    event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
-                    return;
-                }
                 this.serverProcess.changeSetting(ServerSetting.difficulty, 2);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                         .setEphemeral(true).queue();
             }
             case "hard" -> {
-                if (!member.hasPermission(Permission.ADMINISTRATOR)) {
-                    event.reply("Nie posiadasz uprawnień!").setEphemeral(true).queue();
-                    return;
-                }
                 this.serverProcess.changeSetting(ServerSetting.difficulty, 3);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
