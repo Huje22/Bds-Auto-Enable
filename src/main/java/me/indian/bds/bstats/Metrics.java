@@ -291,7 +291,7 @@ public class Metrics {
         final JsonObject pluginObject = new JsonObject();
 
         pluginObject.addProperty("pluginName", "BDS-Auto-Enable");
-        pluginObject.addProperty("pluginVersion", "1.0");
+        pluginObject.addProperty("pluginVersion", bdsAutoEnable.getProjectVersion());
         pluginObject.addProperty("author", "IndianBartonka");
 
         pluginData.add(pluginObject);
@@ -322,7 +322,7 @@ public class Metrics {
         // Check if the config file exists
         if (!configFile.exists()) {
             // Create a default configuration object
-            final BstatsConfig defaultConfig = new BstatsConfig(true, UUID.randomUUID().toString(), false, true, false);
+            final BstatsConfig defaultConfig = new BstatsConfig(true, UUID.randomUUID().toString(), false, false, false);
 
             // Serialize the default configuration to JSON and save it to the config file
             final Gson gson = GsonUtil.getGson();
