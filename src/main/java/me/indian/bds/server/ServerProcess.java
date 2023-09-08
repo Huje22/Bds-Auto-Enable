@@ -119,6 +119,7 @@ public class ServerProcess {
                     this.logger.info("Uruchomiono proces ");
                     this.discord.sendProcessEnabledMessage();
 
+                    this.logger.debug("&bPID&r procesu servera to&1 " + this.process.pid());
 
                     final Thread output = new ThreadUtil("Console-Output").newThread(this::readConsoleOutput);
                     final Thread input = new ThreadUtil("Console-Input").newThread(this::writeConsoleInput);
