@@ -346,9 +346,6 @@ public class Metrics {
             logSentData = configData.logSentData;
             logResponseStatusText = configData.logResponseStatusText;
         }
-
-        // Log that the configuration was loaded
-        bdsAutoEnable.getLogger().debug("Załadowano konfigurację: " + configFile.getAbsolutePath());
     }
 
     /**
