@@ -59,7 +59,6 @@ public class BackupModule {
         this.worldFile = new File(this.worldPath);
         this.discord = bdsAutoEnable.getDiscord();
         if (this.config.getWatchDogConfig().getBackup().isBackup()) {
-            this.logger.alert("Backupy są włączone");
             this.backupFolder = new File(Defaults.getAppDir() + File.separator + "backup");
             if (!this.backupFolder.exists()) {
                 if (!this.backupFolder.mkdirs()) {
