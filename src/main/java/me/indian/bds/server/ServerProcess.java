@@ -144,103 +144,93 @@ public class ServerProcess {
     }
 
     private void readConsoleOutput() {
-        final Scanner consoleOutput = new Scanner(this.process.getInputStream());
-        try {
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
+        try (final Scanner consoleOutput = new Scanner(this.process.getInputStream())) {
+            try {
+                while (!Thread.currentThread().isInterrupted()) {
                     if (!consoleOutput.hasNext()) continue;
-                } catch (final IllegalStateException stateException) {
-                    this.discord.sendMessage("<owner> Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji \n" + stateException);
-                    System.exit(0);
-                    stateException.printStackTrace();
-                    break;
+                    final String line = consoleOutput.nextLine();
+                    if (line.isEmpty()) continue;
+                    if (!this.containsNotAllowedToFileLog(line)) {
+                        this.logger.instantLogToFile(line);
+                    }
+                    if (!this.containsNotAllowedToConsoleLog(line)) {
+                        System.out.println(line);
+                        this.lastLine = line;
+                        this.playerManager.initFromLog(line);
+                    }
+                    if (!this.containsNotAllowedToDiscordConsoleLog(line)) {
+                        this.discord.writeConsole(line);
+                    }
                 }
-
-                final String line = consoleOutput.nextLine();
-                if (line.isEmpty()) continue;
-                if (!this.containsNotAllowedToFileLog(line)) {
-                    this.logger.instantLogToFile(line);
-                }
-                if (!this.containsNotAllowedToConsoleLog(line)) {
-                    System.out.println(line);
-                    this.lastLine = line;
-                    this.playerManager.initFromLog(line);
-                }
-                if (!this.containsNotAllowedToDiscordConsoleLog(line)) {
-                    this.discord.writeConsole(line);
-                }
+            } catch (final Exception exception) {
+                this.logger.critical(exception);
+                exception.printStackTrace();
+                this.discord.sendMessage("<owner> Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji \n```" + exception + "```");
+                System.exit(0);
             }
-        } catch (final Exception exception) {
-            this.logger.critical(exception);
-            exception.printStackTrace();
-            consoleOutput.close();
         }
     }
 
     private void writeConsoleInput() {
-        final Scanner consoleInput = new Scanner(System.in);
-        try {
-            this.writer = new PrintWriter(this.process.getOutputStream());
-            while (!Thread.currentThread().isInterrupted()) {
-                try {
+        try (final Scanner consoleInput = new Scanner(System.in)) {
+            try {
+                this.writer = new PrintWriter(this.process.getOutputStream());
+                while (!Thread.currentThread().isInterrupted()) {
                     if (!consoleInput.hasNext()) continue;
-                } catch (final IllegalStateException stateException) {
-                    this.discord.sendMessage("<owner> Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji  \n" + stateException);
-                    System.exit(0);
-                    stateException.printStackTrace();
-                    break;
+                    final String input = consoleInput.nextLine();
+
+                    if (input.startsWith("say")) this.discord.sendPlayerMessage("say", input.substring(3));
+
+                    switch (input.toLowerCase()) {
+                        case "stop" -> {
+                            this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
+                            this.kickAllPlayers(this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem");
+                            if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
+                            this.sendToConsole("stop");
+                        }
+                        case "version" -> {
+                            this.tellrawToAllAndLogger(this.prefix, "&aWersja minecraft:&b " + this.config.getVersion(), LogState.INFO);
+                            this.tellrawToAllAndLogger(this.prefix, "&aWersja BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
+                        }
+                        case "backup" -> this.watchDog.getBackupModule().forceBackup();
+                        case "test" -> {
+                            for (final Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+                                final Thread thread = entry.getKey();
+
+                                System.out.println("Thread ID: " + thread.getId());
+                                System.out.println("Thread Name: " + thread.getName());
+                                System.out.println("Thread State: " + thread.getState());
+                                System.out.println("Thread Is Active: " + thread.isAlive());
+                                System.out.println("Thread Is Daemon: " +  thread.isDaemon());
+                                System.out.println("Thread Is Interrupted: " +  thread.isInterrupted());
+
+                                System.out.println("-----------------------------");
+                            }
+                        }
+                        case "stats" -> {
+                            for (final String s : StatusUtil.getStatus(false)) {
+                                this.logger.info(s);
+                            }
+                        }
+                        case "playtime" -> {
+                            for (final String s : StatusUtil.getTopPlayTime(false, 20)) {
+                                this.logger.info(s);
+                            }
+                        }
+                        case "deaths" -> {
+                            for (final String s : StatusUtil.getTopDeaths(false, 20)) {
+                                this.logger.info(s);
+                            }
+                        }
+                        default -> this.sendToConsole(input);
+                    }
                 }
-
-                final String input = consoleInput.nextLine();
-
-                if (input.startsWith("say")) this.discord.sendPlayerMessage("say", input.substring(3));
-
-                switch (input.toLowerCase()) {
-                    case "stop" -> {
-                        this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
-                        this.kickAllPlayers(this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem");
-                        if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
-                        this.sendToConsole("stop");
-                    }
-                    case "version" -> {
-                        this.tellrawToAllAndLogger(this.prefix, "&aWersja minecraft:&b " + this.config.getVersion(), LogState.INFO);
-                        this.tellrawToAllAndLogger(this.prefix, "&aWersja BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
-                    }
-                    case "backup" -> this.watchDog.getBackupModule().forceBackup();
-                    case "test" -> {
-                        for (final Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
-                            final Thread thread = entry.getKey();
-
-                            System.out.println("Thread ID: " + thread.getId());
-                            System.out.println("Thread Name: " + thread.getName());
-                            System.out.println("Thread State: " + thread.getState());
-                            System.out.println("Thread is Alive: " + thread.isAlive());
-                            System.out.println("-----------------------------");
-                        }
-                    }
-                    case "stats" -> {
-                        for (final String s : StatusUtil.getStatus(false)) {
-                            this.logger.info(s);
-                        }
-                    }
-                    case "playtime" -> {
-                        for (final String s : StatusUtil.getTopPlayTime(false, 20)) {
-                            this.logger.info(s);
-                        }
-                    }
-                    case "deaths" -> {
-                        for (final String s : StatusUtil.getTopDeaths(false, 20)) {
-                            this.logger.info(s);
-                        }
-                    }
-                    default -> this.sendToConsole(input);
-                }
+            } catch (final Exception exception) {
+                this.logger.critical(exception);
+                exception.printStackTrace();
+                this.discord.sendMessage("<owner> Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji   \n```" + exception + "```");
+                System.exit(0);
             }
-        } catch (final Exception exception) {
-            this.logger.critical(exception);
-            exception.printStackTrace();
-            consoleInput.close();
-            this.writer.close();
         }
     }
 
