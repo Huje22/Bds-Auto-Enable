@@ -168,7 +168,7 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendBackupDoneMessage() {
-        if(this.config.getDiscordMessagesConfig().isSendBackupMessage()){
+        if(this.config.isSendBackupMessage()){
             this.sendMessage(this.config.getDiscordMessagesConfig().getBackupDoneMessage());
         }
     }

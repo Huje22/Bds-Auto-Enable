@@ -82,6 +82,9 @@ public class Config extends OkaeriConfig {
     @CustomKey("discordBot")
     private DiscordBotConfig discordBotConfig = new DiscordBotConfig();
     @Comment({""})
+    @Comment({"Wysyłać wiadomość o zrobieniu backup na discord?"})
+    private boolean sendBackupMessage = false;
+    @Comment({""})
     @Comment({"Konfiguracija dostępnych wiadomości "})
     @CustomKey("discordMessages")
     private DiscordMessagesConfig discordMessagesConfig = new DiscordMessagesConfig();
@@ -157,6 +160,9 @@ public class Config extends OkaeriConfig {
         return this.logConfig;
     }
 
+    public boolean isSendBackupMessage() {
+        return this.sendBackupMessage;
+    }
 
     public DiscordType getIntegrationType() {
         return this.integrationType;

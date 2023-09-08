@@ -5,8 +5,6 @@ import eu.okaeri.configs.annotation.Comment;
 
 public class DiscordMessagesConfig extends OkaeriConfig {
 
-    private boolean sendBackupMessage = true;
-    @Comment({""})
     private String replyStatement = " (&dOdpowiada na&a: &a<author> &r»»&b <msg> &r)";
     private String edited = " (Edytowano)";
     private String joinMessage = "Gracz **<name>** dołączył do gry";
@@ -82,9 +80,5 @@ public class DiscordMessagesConfig extends OkaeriConfig {
 
     public String getMachineRamAlter() {
         return this.machineRamAlter;
-    }
-
-    public boolean isSendBackupMessage() {
-        return this.sendBackupMessage;
     }
 }
