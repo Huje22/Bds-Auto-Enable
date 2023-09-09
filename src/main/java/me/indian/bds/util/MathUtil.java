@@ -18,6 +18,10 @@ public final class MathUtil {
         return Math.max(mini, Math.min(max, number));
     }
 
+    public static double getCorrectNumber(final double number, final double min, final double max) {
+        return Math.max(min, Math.min(max, number));
+    }
+
     public static long hoursToMillis(final int hours) {
         return Duration.ofHours(hours).toMillis();
     }
