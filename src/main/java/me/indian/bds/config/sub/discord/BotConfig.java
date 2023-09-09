@@ -6,7 +6,7 @@ import eu.okaeri.configs.annotation.Comment;
 import java.util.Arrays;
 import java.util.List;
 
-public class DiscordBotConfig extends OkaeriConfig {
+public class BotConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Zostaw puste aby nie uruchamiać "})

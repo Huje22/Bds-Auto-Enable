@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
+import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
@@ -19,15 +20,17 @@ public class WebHook implements DiscordIntegration {
 
     private final Logger logger;
     private final Config config;
+    private final DiscordConfig discordConfig;
     private final String name, webhookURL, avatarUrl;
     private final ExecutorService service;
 
     public WebHook(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
         this.config = bdsAutoEnable.getConfig();
-        this.name = this.config.getWebHookConfig().getName();
-        this.webhookURL = this.config.getWebHookConfig().getUrl();
-        this.avatarUrl = this.config.getWebHookConfig().getAvatarUrl();
+        this.discordConfig = this.config.getDiscordConfig();
+        this.name = this.discordConfig.getWebHookConfig().getName();
+        this.webhookURL = this.discordConfig.getWebHookConfig().getUrl();
+        this.avatarUrl = this.discordConfig.getWebHookConfig().getAvatarUrl();
         this.service = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-WebHook"));
     }
 
@@ -117,70 +120,95 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendJoinMessage(final String playerName) {
-        this.sendMessage(this.config.getDiscordMessagesConfig().getJoinMessage().replaceAll("<name>", playerName));
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendJoinMessage()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getJoinMessage().replaceAll("<name>", playerName));
+        }
     }
 
     @Override
     public void sendLeaveMessage(final String playerName) {
-        this.sendMessage(this.config.getDiscordMessagesConfig().getLeaveMessage().replaceAll("<name>", playerName));
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendLeaveMessage()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getLeaveMessage().replaceAll("<name>", playerName));
+        }
     }
+
 
     @Override
     public void sendPlayerMessage(final String playerName, final String playerMessage) {
-        this.sendMessage(this.config.getDiscordMessagesConfig().getMinecraftToDiscordMessage()
-                .replaceAll("<name>", playerName)
-                .replaceAll("<msg>", playerMessage)
-        );
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendPlayerMessage()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getMinecraftToDiscordMessage()
+                    .replaceAll("<name>", playerName)
+                    .replaceAll("<msg>", playerMessage)
+                    .replaceAll("@everyone", "/everyone/")
+                    .replaceAll("@here", "/here/")
+            );
+        }
     }
 
     @Override
     public void sendDeathMessage(final String playerName, final String deathMessage) {
-        this.sendMessage(this.config.getDiscordMessagesConfig().getDeathMessage()
-                .replaceAll("<name>", playerName)
-                .replaceAll("<casue>", deathMessage)
-        );
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendDeathMessage()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getDeathMessage()
+                    .replaceAll("<name>", playerName)
+                    .replaceAll("<casue>", deathMessage)
+            );
+        }
     }
 
     @Override
     public void sendDisabledMessage() {
-        this.sendMessage(this.config.getDiscordMessagesConfig().getDisabledMessage());
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendDisabledMessage()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getDisabledMessage());
+        }
     }
 
     @Override
     public void sendDisablingMessage() {
-        this.sendMessage(this.config.getDiscordMessagesConfig().getDisablingMessage());
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendDisablingMessage()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getDisablingMessage());
+        }
     }
 
     @Override
     public void sendProcessEnabledMessage() {
-        this.sendMessage(this.config.getDiscordMessagesConfig().getProcessEnabledMessage());
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendProcessEnabledMessage()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getProcessEnabledMessage());
+        }
     }
 
     @Override
     public void sendEnabledMessage() {
-        this.sendMessage(this.config.getDiscordMessagesConfig().getEnabledMessage());
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendEnabledMessage()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getEnabledMessage());
+        }
     }
 
     @Override
     public void sendDestroyedMessage() {
-        this.sendMessage(this.config.getDiscordMessagesConfig().getDestroyedMessage());
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendDestroyedMessage()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getDestroyedMessage());
+        }
     }
 
     @Override
     public void sendBackupDoneMessage() {
-        if(this.config.isSendBackupMessage()){
-            this.sendMessage(this.config.getDiscordMessagesConfig().getBackupDoneMessage());
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendBackupMessage()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getBackupDoneMessage());
         }
     }
 
     @Override
     public void sendAppRamAlert() {
-        this.sendMessage(this.config.getDiscordMessagesConfig().getAppRamAlter());
+        if (this.config.getWatchDogConfig().getRamMonitor().isApp()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getAppRamAlter());
+        }
     }
 
     @Override
     public void sendMachineRamAlert() {
-        this.sendMessage(this.config.getDiscordMessagesConfig().getMachineRamAlter());
+        if (this.config.getWatchDogConfig().getRamMonitor().isMachine()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getMachineRamAlter());
+        }
     }
 
     @Override

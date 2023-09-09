@@ -2,6 +2,7 @@ package me.indian.bds.discord.jda.listener;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
+import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerSetting;
@@ -101,7 +102,7 @@ public class CommandListener extends ListenerAdapter {
             case "ip" -> {
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Nasze ip!")
-                        .setDescription(MessageUtil.listToSpacedString(this.config.getDiscordBotConfig().getIpMessage()))
+                        .setDescription(MessageUtil.listToSpacedString(this.config.getDiscordConfig().getDiscordBotConfig().getIpMessage()))
                         .setColor(Color.BLUE)
                         .build();
 

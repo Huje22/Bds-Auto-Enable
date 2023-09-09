@@ -1,7 +1,7 @@
 package me.indian.bds.discord.jda.listener;
 
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
+import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -21,7 +21,7 @@ public class MessageListener extends ListenerAdapter {
 
     private final DiscordJda discordJda;
     private final Logger logger;
-    private final Config config;
+    private final DiscordConfig discordConfig;
     private TextChannel textChannel;
     private TextChannel consoleChannel;
     private ServerProcess serverProcess;
@@ -29,7 +29,7 @@ public class MessageListener extends ListenerAdapter {
     public MessageListener(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
         this.discordJda = discordJda;
         this.logger = bdsAutoEnable.getLogger();
-        this.config = bdsAutoEnable.getConfig();
+        this.discordConfig = bdsAutoEnable.getConfig().getDiscordConfig();
     }
 
     public void init() {
@@ -52,11 +52,11 @@ public class MessageListener extends ListenerAdapter {
             final Role role = this.discordJda.getHighestRole(author.getIdLong());
             if (this.checkLength(message)) return;
 
-            final String msg = this.config.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
+            final String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
                     .replaceAll("<name>", author.getName())
                     .replaceAll("<msg>", rawMessage)
                     .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
-                    .replaceAll("<role>", role == null ? "" : role.getName()) + this.config.getDiscordMessagesConfig().getEdited();
+                    .replaceAll("<role>", role == null ? "" : role.getName()) + this.discordConfig.getDiscordMessagesConfig().getEdited();
 
             this.serverProcess.tellrawToAll(msg);
             this.logger.info(msg);
@@ -89,7 +89,7 @@ public class MessageListener extends ListenerAdapter {
             final Role role = this.discordJda.getHighestRole(author.getIdLong());
             if (this.checkLength(message)) return;
 
-            final String msg = this.config.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
+            final String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
                     .replaceAll("<name>", author.getName())
                     .replaceAll("<msg>", rawMessage)
                     .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
@@ -102,9 +102,9 @@ public class MessageListener extends ListenerAdapter {
 
 
     private boolean checkLength(final Message message) {
-        if (message.getContentRaw().length() >= this.config.getDiscordBotConfig().getAllowedLength()) {
-            this.sendPrivateMessage(message.getAuthor(), this.config.getDiscordBotConfig().getReachedMessage());
-            if (this.config.getDiscordBotConfig().isDeleteOnReachLimit()) {
+        if (message.getContentRaw().length() >= this.discordConfig.getDiscordBotConfig().getAllowedLength()) {
+            this.sendPrivateMessage(message.getAuthor(), this.discordConfig.getDiscordBotConfig().getReachedMessage());
+            if (this.discordConfig.getDiscordBotConfig().isDeleteOnReachLimit()) {
                 message.delete().queue();
                 this.sendPrivateMessage(message.getAuthor(), "`" + message.getContentRaw() + "`");
             }
@@ -121,7 +121,7 @@ public class MessageListener extends ListenerAdapter {
     }
 
     private String generatorReply(final Message messageReference) {
-        return messageReference == null ? "" : this.config.getDiscordMessagesConfig()
+        return messageReference == null ? "" : this.discordConfig.getDiscordMessagesConfig()
                 .getReplyStatement().replaceAll("<msg>", messageReference.getContentRaw())
                 .replaceAll("<author>", messageReference.getAuthor().getName());
     }

@@ -51,9 +51,8 @@ public class RamMonitor {
                         RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
                                 "&cWiększe użycje może to prowadzić do crashy aplikacji a w tym servera&4!!",
                                 LogState.CRITICAL);
-                        if (RamMonitor.this.ramMonitorConfig.isDiscordAlters()) {
-                            RamMonitor.this.discord.sendAppRamAlert();
-                        }
+
+                        RamMonitor.this.discord.sendAppRamAlert();
                     }
                 }
             }
@@ -77,9 +76,8 @@ public class RamMonitor {
                         RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
                                 freeComputerMemory + " / " + maxComputerMemory,
                                 LogState.ALERT);
-                        if (RamMonitor.this.ramMonitorConfig.isDiscordAlters()) {
-                            RamMonitor.this.discord.sendMachineRamAlert();
-                        }
+
+                        RamMonitor.this.discord.sendMachineRamAlert();
                     }
                 }
             }
