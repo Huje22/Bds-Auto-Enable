@@ -168,10 +168,6 @@ public class BDSAutoEnable {
         return this.logger;
     }
 
-    public Settings getSettings() {
-        return this.settings;
-    }
-
     public ServerProcess getServerProcess() {
         return this.serverProcess;
     }
