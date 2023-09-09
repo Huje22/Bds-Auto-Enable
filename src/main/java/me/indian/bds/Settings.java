@@ -163,13 +163,29 @@ public class Settings {
                     this.logger.alert("Także gdy server przeznaczony jest pod większą ilość osób jest zalecane to włączyć!");
                     this.logger.info("Jeśli jest &1true&r serwer poinformuje klientów, " + "że mają możliwość generowania chunków poziomu wizualnego poza odległościami interakcji graczy. ");
                 },
-                false,
+                true,
                 (input) -> this.logger.info("Ustawiono Client Side Chunks na:&1 " + input)));
 
-        this.serverProperties.setViewDistance(scannerUtil.addQuestion((defaultValue) -> {
+        if (this.serverProperties.isClientSideChunkGeneration()) {
+            this.serverProperties.setServerBuildRadiusRatio(scannerUtil.addDoubleQuestion(
+                    (defaultValue) -> {
+                        this.logger.info("&lUstaw Server Build Radius Ratio&r (Domyślnie&r to: " + defaultValue + ") " + this.enter);
+                        this.logger.info("Jeśli&1 Disabled&r, serwer dynamicznie obliczy, ile z widoku gracza zostanie wygenerowane, pozostawiając resztę do zbudowania przez klienta.");
+                        this.logger.info("W przeciwnym razie, z nadpisanej proporcji, serwerowi zostanie powiedziane, ile z widoku gracza wygenerować, pomijając zdolności sprzętowe klienta.");
+                        this.logger.info("Zakres to od&b 0.0 &rdo &b 1.0");
+                        this.logger.alert("Aby wyłączyć i zostawić generowanie czank całkowicie po stronie klienta wpisz&b -1.0&r a my zrobimy to za ciebie! .");
+                    },
+                    1.0,
+                    (input) -> this.logger.info("Server Build Radius Ratio ustawione na:&1 " + input)
+            ));
+        }
+
+        this.serverProperties.setViewDistance(scannerUtil.addQuestion(
+                (defaultValue) -> {
                     this.logger.info("&lUstaw View Distance&r (Aktualny z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
                     this.logger.info("Maksymalna dozwolona odległość widoku wyrażona w liczbie chunk");
-                    this.logger.alert("Jeśli&1 Client Side Chunks&r jest na&b false&r większe liczby niż 12-32 mogę obciążać server gdy klient ma duży render distance");
+                    this.logger.alert("Jeśli&1 Client Side Chunks&r jest na&b false&r lub&1 server-build-radius-ratio&r na coś innego niż&b Disabled ");
+                    this.logger.alert("Większe liczby niż 12-32 mogę obciążać server gdy klient ma duży render distance");
                 },
                 this.serverProperties.getViewDistance(),
                 (input) -> this.logger.info("Maksymalny View Distance na:&1 " + input)));
@@ -220,6 +236,10 @@ public class Settings {
         this.logger.info("Allow Cheats:&1 " + this.serverProperties.isAllowCheats());
         this.logger.info("Timeout:&1 " + this.serverProperties.getPlayerIdleTimeout() + " &aminut");
         this.logger.info("Czy klient generuje chunki:&1 " + this.serverProperties.isClientSideChunkGeneration());
+
+        final double serverBuildRadiusRatio = this.serverProperties.getServerBuildRadiusRatio();
+        this.logger.info("Server Build Radius Ratio:&1 " + (serverBuildRadiusRatio == -1.0 ? "Disabled" : serverBuildRadiusRatio));
+
         this.logger.info("View Distance:&1 " + this.serverProperties.getViewDistance());
         this.logger.info("Tick Distance:&1 " + this.serverProperties.getTickDistance());
 
