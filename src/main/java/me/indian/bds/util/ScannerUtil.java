@@ -36,6 +36,15 @@ public final class ScannerUtil {
         return userInput;
     }
 
+    public double addDoubleQuestion(final DoubleResponseConsumer question, final double defaultValue, final DoubleResponseConsumer response) {
+        question.accept(defaultValue);
+        final String input = this.getInput();
+        final double userInput = input.isEmpty() ? defaultValue : Double.parseDouble(input);
+        response.accept(userInput);
+        System.out.println();
+        return userInput;
+    }
+
     public Scanner getScanner() {
         return this.scanner;
     }
@@ -57,5 +66,10 @@ public final class ScannerUtil {
     @FunctionalInterface
     public interface IntegerResponseConsumer {
         void accept(final int consumer);
+    }
+
+    @FunctionalInterface
+    public interface DoubleResponseConsumer {
+        void accept(final double consumer);
     }
 }
