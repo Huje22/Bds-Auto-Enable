@@ -15,9 +15,9 @@ import me.indian.bds.util.SystemOs;
 @Header("#                                                              #")
 @Header("#    Huje22 Bds-Auto-Enable                                    #")
 @Header("#  https://github.com/Huje22/Bds-Auto-Enable                   #")
+@Header("#  https://bstats.org/plugin/bukkit/BDS-Auto-Enable/19727      #")
 @Header("#                                                              #")
 @Header("################################################################")
-//@Names(strategy = NameStrategy.SNAKE_CASE, modifier = NameModifier.TO_UPPER_CASE)
 
 public class Config extends OkaeriConfig {
     @Comment({""})
@@ -42,7 +42,7 @@ public class Config extends OkaeriConfig {
     @Comment({""})
     @Comment({"Nazwa pliku który ma być włączony"})
     @CustomKey("FileName")
-    private String fileName = "bedrock_server.exe";
+    private String fileName = "bedrock_server";
 
     @Comment({""})
     @Comment({"Czy użyć wine?"})
@@ -70,13 +70,15 @@ public class Config extends OkaeriConfig {
     @Comment({"Nie zapisuje tych informacj które zawierają dane znaki i słowa"})
     @CustomKey("Log")
     private LogConfig logConfig = new LogConfig();
+
     @Comment({""})
     @Comment({"Ustawienia discord"})
     @CustomKey("Discord")
     private DiscordConfig discordConfig = new DiscordConfig();
 
     @Comment({""})
-    @Comment({"Debug"})
+    @Comment({"Debug, dodatkowe wiadomości w konsoli dla developerów"})
+    @CustomKey("Debug")
     private boolean debug = false;
 
     public String getVersion() {

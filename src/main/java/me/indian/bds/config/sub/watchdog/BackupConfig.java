@@ -1,11 +1,15 @@
 package me.indian.bds.config.sub.watchdog;
 
 import eu.okaeri.configs.OkaeriConfig;
+import eu.okaeri.configs.annotation.Comment;
 
 public class BackupConfig extends OkaeriConfig {
 
+    @Comment({"Czy robić backupy?"})
     private boolean backup = true;
+    @Comment({"Co ile min robić backup?"})
     private int backupFrequency = 60;
+    @Comment({""})
     private double lastBackupTime = 20;
 
     public boolean isBackup() {

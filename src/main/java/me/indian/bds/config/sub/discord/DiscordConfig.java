@@ -18,17 +18,17 @@ public class DiscordConfig extends OkaeriConfig {
     private WebHookConfig webHookConfig = new WebHookConfig();
     @Comment({""})
     @Comment({"Ustawienia Bota"})
-    @CustomKey("discordBot")
+    @CustomKey("bot")
     private BotConfig botConfig = new BotConfig();
 
     @Comment({""})
     @Comment({"Ustawienia Wiadomości"})
-    @CustomKey("discordMessagesOptions")
+    @CustomKey("messagesOptions")
     private MessagesOptionsConfig messagesOptionsConfig = new MessagesOptionsConfig();
 
     @Comment({""})
     @Comment({"Konfiguracija dostępnych wiadomości "})
-    @CustomKey("discordMessages")
+    @CustomKey("messages")
     private MessagesConfig messagesConfig = new MessagesConfig();
 
     public DiscordType getIntegrationType() {

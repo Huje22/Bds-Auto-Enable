@@ -199,14 +199,14 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendAppRamAlert() {
-        if (this.config.getWatchDogConfig().getRamMonitor().isApp()) {
+        if (this.config.getWatchDogConfig().getRamMonitor().isDiscordAlters()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getAppRamAlter());
         }
     }
 
     @Override
     public void sendMachineRamAlert() {
-        if (this.config.getWatchDogConfig().getRamMonitor().isMachine()) {
+        if (this.config.getWatchDogConfig().getRamMonitor().isDiscordAlters()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getMachineRamAlter());
         }
     }
