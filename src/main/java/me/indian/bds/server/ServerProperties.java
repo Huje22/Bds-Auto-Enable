@@ -244,6 +244,53 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
+    public boolean isServerAuthoritativeBlockBreaking() {
+        try {
+            return Boolean.parseBoolean(this.properties.getProperty("server-authoritative-block-breaking"));
+        } catch (final Exception exception) {
+            this.setServerAuthoritativeBlockBreaking(false);
+            return false;
+        }
+    }
+
+    public void setServerAuthoritativeBlockBreaking(final boolean serverAuthoritativeBlockBreaking) {
+        this.properties.setProperty("server-authoritative-block-breaking", String.valueOf(serverAuthoritativeBlockBreaking));
+        this.reloadServerProperties();
+    }
+
+    public String getServerAuthoritativeMovement() {
+        try {
+            return this.properties.getProperty("server-authoritative-movement");
+        } catch (final Exception exception) {
+            this.setServerAuthoritativeMovement("server-auth");
+            return "server-auth";
+        }
+    }
+
+    public void setServerAuthoritativeMovement(final String serverAuthoritativeMovement) {
+        if (!serverAuthoritativeMovement.equals("client-auth") && !serverAuthoritativeMovement.equals("server-auth") && !serverAuthoritativeMovement.equals("server-auth-with-rewind")) {
+            this.properties.setProperty("server-authoritative-movement", "server-auth");
+        } else {
+            this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement);
+        }
+
+        this.reloadServerProperties();
+    }
+
+    public boolean isCorrectPlayerMovement() {
+        try {
+            return Boolean.parseBoolean(this.properties.getProperty("correct-player-movement"));
+        } catch (final Exception exception) {
+            this.setCorrectPlayerMovement(false);
+            return false;
+        }
+    }
+
+    public void setCorrectPlayerMovement(final boolean clientSide) {
+        this.properties.setProperty("correct-player-movement", String.valueOf(clientSide));
+        this.reloadServerProperties();
+    }
+
     public Properties getProperties() {
         return this.properties;
     }

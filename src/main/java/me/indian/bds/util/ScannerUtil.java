@@ -14,7 +14,7 @@ public final class ScannerUtil {
         String input = this.getInput();
         input = input.isEmpty() ? defaultValue : input;
         response.accept(input);
-        System.out.println();
+
         return input;
     }
 
@@ -23,7 +23,7 @@ public final class ScannerUtil {
         final String input = this.getInput();
         final boolean userInput = input.isEmpty() ? defaultValue : Boolean.parseBoolean(input);
         response.accept(userInput);
-        System.out.println();
+
         return userInput;
     }
 
@@ -32,7 +32,7 @@ public final class ScannerUtil {
         final String input = this.getInput();
         final int userInput = input.isEmpty() ? defaultValue : Integer.parseInt(input);
         response.accept(userInput);
-        System.out.println();
+
         return userInput;
     }
 
@@ -41,7 +41,7 @@ public final class ScannerUtil {
         final String input = this.getInput();
         final double userInput = input.isEmpty() ? defaultValue : Double.parseDouble(input);
         response.accept(userInput);
-        System.out.println();
+
         return userInput;
     }
 
