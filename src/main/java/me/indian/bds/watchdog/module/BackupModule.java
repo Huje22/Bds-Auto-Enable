@@ -104,7 +104,7 @@ public class BackupModule {
     public void forceBackup() {
         if (!this.config.getWatchDogConfig().getBackup().isBackup()) return;
         if (!this.worldFile.exists()) return;
-        if (StatusUtil.availableDiskSpace() < 10) {
+        if (MathUtil.bytesToGB(StatusUtil.availableDiskSpace()) < 10) {
             this.serverProcess.tellrawToAllAndLogger(this.prefix, "Wykryto zbyt małą ilość pamięci aby wykonać&b backup&c!", LogState.ERROR);
             return;
         }
