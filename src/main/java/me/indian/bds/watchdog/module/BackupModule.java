@@ -88,17 +88,17 @@ public class BackupModule {
     }
 
     public void backup() {
-            if (this.config.getWatchDogConfig().getBackup().isBackup()) {
-                final long time = MathUtil.minutesToMillis(this.config.getWatchDogConfig().getBackup().getBackupFrequency());
-                final TimerTask backupTask = new TimerTask() {
-                    @Override
-                    public void run() {
-                        BackupModule.this.forceBackup();
-                        BackupModule.this.lastBackupMillis = System.currentTimeMillis();
-                    }
-                };
-                this.timer.scheduleAtFixedRate(backupTask, time, time);
-            }
+        if (this.config.getWatchDogConfig().getBackup().isBackup()) {
+            final long time = MathUtil.minutesToMillis(this.config.getWatchDogConfig().getBackup().getBackupFrequency());
+            final TimerTask backupTask = new TimerTask() {
+                @Override
+                public void run() {
+                    BackupModule.this.forceBackup();
+                    BackupModule.this.lastBackupMillis = System.currentTimeMillis();
+                }
+            };
+            this.timer.scheduleAtFixedRate(backupTask, time, time);
+        }
     }
 
     public void forceBackup() {

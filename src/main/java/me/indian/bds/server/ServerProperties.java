@@ -227,7 +227,7 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
-    public double getServerBuildRadiusRatio(){
+    public double getServerBuildRadiusRatio() {
         try {
             return Double.parseDouble(this.properties.getProperty("server-build-radius-ratio"));
         } catch (final NumberFormatException exception) {
@@ -236,10 +236,10 @@ public class ServerProperties {
     }
 
     public void setServerBuildRadiusRatio(final double ratio) {
-        if(ratio <= -1.0){
+        if (ratio <= -1.0) {
             this.properties.setProperty("server-build-radius-ratio", "Disabled");
-        }else {
-            this.properties.setProperty("server-build-radius-ratio", String.valueOf(MathUtil.getCorrectNumber(ratio , 0.0 , 1.0)));
+        } else {
+            this.properties.setProperty("server-build-radius-ratio", String.valueOf(MathUtil.getCorrectNumber(ratio, 0.0, 1.0)));
         }
         this.reloadServerProperties();
     }

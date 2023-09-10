@@ -2,7 +2,6 @@ package me.indian.bds.discord.jda.listener;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
-import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerSetting;

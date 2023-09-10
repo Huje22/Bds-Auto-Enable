@@ -202,8 +202,8 @@ public class ServerProcess {
                                 System.out.println("Thread Name: " + thread.getName());
                                 System.out.println("Thread State: " + thread.getState());
                                 System.out.println("Thread Is Active: " + thread.isAlive());
-                                System.out.println("Thread Is Daemon: " +  thread.isDaemon());
-                                System.out.println("Thread Is Interrupted: " +  thread.isInterrupted());
+                                System.out.println("Thread Is Daemon: " + thread.isDaemon());
+                                System.out.println("Thread Is Interrupted: " + thread.isInterrupted());
 
                                 System.out.println("-----------------------------");
                             }

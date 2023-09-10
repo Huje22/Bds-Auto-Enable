@@ -74,7 +74,7 @@ public class VersionManager {
     }
 
     public void loadVersion(final String version) {
-        if(this.serverProcess.isEnabled()){
+        if (this.serverProcess.isEnabled()) {
             this.logger.error("Nie można załadować innej wersji gdy server jest aktywny!!");
             return;
         }

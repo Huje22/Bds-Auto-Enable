@@ -101,7 +101,7 @@ public class Metrics {
     /**
      * Sends the data to the bStats server.
      *
-     * @param data          The data to send.
+     * @param data The data to send.
      * @throws Exception If the request failed.
      */
     private static void sendData(final JsonObject data) throws Exception {
@@ -270,7 +270,7 @@ public class Metrics {
         data.addProperty("onlineMode", onlineMode);
         data.addProperty("bukkitVersion", softwareVersion);
         data.addProperty("bukkitName", softwareName);
-        data.addProperty("serverSoftware" , "Okkkk");
+        data.addProperty("serverSoftware", "Okkkk");
 
         data.addProperty("javaVersion", javaVersion);
         data.addProperty("osName", osName);
