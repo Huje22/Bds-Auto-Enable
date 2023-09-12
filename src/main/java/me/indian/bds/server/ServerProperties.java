@@ -70,6 +70,10 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
+
+
+    
+//TODO: Zrobić to z enum
     public int getDifficulty() {
         try {
             return Integer.parseInt(this.properties.getProperty("difficulty"));
@@ -84,6 +88,11 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
+//TODO: Zrobić to z enum
+
+
+
+    
 
     public int getServerPort() {
         try {
