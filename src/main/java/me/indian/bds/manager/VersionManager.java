@@ -199,7 +199,7 @@ public class VersionManager {
         if (!version.isEmpty()) return version;
         try {
             final StringBuilder response = new StringBuilder();
-            final URL url = new URL("https://cdn.jsdelivr.net/gh/Bedrock-OSS/BDS-Versions@master/versions.json");
+            final URL url = new URL("https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json");
             final HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
             con.setRequestProperty("Accept", "application/json");
