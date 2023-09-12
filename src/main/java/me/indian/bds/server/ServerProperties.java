@@ -258,6 +258,9 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
+
+
+//TODO: Zrobić to z enum
     public String getServerAuthoritativeMovement() {
         try {
             return this.properties.getProperty("server-authoritative-movement");
@@ -266,7 +269,7 @@ public class ServerProperties {
             return "server-auth";
         }
     }
-
+//TODO: Zrobić to z enum
     public void setServerAuthoritativeMovement(final String serverAuthoritativeMovement) {
         if (!serverAuthoritativeMovement.equals("client-auth") && !serverAuthoritativeMovement.equals("server-auth") && !serverAuthoritativeMovement.equals("server-auth-with-rewind")) {
             this.properties.setProperty("server-authoritative-movement", "server-auth");
@@ -276,7 +279,11 @@ public class ServerProperties {
 
         this.reloadServerProperties();
     }
+//TODO: Zrobić to z enum
 
+
+
+    
     public boolean isCorrectPlayerMovement() {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("correct-player-movement"));
