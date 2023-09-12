@@ -30,6 +30,7 @@ public class VersionManager {
     private final File versionFolder;
     private final List<String> availableVersions;
     private final ServerProcess serverProcess;
+    private String version;
 
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -39,6 +40,7 @@ public class VersionManager {
         this.versionFolder = new File(Defaults.getAppDir() + File.separator + "versions");
         this.availableVersions = new ArrayList<>();
         this.serverProcess = bdsAutoEnable.getServerProcess();
+        this.version = "";
 
         if (!this.versionFolder.exists()) {
             if (this.versionFolder.mkdirs()) {
@@ -190,6 +192,44 @@ public class VersionManager {
             }
             default -> throw new RuntimeException("Nieprawidłowy system");
         }
+    }
+
+    // Testowe pisane na telu na kursach 12.09.2023
+    public String getLatestVersion(final SystemOs os) {
+        if (!version.isEmpty()) return version;
+        try {
+            final StringBuilder response = new StringBuilder();
+            final URL url = new URL("https://cdn.jsdelivr.net/gh/Bedrock-OSS/BDS-Versions@master/versions.json");
+            final HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Accept", "application/json");
+
+            final int responseCode = con.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+            
+      try (final BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream())){
+               String inputLine;
+          
+                while ((inputLine = in.readLine()) != null) {
+                    response.append(inputLine);
+                }
+        
+                final JsonObject jsonObject = GsonUtil.getGson().fromJson(response.toString(), JsonObject.class);
+
+                if (os == SystemOs.LINUX) {
+                    version = jsonObject.getAsJsonObject("linux").get("stable").getAsString();
+                } else if (os == SystemOs.WINDOWS) {
+                    version = jsonObject.getAsJsonObject("windows").get("stable").getAsString();
+                }
+              }
+                return version;
+            } else {
+                    this.logger.error("Błąd przy pobieraniu danych. Kod odpowiedzi: " + responseCode);
+            }
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public List<String> getAvailableVersions() {
