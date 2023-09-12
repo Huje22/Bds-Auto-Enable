@@ -83,6 +83,7 @@ public class BDSAutoEnable {
         this.settings.loadSettings(this.scanner);
         this.playerManager.getStatsManager().startTasks();
         this.checkExecutable();
+        //TODO: Dodac wykonwyanie "chmod +x"
         this.shutdownHook();
         this.watchDog = new WatchDog(this);
         this.serverProcess.initWatchDog(this.watchDog);
