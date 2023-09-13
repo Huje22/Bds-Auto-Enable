@@ -77,7 +77,7 @@ public class ServerProperties {
     public Difficulty getDifficulty() {
         try {
           final String difficulty1 = this.properties.getProperty("difficulty");
-        int difficulty2 = 0; 
+        int difficulty2 = -1; 
          try{
          difficulty2 = Integer.paresInt(difficulty1);
         }catch (final NumberFormatException exception) {
@@ -288,22 +288,32 @@ public class ServerProperties {
 
 
 //TODO: Zrobić to z enum
-    public String getServerAuthoritativeMovement() {
+    public ServerMovementAuth getServerAuthoritativeMovement() {
         try {
-            return this.properties.getProperty("server-authoritative-movement");
+          final String serverMovement = this.properties.getProperty("server-authoritative-movement");
+          switch (serverMovement){
+            case "client-auth" -> {
+              return ServerMovementAuth.CLIENT;
+            }
+            case "server-auth" -> {
+              return ServerMovementAuth.SERVER;
+            }
+            case "server-auth-with-rewind" -> {
+             return ServerMovementAuth.SERVER_REWIND;
+            }
+            default -> {
+              return ServerMovementAuth.SERVER;
+            }
+           }
+   
         } catch (final Exception exception) {
-            this.setServerAuthoritativeMovement("server-auth");
-            return "server-auth";
+            this.setServerAuthoritativeMovement(ServerMovementAuth.SERVER);
+            return ServerMovementAuth.SERVER;
         }
     }
 //TODO: Zrobić to z enum
-    public void setServerAuthoritativeMovement(final String serverAuthoritativeMovement) {
-        if (!serverAuthoritativeMovement.equals("client-auth") && !serverAuthoritativeMovement.equals("server-auth") && !serverAuthoritativeMovement.equals("server-auth-with-rewind")) {
-            this.properties.setProperty("server-authoritative-movement", "server-auth");
-        } else {
-            this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement);
-        }
-
+    public void setServerAuthoritativeMovement(final ServerMovementAuth serverAuthoritativeMovement) {
+            this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement.getName());
         this.reloadServerProperties();
     }
 //TODO: Zrobić to z enum
@@ -353,5 +363,24 @@ public enum Difficulty{
  public int getId(){
    return this.id;
  }
-
 }
+
+
+
+public enum ServerMovementAuth(){
+  CLIENT("client-auth"),
+  SERVER("server-auth"),
+  SERVER_REWIND("server-auth-with-rewind");
+  
+  private final String name;
+  
+  ServerMovementAuth(final String name){
+    this.name = name;
+  }
+  
+  public String getName(){
+    return this.name;
+  }
+}
+
+
