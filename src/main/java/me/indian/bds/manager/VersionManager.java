@@ -30,8 +30,7 @@ public class VersionManager {
     private final File versionFolder;
     private final List<String> availableVersions;
     private final ServerProcess serverProcess;
-    private String version;
-
+    
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
@@ -40,7 +39,6 @@ public class VersionManager {
         this.versionFolder = new File(Defaults.getAppDir() + File.separator + "versions");
         this.availableVersions = new ArrayList<>();
         this.serverProcess = bdsAutoEnable.getServerProcess();
-        this.version = "";
 
         if (!this.versionFolder.exists()) {
             if (this.versionFolder.mkdirs()) {
@@ -194,9 +192,10 @@ public class VersionManager {
         }
     }
 
+// TODO: Dokończyć to + dodać auto update 
+    
     // Testowe pisane na telu na kursach 12.09.2023
     public String getLatestVersion(final SystemOs os) {
-        if (!version.isEmpty()) return version;
         try {
             final StringBuilder response = new StringBuilder();
             final URL url = new URL("https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json");
@@ -217,16 +216,17 @@ public class VersionManager {
                 final JsonObject jsonObject = GsonUtil.getGson().fromJson(response.toString(), JsonObject.class);
 
                 if (os == SystemOs.LINUX) {
-                    version = jsonObject.getAsJsonObject("linux").get("stable").getAsString();
+                    return jsonObject.getAsJsonObject("linux").get("stable").getAsString();
                 } else if (os == SystemOs.WINDOWS) {
-                    version = jsonObject.getAsJsonObject("windows").get("stable").getAsString();
+                    return jsonObject.getAsJsonObject("windows").get("stable").getAsString();
                 }
               }
-                return version;
+                return null;
             } else {
                     this.logger.error("Błąd przy pobieraniu danych. Kod odpowiedzi: " + responseCode);
             }
         } catch (final IOException e) {
+           this.logger.error("Błąd przy pobieraniu danych: " + e);
             e.printStackTrace();
         }
         return "";
