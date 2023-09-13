@@ -128,6 +128,17 @@ public class Logger {
             case DEBUG -> this.debug(log);
         }
     }
+    
+    public void logByState(final Object log, final Throwable throwable, final LogState logState) {
+        switch (logState) {
+            case INFO -> this.info(log, throwable);
+            case ALERT -> this.alert(log, throwable);
+            case CRITICAL -> this.critical(log, throwable);
+            case ERROR -> this.error(log, throwable);
+            case WARNING -> this.warning(log, throwable);
+            case DEBUG -> this.debug(log, throwable);
+        }
+    }
 
     public void instantLogToFile(final Object log) {
         if (this.printStream != null) {
