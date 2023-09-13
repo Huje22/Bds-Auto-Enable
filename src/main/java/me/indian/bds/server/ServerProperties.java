@@ -74,17 +74,35 @@ public class ServerProperties {
 
     
 //TODO: Zrobić to z enum
-    public int getDifficulty() {
+    public Difficulty getDifficulty() {
         try {
-            return Integer.parseInt(this.properties.getProperty("difficulty"));
-        } catch (final NumberFormatException exception) {
-            this.setDifficulty(2);
-            return 2;
+          final String difficulty1 = this.properties.getProperty("difficulty");
+        int difficulty2 = 0; 
+         try{
+         difficulty2 = Integer.paresInt(difficulty1);
+        }catch (final NumberFormatException exception) {
+      }
+      
+      if (difficulty1.equalsIgnoreCase("peaceful") || difficulty2 == 0){
+        return Difficulty.PEACEFUL;
+      } else if (difficulty1.equalsIgnoreCase("easy") || difficulty2 == 1){
+      return Difficulty.EASY;
+    } else if(difficulty1.equalsIgnoreCase("normal") || difficulty2 == 2){
+    return Difficulty.NORMAL;
+      } else if(difficulty1.equalsIgnoreCase("hard") || difficulty2 == 3){
+      return Difficulty.HARD;
+    }else{
+    return Difficulty.EASY;
+  }
+          
+        } catch (final Exception exception) {
+            this.setDifficulty(Difficulty.NORMAL);
+            return Difficulty.NORMAL;
         }
     }
 
-    public void setDifficulty(final int port) {
-        this.properties.setProperty("difficulty", String.valueOf(MathUtil.getCorrectNumber(port, 0, 3)));
+    public void setDifficulty(final Difficulty difficulty) {
+        this.properties.setProperty("difficulty", difficulty.getName());
         this.reloadServerProperties();
     }
 
@@ -310,4 +328,30 @@ public class ServerProperties {
     public Properties getProperties() {
         return this.properties;
     }
+}
+
+
+public enum Difficulty{
+  PEACEFUL("peaceful", 0),
+  EASY("easy",1),
+  NORMAL("normal",2),
+  HARD("hard" , 3); 
+ 
+  private final String name;
+  private final int id;
+  
+  
+  Difficulty(final String name , final int id){
+    this.name = name;
+    this.id = id;
+ }
+ 
+ public String getName(){
+   return this.name;
+ }
+ 
+ public int getId(){
+   return this.id;
+ }
+
 }
