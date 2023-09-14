@@ -71,6 +71,8 @@ public class CommandListener extends ListenerAdapter {
         this.discordJda.logCommand(this.getCommandEmbed(event));
 
         switch (event.getName()) {
+//TODO: Dodać `/version` gdzie będzie: versia servera i Versia bds auto enable 
+                
             case "cmd" -> {
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
                     final String command = event.getOption("command").getAsString();
