@@ -46,26 +46,26 @@ public class Logger {
             e.printStackTrace();
         }
     }
-    
+
     public void info(final Object log) {
         this.logState = LogState.INFO;
         this.updatePrefix();
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         this.logToFile(log);
     }
-    
+
     public void warning(final Object log) {
         this.logState = LogState.WARNING;
         this.updatePrefix();
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         this.logToFile(log);
     }
-    
-    public void warning(final Object log,final Throwable throwable) {
+
+    public void warning(final Object log, final Throwable throwable) {
         this.warning(log);
         this.logThrowableToFile(throwable);
     }
-   
+
     public void alert(final Object log) {
         this.logState = LogState.ALERT;
         this.updatePrefix();
@@ -73,8 +73,8 @@ public class Logger {
         this.logToFile(log);
     }
 
- public void alert(final Object log,final Throwable throwable) {
-        this.aletr(log);
+    public void alert(final Object log, final Throwable throwable) {
+        this.alert(log);
         this.logThrowableToFile(throwable);
     }
 
@@ -84,11 +84,11 @@ public class Logger {
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         this.logToFile(log);
     }
-    
-    public void critical(final Object log,final Throwable throwable) {
+
+    public void critical(final Object log, final Throwable throwable) {
         this.critical(log);
         this.logThrowableToFile(throwable);
-  }
+    }
 
     public void error(final Object log) {
         this.logState = LogState.ERROR;
@@ -96,8 +96,8 @@ public class Logger {
         System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         this.logToFile(log);
     }
-    
-     public void error(final Object log,final Throwable throwable) {
+
+    public void error(final Object log, final Throwable throwable) {
         this.error(log);
         this.logThrowableToFile(throwable);
     }
@@ -110,14 +110,14 @@ public class Logger {
             System.out.println(ConsoleColors.convertMinecraftColors(this.prefix + log));
         }
     }
-    
-    public void debug(final Object log,final Throwable throwable) {
+
+    public void debug(final Object log, final Throwable throwable) {
         if (this.config.isDebug()) {
-          this.debug(log);
-         this.logThrowableToFile(throwable);
-          }
+            this.debug(log);
+            this.logThrowableToFile(throwable);
+        }
     }
-    
+
     public void logByState(final Object log, final LogState logState) {
         switch (logState) {
             case INFO -> this.info(log);
@@ -128,10 +128,10 @@ public class Logger {
             case DEBUG -> this.debug(log);
         }
     }
-    
+
     public void logByState(final Object log, final Throwable throwable, final LogState logState) {
         switch (logState) {
-            case INFO -> this.info(log, throwable);
+            case INFO -> this.info(log);
             case ALERT -> this.alert(log, throwable);
             case CRITICAL -> this.critical(log, throwable);
             case ERROR -> this.error(log, throwable);
@@ -151,13 +151,13 @@ public class Logger {
             this.printStream.println(DateUtil.getDate() + " [" + Thread.currentThread().getName() + "] " + this.logState + " " + ConsoleColors.removeColors(log));
         }
     }
-   
-private void logThrowableToFile(final Throwable throwable) {
-    if (this.printStream != null && throwable != null) {
-         throwable.printStackTrace();
-        throwable.printStackTrace(this.printStream);
+
+    private void logThrowableToFile(final Throwable throwable) {
+        if (this.printStream != null && throwable != null) {
+            throwable.printStackTrace();
+            throwable.printStackTrace(this.printStream);
+        }
     }
-}
 
     public File getLogFile() {
         return this.logFile;

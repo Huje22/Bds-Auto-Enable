@@ -5,6 +5,7 @@ import me.indian.bds.config.Config;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerSetting;
+import me.indian.bds.server.properties.Difficulty;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
@@ -71,8 +72,6 @@ public class CommandListener extends ListenerAdapter {
         this.discordJda.logCommand(this.getCommandEmbed(event));
 
         switch (event.getName()) {
-//TODO: Dodać `/version` gdzie będzie: versia servera i Versia bds auto enable 
-                
             case "cmd" -> {
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
                     final String command = event.getOption("command").getAsString();
@@ -90,7 +89,6 @@ public class CommandListener extends ListenerAdapter {
                     event.reply("Nie posiadasz permisji!!").setEphemeral(true).queue();
                 }
             }
-
             case "ping" -> {
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Ping Bot <-> Discord")
@@ -190,6 +188,25 @@ public class CommandListener extends ListenerAdapter {
                     event.replyEmbeds(this.getDifficultyEmbed()).setEphemeral(true).queue();
                 }
             }
+            case "version" -> {
+                final String current = this.config.getVersionManagerConfig().getVersion();
+                String latest = this.bdsAutoEnable.getVersionManager().getLatestVersion();
+                if (latest.equals("")) {
+                    latest = current;
+                }
+
+                final String checkLatest = (current.equals(latest) ? "`" + latest + "`" : "`" + current + "` (Najnowsza to: `" + latest + "`)");
+
+                final MessageEmbed embed = new EmbedBuilder()
+                        .setTitle("Informacje o wersji")
+                        .setDescription("**Wersjia __BDS-Auto-Enable__**: `" + this.bdsAutoEnable.getProjectVersion() + "`\n" +
+                                "**Wersjia Servera **: " + checkLatest + "\n"
+                        )
+                        .setColor(Color.BLUE)
+                        .build();
+
+                event.replyEmbeds(embed).setEphemeral(true).queue();
+            }
         }
     }
 
@@ -206,29 +223,28 @@ public class CommandListener extends ListenerAdapter {
         this.serveDeleteBackupButton(event);
     }
 
-
     private void serveDifficultyButton(final ButtonInteractionEvent event) {
         switch (event.getComponentId()) {
             case "peaceful" -> {
-                this.serverProcess.changeSetting(ServerSetting.difficulty, 0);
+                this.serverProcess.changeSetting(ServerSetting.difficulty, Difficulty.PEACEFUL);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                         .setEphemeral(true).queue();
             }
             case "easy" -> {
-                this.serverProcess.changeSetting(ServerSetting.difficulty, 1);
+                this.serverProcess.changeSetting(ServerSetting.difficulty, Difficulty.EASY);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                         .setEphemeral(true).queue();
             }
             case "normal" -> {
-                this.serverProcess.changeSetting(ServerSetting.difficulty, 2);
+                this.serverProcess.changeSetting(ServerSetting.difficulty, Difficulty.NORMAL);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                         .setEphemeral(true).queue();
             }
             case "hard" -> {
-                this.serverProcess.changeSetting(ServerSetting.difficulty, 3);
+                this.serverProcess.changeSetting(ServerSetting.difficulty, Difficulty.HARD);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                         .setEphemeral(true).queue();
@@ -273,7 +289,8 @@ public class CommandListener extends ListenerAdapter {
     }
 
     private MessageEmbed getDifficultyEmbed() {
-        final int currentDifficulty = this.bdsAutoEnable.getServerProperties().getDifficulty();
+        final Difficulty currentDifficulty = this.bdsAutoEnable.getServerProperties().getDifficulty();
+        final int currentDifficultyId = this.bdsAutoEnable.getServerProperties().getDifficulty().getId();
         this.difficultyButtons.clear();
 
         final Button peaceful = Button.primary("peaceful", "Pokojowy").withEmoji(Emoji.fromUnicode("☮️"));
@@ -281,25 +298,25 @@ public class CommandListener extends ListenerAdapter {
         final Button normal = Button.primary("normal", "Normalny").withEmoji(Emoji.fromFormatted("<:bao_block_grass:1019717534976577617>"));
         final Button hard = Button.primary("hard", "Trudny").withEmoji(Emoji.fromUnicode("⚠️"));
 
-        if (currentDifficulty != 0) {
+        if (currentDifficultyId != 0) {
             this.difficultyButtons.add(peaceful);
         } else {
             this.difficultyButtons.add(peaceful.asDisabled());
         }
 
-        if (currentDifficulty != 1) {
+        if (currentDifficultyId != 1) {
             this.difficultyButtons.add(easy);
         } else {
             this.difficultyButtons.add(easy.asDisabled());
         }
 
-        if (currentDifficulty != 2) {
+        if (currentDifficultyId != 2) {
             this.difficultyButtons.add(normal);
         } else {
             this.difficultyButtons.add(normal.asDisabled());
         }
 
-        if (currentDifficulty != 3) {
+        if (currentDifficultyId != 3) {
             this.difficultyButtons.add(hard);
         } else {
             this.difficultyButtons.add(hard.asDisabled());
@@ -308,7 +325,7 @@ public class CommandListener extends ListenerAdapter {
 
         return new EmbedBuilder()
                 .setTitle("Difficulty")
-                .setDescription("Aktualny poziom trudności to: " + "`" + currentDifficulty + "`")
+                .setDescription("Aktualny poziom trudności to: " + "`" + currentDifficulty.getName() + "`")
                 .setColor(Color.BLUE)
                 .build();
     }

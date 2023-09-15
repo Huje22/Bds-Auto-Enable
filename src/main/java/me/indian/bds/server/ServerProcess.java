@@ -6,7 +6,7 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.player.PlayerManager;
-import me.indian.bds.util.MathUtil;
+import me.indian.bds.server.properties.Difficulty;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
@@ -78,8 +78,7 @@ public class ServerProcess {
                 checkProcessIsRunning.waitFor();
             }
         } catch (final IOException | InterruptedException exception) {
-            this.logger.critical(exception);
-            exception.printStackTrace();
+            this.logger.critical("Nie można sprawdzić czy proces jest aktywny", exception);
             System.exit(0);
         }
         return false;
@@ -135,9 +134,8 @@ public class ServerProcess {
                     this.discord.sendDisabledMessage();
                     this.startProcess();
                 } catch (final Exception exception) {
-                    this.logger.critical("Nie można uruchomić procesu");
-                    this.logger.critical(exception);
-                    exception.printStackTrace();
+                    this.logger.critical("Nie można uruchomić procesu", exception);
+                    ;
                     System.exit(0);
                 }
             }
@@ -164,7 +162,7 @@ public class ServerProcess {
                     }
                 }
             } catch (final Exception exception) {
-                this.logger.critical(exception);
+                this.logger.critical("Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
                 exception.printStackTrace();
                 this.discord.sendMessage("<owner> Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji \n```" + exception + "```");
                 System.exit(0);
@@ -190,7 +188,7 @@ public class ServerProcess {
                             this.sendToConsole("stop");
                         }
                         case "version" -> {
-                            this.tellrawToAllAndLogger(this.prefix, "&aWersja minecraft:&b " + this.config.getVersion(), LogState.INFO);
+                            this.tellrawToAllAndLogger(this.prefix, "&aWersja minecraft:&b " + this.config.getVersionManagerConfig().getVersion(), LogState.INFO);
                             this.tellrawToAllAndLogger(this.prefix, "&aWersja BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
                         }
                         case "backup" -> this.watchDog.getBackupModule().forceBackup();
@@ -227,7 +225,7 @@ public class ServerProcess {
                     }
                 }
             } catch (final Exception exception) {
-                this.logger.critical(exception);
+                this.logger.critical("Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
                 exception.printStackTrace();
                 this.discord.sendMessage("<owner> Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji   \n```" + exception + "```");
                 System.exit(0);
@@ -246,8 +244,7 @@ public class ServerProcess {
                 ThreadUtil.sleep(2);
                 this.logger.info("Zatrzymano wątki procesu servera");
             } catch (final Exception exception) {
-                this.logger.error("Nie udało się zatrzymać wątków procesu servera");
-                exception.printStackTrace();
+                this.logger.error("Nie udało się zatrzymać wątków procesu servera", exception);
             }
         }
 
@@ -265,8 +262,7 @@ public class ServerProcess {
                 this.writer.close();
                 this.logger.info("Zatrzymano writer");
             } catch (final Exception exception) {
-                this.logger.error("Błąd podczas zamykania writera");
-                exception.printStackTrace();
+                this.logger.error("Błąd podczas zamykania writera", exception);
             }
         }
 
@@ -277,8 +273,7 @@ public class ServerProcess {
                 this.logger.info("Zniszczono proces servera");
                 this.discord.sendDestroyedMessage();
             } catch (final Exception exception) {
-                this.logger.error("Nie udało się zniszczyć procesu servera");
-                exception.printStackTrace();
+                this.logger.error("Nie udało się zniszczyć procesu servera", exception);
             }
         }
 
@@ -288,8 +283,7 @@ public class ServerProcess {
             this.config.save();
             this.logger.info("Zapisano config");
         } catch (final Exception exception) {
-            this.logger.critical("Nie można zapisać configu");
-            exception.printStackTrace();
+            this.logger.critical("Nie można zapisać configu", exception);
         }
         this.discord.disableBot();
     }
@@ -320,11 +314,12 @@ public class ServerProcess {
     public void changeSetting(final ServerSetting serverSetting, final Object option) {
         switch (serverSetting) {
             case difficulty -> {
-                if (option instanceof Integer lvl) {
-                    lvl = MathUtil.getCorrectNumber(lvl, 0, 3);
-                    this.sendToConsole("changesetting " + serverSetting.getName() + " " + lvl);
-                    this.bdsAutoEnable.getServerProperties().setDifficulty(lvl);
-                    this.logger.info("Zmieniono&b difficulty&r na:&1 " + lvl);
+                if (option instanceof final Difficulty difficulty) {
+                    this.sendToConsole("changesetting " + serverSetting.getName() + " " + difficulty.getName());
+                    this.bdsAutoEnable.getServerProperties().setDifficulty(difficulty);
+                    this.logger.info("Zmieniono&b difficulty&r na:&1 " + difficulty);
+                } else {
+                    this.logger.error("&b" + serverSetting.getName() + "&c przyjmuje wartości z enum&b Difficulty ");
                 }
             }
             case allowCheats -> {

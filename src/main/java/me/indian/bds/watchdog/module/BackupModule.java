@@ -39,7 +39,7 @@ public class BackupModule {
     private final String worldPath, worldName;
     private final File worldFile;
     private final DiscordIntegration discord;
-    private WatchDog watchDog;
+    private final WatchDog watchDog;
     private ServerProcess serverProcess;
     private String prefix;
     private File backupFolder;
@@ -47,10 +47,11 @@ public class BackupModule {
     private long lastBackupMillis;
     private boolean backuping, loading;
 
-    public BackupModule(final BDSAutoEnable bdsAutoEnable) {
+    public BackupModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
+        this.watchDog = watchDog;
         this.backups = new ArrayList<>();
         this.service = Executors.newScheduledThreadPool(5, new ThreadUtil("Watchdog-BackupModule"));
         this.timer = new Timer("Backup", true);
@@ -80,8 +81,7 @@ public class BackupModule {
         this.loading = false;
     }
 
-    public void initBackupModule(final WatchDog watchDog, final ServerProcess serverProcess) {
-        this.watchDog = watchDog;
+    public void initBackupModule(final ServerProcess serverProcess) {
         this.prefix = this.watchDog.getWatchDogPrefix();
         this.serverProcess = serverProcess;
         this.loadAvailableBackups();
@@ -133,7 +133,7 @@ public class BackupModule {
             } catch (final Exception exception) {
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można utworzyć kopii zapasowej", LogState.CRITICAL);
                 this.status = "Nie udało sie utworzyć kopij zapasowej";
-                this.logger.critical(exception);
+                this.logger.critical(this.status, exception);
                 exception.printStackTrace();
                 if (backup.delete()) {
                     this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUsunięto błędny backup", LogState.INFO);

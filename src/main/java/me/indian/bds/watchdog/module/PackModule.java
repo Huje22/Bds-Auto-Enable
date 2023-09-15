@@ -22,6 +22,7 @@ import java.net.URL;
 
 public class PackModule {
 
+    private final WatchDog watchDog;
     private final Logger logger;
     private final String packName;
     private File behaviorsFolder, pack, worldBehaviorsJson;
@@ -29,13 +30,14 @@ public class PackModule {
     private int[] version;
     private boolean loaded;
 
-    public PackModule(final BDSAutoEnable bdsAutoEnable) {
+    public PackModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
+        this.watchDog = watchDog;
         this.logger = bdsAutoEnable.getLogger();
         this.packName = "BDS-Auto-Enable-Managment-Pack";
     }
 
-    public void initPackModule(final WatchDog watchDog) {
-        final BackupModule backupModule = watchDog.getBackupModule();
+    public void initPackModule() {
+        final BackupModule backupModule = this.watchDog.getBackupModule();
         this.behaviorsFolder = new File(backupModule.getWorldFile().getPath() + File.separator + "behavior_packs");
         this.pack = new File(this.behaviorsFolder.getPath() + File.separator + "BDS-Auto-Enable-Managment-Pack");
         this.worldBehaviorsJson = new File(backupModule.getWorldFile().getPath() + File.separator + "world_behavior_packs.json");

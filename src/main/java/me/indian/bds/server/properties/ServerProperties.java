@@ -1,4 +1,4 @@
-package me.indian.bds.server;
+package me.indian.bds.server.properties;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
@@ -27,8 +27,7 @@ public class ServerProperties {
             this.properties.clear();
             this.properties.load(Files.newInputStream(Paths.get(this.config.getFilesPath() + "/server.properties")));
         } catch (final IOException exception) {
-            this.logger.critical("&cWystąpił krytyczny błąd podczas ładowania &aserver.properties");
-            this.logger.critical(exception);
+            this.logger.critical("&cWystąpił krytyczny błąd podczas ładowania &aserver.properties", exception);
             System.exit(0);
         }
     }
@@ -37,8 +36,7 @@ public class ServerProperties {
         try {
             this.properties.store(Files.newOutputStream(Paths.get(this.config.getFilesPath() + "/server.properties")), null);
         } catch (final IOException exception) {
-            this.logger.critical("&cWystąpił krytyczny błąd podczas zapisywania&a server.properties");
-            this.logger.critical(exception);
+            this.logger.critical("&cWystąpił krytyczny błąd podczas zapisywania&a server.properties", exception);
             System.exit(0);
         }
     }
@@ -70,31 +68,27 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
-
-
-    
-//TODO: Zrobić to z enum
     public Difficulty getDifficulty() {
         try {
-          final String difficulty1 = this.properties.getProperty("difficulty");
-        int difficulty2 = -1; 
-         try{
-         difficulty2 = Integer.paresInt(difficulty1);
-        }catch (final NumberFormatException exception) {
-      }
-      
-      if (difficulty1.equalsIgnoreCase("peaceful") || difficulty2 == 0){
-        return Difficulty.PEACEFUL;
-      } else if (difficulty1.equalsIgnoreCase("easy") || difficulty2 == 1){
-      return Difficulty.EASY;
-    } else if(difficulty1.equalsIgnoreCase("normal") || difficulty2 == 2){
-    return Difficulty.NORMAL;
-      } else if(difficulty1.equalsIgnoreCase("hard") || difficulty2 == 3){
-      return Difficulty.HARD;
-    }else{
-    return Difficulty.EASY;
-  }
-          
+            final String difficulty1 = this.properties.getProperty("difficulty");
+            int difficulty2 = -1;
+            try {
+                difficulty2 = Integer.parseInt(difficulty1);
+            } catch (final NumberFormatException ignored) {
+            }
+
+            if (difficulty1.equalsIgnoreCase("peaceful") || difficulty2 == 0) {
+                return Difficulty.PEACEFUL;
+            } else if (difficulty1.equalsIgnoreCase("easy") || difficulty2 == 1) {
+                return Difficulty.EASY;
+            } else if (difficulty1.equalsIgnoreCase("normal") || difficulty2 == 2) {
+                return Difficulty.NORMAL;
+            } else if (difficulty1.equalsIgnoreCase("hard") || difficulty2 == 3) {
+                return Difficulty.HARD;
+            } else {
+                return Difficulty.EASY;
+            }
+
         } catch (final Exception exception) {
             this.setDifficulty(Difficulty.NORMAL);
             return Difficulty.NORMAL;
@@ -105,12 +99,6 @@ public class ServerProperties {
         this.properties.setProperty("difficulty", difficulty.getName());
         this.reloadServerProperties();
     }
-
-//TODO: Zrobić to z enum
-
-
-
-    
 
     public int getServerPort() {
         try {
@@ -285,42 +273,34 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
-
-
-//TODO: Zrobić to z enum
     public ServerMovementAuth getServerAuthoritativeMovement() {
         try {
-          final String serverMovement = this.properties.getProperty("server-authoritative-movement");
-          switch (serverMovement){
-            case "client-auth" -> {
-              return ServerMovementAuth.CLIENT;
+            final String serverMovement = this.properties.getProperty("server-authoritative-movement");
+            switch (serverMovement) {
+                case "client-auth" -> {
+                    return ServerMovementAuth.CLIENT;
+                }
+//            case "server-auth" -> {
+//              return ServerMovementAuth.SERVER;
+//            }
+                case "server-auth-with-rewind" -> {
+                    return ServerMovementAuth.SERVER_REWIND;
+                }
+                default -> {
+                    return ServerMovementAuth.SERVER;
+                }
             }
-            case "server-auth" -> {
-              return ServerMovementAuth.SERVER;
-            }
-            case "server-auth-with-rewind" -> {
-             return ServerMovementAuth.SERVER_REWIND;
-            }
-            default -> {
-              return ServerMovementAuth.SERVER;
-            }
-           }
-   
         } catch (final Exception exception) {
             this.setServerAuthoritativeMovement(ServerMovementAuth.SERVER);
             return ServerMovementAuth.SERVER;
         }
     }
-//TODO: Zrobić to z enum
+
     public void setServerAuthoritativeMovement(final ServerMovementAuth serverAuthoritativeMovement) {
-            this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement.getName());
+        this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement.getName());
         this.reloadServerProperties();
     }
-//TODO: Zrobić to z enum
 
-
-
-    
     public boolean isCorrectPlayerMovement() {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("correct-player-movement"));
@@ -339,48 +319,3 @@ public class ServerProperties {
         return this.properties;
     }
 }
-
-
-public enum Difficulty{
-  PEACEFUL("peaceful", 0),
-  EASY("easy",1),
-  NORMAL("normal",2),
-  HARD("hard" , 3); 
- 
-  private final String name;
-  private final int id;
-  
-  
-  Difficulty(final String name , final int id){
-    this.name = name;
-    this.id = id;
- }
- 
- public String getName(){
-   return this.name;
- }
- 
- public int getId(){
-   return this.id;
- }
-}
-
-
-
-public enum ServerMovementAuth(){
-  CLIENT("client-auth"),
-  SERVER("server-auth"),
-  SERVER_REWIND("server-auth-with-rewind");
-  
-  private final String name;
-  
-  ServerMovementAuth(final String name){
-    this.name = name;
-  }
-  
-  public String getName(){
-    return this.name;
-  }
-}
-
-

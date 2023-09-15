@@ -87,8 +87,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             this.jda.awaitReady();
             this.logger.info("&aZaładowano bota");
         } catch (final Exception exception) {
-            this.logger.critical("&aNie można uruchomić bota , sprawdź podany &bTOKEN");
-            exception.printStackTrace();
+            this.logger.critical("&aNie można uruchomić bota , sprawdź podany &bTOKEN", exception);
             return;
         }
 
@@ -132,6 +131,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                 Commands.slash("backup", "Tworzenie bądź ostatni czas backupa")
                         .addOption(OptionType.STRING, "load", "Załaduj backup po jego pełnej nazwie", false),
                 Commands.slash("difficulty", "Zmienia poziom trudności"),
+                Commands.slash("version", "Wersja BDS-Auto-Enable i severa"),
                 Commands.slash("ping", "aktualny ping bot z serwerami discord"),
                 Commands.slash("stats", "Statystyki Servera i aplikacji."),
                 Commands.slash("cmd", "Wykonuje polecenie w konsoli.")

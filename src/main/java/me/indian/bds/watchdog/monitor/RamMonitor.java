@@ -21,12 +21,13 @@ public class RamMonitor {
     private final RamMonitorConfig ramMonitorConfig;
     private DiscordIntegration discord;
     private ServerProcess serverProcess;
-    private boolean running = false;
+    private boolean running;
 
     public RamMonitor(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.ramMonitorTimer = new Timer("RamMonitorTimer", true);
         this.prefix = watchDog.getWatchDogPrefix();
         this.ramMonitorConfig = bdsAutoEnable.getConfig().getWatchDogConfig().getRamMonitor();
+        this.running = false;
 
     }
 

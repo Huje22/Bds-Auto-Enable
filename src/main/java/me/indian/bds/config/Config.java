@@ -7,6 +7,7 @@ import eu.okaeri.configs.annotation.Header;
 import me.indian.bds.config.sub.AutoMessagesConfig;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.config.sub.log.LogConfig;
+import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.util.SystemOs;
 
@@ -23,11 +24,9 @@ public class Config extends OkaeriConfig {
     @Comment({""})
     @Comment("UWAGA , WSZYTKIE ZMIANY TUTAJ WYMAGAJĄ RESTARTU APLIKACJI")
     @Comment({""})
-    @Comment({"Versia która jest załadowana"})
-    @CustomKey("Version")
-    private String version = "1.20.15.01";
-    @CustomKey("Loaded")
-    private boolean loaded = false;
+    @Comment({"Ustawienia menagera wersji"})
+    @CustomKey("VersionManager")
+    private VersionManagerConfig versionManagerConfig = new VersionManagerConfig();
 
     @Comment({""})
     @Comment({"Pierwsze uruchomienie"})
@@ -81,20 +80,8 @@ public class Config extends OkaeriConfig {
     @CustomKey("Debug")
     private boolean debug = false;
 
-    public String getVersion() {
-        return this.version;
-    }
-
-    public void setVersion(final String version) {
-        this.version = version;
-    }
-
-    public boolean isLoaded() {
-        return this.loaded;
-    }
-
-    public void setLoaded(final boolean loaded) {
-        this.loaded = loaded;
+    public VersionManagerConfig getVersionManagerConfig() {
+        return this.versionManagerConfig;
     }
 
     public boolean isFirstRun() {

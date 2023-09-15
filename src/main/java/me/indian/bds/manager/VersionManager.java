@@ -1,17 +1,23 @@
 package me.indian.bds.manager;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
+import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.SystemOs;
 import me.indian.bds.util.ZipUtil;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
@@ -26,6 +32,7 @@ public class VersionManager {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Config config;
+    private final VersionManagerConfig versionManagerConfig;
     private final List<String> importantFiles;
     private final File versionFolder;
     private final List<String> availableVersions;
@@ -35,6 +42,7 @@ public class VersionManager {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
+        this.versionManagerConfig = this.config.getVersionManagerConfig();
         this.importantFiles = new ArrayList<>();
         this.versionFolder = new File(Defaults.getAppDir() + File.separator + "versions");
         this.availableVersions = new ArrayList<>();
@@ -92,12 +100,11 @@ public class VersionManager {
             }
             final long startTime = System.currentTimeMillis();
             ZipUtil.unzipFile(verFile.getAbsolutePath(), this.config.getFilesPath(), false, this.importantFiles);
-            this.config.setLoaded(true);
-            this.config.setVersion(version);
+            this.versionManagerConfig.setLoaded(true);
+            this.versionManagerConfig.setVersion(version);
             this.logger.info("Załadowano versie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final IOException exception) {
-            this.logger.critical("Nie można załadować wersji: " + version);
-            exception.printStackTrace();
+            this.logger.critical("Nie można załadować wersji: " + version, exception);
             throw new RuntimeException(exception);
         }
         this.config.save();
@@ -106,12 +113,12 @@ public class VersionManager {
     public void loadVersion() {
         final File bedrockFile = new File(this.config.getFilesPath() + File.separator + this.config.getFileName());
         if (!bedrockFile.exists()) {
-            this.config.setLoaded(false);
+            this.versionManagerConfig.setLoaded(false);
             this.config.save();
         }
 
-        if (!this.config.isLoaded()) {
-            this.loadVersion(this.config.getVersion());
+        if (!this.versionManagerConfig.isLoaded()) {
+            this.loadVersion(this.versionManagerConfig.getVersion());
         }
         this.bdsAutoEnable.getServerProperties().loadProperties();
     }
@@ -154,8 +161,7 @@ public class VersionManager {
                 System.exit(1);
             }
         } catch (final IOException ioException) {
-            this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version);
-            this.logger.critical(ioException);
+            this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version, ioException);
             ioException.printStackTrace();
         }
     }
@@ -169,9 +175,7 @@ public class VersionManager {
                 return -1;
             }
         } catch (final IOException ioException) {
-            this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version);
-            this.logger.critical(ioException);
-            ioException.printStackTrace();
+            this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version, ioException);
         }
         return -1;
     }
@@ -193,9 +197,10 @@ public class VersionManager {
     }
 
 // TODO: Dokończyć to + dodać auto update 
-    
+
     // Testowe pisane na telu na kursach 12.09.2023
-    public String getLatestVersion(final SystemOs os) {
+    public String getLatestVersion() {
+        final SystemOs os = this.config.getSystem();
         try {
             final StringBuilder response = new StringBuilder();
             final URL url = new URL("https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json");
@@ -205,34 +210,35 @@ public class VersionManager {
 
             final int responseCode = con.getResponseCode();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-            
-      try (final BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream())){
-               String inputLine;
-          
-                while ((inputLine = in.readLine()) != null) {
-                    response.append(inputLine);
+                try (final BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
+                    String inputLine;
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
                 }
-        
-                final JsonObject jsonObject = GsonUtil.getGson().fromJson(response.toString(), JsonObject.class);
+                final JsonObject jsonObject = JsonParser.parseString(response.toString()).getAsJsonObject();
 
                 if (os == SystemOs.LINUX) {
                     return jsonObject.getAsJsonObject("linux").get("stable").getAsString();
                 } else if (os == SystemOs.WINDOWS) {
                     return jsonObject.getAsJsonObject("windows").get("stable").getAsString();
                 }
-              }
-                return null;
+
+                return "";
             } else {
-                    this.logger.error("Błąd przy pobieraniu danych. Kod odpowiedzi: " + responseCode);
+                this.logger.error("Błąd przy pobieraniu danych. Kod odpowiedzi: " + responseCode);
             }
-        } catch (final IOException e) {
-           this.logger.error("Błąd przy pobieraniu danych: " + e);
-            e.printStackTrace();
+        } catch (final IOException ioException) {
+            this.logger.error("Błąd przy pobieraniu danych ", ioException);
         }
         return "";
     }
 
     public List<String> getAvailableVersions() {
         return this.availableVersions;
+    }
+
+    public boolean hasVersion(final String version) {
+        return this.availableVersions.contains(version);
     }
 }

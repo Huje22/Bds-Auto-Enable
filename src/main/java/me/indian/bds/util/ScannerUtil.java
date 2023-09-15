@@ -9,7 +9,7 @@ public final class ScannerUtil {
         this.scanner = scanner;
     }
 
-    public String addQuestion(final StringResponseConsumer question, final String defaultValue, final StringResponseConsumer response) {
+    public String addStringQuestion(final StringResponseConsumer question, final String defaultValue, final StringResponseConsumer response) {
         question.accept(defaultValue);
         String input = this.getInput();
         input = input.isEmpty() ? defaultValue : input;
@@ -18,7 +18,7 @@ public final class ScannerUtil {
         return input;
     }
 
-    public boolean addQuestion(final BooleanResponseConsumer question, final boolean defaultValue, final BooleanResponseConsumer response) {
+    public boolean addBooleanQuestion(final BooleanResponseConsumer question, final boolean defaultValue, final BooleanResponseConsumer response) {
         question.accept(defaultValue);
         final String input = this.getInput();
         final boolean userInput = input.isEmpty() ? defaultValue : Boolean.parseBoolean(input);
@@ -27,7 +27,7 @@ public final class ScannerUtil {
         return userInput;
     }
 
-    public int addQuestion(final IntegerResponseConsumer question, final int defaultValue, final IntegerResponseConsumer response) {
+    public int addIntQuestion(final IntegerResponseConsumer question, final int defaultValue, final IntegerResponseConsumer response) {
         question.accept(defaultValue);
         final String input = this.getInput();
         final int userInput = input.isEmpty() ? defaultValue : Integer.parseInt(input);

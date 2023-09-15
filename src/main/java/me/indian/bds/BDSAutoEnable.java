@@ -11,7 +11,7 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.VersionManager;
 import me.indian.bds.manager.player.PlayerManager;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.ServerProperties;
+import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
@@ -93,6 +93,7 @@ public class BDSAutoEnable {
         this.versionManager.loadVersion();
         this.discord.init();
         this.serverProcess.startProcess();
+        this.watchDog.getUpdateMonitor().checkForUpdate();
         new AutoMessages(this, this.serverProcess).start();
         new OurMetrics(this);
     }

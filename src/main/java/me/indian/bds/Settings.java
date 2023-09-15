@@ -2,11 +2,14 @@ package me.indian.bds;
 
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProperties;
+import me.indian.bds.server.properties.ServerMovementAuth;
+import me.indian.bds.server.properties.ServerProperties;
+import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ScannerUtil;
 import me.indian.bds.util.SystemOs;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
 
 public class Settings {
@@ -28,12 +31,12 @@ public class Settings {
     public void loadSettings(final Scanner scanner) {
         final ScannerUtil scannerUtil = new ScannerUtil(scanner);
         if (!this.config.isFirstRun()) {
-            scannerUtil.addQuestion((defaultValue) -> this.logger.info("Zastosować wcześniejsze ustawienia? (true/false) (Enter = true) "),
+            scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("Zastosować wcześniejsze ustawienia? (true/false) (Enter = true) "),
                     true,
                     (settings) -> {
                         if (settings) {
                             this.serverProperties.loadProperties();
-                            if (this.config.isLoaded()) {
+                            if (this.config.getVersionManagerConfig().isLoaded()) {
                                 this.anotherVersionQuestion(scannerUtil);
                             }
                             this.currentSettings(scanner);
@@ -51,7 +54,7 @@ public class Settings {
         final long startTime = System.currentTimeMillis();
         SystemOs system;
         try {
-            system = SystemOs.valueOf(scannerUtil.addQuestion((defaultValue) -> {
+            system = SystemOs.valueOf(scannerUtil.addStringQuestion((defaultValue) -> {
                         this.logger.info("&lPodaj system&r (Wykryty system: " + defaultValue + "): " + this.enter);
                         this.logger.info("Obsługiwane systemy: " + Arrays.toString(SystemOs.values()));
                     }, Defaults.getSystem(),
@@ -63,12 +66,12 @@ public class Settings {
         }
         this.config.setSystem(system);
         System.out.println();
-        this.config.setFileName(scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + "): " + this.enter),
+        this.config.setFileName(scannerUtil.addStringQuestion((defaultValue) -> this.logger.info("&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + "): " + this.enter),
                 Defaults.getDefaultFileName(),
                 (input) -> this.logger.info("Nazwa pliku ustawiona na:&1 " + input)));
         System.out.println();
         if (Defaults.hasWine()) {
-            this.config.setWine(scannerUtil.addQuestion(
+            this.config.setWine(scannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
                         this.logger.info("&lWykryliśmy &r&bWINE&r&l czy użyć go? (Domyślnie: " + defaultValue + "): " + this.enter);
                         this.logger.alert("Jeśli chcesz użyć&b WINE&r plik musi kończyć się na&1 .exe");
@@ -88,31 +91,29 @@ public class Settings {
             System.out.println();
         }
 
-        this.config.setFilesPath(scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lPodaj ścieżkę do plików servera&r  (Domyślnie: " + defaultValue + "): " + this.enter),
+        this.config.setFilesPath(scannerUtil.addStringQuestion((defaultValue) -> this.logger.info("&lPodaj ścieżkę do plików servera&r  (Domyślnie: " + defaultValue + "): " + this.enter),
                 Defaults.getJarDir(),
                 (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)));
         this.config.save();
         System.out.println();
 
-        if (!this.config.isLoaded()) this.versionQuestion(scannerUtil);
+        if (!this.config.getVersionManagerConfig().isLoaded()) this.versionQuestion(scannerUtil);
         this.serverProperties.loadProperties();
 
-        final boolean backup = scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lWłączyć Backupy&r (Domyślnie: " + defaultValue + ")? " + this.enter),
+        final boolean backup = scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&lWłączyć Backupy&r (Domyślnie: " + defaultValue + ")? " + this.enter),
                 true,
                 (input) -> this.logger.info("Backupy ustawione na:&1 " + input));
         this.config.getWatchDogConfig().getBackup().setBackup(backup);
         if (backup) {
-            final int backupFrequency = scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lCo ile minut robić backup?&r (Domyślnie: " + defaultValue + ")? " + this.enter),
+            final int backupFrequency = scannerUtil.addIntQuestion((defaultValue) -> this.logger.info("&lCo ile minut robić backup?&r (Domyślnie: " + defaultValue + ")? " + this.enter),
                     60,
                     (input) -> this.logger.info("Backup bedzie robiony co:&1 " + (input == 0 ? 60 : input + "&a minut")));
             this.config.getWatchDogConfig().getBackup().setBackupFrequency(backupFrequency == 0 ? 60 : backupFrequency);
         }
         System.out.println();
 
-        scannerUtil.addQuestion(
-                (defaultValue) -> {
-                    this.logger.info("&lRozpocząć częściową konfiguracje servera?&r (Domyślnie: " + defaultValue + ") " + this.enter);
-                },
+        scannerUtil.addBooleanQuestion(
+                (defaultValue) -> this.logger.info("&lRozpocząć częściową konfiguracje servera?&r (Domyślnie: " + defaultValue + ") " + this.enter),
                 true,
                 (input) -> {
                     if (input) {
@@ -130,32 +131,31 @@ public class Settings {
         TODO:
             Dodać pełne wspracje dla:
             "default-player-permission-level" ( 0 = VISITOR , 1 = MEMBER , 2 = OPERATOR),
-            "difficulty" (0 = peaceful, 1 = easy, 2 = normal, 3 = hard) METODA JUZ ISTNIEJE W "ServerProperties"
          */
 
         this.logger.info("&aKonfiguracja servera&r");
         System.out.println();
 
-        this.serverProperties.setServerPort(scannerUtil.addQuestion((defaultValue) -> {
+        this.serverProperties.setServerPort(scannerUtil.addIntQuestion((defaultValue) -> {
             this.logger.info("&lUstaw port v4?&r (Aktualny z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
             this.logger.info("&cPamiętaj że twoja sieć musi miec dostępny ten port");
         }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na:&1 " + input)));
         System.out.println();
 
-        this.serverProperties.setServerPortV6(scannerUtil.addQuestion((defaultValue) -> {
+        this.serverProperties.setServerPortV6(scannerUtil.addIntQuestion((defaultValue) -> {
             this.logger.info("&lUstaw port v6?&r (Aktualny z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
             this.logger.info("&cJeśli twoja sieć obsługuje&b ipv6&c ustaw go na dostępny z puli portów");
         }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&1 " + input)));
         System.out.println();
 
-        this.serverProperties.setMaxThreads(scannerUtil.addQuestion((defaultValue) -> {
+        this.serverProperties.setMaxThreads(scannerUtil.addIntQuestion((defaultValue) -> {
                     this.logger.info("&lLiczba wątków używana przez server&r ");
                     this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
                 }, 0,
                 (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + input)));
         System.out.println();
 
-        this.serverProperties.setAllowCheats(scannerUtil.addQuestion(
+        this.serverProperties.setAllowCheats(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
                     this.logger.info("&lAllow Cheats&r (Aktualny z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
                     this.logger.alert("Aby integracja z discord działała poprawnie wymagamy tego na&b true&r i włączenie&b experymentów&r!");
@@ -164,7 +164,7 @@ public class Settings {
                 (input) -> this.logger.info("Allow Cheats ustawione na:&1 " + input)));
         System.out.println();
 
-        this.serverProperties.setPlayerIdleTimeout(scannerUtil.addQuestion((defaultValue) -> {
+        this.serverProperties.setPlayerIdleTimeout(scannerUtil.addIntQuestion((defaultValue) -> {
                     this.logger.info("&lUstaw Timeout &r (Aktualny z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
                     this.logger.info("Gdy gracz będzie bezczynny przez tyle minut, zostanie wyrzucony.");
                     this.logger.info("Jeśli ustawione na 0, gracze mogą pozostawać bezczynni przez czas nieokreślony.");
@@ -190,8 +190,7 @@ public class Settings {
         ));
         System.out.println();
 
-
-        this.serverProperties.setViewDistance(scannerUtil.addQuestion(
+        this.serverProperties.setViewDistance(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
                     this.logger.info("&lUstaw View Distance&r (Aktualny z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
                     this.logger.info("Maksymalna dozwolona odległość widoku wyrażona w liczbie chunk");
@@ -202,7 +201,7 @@ public class Settings {
                 (input) -> this.logger.info("Maksymalny View Distance na:&1 " + input)));
         System.out.println();
 
-        this.serverProperties.setTickDistance(scannerUtil.addQuestion((defaultValue) -> {
+        this.serverProperties.setTickDistance(scannerUtil.addIntQuestion((defaultValue) -> {
                     this.logger.info("&lUstaw Tick Distance &r (Aktualna z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
                     this.logger.info("Świat zostanie wstrzymany po tylu chunk od gracza");
                     this.logger.alert("Duże ilości mogą prowadzić do lagów servera!");
@@ -211,17 +210,33 @@ public class Settings {
                 (input) -> this.logger.info("Tick Distance na:&1 " + input)));
         System.out.println();
 
-        this.serverProperties.setServerAuthoritativeMovement(scannerUtil.addQuestion(
-                (defaultValue) -> {
-                    this.logger.info("&lUstaw Server Authoritative Movement &r (Aktualna z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
-                    this.logger.info("Dostępne:&b client-auth&r,&b server-auth&r,&b server-auth-with-rewind");
-                    this.logger.alert("Jeśli chcesz uniknąć cheaterów włącz&b server-auth-with-rewind&r wraz z &bcorrect-player-movement&r , lecz uważaj! Osoby z słabym połączeniem bedą się okropnie teleportować");
-                },
-                this.serverProperties.getServerAuthoritativeMovement(),
-                (input) -> this.logger.info("Server Authoritative Movement ustawiono na:&1 " + input)));
+        ServerMovementAuth serverMovementAuth;
+
+        try {
+            serverMovementAuth = ServerMovementAuth.valueOf(
+                    scannerUtil.addStringQuestion(
+                            (defaultValue) -> {
+                                this.logger.info("&lUstaw Server Authoritative Movement &r (Aktualna z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
+
+                                final List<String> serverAuthOptions = Arrays.stream(ServerMovementAuth.values())
+                                        .map(ServerMovementAuth::getName)
+                                        .toList();
+
+                                this.logger.info("Dostępne:&b " + MessageUtil.listToString(serverAuthOptions, "&a, &b"));
+                                this.logger.alert("Jeśli chcesz uniknąć cheaterów włącz&b server-auth-with-rewind&r wraz z &bcorrect-player-movement&r , lecz uważaj! Osoby z słabym połączeniem bedą się okropnie teleportować");
+                            },
+                            this.serverProperties.getServerAuthoritativeMovement().getName(),
+                            (input) -> this.logger.info("Server Authoritative Movement ustawiono na:&1 " + input)));
+        } catch (final Exception exception) {
+            this.logger.error("Podano nieznany typ uwierzytelnienia poruszania sie, ustawiliśmy go dla ciebie na:&b " + ServerMovementAuth.SERVER.getName());
+            serverMovementAuth = ServerMovementAuth.SERVER;
+        }
+
+        this.serverProperties.setServerAuthoritativeMovement(serverMovementAuth);
+
         System.out.println();
 
-        this.serverProperties.setServerAuthoritativeBlockBreaking(scannerUtil.addQuestion(
+        this.serverProperties.setServerAuthoritativeBlockBreaking(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
                     this.logger.info("&lUstaw Server Authoritative Block Breaking &r (Aktualna z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
                     this.logger.info("Jeśli ustawione na&b true&r, serwer będzie obliczać operacje wydobywania bloków synchronicznie z klientem, aby móc zweryfikować, czy klient powinien mieć możliwość niszczenia bloków wtedy, kiedy uważa, że może to zrobić.");
@@ -230,7 +245,7 @@ public class Settings {
                 (input) -> this.logger.info("Server Authoritative Block Breaking ustawiono na:&1 " + input)));
         System.out.println();
 
-        this.serverProperties.setCorrectPlayerMovement(scannerUtil.addQuestion(
+        this.serverProperties.setCorrectPlayerMovement(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
                     this.logger.info("&lUstaw Correct Player Movement &r (Aktualna z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
                     this.logger.info("jeśli ustawione na&b true&r, pozycja klienta zostanie poprawiona do pozycji serwera, jeśli wynik ruchu przekroczy próg.");
@@ -243,7 +258,6 @@ public class Settings {
         TODO:
             Dodać pełne wspracje dla:
             "default-player-permission-level" ( 0 = VISITOR , 1 = MEMBER , 2 = OPERATOR),
-            "difficulty" (0 = peaceful, 1 = easy, 2 = normal, 3 = hard) METODA JUZ ISTNIEJE W "ServerProperties"
          */
     }
 
@@ -257,7 +271,7 @@ public class Settings {
         this.logger.info("Nazwa pliku:&1 " + this.config.getFileName());
         this.logger.info("Wine:&1 " + this.config.isWine() + (Defaults.hasWine() ? " &d(&bPosiadasz&d)" : ""));
         this.logger.info("Ścieżka plików:&b " + this.config.getFilesPath());
-        this.logger.info("Wersja:&1 " + this.config.getVersion());
+        this.logger.info("Wersja:&1 " + this.config.getVersionManagerConfig().getVersion());
 
         final boolean backup = this.config.getWatchDogConfig().getBackup().isBackup();
         this.logger.info("Backup:&1 " + backup);
@@ -284,7 +298,7 @@ public class Settings {
         this.logger.info("Tick Distance:&1 " + this.serverProperties.getTickDistance());
         System.out.println();
 
-        this.logger.info("Server Authoritative Movement:&1 " + this.serverProperties.getServerAuthoritativeMovement());
+        this.logger.info("Server Authoritative Movement:&1 " + this.serverProperties.getServerAuthoritativeMovement().getName());
         this.logger.info("Server Authoritative Block Breaking:&1 " + this.serverProperties.isServerAuthoritativeBlockBreaking());
         this.logger.info("Correct Player Movement:&1 " + this.serverProperties.isCorrectPlayerMovement());
         System.out.println();
@@ -301,9 +315,11 @@ public class Settings {
     }
 
     private void versionQuestion(final ScannerUtil scannerUtil) {
-        this.config.setVersion(scannerUtil.addQuestion(
+        final String latest = this.bdsAutoEnable.getVersionManager().getLatestVersion();
+        final String check = (latest.equals("") ? "Nie udało odnaleźć się najnowszej wersji" : latest);
+        this.config.getVersionManagerConfig().setVersion(scannerUtil.addStringQuestion(
                 (defaultValue) -> {
-                    this.logger.info("&lJaką versie załadować?&r (Domyślnie: " + defaultValue + "): " + this.enter);
+                    this.logger.info("&lJaką versie załadować?&r (Najnowsza: " + check + " ): ");
                     if (this.bdsAutoEnable.getVersionManager().getAvailableVersions().isEmpty()) {
                         this.logger.info("Nie znaleziono żadnej wersji");
                     } else {
@@ -311,18 +327,18 @@ public class Settings {
                     }
                     this.logger.info("Aby pobrać jakąś versie wpisz jej numer (niektóre mogą mieć .01 / .02 na końcu)");
                 },
-                this.config.getVersion(), (input) -> this.logger.info("Wersja do załadowania ustawiona na:&1 " + input)
+                this.config.getVersionManagerConfig().getVersion(), (input) -> this.logger.info("Wersja do załadowania ustawiona na:&1 " + input)
         ));
         this.bdsAutoEnable.getVersionManager().loadVersion();
         System.out.println();
     }
 
     private void anotherVersionQuestion(final ScannerUtil scannerUtil) {
-        scannerUtil.addQuestion((defaultValue) -> this.logger.info("&lZaładować jakąś inną versie&r (Domyślnie: " + defaultValue + "): " + this.enter),
+        scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&lZaładować jakąś inną versie&r (Domyślnie: " + defaultValue + "): " + this.enter),
                 false,
                 (input) -> {
                     if (input) {
-                        this.config.setLoaded(false);
+                        this.config.getVersionManagerConfig().setLoaded(false);
                         this.config.save();
                         this.versionQuestion(scannerUtil);
                     }
