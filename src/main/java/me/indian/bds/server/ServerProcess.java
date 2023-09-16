@@ -3,6 +3,7 @@ package me.indian.bds.server;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.player.PlayerManager;
@@ -163,7 +164,6 @@ public class ServerProcess {
                 }
             } catch (final Exception exception) {
                 this.logger.critical("Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
-                exception.printStackTrace();
                 this.discord.sendMessage("<owner> Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji \n```" + exception + "```");
                 System.exit(0);
             }
@@ -226,7 +226,6 @@ public class ServerProcess {
                 }
             } catch (final Exception exception) {
                 this.logger.critical("Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
-                exception.printStackTrace();
                 this.discord.sendMessage("<owner> Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji   \n```" + exception + "```");
                 System.exit(0);
             }
@@ -304,7 +303,7 @@ public class ServerProcess {
 
     public String commandAndResponse(final String command) {
         if (ThreadUtil.isImportantThread()) {
-            throw new IllegalAccessError("Nie możesz wykonac tego na tym wątku!");
+            throw new BadThreadException("Nie możesz wykonać tego na tym wątku!");
         }
         this.sendToConsole(command);
         ThreadUtil.sleep(1);
@@ -329,11 +328,9 @@ public class ServerProcess {
                     this.logger.info("Zmieniono&b difficulty&r na:&1 " + opt);
                 }
             }
-
             default -> this.logger.error("Nie znany typ:&1 " + serverSetting);
         }
     }
-
 
     public void kickAllPlayers(final String msg) {
         if (this.playerManager.getOnlinePlayers().isEmpty()) {
