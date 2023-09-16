@@ -96,7 +96,37 @@ public class ServerProperties {
     }
 
     public void setDifficulty(final Difficulty difficulty) {
-        this.properties.setProperty("difficulty", difficulty.getName());
+        this.properties.setProperty("difficulty", difficulty.getDifficultyName());
+        this.reloadServerProperties();
+    }
+
+    public PlayerPermissionLevel getDefaultPlayerPermissionLevel() {
+        try {
+            final String permissionLevel = this.properties.getProperty("default-player-permission-level");
+            int level = -1;
+            try {
+                level = Integer.parseInt(permissionLevel);
+            } catch (final NumberFormatException ignored) {
+            }
+
+            if (permissionLevel.equalsIgnoreCase("VISITOR") || level == 0) {
+                return PlayerPermissionLevel.VISITOR;
+            } else if (permissionLevel.equalsIgnoreCase("MEMBER") || level == 1) {
+                return PlayerPermissionLevel.MEMBER;
+            } else if (permissionLevel.equalsIgnoreCase("OPERATOR") || level == 2) {
+                return PlayerPermissionLevel.OPERATOR;
+            } else {
+                return PlayerPermissionLevel.MEMBER;
+            }
+
+        } catch (final Exception exception) {
+            this.setDefaultPlayerPermissionLevel(PlayerPermissionLevel.MEMBER);
+            return PlayerPermissionLevel.MEMBER;
+        }
+    }
+
+    public void setDefaultPlayerPermissionLevel(final PlayerPermissionLevel level) {
+        this.properties.setProperty("default-player-permission-level", level.getPermissionName());
         this.reloadServerProperties();
     }
 
@@ -310,7 +340,7 @@ public class ServerProperties {
     }
 
     public void setServerAuthoritativeMovement(final ServerMovementAuth serverAuthoritativeMovement) {
-        this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement.getName());
+        this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement.getAuthName());
         this.reloadServerProperties();
     }
 
