@@ -83,7 +83,6 @@ public class BDSAutoEnable {
         this.settings.loadSettings(this.scanner);
         this.playerManager.getStatsManager().startTasks();
         this.checkExecutable();
-        //TODO: Dodac wykonwyanie "chmod +x"
         this.shutdownHook();
         this.watchDog = new WatchDog(this);
         this.serverProcess.initWatchDog(this.watchDog);
@@ -91,6 +90,7 @@ public class BDSAutoEnable {
         this.watchDog.getBackupModule().backup();
         this.watchDog.getRamMonitor().monitRamUsage();
         this.versionManager.loadVersion();
+        this.watchDog.getPackModule().initPackModule();
         this.discord.init();
         this.serverProcess.startProcess();
         this.watchDog.getUpdateMonitor().checkForUpdate();
@@ -122,18 +122,16 @@ public class BDSAutoEnable {
     private void checkMemory() {
         final long maxMem = MathUtil.bytesToMB(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax());
         if (maxMem < 1000)
-            this.logger.critical("&cWykryto małą ilość pamięci przeznaczonej dla aplikacji! &b(&a" + maxMem + " mb&b)");
+            this.logger.warning("&cWykryto małą ilość pamięci przeznaczonej dla aplikacji! &b(&a" + maxMem + " mb&b)");
     }
 
     private void checkExecutable() {
-        if (!FileUtil.canExecute(this.config.getFilesPath() + File.separator + this.config.getFileName())) {
-            this.logger.critical("&cBrak odpowiednich uprawnień!");
-            switch (this.config.getSystem()) {
-                case LINUX ->
-                        this.logger.critical("&cAby uzyskać uprawnienia do uruchomienia servera wprowadź w konsoli polecenie&e chmod +x&b " + this.config.getFileName());
-                case WINDOWS -> this.logger.critical("&cPotrzebujesz wyższych uprawnień!");
+        final String serverPath = this.config.getFilesPath() + File.separator + this.config.getFileName();
+        if (!FileUtil.canExecute(serverPath)) {
+            if (!FileUtil.addExecutePerm(serverPath)) {
+                this.logger.critical("&cBrak odpowiednich uprawnień!");
+                System.exit(0);
             }
-            System.exit(0);
         }
     }
 
