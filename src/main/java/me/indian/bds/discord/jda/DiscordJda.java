@@ -5,9 +5,9 @@ import me.indian.bds.config.Config;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.listener.CommandListener;
+import me.indian.bds.discord.jda.listener.JDAListener;
 import me.indian.bds.discord.jda.listener.MessageListener;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.PackModule;
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -26,6 +26,8 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import java.awt.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -36,8 +38,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     private final Config config;
     private final DiscordConfig discordConfig;
     private final long serverID, channelID, consoleID, logID;
-    private final CommandListener commandListener;
-    private final MessageListener messageListener;
+    private final List<JDAListener> listeners;
     private final ExecutorService consoleService;
     private JDA jda;
     private Guild guild;
@@ -53,14 +54,11 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
         this.channelID = this.discordConfig.getDiscordBotConfig().getChannelID();
         this.consoleID = this.discordConfig.getDiscordBotConfig().getConsoleID();
         this.logID = this.discordConfig.getDiscordBotConfig().getLogID();
-        this.commandListener = new CommandListener(this, this.bdsAutoEnable);
-        this.messageListener = new MessageListener(this, this.bdsAutoEnable);
-        this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
-    }
+        this.listeners = new ArrayList<>();
+        this.listeners.add(new CommandListener(this, this.bdsAutoEnable));
+        this.listeners.add(new MessageListener(this, this.bdsAutoEnable));
 
-    public void initServerProcess(final ServerProcess serverProcess) {
-        this.commandListener.initServerProcess(serverProcess);
-        this.messageListener.initServerProcess(serverProcess);
+        this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
     }
 
     @Override
@@ -121,10 +119,17 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             this.logger.info("(log) Nie można odnaleźć kanału z ID &a" + this.logID);
         }
 
-        this.commandListener.init();
-        this.messageListener.init();
-        this.jda.addEventListener(this.commandListener);
-        this.jda.addEventListener(this.messageListener);
+        for (final JDAListener listener : this.listeners) {
+            try {
+                listener.init();
+                listener.initServerProcess(this.bdsAutoEnable.getServerProcess());
+                this.jda.addEventListener(listener);
+                this.logger.debug("Zarejestrowano listener JDA:&b " + listener.getClass().getSimpleName());
+            } catch (final Exception exception) {
+                this.logger.critical("Wystąpił błąd podczas ładowania listenera: &b" + listener.getClass().getSimpleName(), exception);
+                System.exit(0);
+            }
+        }
 
         this.guild.updateCommands().addCommands(
                 Commands.slash("list", "lista graczy online."),

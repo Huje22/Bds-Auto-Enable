@@ -17,7 +17,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.util.concurrent.TimeUnit;
 
-public class MessageListener extends ListenerAdapter {
+public class MessageListener extends ListenerAdapter implements JDAListener {
 
     private final DiscordJda discordJda;
     private final Logger logger;
@@ -32,11 +32,13 @@ public class MessageListener extends ListenerAdapter {
         this.discordConfig = bdsAutoEnable.getConfig().getDiscordConfig();
     }
 
+    @Override
     public void init() {
         this.textChannel = this.discordJda.getTextChannel();
         this.consoleChannel = this.discordJda.getConsoleChannel();
     }
 
+    @Override
     public void initServerProcess(final ServerProcess serverProcess) {
         this.serverProcess = serverProcess;
     }

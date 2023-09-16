@@ -10,7 +10,6 @@ import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
-import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -32,14 +31,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
-public class CommandListener extends ListenerAdapter {
+public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private final DiscordJda discordJda;
     private final BDSAutoEnable bdsAutoEnable;
-    private final ExecutorService reserve;
     private final Config config;
     private final List<Button> backupButtons, difficultyButtons;
     private JDA jda;
@@ -49,17 +45,18 @@ public class CommandListener extends ListenerAdapter {
     public CommandListener(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
         this.discordJda = discordJda;
         this.bdsAutoEnable = bdsAutoEnable;
-        this.reserve = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-reserve"));
         this.config = this.bdsAutoEnable.getConfig();
         this.backupButtons = new ArrayList<>();
         this.difficultyButtons = new ArrayList<>();
     }
 
+    @Override
     public void init() {
         this.jda = this.discordJda.getJda();
         this.backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
     }
 
+    @Override
     public void initServerProcess(final ServerProcess serverProcess) {
         this.serverProcess = serverProcess;
     }

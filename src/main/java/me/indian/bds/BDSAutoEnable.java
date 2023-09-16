@@ -70,7 +70,6 @@ public class BDSAutoEnable {
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
         StatusUtil.init(this);
-        if (this.discord instanceof final DiscordJda jda) jda.initServerProcess(this.serverProcess);
 
         this.init();
     }
