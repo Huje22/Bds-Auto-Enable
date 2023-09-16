@@ -314,7 +314,7 @@ public class ServerProcess {
         switch (serverSetting) {
             case difficulty -> {
                 if (option instanceof final Difficulty difficulty) {
-                    this.sendToConsole("changesetting " + serverSetting.getName() + " " + difficulty.getName());
+                    this.sendToConsole("changesetting " + serverSetting.getName() + " " + difficulty.getDifficultyName());
                     this.bdsAutoEnable.getServerProperties().setDifficulty(difficulty);
                     this.logger.info("Zmieniono&b difficulty&r na:&1 " + difficulty);
                 } else {

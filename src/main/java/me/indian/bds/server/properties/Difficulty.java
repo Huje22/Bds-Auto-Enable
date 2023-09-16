@@ -7,20 +7,20 @@ public enum Difficulty {
     NORMAL("normal", 2),
     HARD("hard", 3);
 
-    private final String name;
-    private final int id;
+    private final String difficultyName;
+    private final int difficultyId;
 
 
-    Difficulty(final String name, final int id) {
-        this.name = name;
-        this.id = id;
+    Difficulty(final String difficultyName, final int difficultyId) {
+        this.difficultyName = difficultyName;
+        this.difficultyId = difficultyId;
     }
 
-    public String getName() {
-        return this.name;
+    public String getDifficultyName() {
+        return this.difficultyName;
     }
 
-    public int getId() {
-        return this.id;
+    public int getDifficultyId() {
+        return this.difficultyId;
     }
 }

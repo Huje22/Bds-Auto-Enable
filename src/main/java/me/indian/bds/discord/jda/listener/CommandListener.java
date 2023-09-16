@@ -279,7 +279,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private MessageEmbed getDifficultyEmbed() {
         final Difficulty currentDifficulty = this.bdsAutoEnable.getServerProperties().getDifficulty();
-        final int currentDifficultyId = this.bdsAutoEnable.getServerProperties().getDifficulty().getId();
+        final int currentDifficultyId = this.bdsAutoEnable.getServerProperties().getDifficulty().getDifficultyId();
         this.difficultyButtons.clear();
 
         final Button peaceful = Button.primary("peaceful", "Pokojowy").withEmoji(Emoji.fromUnicode("☮️"));
@@ -314,7 +314,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
         return new EmbedBuilder()
                 .setTitle("Difficulty")
-                .setDescription("Aktualny poziom trudności to: " + "`" + currentDifficulty.getName() + "`")
+                .setDescription("Aktualny poziom trudności to: " + "`" + currentDifficulty.getDifficultyName() + "`")
                 .setColor(Color.BLUE)
                 .build();
     }

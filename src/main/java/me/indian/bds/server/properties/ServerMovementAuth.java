@@ -5,13 +5,13 @@ public enum ServerMovementAuth {
     SERVER("server-auth"),
     SERVER_REWIND("server-auth-with-rewind");
 
-    private final String name;
+    private final String authName;
 
-    ServerMovementAuth(final String name) {
-        this.name = name;
+    ServerMovementAuth(final String authName) {
+        this.authName = authName;
     }
 
-    public String getName() {
-        return this.name;
+    public String getAuthName() {
+        return this.authName;
     }
 }
