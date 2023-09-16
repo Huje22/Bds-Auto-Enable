@@ -36,7 +36,7 @@ public final class MessageUtil {
         return String.join("\n", lista);
     }
 
-    public static String listToString(final List<String> lista, String split) {
+    public static String stringListToString(final List<String> lista, String split) {
         if (split == null) {
             split = " ";
         }
@@ -47,7 +47,24 @@ public final class MessageUtil {
         return String.join(split, lista);
     }
 
-    public static List<String> stringToList(final String text, String split) {
+    public static String objectListToString(final List<Object> lista, String split) {
+        String string = "";
+        if (split == null) {
+            split = " ";
+        }
+
+        if (lista == null) {
+            return "";
+        }
+
+        for (final Object object : lista) {
+            string += object.toString() + split;
+        }
+
+        return string;
+    }
+
+    public static List<String> stringToStringList(final String text, String split) {
         if (split == null) {
             split = " ";
         }

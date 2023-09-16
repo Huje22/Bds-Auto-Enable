@@ -114,7 +114,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             }
             case "list" -> {
                 final List<String> players = this.bdsAutoEnable.getPlayerManager().getOnlinePlayers();
-                final String list = "`" + MessageUtil.listToString(players, "`, `") + "`";
+                final String list = "`" + MessageUtil.stringListToString(players, "`, `") + "`";
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Lista Graczy")
                         .setDescription(players.size() + "/" + this.bdsAutoEnable.getServerProperties().getMaxPlayers() + "\n" +

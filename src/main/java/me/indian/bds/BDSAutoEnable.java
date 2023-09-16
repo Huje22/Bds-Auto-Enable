@@ -100,7 +100,7 @@ public class BDSAutoEnable {
     private void checkFlags() {
         final List<String> flags = ManagementFactory.getRuntimeMXBean().getInputArguments();
         if (flags.isEmpty()) return;
-        this.logger.debug("Wykryte flagi startowe:&b " + MessageUtil.listToString(flags, " &a,&b "));
+        this.logger.debug("Wykryte flagi startowe:&b " + MessageUtil.stringListToString(flags, " &a,&b "));
     }
 
     private void checkEncoding() {
