@@ -25,13 +25,13 @@ public class Settings {
         this.serverProperties = this.bdsAutoEnable.getServerProperties();
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
-        this.enter = "[Enter = Domyślnie]";
+        this.enter = " [Enter = Domyślnie]";
     }
 
     public void loadSettings(final Scanner scanner) {
         final ScannerUtil scannerUtil = new ScannerUtil(scanner);
         if (!this.config.isFirstRun()) {
-            scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("Zastosować wcześniejsze ustawienia? (true/false) (Enter = true) "),
+            scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&n&lZastosować wcześniejsze ustawienia?&r (true/false) " + this.enter),
                     true,
                     (settings) -> {
                         if (settings) {
@@ -55,7 +55,7 @@ public class Settings {
         SystemOs system;
         try {
             system = SystemOs.valueOf(scannerUtil.addStringQuestion((defaultValue) -> {
-                        this.logger.info("&lPodaj system&r (Wykryty system: " + defaultValue + "): " + this.enter);
+                        this.logger.info("&n&lPodaj system&r (Wykryty system: " + defaultValue + ")" + this.enter);
                         this.logger.info("Obsługiwane systemy: " + Arrays.toString(SystemOs.values()));
                     }, Defaults.getSystem(),
                     (input) -> this.logger.info("System ustawiony na:&1 " + input.toUpperCase())
@@ -66,14 +66,14 @@ public class Settings {
         }
         this.config.setSystem(system);
         System.out.println();
-        this.config.setFileName(scannerUtil.addStringQuestion((defaultValue) -> this.logger.info("&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + "): " + this.enter),
+        this.config.setFileName(scannerUtil.addStringQuestion((defaultValue) -> this.logger.info("&n&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 Defaults.getDefaultFileName(),
                 (input) -> this.logger.info("Nazwa pliku ustawiona na:&1 " + input)));
         System.out.println();
         if (Defaults.hasWine()) {
             this.config.setWine(scannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
-                        this.logger.info("&lWykryliśmy &r&bWINE&r&l czy użyć go? (Domyślnie: " + defaultValue + "): " + this.enter);
+                        this.logger.info("&n&lWykryliśmy &r&bWINE&r&n&l czy użyć go?&r (Domyślnie: " + defaultValue + ")" + this.enter);
                         this.logger.alert("Jeśli chcesz użyć&b WINE&r plik musi kończyć się na&1 .exe");
                     },
                     false,
@@ -91,7 +91,8 @@ public class Settings {
             System.out.println();
         }
 
-        this.config.setFilesPath(scannerUtil.addStringQuestion((defaultValue) -> this.logger.info("&lPodaj ścieżkę do plików servera&r  (Domyślnie: " + defaultValue + "): " + this.enter),
+        this.config.setFilesPath(scannerUtil.addStringQuestion(
+                (defaultValue) -> this.logger.info("&n&lPodaj ścieżkę do plików servera&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 Defaults.getJarDir(),
                 (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)));
         this.config.save();
@@ -100,12 +101,13 @@ public class Settings {
         if (!this.config.getVersionManagerConfig().isLoaded()) this.versionQuestion(scannerUtil);
         this.serverProperties.loadProperties();
 
-        final boolean backup = scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&lWłączyć Backupy&r (Domyślnie: " + defaultValue + ")? " + this.enter),
+        final boolean backup = scannerUtil.addBooleanQuestion(
+                (defaultValue) -> this.logger.info("&n&lWłączyć Backupy&r (Domyślnie: " + defaultValue + ")? " + this.enter),
                 true,
                 (input) -> this.logger.info("Backupy ustawione na:&1 " + input));
         this.config.getWatchDogConfig().getBackup().setBackup(backup);
         if (backup) {
-            final int backupFrequency = scannerUtil.addIntQuestion((defaultValue) -> this.logger.info("&lCo ile minut robić backup?&r (Domyślnie: " + defaultValue + ")? " + this.enter),
+            final int backupFrequency = scannerUtil.addIntQuestion((defaultValue) -> this.logger.info("&n&lCo ile minut robić backup?&r (Domyślnie: " + defaultValue + ")? " + this.enter),
                     60,
                     (input) -> this.logger.info("Backup bedzie robiony co:&1 " + (input == 0 ? 60 : input + "&a minut")));
             this.config.getWatchDogConfig().getBackup().setBackupFrequency(backupFrequency == 0 ? 60 : backupFrequency);
@@ -113,7 +115,7 @@ public class Settings {
         System.out.println();
 
         scannerUtil.addBooleanQuestion(
-                (defaultValue) -> this.logger.info("&lRozpocząć częściową konfiguracje servera?&r (Domyślnie: " + defaultValue + ") " + this.enter),
+                (defaultValue) -> this.logger.info("&n&lRozpocząć częściową konfiguracje servera?&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 true,
                 (input) -> {
                     if (input) {
@@ -137,19 +139,19 @@ public class Settings {
         System.out.println();
 
         this.serverProperties.setServerPort(scannerUtil.addIntQuestion((defaultValue) -> {
-            this.logger.info("&lUstaw port v4?&r (Aktualny z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
+            this.logger.info("&n&lUstaw port v4&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
             this.logger.info("&cPamiętaj że twoja sieć musi miec dostępny ten port");
         }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na:&1 " + input)));
         System.out.println();
 
         this.serverProperties.setServerPortV6(scannerUtil.addIntQuestion((defaultValue) -> {
-            this.logger.info("&lUstaw port v6?&r (Aktualny z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
+            this.logger.info("&n&lUstaw port v6&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
             this.logger.info("&cJeśli twoja sieć obsługuje&b ipv6&c ustaw go na dostępny z puli portów");
         }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&1 " + input)));
         System.out.println();
 
         this.serverProperties.setMaxThreads(scannerUtil.addIntQuestion((defaultValue) -> {
-                    this.logger.info("&lLiczba wątków używana przez server&r ");
+                    this.logger.info("&n&lLiczba wątków używana przez server&r ");
                     this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
                 }, 0,
                 (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + input)));
@@ -157,7 +159,7 @@ public class Settings {
 
         this.serverProperties.setAllowCheats(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
-                    this.logger.info("&lAllow Cheats&r (Aktualny z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
+                    this.logger.info("&n&lAllow Cheats&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.alert("Aby integracja z discord działała poprawnie wymagamy tego na&b true&r i włączenie&b experymentów&r!");
                 },
                 this.serverProperties.isAllowCheats(),
@@ -165,7 +167,7 @@ public class Settings {
         System.out.println();
 
         this.serverProperties.setPlayerIdleTimeout(scannerUtil.addIntQuestion((defaultValue) -> {
-                    this.logger.info("&lUstaw Timeout &r (Aktualny z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
+                    this.logger.info("&n&lUstaw Timeout&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.info("Gdy gracz będzie bezczynny przez tyle minut, zostanie wyrzucony.");
                     this.logger.info("Jeśli ustawione na 0, gracze mogą pozostawać bezczynni przez czas nieokreślony.");
                 },
@@ -175,8 +177,8 @@ public class Settings {
 
         this.serverProperties.setServerBuildRadiusRatio(scannerUtil.addDoubleQuestion(
                 (defaultValue) -> {
-                    this.logger.info("&lUstaw Server Build Radius Ratio&r (Domyślnie&r to: " + defaultValue + ") " + this.enter);
-                    this.logger.info("Zakres to od&b 0.0 &rdo &b 1.0");
+                    this.logger.info("&n&lUstaw Server Build Radius Ratio&r (Domyślnie&r to: " + defaultValue + ")" + this.enter);
+                    this.logger.info("Zakres to od&b 0.0 &rdo&b 1.0");
                     this.logger.info("Jeśli&1 Disabled&r, serwer dynamicznie obliczy, ile z widoku gracza zostanie wygenerowane, pozostawiając resztę do zbudowania przez klienta.");
                     this.logger.info("W przeciwnym razie, z nadpisanej proporcji, serwerowi zostanie powiedziane, ile z widoku gracza wygenerować, pomijając zdolności sprzętowe klienta.");
                     this.logger.info("W skrócie:&e Server generuje czanki dla klienta&r dla słabych urządzeń bedzie to pomocne ale obciąży server ");
@@ -192,7 +194,7 @@ public class Settings {
 
         this.serverProperties.setViewDistance(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
-                    this.logger.info("&lUstaw View Distance&r (Aktualny z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
+                    this.logger.info("&n&lUstaw View Distance&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.info("Maksymalna dozwolona odległość widoku wyrażona w liczbie chunk");
                     this.logger.alert("Jeśli&1 server-build-radius-ratio&r na coś innego niż&b Disabled ");
                     this.logger.alert("Wtedy większe liczby niż 12-32 mogę obciążać server gdy klient ma duży render distance");
@@ -202,7 +204,7 @@ public class Settings {
         System.out.println();
 
         this.serverProperties.setTickDistance(scannerUtil.addIntQuestion((defaultValue) -> {
-                    this.logger.info("&lUstaw Tick Distance &r (Aktualna z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
+                    this.logger.info("&n&lUstaw Tick Distance&r (Aktualna z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.info("Świat zostanie wstrzymany po tylu chunk od gracza");
                     this.logger.alert("Duże ilości mogą prowadzić do lagów servera!");
                 },
@@ -216,7 +218,7 @@ public class Settings {
             serverMovementAuth = ServerMovementAuth.valueOf(
                     scannerUtil.addStringQuestion(
                             (defaultValue) -> {
-                                this.logger.info("&lUstaw Server Authoritative Movement &r (Aktualna z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
+                                this.logger.info("&n&lUstaw Server Authoritative Movement&r (Aktualna z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
 
                                 final List<String> serverAuthOptions = Arrays.stream(ServerMovementAuth.values())
                                         .map(ServerMovementAuth::getName)
@@ -228,31 +230,31 @@ public class Settings {
                             this.serverProperties.getServerAuthoritativeMovement().getName(),
                             (input) -> this.logger.info("Server Authoritative Movement ustawiono na:&1 " + input)));
         } catch (final Exception exception) {
-            this.logger.error("Podano nieznany typ uwierzytelnienia poruszania sie, ustawiliśmy go dla ciebie na:&b " + ServerMovementAuth.SERVER.getName());
+            this.logger.error("Podano nieznany typ uwierzytelnienia poruszania sie , ustawiliśmy go dla ciebie na:&b " + ServerMovementAuth.SERVER.getName());
             serverMovementAuth = ServerMovementAuth.SERVER;
         }
 
         this.serverProperties.setServerAuthoritativeMovement(serverMovementAuth);
-
         System.out.println();
 
         this.serverProperties.setServerAuthoritativeBlockBreaking(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
-                    this.logger.info("&lUstaw Server Authoritative Block Breaking &r (Aktualna z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
+                    this.logger.info("&n&lUstaw Server Authoritative Block Breaking&r (Aktualna z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.info("Jeśli ustawione na&b true&r, serwer będzie obliczać operacje wydobywania bloków synchronicznie z klientem, aby móc zweryfikować, czy klient powinien mieć możliwość niszczenia bloków wtedy, kiedy uważa, że może to zrobić.");
                 },
                 this.serverProperties.isServerAuthoritativeBlockBreaking(),
                 (input) -> this.logger.info("Server Authoritative Block Breaking ustawiono na:&1 " + input)));
         System.out.println();
 
-        this.serverProperties.setCorrectPlayerMovement(scannerUtil.addBooleanQuestion(
-                (defaultValue) -> {
-                    this.logger.info("&lUstaw Correct Player Movement &r (Aktualna z &bserver.properties&r to: " + defaultValue + ") " + this.enter);
-                    this.logger.info("jeśli ustawione na&b true&r, pozycja klienta zostanie poprawiona do pozycji serwera, jeśli wynik ruchu przekroczy próg.");
-                    this.logger.alert("Działa tylko gdy&b Server Authoritative Movement&r jest na&b server-authoritative-movement");
-                },
-                this.serverProperties.isCorrectPlayerMovement(),
-                (input) -> this.logger.info("Correct Player Movement ustawiono na:&1 " + input)));
+        if (this.serverProperties.getServerAuthoritativeMovement() == ServerMovementAuth.SERVER_REWIND) {
+            this.serverProperties.setCorrectPlayerMovement(scannerUtil.addBooleanQuestion(
+                    (defaultValue) -> {
+                        this.logger.info("&n&lUstaw Correct Player Movement&r (Aktualna z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                        this.logger.info("jeśli ustawione na&b true&r, pozycja klienta zostanie poprawiona do pozycji serwera, jeśli wynik ruchu przekroczy próg.");
+                    },
+                    this.serverProperties.isCorrectPlayerMovement(),
+                    (input) -> this.logger.info("Correct Player Movement ustawiono na:&1 " + input)));
+        }
 
         /*
         TODO:
@@ -264,13 +266,13 @@ public class Settings {
 
     private void currentSettings(final Scanner scanner) {
         System.out.println();
-        this.logger.info("&lAktualne Dane");
+        this.logger.info("&n&lAktualne Dane");
         System.out.println();
         this.logger.info("&e----------&bAplikacja&e----------");
         this.logger.info("System:&1 " + this.config.getSystem());
         this.logger.info("Nazwa pliku:&1 " + this.config.getFileName());
         this.logger.info("Wine:&1 " + this.config.isWine() + (Defaults.hasWine() ? " &d(&bPosiadasz&d)" : ""));
-        this.logger.info("Ścieżka plików:&b " + this.config.getFilesPath());
+        this.logger.info("Ścieżka plików:&1 " + this.config.getFilesPath());
         this.logger.info("Wersja:&1 " + this.config.getVersionManagerConfig().getVersion());
 
         final boolean backup = this.config.getWatchDogConfig().getBackup().isBackup();
@@ -286,7 +288,7 @@ public class Settings {
         this.logger.info("Port v4:&1 " + this.serverProperties.getServerPort());
         this.logger.info("Port v6:&1 " + this.serverProperties.getServerPortV6());
         System.out.println();
-        
+
         this.logger.info("Liczba wątków używana przez server:&1 " + this.serverProperties.getMaxThreads());
         this.logger.info("Allow Cheats:&1 " + this.serverProperties.isAllowCheats());
         this.logger.info("Timeout:&1 " + this.serverProperties.getPlayerIdleTimeout() + " &aminut");
@@ -303,7 +305,6 @@ public class Settings {
         this.logger.info("Correct Player Movement:&1 " + this.serverProperties.isCorrectPlayerMovement());
         System.out.println();
 
-
         this.logger.alert("&cWięcej opcij&e konfiguracji&c znajdziesz w config");
         this.logger.info("Kliknij enter aby kontynuować");
         scanner.nextLine();
@@ -319,7 +320,7 @@ public class Settings {
         final String check = (latest.equals("") ? "Nie udało odnaleźć się najnowszej wersji" : latest);
         this.config.getVersionManagerConfig().setVersion(scannerUtil.addStringQuestion(
                 (defaultValue) -> {
-                    this.logger.info("&lJaką versie załadować?&r (Najnowsza: " + check + " ): ");
+                    this.logger.info("&n&lJaką versie załadować?&r (Najnowsza: " + check + ")");
                     if (this.bdsAutoEnable.getVersionManager().getAvailableVersions().isEmpty()) {
                         this.logger.info("Nie znaleziono żadnej wersji");
                     } else {
@@ -334,7 +335,8 @@ public class Settings {
     }
 
     private void anotherVersionQuestion(final ScannerUtil scannerUtil) {
-        scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&lZaładować jakąś inną versie&r (Domyślnie: " + defaultValue + "): " + this.enter),
+        scannerUtil.addBooleanQuestion(
+                (defaultValue) -> this.logger.info("&n&lZaładować jakąś inną versie?&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 false,
                 (input) -> {
                     if (input) {

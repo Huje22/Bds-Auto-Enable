@@ -98,7 +98,8 @@ public class PackModule {
                 this.loadPack();
             }
         } catch (final Exception exception) {
-            exception.printStackTrace();
+            this.logger.critical("Nie udało się pozyskać informacji o paczce!" , exception);
+            System.exit(0);
         }
     }
 
@@ -126,7 +127,8 @@ public class PackModule {
                 }
             }
         } catch (final Exception exception) {
-            exception.printStackTrace();
+            this.logger.critical("Nie udało się zobaczyć czy paczka jest załadowana!" , exception);
+            System.exit(0);
         }
     }
 
@@ -155,8 +157,9 @@ public class PackModule {
                 this.logger.info("Załadowano paczke!");
                 this.loaded = true;
             }
-        } catch (final IOException exception) {
-            exception.printStackTrace();
+        } catch (final Exception exception) {
+            this.logger.critical("Nie udało się załadować paczki!" , exception);
+            System.exit(0);
         }
     }
 
@@ -214,10 +217,10 @@ public class PackModule {
                 this.getPackInfo();
             } else {
                 this.logger.error("Kod odpowiedzi strony: " + response);
+                System.exit(0);
             }
         } catch (final IOException ioException) {
-            this.logger.error("Nie można pobrać paczki: " + ioException.getMessage());
-            ioException.printStackTrace();
+            this.logger.error("Nie można pobrać paczki " , ioException);
         }
     }
 

@@ -37,22 +37,23 @@ public class PlayerManager {
             this.playerQuit(logEntry);
             this.chatMessage(logEntry);
             this.deathMessage(logEntry);
+            //Dodatkowe metody
             this.serverEnabled(logEntry);
             this.checkPackDependency(logEntry);
         });
     }
 
     /*
-TODO:
-Dodać do paczki generowanie kodu 5 znakowanego
-po wpisaniu na czacie !link
-i będzie to wypisywało do konsoli `PlayerLink:NAZWA Code:KOD`
-i będzie zapisywanie pierw do mapki,
-i potem gdy użytkownik wpiszę na Discord /link KOD 
-wyszuka kod w mapce i jeśli kod będzie poprawny połączy
-weźmie jego discord id i przypisze w json NICKMC:IDDISCORD, 
-pozwoli to na ustawianie nazwy z mc na discord i w dalszej przyszłości na
-Proximity Voice chat
+    TODO:
+            Dodać do paczki generowanie kodu 5 znakowanego
+            po wpisaniu na czacie !link
+            i będzie to wypisywało do konsoli `PlayerLink:NAZWA Code:KOD`
+            i będzie zapisywanie pierw do mapki,
+            i potem gdy użytkownik wpiszę na Discord /link KOD
+            wyszuka kod w mapce i jeśli kod będzie poprawny połączy
+            weźmie jego discord id i przypisze w json NICKMC:IDDISCORD,
+            pozwoli to na ustawianie nazwy z mc na discord i w dalszej przyszłości na
+            Proximity Voice chat
 
 */
 
@@ -115,7 +116,7 @@ Proximity Voice chat
 
     private void checkPackDependency(final String logEntry) {
         if (logEntry.contains("requesting dependency on beta APIs [@minecraft/server - 1.4.0-beta]")) {
-            final List<String> list = List.of("Wykryto że nie `Beta API's` nie są włączone!",
+            final List<String> list = List.of("Wykryto że `Beta API's` nie są włączone!",
                     "Funkcje jak: `licznik czasu gry/śmierci` nie będą działać ",
                     "Bot też zostaje wyłączony"
             );

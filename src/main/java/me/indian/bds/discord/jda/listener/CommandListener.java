@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class CommandListener extends ListenerAdapter {
 
@@ -137,12 +136,12 @@ public class CommandListener extends ListenerAdapter {
                         for (final Path path : this.backupModule.getBackups()) {
                             final String fileName = path.getFileName().toString().replaceAll(".zip", "");
                             if (backupName.equalsIgnoreCase(fileName)) {
-                                event.reply("Znaleziono: " + backupName).setEphemeral(true).queue();
+                                event.reply("Znaleziono: `" + backupName + "`").setEphemeral(true).queue();
                                 this.backupModule.loadBackup(backupName);
                                 return;
                             }
                         }
-                        event.reply("Nie można znaleźć: " + backupName).setEphemeral(true).queue();
+                        event.reply("Nie można znaleźć: `" + backupName + "`").setEphemeral(true).queue();
                     } else {
                         event.reply("Nie posiadasz permisji").setEphemeral(true).queue();
                     }
@@ -252,7 +251,6 @@ public class CommandListener extends ListenerAdapter {
         }
     }
 
-
     private void serveDeleteBackupButton(final ButtonInteractionEvent event) {
         for (final Path path : this.backupModule.getBackups()) {
             final String fileName = path.getFileName().toString();
@@ -278,13 +276,7 @@ public class CommandListener extends ListenerAdapter {
     private void serveBackupButton(final ButtonInteractionEvent event) {
         if (event.getComponentId().equals("backup")) {
             this.backupModule.forceBackup();
-            this.reserve.execute(() -> {
-//                        ThreadUtil.sleep((int) this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2);
-                event.deferReply().addEmbeds(this.getBackupEmbed()).addActionRow(ActionRow.of(this.backupButtons)
-                                .getComponents()).setEphemeral(true)
-                        .queueAfter((long) (this.config.getWatchDogConfig().getBackup().getLastBackupTime() + 2), TimeUnit.SECONDS);
-//ZBAGOWANE GÓWNO
-            });
+            event.reply("Backup jest tworzony").setEphemeral(true).queue();
         }
     }
 

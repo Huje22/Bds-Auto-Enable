@@ -43,6 +43,7 @@ public class UpdateMonitor {
 
     public void checkForUpdate() {
         if (!this.versionManagerConfig.isCheckVersion()) {
+            this.logger.debug("Sprawdzanie najnowszej wersji jest wyłączone");
             return;
         }
         if (this.running) {
@@ -50,10 +51,7 @@ public class UpdateMonitor {
         }
         this.running = true;
 
-        System.out.println("OKEY0");
-
         final long hours = MathUtil.hoursToMillis(this.versionManagerConfig.getVersionCheckFrequency());
-
         final Timer timer = new Timer("Update Monitor", true);
 
         final TimerTask timerTask = new TimerTask() {
@@ -74,7 +72,6 @@ public class UpdateMonitor {
                         UpdateMonitor.this.autoUpdate(latest);
                     }
                 }
-                this.cancel();
             }
         };
 
