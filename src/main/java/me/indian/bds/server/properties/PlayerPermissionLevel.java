@@ -2,9 +2,9 @@ package me.indian.bds.server.properties;
 
 public enum PlayerPermissionLevel {
 
-    VISITOR(0, "VISITOR"),
-    MEMBER(1, "MEMBER"),
-    OPERATOR(2, "OPERATOR");
+    VISITOR(0, "visitor"),
+    MEMBER(1, "member"),
+    OPERATOR(2, "operator");
 
     private final int permissionLevel;
     private final String permissionName;

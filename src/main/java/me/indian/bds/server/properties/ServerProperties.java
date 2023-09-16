@@ -321,21 +321,21 @@ public class ServerProperties {
             final String serverMovement = this.properties.getProperty("server-authoritative-movement");
             switch (serverMovement) {
                 case "client-auth" -> {
-                    return ServerMovementAuth.CLIENT;
+                    return ServerMovementAuth.CLIENT_AUTH;
                 }
 //            case "server-auth" -> {
 //              return ServerMovementAuth.SERVER;
 //            }
                 case "server-auth-with-rewind" -> {
-                    return ServerMovementAuth.SERVER_REWIND;
+                    return ServerMovementAuth.SERVER_AUTH_REWIND;
                 }
                 default -> {
-                    return ServerMovementAuth.SERVER;
+                    return ServerMovementAuth.SERVER_AUTH;
                 }
             }
         } catch (final Exception exception) {
-            this.setServerAuthoritativeMovement(ServerMovementAuth.SERVER);
-            return ServerMovementAuth.SERVER;
+            this.setServerAuthoritativeMovement(ServerMovementAuth.SERVER_AUTH);
+            return ServerMovementAuth.SERVER_AUTH;
         }
     }
 
