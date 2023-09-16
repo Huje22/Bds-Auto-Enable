@@ -54,6 +54,11 @@ public class Logger {
         this.logToFile(log);
     }
 
+    public void info(final Object log, final Throwable throwable) {
+        this.info(log);
+        this.logThrowableToFile(throwable);
+    }
+
     public void warning(final Object log) {
         this.logState = LogState.WARNING;
         this.updatePrefix();
@@ -131,7 +136,7 @@ public class Logger {
 
     public void logByState(final Object log, final Throwable throwable, final LogState logState) {
         switch (logState) {
-            case INFO -> this.info(log);
+            case INFO -> this.info(log, throwable);
             case ALERT -> this.alert(log, throwable);
             case CRITICAL -> this.critical(log, throwable);
             case ERROR -> this.error(log, throwable);
