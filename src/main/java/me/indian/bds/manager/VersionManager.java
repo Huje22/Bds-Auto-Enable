@@ -95,7 +95,7 @@ public class VersionManager {
             this.logger.info("Ładowanie wersji:&1 " + version);
             final int versionSize = this.getSize(version);
             if (!(versionSize <= -1) && versionSize != Files.size(verFile.toPath())) {
-                this.logger.critical("Wielkość versij nie jest zgodna!");
+                this.logger.error("Wielkość versij nie jest zgodna!");
                 this.downloadServerFiles(version);
             }
             final long startTime = System.currentTimeMillis();
@@ -196,9 +196,6 @@ public class VersionManager {
         }
     }
 
-// TODO: Dokończyć to + dodać auto update 
-
-    // Testowe pisane na telu na kursach 12.09.2023
     public String getLatestVersion() {
         final SystemOs os = this.config.getSystem();
         try {
