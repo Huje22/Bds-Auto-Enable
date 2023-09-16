@@ -2,6 +2,7 @@ package me.indian.bds;
 
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.server.properties.PlayerPermissionLevel;
 import me.indian.bds.server.properties.ServerMovementAuth;
 import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.MessageUtil;
@@ -52,25 +53,16 @@ public class Settings {
 
     private void init(final ScannerUtil scannerUtil) {
         final long startTime = System.currentTimeMillis();
-        SystemOs system;
-        try {
-            system = SystemOs.valueOf(scannerUtil.addStringQuestion((defaultValue) -> {
-                        this.logger.info("&n&lPodaj system&r (Wykryty system: " + defaultValue + ")" + this.enter);
-                        this.logger.info("Obsługiwane systemy: " + Arrays.toString(SystemOs.values()));
-                    }, Defaults.getSystem(),
-                    (input) -> this.logger.info("System ustawiony na:&1 " + input.toUpperCase())
-            ).toUpperCase());
-        } catch (final IllegalArgumentException exception) {
-            this.logger.error("Podano nie znany system , ustawiono domyślnie na: LINUX");
-            system = SystemOs.LINUX;
-        }
-        this.config.setSystem(system);
+
+        this.addSystemQuestion(scannerUtil);
         System.out.println();
+
         this.config.setFileName(scannerUtil.addStringQuestion((defaultValue) -> this.logger.info("&n&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 Defaults.getDefaultFileName(),
                 (input) -> this.logger.info("Nazwa pliku ustawiona na:&1 " + input)
         ));
         System.out.println();
+
         if (Defaults.hasWine()) {
             this.config.setWine(scannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
@@ -131,12 +123,6 @@ public class Settings {
     }
 
     private void serverSettings(final ScannerUtil scannerUtil) {
-           /*
-        TODO:
-            Dodać pełne wspracje dla:
-            "default-player-permission-level" ( 0 = VISITOR , 1 = MEMBER , 2 = OPERATOR),
-         */
-
         this.logger.info("&aKonfiguracja servera&r");
         System.out.println();
 
@@ -152,6 +138,7 @@ public class Settings {
                     this.logger.info("&cJeśli twoja sieć obsługuje&b ipv6&c ustaw go na dostępny z puli portów");
                 }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&1 " + input)
         ));
+
         System.out.println();
 
         this.serverProperties.setMaxThreads(scannerUtil.addIntQuestion((defaultValue) -> {
@@ -161,15 +148,7 @@ public class Settings {
                 (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + input)
         ));
         System.out.println();
-
-        this.serverProperties.setAllowCheats(scannerUtil.addBooleanQuestion(
-                (defaultValue) -> {
-                    this.logger.info("&n&lAllow Cheats&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-                    this.logger.alert("Aby integracja z discord działała poprawnie wymagamy tego na&b true&r i włączenie&b experymentów&r!");
-                },
-                this.serverProperties.isAllowCheats(),
-                (input) -> this.logger.info("Allow Cheats ustawione na:&1 " + input)
-        ));
+        this.addPlayerPermissionQuestion(scannerUtil);
         System.out.println();
 
         this.serverProperties.setPlayerIdleTimeout(scannerUtil.addIntQuestion((defaultValue) -> {
@@ -219,45 +198,23 @@ public class Settings {
                 this.serverProperties.getTickDistance(),
                 (input) -> this.logger.info("Tick Distance na:&1 " + input)
         ));
+
         System.out.println();
-
-        ServerMovementAuth serverMovementAuth;
-
-        try {
-            serverMovementAuth = ServerMovementAuth.valueOf(
-                    scannerUtil.addStringQuestion(
-                            (defaultValue) -> {
-                                this.logger.info("&n&lUstaw Server Authoritative Movement&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-
-                                final List<String> serverAuthOptions = Arrays.stream(ServerMovementAuth.values())
-                                        .map(ServerMovementAuth::getName)
-                                        .toList();
-
-                                this.logger.info("Dostępne:&b " + MessageUtil.listToString(serverAuthOptions, "&a, &b"));
-                                this.logger.alert("Jeśli chcesz uniknąć cheaterów włącz&b server-auth-with-rewind&r wraz z &bcorrect-player-movement&r , lecz uważaj! Osoby z słabym połączeniem bedą się okropnie teleportować");
-                            },
-                            this.serverProperties.getServerAuthoritativeMovement().getName(),
-                            (input) -> this.logger.info("Server Authoritative Movement ustawiono na:&1 " + input)
-                    ));
-        } catch (final Exception exception) {
-            this.logger.error("Podano nieznany typ uwierzytelnienia poruszania sie , ustawiliśmy go dla ciebie na:&b " + ServerMovementAuth.SERVER.getName());
-            serverMovementAuth = ServerMovementAuth.SERVER;
-        }
-
-        this.serverProperties.setServerAuthoritativeMovement(serverMovementAuth);
+        this.addServerAuthQuestion(scannerUtil);
         System.out.println();
 
         this.serverProperties.setServerAuthoritativeBlockBreaking(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lUstaw Server Authoritative Block Breaking&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-                    this.logger.info("Jeśli ustawione na&b true&r, serwer będzie obliczać operacje wydobywania bloków synchronicznie z klientem, aby móc zweryfikować, czy klient powinien mieć możliwość niszczenia bloków wtedy, kiedy uważa, że może to zrobić.");
+                    this.logger.info("Jeśli ustawione na&b true&r, serwer będzie obliczać operacje wydobywania bloków synchronicznie z klientem, aby móc zweryfikować," +
+                            " czy klient powinien mieć możliwość niszczenia bloków wtedy, kiedy uważa, że może to zrobić.");
                 },
                 this.serverProperties.isServerAuthoritativeBlockBreaking(),
                 (input) -> this.logger.info("Server Authoritative Block Breaking ustawiono na:&1 " + input)
         ));
         System.out.println();
 
-        if (this.serverProperties.getServerAuthoritativeMovement() == ServerMovementAuth.SERVER_REWIND) {
+        if (this.serverProperties.getServerAuthoritativeMovement() == ServerMovementAuth.SERVER_AUTH_REWIND) {
             this.serverProperties.setCorrectPlayerMovement(scannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
                         this.logger.info("&n&lUstaw Correct Player Movement&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
@@ -269,6 +226,27 @@ public class Settings {
             System.out.println();
         }
 
+        this.serverProperties.setAllowCheats(scannerUtil.addBooleanQuestion(
+                (defaultValue) -> {
+                    this.logger.info("&n&lAllow Cheats&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                    this.logger.alert("Aby integracja z discord działała poprawnie wymagamy tego na&b true&r i włączenie&b experymentów&r!");
+                },
+                this.serverProperties.isAllowCheats(),
+                (input) -> this.logger.info("Allow Cheats ustawione na:&1 " + input)
+        ));
+        System.out.println();
+
+        this.serverProperties.setTexturePackRequired(scannerUtil.addBooleanQuestion(
+                (defaultValue) -> {
+                    this.logger.info("&n&lWymagać tekstur?&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                    this.logger.info("Gdy jest to włączone klient musi pobrać tekstury i nie może używać własnych tekstur");
+
+                },
+                this.serverProperties.isTexturePackRequired(),
+                (input) -> this.logger.info("Allow Cheats ustawione na:&1 " + input)
+        ));
+        System.out.println();
+
         this.serverProperties.setServerTelemetry(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lUstaw Telemetrie servera&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
@@ -279,14 +257,7 @@ public class Settings {
         ));
         System.out.println();
 
-
-        /*
-        TODO:
-            Dodać pełne wspracje dla:
-            "default-player-permission-level" ( 0 = VISITOR , 1 = MEMBER , 2 = OPERATOR),
-         */
     }
-
 
     private void currentSettings(final Scanner scanner) {
         System.out.println();
@@ -324,13 +295,16 @@ public class Settings {
         this.logger.info("Tick Distance:&1 " + this.serverProperties.getTickDistance());
         System.out.println();
 
-        this.logger.info("Server Authoritative Movement:&1 " + this.serverProperties.getServerAuthoritativeMovement().getName());
+        this.logger.info("Default Player Permission Level:&1 " + this.serverProperties.getDefaultPlayerPermissionLevel().getPermissionName());
+        this.logger.info("Server Authoritative Movement:&1 " + this.serverProperties.getServerAuthoritativeMovement().getAuthName());
         this.logger.info("Server Authoritative Block Breaking:&1 " + this.serverProperties.isServerAuthoritativeBlockBreaking());
         this.logger.info("Correct Player Movement:&1 " + this.serverProperties.isCorrectPlayerMovement());
+        this.logger.info("Wymug tekstur:&1 " + this.serverProperties.isTexturePackRequired());
+        this.logger.info("Allow Cheats:&1 " + this.serverProperties.isAllowCheats());
         this.logger.info("Emit server telemetry:&1 " + this.serverProperties.isServerTelemetry());
         System.out.println();
 
-        this.logger.alert("&cWięcej opcij&e konfiguracji&c znajdziesz w config");
+        this.logger.alert("&cWięcej opcji&e konfiguracji&c znajdziesz w config");
         this.logger.info("Kliknij enter aby kontynuować");
         scanner.nextLine();
 
@@ -370,5 +344,64 @@ public class Settings {
                         this.versionQuestion(scannerUtil);
                     }
                 });
+    }
+
+    private void addSystemQuestion(final ScannerUtil scannerUtil){
+        SystemOs system;
+        try {
+            system = SystemOs.valueOf(scannerUtil.addStringQuestion((defaultValue) -> {
+                        this.logger.info("&n&lPodaj system&r (Wykryty system: " + defaultValue + ")" + this.enter);
+                        this.logger.info("Obsługiwane systemy: " + Arrays.toString(SystemOs.values()));
+                    }, Defaults.getSystem(),
+                    (input) -> this.logger.info("System ustawiony na:&1 " + input.toUpperCase())
+            ).toUpperCase());
+        } catch (final IllegalArgumentException exception) {
+            this.logger.error("Podano nie znany system , ustawiono domyślnie na: LINUX");
+            system = SystemOs.LINUX;
+        }
+        this.config.setSystem(system);
+    }
+
+    private void addPlayerPermissionQuestion(final ScannerUtil scannerUtil) {
+        PlayerPermissionLevel playerPermissionLevel;
+
+        try {
+            playerPermissionLevel = PlayerPermissionLevel.valueOf(
+                    scannerUtil.addStringQuestion(
+                            (defaultValue) -> {
+                                this.logger.info("&n&lUstaw Default Player Permission Level&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                                this.logger.info("Dostępne:&b " + MessageUtil.objectListToString(List.of(PlayerPermissionLevel.values()), "&a, &b"));
+                            },
+                            this.serverProperties.getDefaultPlayerPermissionLevel().name(),
+                            (input) -> this.logger.info("Default Player Permission Level ustawiono na:&1 " + input)
+                    ).toUpperCase());
+        } catch (final IllegalArgumentException exception) {
+            this.logger.error("Podano nieznany poziom uprawnień gracza, ustawiliśmy go dla ciebie na:&1 " + PlayerPermissionLevel.MEMBER.getPermissionName());
+            playerPermissionLevel = PlayerPermissionLevel.MEMBER;
+        }
+        this.serverProperties.setDefaultPlayerPermissionLevel(playerPermissionLevel);
+    }
+
+    private void addServerAuthQuestion(final ScannerUtil scannerUtil) {
+        ServerMovementAuth serverMovementAuth;
+
+        try {
+            serverMovementAuth = ServerMovementAuth.valueOf(
+                    scannerUtil.addStringQuestion(
+                            (defaultValue) -> {
+                                this.logger.info("&n&lUstaw Server Authoritative Movement&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                                this.logger.info("Dostępne:&b " + MessageUtil.objectListToString(List.of(ServerMovementAuth.values()), "&a, &b"));
+                                this.logger.alert("Jeśli chcesz uniknąć cheaterów włącz&b server-auth-with-rewind&r wraz z &bcorrect-player-movement&r ," +
+                                        " lecz uważaj! Osoby z słabym połączeniem bedą się okropnie teleportować");
+                            },
+                            this.serverProperties.getServerAuthoritativeMovement().name(),
+                            (input) -> this.logger.info("Server Authoritative Movement ustawiono na:&1 " + input)
+                    ).toUpperCase());
+        } catch (final Exception exception) {
+            exception.printStackTrace();
+            this.logger.error("Podano nieznany typ uwierzytelnienia poruszania sie , ustawiliśmy go dla ciebie na:&b " + ServerMovementAuth.SERVER_AUTH.getAuthName());
+            serverMovementAuth = ServerMovementAuth.SERVER_AUTH;
+        }
+        this.serverProperties.setServerAuthoritativeMovement(serverMovementAuth);
     }
 }

@@ -10,7 +10,6 @@ public enum Difficulty {
     private final String difficultyName;
     private final int difficultyId;
 
-
     Difficulty(final String difficultyName, final int difficultyId) {
         this.difficultyName = difficultyName;
         this.difficultyId = difficultyId;
