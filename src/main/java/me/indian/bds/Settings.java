@@ -40,6 +40,7 @@ public class Settings {
                             if (this.config.getVersionManagerConfig().isLoaded()) {
                                 this.anotherVersionQuestion(scannerUtil);
                             }
+                            this.againSetupServer(scannerUtil);
                             this.currentSettings(scanner);
                         } else {
                             this.logger.info("Zaczynamy od nowa");
@@ -57,7 +58,8 @@ public class Settings {
         this.addSystemQuestion(scannerUtil);
         System.out.println();
 
-        this.config.setFileName(scannerUtil.addStringQuestion((defaultValue) -> this.logger.info("&n&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + ")" + this.enter),
+        this.config.setFileName(scannerUtil.addStringQuestion(
+                (defaultValue) -> this.logger.info("&n&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 Defaults.getDefaultFileName(),
                 (input) -> this.logger.info("Nazwa pliku ustawiona na:&1 " + input)
         ));
@@ -126,14 +128,16 @@ public class Settings {
         this.logger.info("&aKonfiguracja servera&r");
         System.out.println();
 
-        this.serverProperties.setServerPort(scannerUtil.addIntQuestion((defaultValue) -> {
+        this.serverProperties.setServerPort(scannerUtil.addIntQuestion(
+                (defaultValue) -> {
                     this.logger.info("&n&lUstaw port v4&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.info("&cPamiętaj że twoja sieć musi miec dostępny ten port");
                 }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na:&1 " + input)
         ));
         System.out.println();
 
-        this.serverProperties.setServerPortV6(scannerUtil.addIntQuestion((defaultValue) -> {
+        this.serverProperties.setServerPortV6(scannerUtil.addIntQuestion(
+                (defaultValue) -> {
                     this.logger.info("&n&lUstaw port v6&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.info("&cJeśli twoja sieć obsługuje&b ipv6&c ustaw go na dostępny z puli portów");
                 }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&1 " + input)
@@ -141,7 +145,8 @@ public class Settings {
 
         System.out.println();
 
-        this.serverProperties.setMaxThreads(scannerUtil.addIntQuestion((defaultValue) -> {
+        this.serverProperties.setMaxThreads(scannerUtil.addIntQuestion(
+                (defaultValue) -> {
                     this.logger.info("&n&lLiczba wątków używana przez server&r ");
                     this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
                 }, 0,
@@ -151,7 +156,8 @@ public class Settings {
         this.addPlayerPermissionQuestion(scannerUtil);
         System.out.println();
 
-        this.serverProperties.setPlayerIdleTimeout(scannerUtil.addIntQuestion((defaultValue) -> {
+        this.serverProperties.setPlayerIdleTimeout(scannerUtil.addIntQuestion(
+                (defaultValue) -> {
                     this.logger.info("&n&lUstaw Timeout&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.info("Gdy gracz będzie bezczynny przez tyle minut, zostanie wyrzucony.");
                     this.logger.info("Jeśli ustawione na 0, gracze mogą pozostawać bezczynni przez czas nieokreślony.");
@@ -190,7 +196,8 @@ public class Settings {
         ));
         System.out.println();
 
-        this.serverProperties.setTickDistance(scannerUtil.addIntQuestion((defaultValue) -> {
+        this.serverProperties.setTickDistance(scannerUtil.addIntQuestion(
+                (defaultValue) -> {
                     this.logger.info("&n&lUstaw Tick Distance&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.info("Świat zostanie wstrzymany po tylu chunk od gracza");
                     this.logger.alert("Duże ilości mogą prowadzić do lagów servera!");
@@ -342,6 +349,17 @@ public class Settings {
                         this.config.getVersionManagerConfig().setLoaded(false);
                         this.config.save();
                         this.versionQuestion(scannerUtil);
+                    }
+                });
+    }
+    
+    private void againSetupServer(final ScannerUtil scannerUtil){
+        scannerUtil.addBooleanQuestion(
+                (defaultValue) -> this.logger.info("&n&lSkonfigurować ponownie server?&r (Domyślnie: " + defaultValue + ")" + this.enter),
+                false,
+                (input) -> {
+                    if (input) {
+                        this.serverSettings(scannerUtil);
                     }
                 });
     }
