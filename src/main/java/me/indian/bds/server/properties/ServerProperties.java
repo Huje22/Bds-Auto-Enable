@@ -213,6 +213,19 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
+    public boolean isServerTelemetry() {
+        try {
+            return Boolean.parseBoolean(this.properties.getProperty("emit-server-telemetry"));
+        } catch (final Exception exception) {
+            this.setServerTelemetry(false);
+            return false;
+        }
+    }
+
+    public void setServerTelemetry(final boolean telemetry) {
+        this.properties.setProperty("emit-server-telemetry", String.valueOf(telemetry));
+        this.reloadServerProperties();
+    }
 
     public boolean isTexturePackRequired() {
         try {

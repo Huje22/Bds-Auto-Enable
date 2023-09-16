@@ -68,7 +68,8 @@ public class Settings {
         System.out.println();
         this.config.setFileName(scannerUtil.addStringQuestion((defaultValue) -> this.logger.info("&n&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 Defaults.getDefaultFileName(),
-                (input) -> this.logger.info("Nazwa pliku ustawiona na:&1 " + input)));
+                (input) -> this.logger.info("Nazwa pliku ustawiona na:&1 " + input)
+        ));
         System.out.println();
         if (Defaults.hasWine()) {
             this.config.setWine(scannerUtil.addBooleanQuestion(
@@ -94,7 +95,8 @@ public class Settings {
         this.config.setFilesPath(scannerUtil.addStringQuestion(
                 (defaultValue) -> this.logger.info("&n&lPodaj ścieżkę do plików servera&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 Defaults.getJarDir(),
-                (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)));
+                (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)
+        ));
         this.config.save();
         System.out.println();
 
@@ -139,22 +141,25 @@ public class Settings {
         System.out.println();
 
         this.serverProperties.setServerPort(scannerUtil.addIntQuestion((defaultValue) -> {
-            this.logger.info("&n&lUstaw port v4&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-            this.logger.info("&cPamiętaj że twoja sieć musi miec dostępny ten port");
-        }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na:&1 " + input)));
+                    this.logger.info("&n&lUstaw port v4&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                    this.logger.info("&cPamiętaj że twoja sieć musi miec dostępny ten port");
+                }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na:&1 " + input)
+        ));
         System.out.println();
 
         this.serverProperties.setServerPortV6(scannerUtil.addIntQuestion((defaultValue) -> {
-            this.logger.info("&n&lUstaw port v6&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-            this.logger.info("&cJeśli twoja sieć obsługuje&b ipv6&c ustaw go na dostępny z puli portów");
-        }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&1 " + input)));
+                    this.logger.info("&n&lUstaw port v6&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                    this.logger.info("&cJeśli twoja sieć obsługuje&b ipv6&c ustaw go na dostępny z puli portów");
+                }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&1 " + input)
+        ));
         System.out.println();
 
         this.serverProperties.setMaxThreads(scannerUtil.addIntQuestion((defaultValue) -> {
                     this.logger.info("&n&lLiczba wątków używana przez server&r ");
                     this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
                 }, 0,
-                (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + input)));
+                (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + input)
+        ));
         System.out.println();
 
         this.serverProperties.setAllowCheats(scannerUtil.addBooleanQuestion(
@@ -163,7 +168,8 @@ public class Settings {
                     this.logger.alert("Aby integracja z discord działała poprawnie wymagamy tego na&b true&r i włączenie&b experymentów&r!");
                 },
                 this.serverProperties.isAllowCheats(),
-                (input) -> this.logger.info("Allow Cheats ustawione na:&1 " + input)));
+                (input) -> this.logger.info("Allow Cheats ustawione na:&1 " + input)
+        ));
         System.out.println();
 
         this.serverProperties.setPlayerIdleTimeout(scannerUtil.addIntQuestion((defaultValue) -> {
@@ -172,7 +178,8 @@ public class Settings {
                     this.logger.info("Jeśli ustawione na 0, gracze mogą pozostawać bezczynni przez czas nieokreślony.");
                 },
                 this.serverProperties.getPlayerIdleTimeout(),
-                (input) -> this.logger.info("Timeout ustawiony na:&1 " + input)));
+                (input) -> this.logger.info("Timeout ustawiony na:&1 " + input)
+        ));
         System.out.println();
 
         this.serverProperties.setServerBuildRadiusRatio(scannerUtil.addDoubleQuestion(
@@ -200,16 +207,18 @@ public class Settings {
                     this.logger.alert("Wtedy większe liczby niż 12-32 mogę obciążać server gdy klient ma duży render distance");
                 },
                 this.serverProperties.getViewDistance(),
-                (input) -> this.logger.info("Maksymalny View Distance na:&1 " + input)));
+                (input) -> this.logger.info("Maksymalny View Distance na:&1 " + input)
+        ));
         System.out.println();
 
         this.serverProperties.setTickDistance(scannerUtil.addIntQuestion((defaultValue) -> {
-                    this.logger.info("&n&lUstaw Tick Distance&r (Aktualna z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                    this.logger.info("&n&lUstaw Tick Distance&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.info("Świat zostanie wstrzymany po tylu chunk od gracza");
                     this.logger.alert("Duże ilości mogą prowadzić do lagów servera!");
                 },
                 this.serverProperties.getTickDistance(),
-                (input) -> this.logger.info("Tick Distance na:&1 " + input)));
+                (input) -> this.logger.info("Tick Distance na:&1 " + input)
+        ));
         System.out.println();
 
         ServerMovementAuth serverMovementAuth;
@@ -218,7 +227,7 @@ public class Settings {
             serverMovementAuth = ServerMovementAuth.valueOf(
                     scannerUtil.addStringQuestion(
                             (defaultValue) -> {
-                                this.logger.info("&n&lUstaw Server Authoritative Movement&r (Aktualna z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                                this.logger.info("&n&lUstaw Server Authoritative Movement&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
 
                                 final List<String> serverAuthOptions = Arrays.stream(ServerMovementAuth.values())
                                         .map(ServerMovementAuth::getName)
@@ -228,7 +237,8 @@ public class Settings {
                                 this.logger.alert("Jeśli chcesz uniknąć cheaterów włącz&b server-auth-with-rewind&r wraz z &bcorrect-player-movement&r , lecz uważaj! Osoby z słabym połączeniem bedą się okropnie teleportować");
                             },
                             this.serverProperties.getServerAuthoritativeMovement().getName(),
-                            (input) -> this.logger.info("Server Authoritative Movement ustawiono na:&1 " + input)));
+                            (input) -> this.logger.info("Server Authoritative Movement ustawiono na:&1 " + input)
+                    ));
         } catch (final Exception exception) {
             this.logger.error("Podano nieznany typ uwierzytelnienia poruszania sie , ustawiliśmy go dla ciebie na:&b " + ServerMovementAuth.SERVER.getName());
             serverMovementAuth = ServerMovementAuth.SERVER;
@@ -239,22 +249,36 @@ public class Settings {
 
         this.serverProperties.setServerAuthoritativeBlockBreaking(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
-                    this.logger.info("&n&lUstaw Server Authoritative Block Breaking&r (Aktualna z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                    this.logger.info("&n&lUstaw Server Authoritative Block Breaking&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.info("Jeśli ustawione na&b true&r, serwer będzie obliczać operacje wydobywania bloków synchronicznie z klientem, aby móc zweryfikować, czy klient powinien mieć możliwość niszczenia bloków wtedy, kiedy uważa, że może to zrobić.");
                 },
                 this.serverProperties.isServerAuthoritativeBlockBreaking(),
-                (input) -> this.logger.info("Server Authoritative Block Breaking ustawiono na:&1 " + input)));
+                (input) -> this.logger.info("Server Authoritative Block Breaking ustawiono na:&1 " + input)
+        ));
         System.out.println();
 
         if (this.serverProperties.getServerAuthoritativeMovement() == ServerMovementAuth.SERVER_REWIND) {
             this.serverProperties.setCorrectPlayerMovement(scannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
-                        this.logger.info("&n&lUstaw Correct Player Movement&r (Aktualna z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                        this.logger.info("&n&lUstaw Correct Player Movement&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                         this.logger.info("jeśli ustawione na&b true&r, pozycja klienta zostanie poprawiona do pozycji serwera, jeśli wynik ruchu przekroczy próg.");
                     },
                     this.serverProperties.isCorrectPlayerMovement(),
-                    (input) -> this.logger.info("Correct Player Movement ustawiono na:&1 " + input)));
+                    (input) -> this.logger.info("Correct Player Movement ustawiono na:&1 " + input)
+            ));
+            System.out.println();
         }
+
+        this.serverProperties.setServerTelemetry(scannerUtil.addBooleanQuestion(
+                (defaultValue) -> {
+                    this.logger.info("&n&lUstaw Telemetrie servera&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                    this.logger.info("Prawdopodobnie&b crash reporty&r będą dzięki temu wysyłane do&4 mojang");
+                },
+                this.serverProperties.isServerTelemetry(),
+                (input) -> this.logger.info("Telemetria servera ustawiona na:&1 " + input)
+        ));
+        System.out.println();
+
 
         /*
         TODO:
@@ -303,6 +327,7 @@ public class Settings {
         this.logger.info("Server Authoritative Movement:&1 " + this.serverProperties.getServerAuthoritativeMovement().getName());
         this.logger.info("Server Authoritative Block Breaking:&1 " + this.serverProperties.isServerAuthoritativeBlockBreaking());
         this.logger.info("Correct Player Movement:&1 " + this.serverProperties.isCorrectPlayerMovement());
+        this.logger.info("Emit server telemetry:&1 " + this.serverProperties.isServerTelemetry());
         System.out.println();
 
         this.logger.alert("&cWięcej opcij&e konfiguracji&c znajdziesz w config");
