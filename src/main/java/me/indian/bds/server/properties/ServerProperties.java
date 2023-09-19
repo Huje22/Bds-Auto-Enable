@@ -27,6 +27,7 @@ public class ServerProperties {
             this.properties.clear();
             this.properties.load(Files.newInputStream(Paths.get(this.config.getFilesPath() + "/server.properties")));
         } catch (final IOException exception) {
+            this.logger.debug("", exception);
             this.logger.critical("&cWystąpił krytyczny błąd podczas ładowania &aserver.properties", exception);
             System.exit(0);
         }
@@ -36,6 +37,7 @@ public class ServerProperties {
         try {
             this.properties.store(Files.newOutputStream(Paths.get(this.config.getFilesPath() + "/server.properties")), null);
         } catch (final IOException exception) {
+            this.logger.debug("", exception);
             this.logger.critical("&cWystąpił krytyczny błąd podczas zapisywania&a server.properties", exception);
             System.exit(0);
         }
@@ -50,6 +52,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("online-mode"));
         } catch (final Exception exception) {
+            this.logger.debug("", exception);
             return true;
         }
     }
@@ -58,6 +61,7 @@ public class ServerProperties {
         try {
             return this.properties.getProperty("level-name");
         } catch (final Exception exception) {
+            this.logger.debug("", exception);
             this.setWorldName("Bedrock level");
             return "Bedrock level";
         }
@@ -90,6 +94,7 @@ public class ServerProperties {
             }
 
         } catch (final Exception exception) {
+            this.logger.debug("", exception);
             this.setDifficulty(Difficulty.NORMAL);
             return Difficulty.NORMAL;
         }
@@ -120,6 +125,7 @@ public class ServerProperties {
             }
 
         } catch (final Exception exception) {
+            this.logger.debug("", exception);
             this.setDefaultPlayerPermissionLevel(PlayerPermissionLevel.MEMBER);
             return PlayerPermissionLevel.MEMBER;
         }
@@ -134,6 +140,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("server-port"));
         } catch (final NumberFormatException exception) {
+            this.logger.debug("", exception);
             this.setServerPort(19132);
             return 19132;
         }
@@ -148,6 +155,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("server-portv6"));
         } catch (final NumberFormatException exception) {
+            this.logger.debug("", exception);
             this.setServerPortV6(19133);
             return 19133;
         }
@@ -162,6 +170,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("max-threads"));
         } catch (final NumberFormatException exception) {
+            this.logger.debug("", exception);
             this.setMaxThreads(8);
             return 8;
         }
@@ -176,6 +185,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("max-players"));
         } catch (final NumberFormatException exception) {
+            this.logger.debug("", exception);
             this.setMaxPlayers(10);
             return 10;
         }
@@ -190,6 +200,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("view-distance"));
         } catch (final NumberFormatException exception) {
+            this.logger.debug("", exception);
             this.setViewDistance(32);
             return 32;
         }
@@ -205,6 +216,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("tick-distance"));
         } catch (final NumberFormatException exception) {
+            this.logger.debug("", exception);
             this.setTickDistance(4);
             return 4;
         }
@@ -219,6 +231,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("allow-cheats"));
         } catch (final Exception exception) {
+            this.logger.debug("", exception);
             this.setAllowCheats(true);
             return true;
         }
@@ -233,6 +246,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("player-idle-timeout"));
         } catch (final NumberFormatException exception) {
+            this.logger.debug("", exception);
             this.setPlayerIdleTimeout(30);
             return 30;
         }
@@ -247,6 +261,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("emit-server-telemetry"));
         } catch (final Exception exception) {
+            this.logger.debug("", exception);
             this.setServerTelemetry(false);
             return false;
         }
@@ -261,6 +276,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("texturepack-required"));
         } catch (final Exception exception) {
+            this.logger.debug("", exception);
             this.setTexturePackRequired(false);
             return false;
         }
@@ -275,6 +291,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("client-side-chunk-generation-enabled"));
         } catch (final Exception exception) {
+            this.logger.debug("", exception);
             this.setClientSideChunkGeneration(true);
             return true;
         }
@@ -289,6 +306,7 @@ public class ServerProperties {
         try {
             return Double.parseDouble(this.properties.getProperty("server-build-radius-ratio"));
         } catch (final NumberFormatException exception) {
+            this.logger.debug("", exception);
             return -1.0;
         }
     }
@@ -306,6 +324,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("server-authoritative-block-breaking"));
         } catch (final Exception exception) {
+            this.logger.debug("", exception);
             this.setServerAuthoritativeBlockBreaking(false);
             return false;
         }
@@ -334,6 +353,7 @@ public class ServerProperties {
                 }
             }
         } catch (final Exception exception) {
+            this.logger.debug("", exception);
             this.setServerAuthoritativeMovement(ServerMovementAuth.SERVER_AUTH);
             return ServerMovementAuth.SERVER_AUTH;
         }
@@ -348,6 +368,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("correct-player-movement"));
         } catch (final Exception exception) {
+            this.logger.debug("", exception);
             this.setCorrectPlayerMovement(false);
             return false;
         }
