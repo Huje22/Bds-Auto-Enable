@@ -6,9 +6,13 @@ public interface DiscordIntegration {
     void init();
 
     void sendMessage(final String message);
-
+    
+    void sendMessage(final String message, final Throwable throwable);
+    
     void sendEmbedMessage(final String title, final String message, final String footer);
 
+    void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer);
+    
     void sendJoinMessage(final String playerName);
 
     void sendLeaveMessage(final String playerName);
