@@ -74,4 +74,12 @@ public final class MessageUtil {
         }
         return Arrays.asList(text.split(split));
     }
+
+    public static  String getStackTraceAsString(final Throwable throwable) {
+   final     StringBuilder stackTraceBuilder = new StringBuilder();
+        for (final StackTraceElement element : throwable.getStackTrace()) {
+            stackTraceBuilder.append(element.toString()).append("\n");
+        }
+        return stackTraceBuilder.toString();
+    }
 }

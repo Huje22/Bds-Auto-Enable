@@ -9,6 +9,7 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.MessageUtil;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -31,8 +32,8 @@ public class WebHook implements DiscordIntegration {
         this.name = this.discordConfig.getWebHookConfig().getName();
         this.webhookURL = this.discordConfig.getWebHookConfig().getUrl();
         this.avatarUrl = this.discordConfig.getWebHookConfig().getAvatarUrl();
-        this.service = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-WebHook"));
-    }
+        this.service = Executors.newScheduledThreadPool(4, new ThreadUtil("Discord-WebHook"));
+   }
 
     @Override
     public void init() {
@@ -74,6 +75,12 @@ public class WebHook implements DiscordIntegration {
             }
         });
     }
+
+    @Override
+    public void sendMessage(final String message , final Throwable throwable) {
+        this.sendMessage(message + 
+           "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```");
+    }	
 
     @Override
     public void sendEmbedMessage(final String title, final String message, final String footer) {
@@ -119,6 +126,12 @@ public class WebHook implements DiscordIntegration {
     }
 
     @Override
+    public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer) {
+       this.sendEmbedMessage(title , message + 
+                    "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```" , footer);
+    }	
+
+   @Override
     public void sendJoinMessage(final String playerName) {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendJoinMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getJoinMessage().replaceAll("<name>", playerName));

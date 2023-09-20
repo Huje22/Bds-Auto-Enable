@@ -9,6 +9,7 @@ import me.indian.bds.discord.jda.listener.JDAListener;
 import me.indian.bds.discord.jda.listener.MessageListener;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.MessageUtil;
 import me.indian.bds.watchdog.module.PackModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -202,7 +203,14 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             this.textChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue();
         }
     }
-
+    
+    @Override
+    public void sendMessage(final String message , final Throwable throwable) {
+        this.sendMessage(message + 
+           "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```");
+    }	
+    
+    
     @Override
     public void sendEmbedMessage(final String title, final String message, final String footer) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
@@ -215,6 +223,12 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             this.textChannel.sendMessageEmbeds(embed).queue();
         }
     }
+    
+    @Override
+    public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer) {
+       this.sendEmbedMessage(title , message + 
+                    "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```" , footer);
+    }	
 
     @Override
     public void writeConsole(final String message) {
