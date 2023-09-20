@@ -206,10 +206,8 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     
     @Override
     public void sendMessage(final String message , final Throwable throwable) {
-        if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
-           this.textChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention()) + 
-           "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```").queue();
-        }
+        this.sendMessage(message + 
+           "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```");
     }	
     
     
@@ -228,16 +226,8 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     
     @Override
     public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer) {
-        if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
-         final MessageEmbed embed = new EmbedBuilder()
-                    .setTitle(title)
-                    .setDescription(message.replaceAll("<owner>", this.getOwnerMention()) + 
-                    "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```")
-                    .setColor(Color.BLUE)
-                    .setFooter(footer)
-                    .build();
-            this.textChannel.sendMessageEmbeds(embed).queue();
-        }
+       this.sendEmbedMessage(title , message + 
+                    "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```" , footer);
     }	
 
     @Override
