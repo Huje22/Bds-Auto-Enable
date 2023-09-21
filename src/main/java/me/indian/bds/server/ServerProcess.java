@@ -226,7 +226,10 @@ public class ServerProcess {
                                 this.logger.info(s);
                             }
                         }
-                        default -> this.sendToConsole(input);
+                        default -> {
+                            this.discord.writeConsole(input);
+                            this.sendToConsole(input);
+                        }
                     }
                 }
             } catch (final Exception exception) {
