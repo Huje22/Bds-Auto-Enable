@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class ServerProcess {
 
@@ -31,6 +33,8 @@ public class ServerProcess {
     private final DiscordIntegration discord;
     private final PlayerManager playerManager;
     private final ExecutorService processService;
+    private final Lock cmdLock, cmdResponseLock;
+    
     private final String prefix;
     private String finalFilePath;
     private ProcessBuilder processBuilder;
@@ -48,7 +52,9 @@ public class ServerProcess {
         this.discord = this.bdsAutoEnable.getDiscord();
         this.playerManager = this.bdsAutoEnable.getPlayerManager();
         this.processService = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Server process"));
-        this.prefix = "&b[&3ServerProcess&b] ";
+     this.cmdLock  = new ReentrantLock();
+     this.cmdResponseLock  = new ReentrantLock();
+     this.prefix = "&b[&3ServerProcess&b] ";
         this.canRun = true;
     }
 
@@ -239,6 +245,7 @@ public class ServerProcess {
         if (this.processService != null && !this.processService.isTerminated()) {
             this.logger.info("Zatrzymywanie wątków procesu servera");
             try {
+                //TODO: Zrobić to z tym takim czymś od shedulera 
                 this.processService.shutdown();
                 ThreadUtil.sleep(2);
                 this.logger.info("Zatrzymano wątki procesu servera");
@@ -289,27 +296,45 @@ public class ServerProcess {
 
     public void sendToConsole(final String command) {
       //TODO: Dodać obsługę ReentrantLock
+      cmdLock.lock(); 
+      cmdResponseLock.lock();
+      try{
         if (this.writer == null) {
             this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ, Writer jest&c nullem&r!");
             return;
         }
         if (!this.isEnabled()) {
-            this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&b nullem&r albo nie jest aktywny");
+            this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&c nullem&r albo nie jest aktywny");
             return;
         }
 
         this.writer.println(command);
         this.writer.flush();
+        } catch(final Exception exception){
+            this.logger.error("Wystąpił błąd podczas próby wysłania polecenia do konsoli" , exception);
+            } finally{
+                cmdLock.unlock();
+                cmdResponseLock.unLock();
+                }
     }
 
     public String commandAndResponse(final String command) {
-        if (ThreadUtil.isImportantThread()) {
+       final Thread thread = Thread.currentThread();
+       
+       if (ThreadUtil.isImportantThread()) {
             throw new BadThreadException("Nie możesz wykonać tego na tym wątku!");
         }
+        
+      if (thread.isInterrupted()) {
+        return "Ten wątek (" + thread.getName() + ") został przerwany, nie można na nim wykonać tej metody. ";
+       }
+        
+        cmdResponseLock.lock();
         this.sendToConsole(command);
         ThreadUtil.sleep(1);
+        cmdResponseLock.unLock();
         return this.lastLine == null ? "null" : this.lastLine;
-    }
+   }
 
     public void changeSetting(final ServerSetting serverSetting, final Object option) {
         switch (serverSetting) {
