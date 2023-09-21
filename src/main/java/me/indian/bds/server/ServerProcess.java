@@ -322,11 +322,11 @@ public class ServerProcess {
        final Thread thread = Thread.currentThread();
        
        if (ThreadUtil.isImportantThread()) {
-            throw new BadThreadException("Nie możesz wykonać tego na tym wątku!");
+            throw new BadThreadException("Nie możesz wykonać tego na tym wątku! (" + thread.getName() + ")");
         }
         
       if (thread.isInterrupted()) {
-        return "Ten wątek (" + thread.getName() + ") został przerwany, nie można na nim wykonać tej metody. ";
+        return "Ten wątek (" + thread.getName() + ") został przerwany, nie można na nim wykonać tej metody.";
        }
         
         cmdResponseLock.lock();
