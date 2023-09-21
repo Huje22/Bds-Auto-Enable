@@ -288,6 +288,7 @@ public class ServerProcess {
     }
 
     public void sendToConsole(final String command) {
+      //TODO: Dodać obsługę ReentrantLock
         if (this.writer == null) {
             this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ, Writer jest&c nullem&r!");
             return;
