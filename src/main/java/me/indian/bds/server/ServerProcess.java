@@ -142,7 +142,6 @@ public class ServerProcess {
                     this.startProcess();
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można uruchomić procesu", exception);
-                    ;
                     System.exit(0);
                 }
             }
@@ -307,15 +306,16 @@ public class ServerProcess {
             this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&c nullem&r albo nie jest aktywny");
             return;
         }
-
+          
+        this.discord.writeConsole(command);
         this.writer.println(command);
         this.writer.flush();
         } catch(final Exception exception){
             this.logger.error("Wystąpił błąd podczas próby wysłania polecenia do konsoli" , exception);
-            } finally{
-                cmdLock.unlock();
-                cmdResponseLock.unLock();
-                }
+         } finally{
+             cmdLock.unlock();
+              cmdResponseLock.unLock();
+         }
     }
 
     public String commandAndResponse(final String command) {
