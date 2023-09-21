@@ -231,7 +231,7 @@ public class ServerProcess {
                     }
                 }
             } catch (final Exception exception) {
-                this.logger.critical("Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
+                this.logger.critical("Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
                 this.discord.sendMessage("<owner> Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji", exception);
                 System.exit(0);
             }
