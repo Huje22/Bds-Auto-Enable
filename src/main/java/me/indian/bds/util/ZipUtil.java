@@ -75,11 +75,12 @@ public final class ZipUtil {
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 final String entryName = zipEntry.getName();
-                final File outputFile = new File(targetDirectory, entryName);
-                if (outputFile.exists() && skipFiles.contains(entryName)) {
-                    System.out.println("Omijam plik " + entryName);
+                final File outputFile = new File(targetDirectory + File.separator + entryName);
+                if (outputFile.exists() && skipFiles.contains(outputFile.getAbsolutePath())) {
+                    System.out.println("Omijam plik " + outputFile.getAbsolutePath());
                     continue;
                 }
+
                 if (zipEntry.isDirectory()) {
                     outputFile.mkdirs();
                 } else {
