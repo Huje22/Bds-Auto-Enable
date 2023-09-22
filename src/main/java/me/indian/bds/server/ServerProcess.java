@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -245,21 +246,22 @@ public class ServerProcess {
         this.logger.alert("Wyłączanie...");
         this.discord.sendDisablingMessage();
         this.setCanRun(false);
-        if (this.processService != null && !this.processService.isTerminated()) {
-            this.logger.info("Zatrzymywanie wątków procesu servera");
-            try {
-                //TODO: Zrobić to z tym takim czymś od shedulera 
-                this.processService.shutdown();
-                ThreadUtil.sleep(2);
-                this.logger.info("Zatrzymano wątki procesu servera");
-            } catch (final Exception exception) {
-                this.logger.error("Nie udało się zatrzymać wątków procesu servera", exception);
-            }
-        }
 
         this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
         ThreadUtil.sleep(3);
         this.bdsAutoEnable.getPlayerManager().getStatsManager().saveAllData();
+
+        if (this.processService != null && !this.processService.isTerminated()) {
+            this.logger.info("Zatrzymywanie wątków procesu servera");
+            try {
+                this.processService.shutdown();
+                if (!this.processService.awaitTermination(10, TimeUnit.SECONDS)) {
+                    this.logger.info("Zatrzymano wątki procesu servera");
+                }
+            } catch (final Exception exception) {
+                this.logger.error("Nie udało się zatrzymać wątków procesu servera", exception);
+            }
+        }
 
         if (this.process != null && this.process.isAlive()) this.watchDog.saveAndResume();
 
