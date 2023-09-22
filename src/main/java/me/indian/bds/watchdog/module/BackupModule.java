@@ -27,6 +27,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.stream.Collectors;
 
 public class BackupModule {
 
@@ -216,6 +217,13 @@ public class BackupModule {
 
     public File getWorldFile() {
         return this.worldFile;
+    }
+
+    public List<String> getBackupsNames() {
+        return this.backups.stream()
+                .map(Path::getFileName)
+                .map(Path::toString)
+                .collect(Collectors.toList());
     }
 
     public List<Path> getBackups() {
