@@ -18,6 +18,7 @@ import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.WatchDog;
+import me.indian.bds.rest.RestWebsite;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -90,11 +91,13 @@ public class BDSAutoEnable {
         this.watchDog.getRamMonitor().monitRamUsage();
         this.versionManager.loadVersion();
         this.watchDog.getPackModule().initPackModule();
+        new RestWebsite(this).init();
         this.discord.init();
         this.serverProcess.startProcess();
         this.versionManager.getVersionUpdater().checkForUpdate();
         new AutoMessages(this, this.serverProcess).start();
         new OurMetrics(this);
+
     }
 
     private void checkFlags() {

@@ -25,6 +25,7 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 * Integracje z Discordem
   (Wymaga [BDS-Auto-Enable-Managment-Pack](https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack) do obsługi wiekszej
   ilosci funkcij)
+* **Rest API** z czasem gry , liczbą śmierci i graczami online/offline
 
 # Polecenia: <br/>
 

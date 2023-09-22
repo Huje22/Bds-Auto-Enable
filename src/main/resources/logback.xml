@@ -8,7 +8,13 @@
         </encoder>
     </appender>
 
+
     <logger name="net.dv8tion.jda" level="OFF"/>
+
+            <!--    Strona -->
+    <logger name="org.eclipse.jetty" level="OFF" />
+    <logger name="io.javalin" level="OFF" />
+
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
     </root>

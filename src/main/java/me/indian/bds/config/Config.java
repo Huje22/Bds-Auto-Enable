@@ -7,6 +7,7 @@ import eu.okaeri.configs.annotation.Header;
 import me.indian.bds.config.sub.AutoMessagesConfig;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.config.sub.log.LogConfig;
+import me.indian.bds.config.sub.rest.RestApiConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.util.SystemOs;
@@ -69,6 +70,11 @@ public class Config extends OkaeriConfig {
     @Comment({"Nie zapisuje tych informacj które zawierają dane znaki i słowa"})
     @CustomKey("Log")
     private LogConfig logConfig = new LogConfig();
+
+    @Comment({""})
+    @Comment({"Ustawienia strony Rest API"})
+    @CustomKey("RestAPI")
+    private RestApiConfig restApiConfig = new RestApiConfig();
 
     @Comment({""})
     @Comment({"Ustawienia discord"})
@@ -138,6 +144,10 @@ public class Config extends OkaeriConfig {
 
     public DiscordConfig getDiscordConfig() {
         return this.discordConfig;
+    }
+
+    public RestApiConfig getRestApiConfig() {
+        return this.restApiConfig;
     }
 
     public boolean isDebug() {
