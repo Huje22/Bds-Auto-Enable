@@ -70,11 +70,21 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         switch (event.getName()) {
             case "cmd" -> {
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                    if (this.serverProcess.isEnabled()) {
+                        event.reply("Server jest wyłączony").setEphemeral(true).queue();
+                        return;
+                    }
+
                     final String command = event.getOption("command").getAsString();
                     if (command.isEmpty()) {
                         event.reply("Polecenie nie może być puste!").setEphemeral(true).queue();
                         return;
                     }
+
+                    this.discordJda.writeConsole(command);
+                    this.bdsAutoEnable.getLogger().instantLogToFile(command);
+                    System.out.println(command);
+
                     final MessageEmbed embed = new EmbedBuilder()
                             .setTitle("Ostatnia linijka z konsoli")
                             .setDescription(this.serverProcess.commandAndResponse(command))

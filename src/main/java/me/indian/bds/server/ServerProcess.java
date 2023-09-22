@@ -226,8 +226,9 @@ public class ServerProcess {
                                 this.logger.info(s);
                             }
                         }
-                        default -> {  this.discord.writeConsole(input);
-
+                        default -> {
+                            this.logger.instantLogToFile(input);
+                            this.discord.writeConsole(input);
                             this.sendToConsole(input);
                         }
                     }

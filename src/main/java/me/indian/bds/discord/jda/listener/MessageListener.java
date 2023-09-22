@@ -79,6 +79,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             if (member == null) return;
             if (member.hasPermission(Permission.ADMINISTRATOR)) {
                 this.serverProcess.sendToConsole(rawMessage);
+                this.logger.instantLogToFile(rawMessage);
+                System.out.println(rawMessage);
             } else {
                 event.getChannel().sendMessage("Nie masz uprawnień administratora aby wysłać tu wiadomość").queue(msg -> {
                     msg.delete().queueAfter(5, TimeUnit.SECONDS);
