@@ -194,6 +194,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     public void logCommand(final MessageEmbed embed) {
         if (this.jda != null && this.logChannel != null) {
+            if(embed.isEmpty()) return;
             this.consoleService.execute(() -> this.logChannel.sendMessageEmbeds(embed).queue());
         }
     }
@@ -201,6 +202,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     @Override
     public void sendMessage(final String message) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
+            if(message.isEmpty()) return;
             this.textChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue();
         }
     }
@@ -215,6 +217,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     @Override
     public void sendEmbedMessage(final String title, final String message, final String footer) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
+            if(message.isEmpty()) return;
             final MessageEmbed embed = new EmbedBuilder()
                     .setTitle(title)
                     .setDescription(message.replaceAll("<owner>", this.getOwnerMention()))
@@ -234,6 +237,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     @Override
     public void writeConsole(final String message) {
         if (this.jda != null && this.consoleChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
+            if(message.isEmpty()) return;
             this.consoleService.execute(() -> this.consoleChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue());
         }
     }
@@ -241,6 +245,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     @Override
     public void sendJoinMessage(final String playerName) {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendJoinMessage()) {
+            if(playerName.isEmpty()) return;
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getJoinMessage().replaceAll("<name>", playerName));
         }
     }
@@ -248,6 +253,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     @Override
     public void sendLeaveMessage(final String playerName) {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendLeaveMessage()) {
+            if(playerName.isEmpty()) return;
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getLeaveMessage().replaceAll("<name>", playerName));
         }
     }
@@ -255,6 +261,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     @Override
     public void sendPlayerMessage(final String playerName, final String playerMessage) {
+        if(playerName.isEmpty()) return;
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendPlayerMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getMinecraftToDiscordMessage()
                     .replaceAll("<name>", playerName)
@@ -267,6 +274,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
     @Override
     public void sendDeathMessage(final String playerName, final String deathMessage) {
+        if(playerName.isEmpty()) return;
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendDeathMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getDeathMessage()
                     .replaceAll("<name>", playerName)
