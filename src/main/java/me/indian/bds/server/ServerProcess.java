@@ -35,7 +35,6 @@ public class ServerProcess {
     private final PlayerManager playerManager;
     private final ExecutorService processService;
     private final Lock cmdLock, cmdResponseLock;
-    
     private final String prefix;
     private String finalFilePath;
     private ProcessBuilder processBuilder;
@@ -53,9 +52,9 @@ public class ServerProcess {
         this.discord = this.bdsAutoEnable.getDiscord();
         this.playerManager = this.bdsAutoEnable.getPlayerManager();
         this.processService = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Server process"));
-     this.cmdLock  = new ReentrantLock();
-     this.cmdResponseLock  = new ReentrantLock();
-     this.prefix = "&b[&3ServerProcess&b] ";
+        this.cmdLock = new ReentrantLock();
+        this.cmdResponseLock = new ReentrantLock();
+        this.prefix = "&b[&3ServerProcess&b] ";
         this.canRun = true;
     }
 
