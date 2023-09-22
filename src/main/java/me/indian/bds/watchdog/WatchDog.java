@@ -8,14 +8,12 @@ import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
 import me.indian.bds.watchdog.module.PackModule;
 import me.indian.bds.watchdog.monitor.RamMonitor;
-import me.indian.bds.watchdog.monitor.UpdateMonitor;
 
 public class WatchDog {
 
     private final BackupModule backupModule;
     private final PackModule packModule;
     private final RamMonitor ramMonitor;
-    private final UpdateMonitor updateMonitor;
     private final String watchDogPrefix;
     private final ServerProcess serverProcess;
 
@@ -23,7 +21,6 @@ public class WatchDog {
         this.backupModule = new BackupModule(bdsAutoEnable, this);
         this.packModule = new PackModule(bdsAutoEnable, this);
         this.ramMonitor = new RamMonitor(bdsAutoEnable, this);
-        this.updateMonitor = new UpdateMonitor(bdsAutoEnable);
         this.watchDogPrefix = "&b[&3WatchDog&b]";
         this.serverProcess = bdsAutoEnable.getServerProcess();
     }
@@ -40,14 +37,9 @@ public class WatchDog {
         return this.ramMonitor;
     }
 
-    public UpdateMonitor getUpdateMonitor() {
-        return this.updateMonitor;
-    }
-
     public void init(final ServerProcess serverProcess, final DiscordIntegration discord) {
         this.backupModule.initBackupModule(serverProcess);
         this.ramMonitor.initRamMonitor(discord, serverProcess);
-        this.updateMonitor.initUpdateModule(this, serverProcess);
     }
 
     public void saveWorld() {

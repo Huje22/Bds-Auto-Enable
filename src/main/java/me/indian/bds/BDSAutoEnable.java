@@ -8,7 +8,7 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.webhook.WebHook;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.VersionManager;
+import me.indian.bds.manager.version.VersionManager;
 import me.indian.bds.manager.player.PlayerManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.properties.ServerProperties;
@@ -92,7 +92,7 @@ public class BDSAutoEnable {
         this.watchDog.getPackModule().initPackModule();
         this.discord.init();
         this.serverProcess.startProcess();
-        this.watchDog.getUpdateMonitor().checkForUpdate();
+        this.versionManager.getVersionUpdater().checkForUpdate();
         new AutoMessages(this, this.serverProcess).start();
         new OurMetrics(this);
     }

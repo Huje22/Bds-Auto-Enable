@@ -1,4 +1,4 @@
-package me.indian.bds.manager;
+package me.indian.bds.manager.version;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -18,6 +18,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.file.DirectoryStream;
@@ -37,6 +38,7 @@ public class VersionManager {
     private final File versionFolder;
     private final List<String> availableVersions;
     private final ServerProcess serverProcess;
+    private final VersionUpdater versionUpdater;
     
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -47,6 +49,7 @@ public class VersionManager {
         this.versionFolder = new File(Defaults.getAppDir() + File.separator + "versions");
         this.availableVersions = new ArrayList<>();
         this.serverProcess = bdsAutoEnable.getServerProcess();
+        this.versionUpdater = new VersionUpdater(bdsAutoEnable, this);
 
         if (!this.versionFolder.exists()) {
             if (this.versionFolder.mkdirs()) {
@@ -59,10 +62,9 @@ public class VersionManager {
 
         this.loadVersionsInfo();
 
-        this.importantFiles.add("allowlist.json");
-        this.importantFiles.add("server.properties");
-        this.importantFiles.add("permissions.json");
-        this.importantFiles.add("config/");
+        this.importantFiles.add(this.config.getFilesPath() + File.separator + "allowlist.json");
+        this.importantFiles.add(this.config.getFilesPath() + File.separator + "server.properties");
+        this.importantFiles.add(this.config.getFilesPath() + File.separator + "config" + File.separator + "default" + File.separator + "permissions.json");
     }
 
     private void loadVersionsInfo() {
@@ -225,10 +227,17 @@ public class VersionManager {
             } else {
                 this.logger.error("Błąd przy pobieraniu danych. Kod odpowiedzi: " + responseCode);
             }
-        } catch (final IOException ioException) {
-            this.logger.error("Błąd przy pobieraniu danych ", ioException);
+        } catch (final Exception exception) {
+            if (exception instanceof ConnectException) {
+                return "";
+            }
+            this.logger.error("Błąd przy pobieraniu najnowszej wersji", exception);
         }
         return "";
+    }
+
+    public VersionUpdater getVersionUpdater() {
+        return this.versionUpdater;
     }
 
     public List<String> getAvailableVersions() {
