@@ -56,6 +56,11 @@ public class Config extends OkaeriConfig {
     private String filesPath = "./";
 
     @Comment({""})
+    @Comment({"Ustawienia strony Rest API"})
+    @CustomKey("RestAPI")
+    private RestApiConfig restApiConfig = new RestApiConfig();
+
+    @Comment({""})
     @Comment({"Watchdog"})
     @CustomKey("WatchDog")
     private WatchDogConfig watchDogConfig = new WatchDogConfig();
@@ -70,11 +75,6 @@ public class Config extends OkaeriConfig {
     @Comment({"Nie zapisuje tych informacj które zawierają dane znaki i słowa"})
     @CustomKey("Log")
     private LogConfig logConfig = new LogConfig();
-
-    @Comment({""})
-    @Comment({"Ustawienia strony Rest API"})
-    @CustomKey("RestAPI")
-    private RestApiConfig restApiConfig = new RestApiConfig();
 
     @Comment({""})
     @Comment({"Ustawienia discord"})
