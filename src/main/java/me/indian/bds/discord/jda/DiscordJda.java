@@ -8,8 +8,8 @@ import me.indian.bds.discord.jda.listener.CommandListener;
 import me.indian.bds.discord.jda.listener.JDAListener;
 import me.indian.bds.discord.jda.listener.MessageListener;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.PackModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
 
@@ -334,7 +335,14 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     public void disableBot() {
         if (this.jda != null) {
             if (this.jda.getStatus() == JDA.Status.CONNECTED) {
-                this.jda.shutdown();
+                try {
+                    this.jda.shutdown();
+                    if (!this.jda.awaitShutdown(10L, TimeUnit.SECONDS)) {
+                        this.logger.info("Wyłączono bota");
+                    }
+                } catch (final Exception exception) {
+                    this.logger.critical("Nie można wyłączyć bota", exception);
+                }
             }
         }
     }
