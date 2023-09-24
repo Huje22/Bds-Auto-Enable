@@ -250,18 +250,6 @@ public class ServerProcess {
         ThreadUtil.sleep(3);
         this.bdsAutoEnable.getPlayerManager().getStatsManager().saveAllData();
 
-        if (this.processService != null && !this.processService.isTerminated()) {
-            this.logger.info("Zatrzymywanie wątków procesu servera");
-            try {
-                this.processService.shutdown();
-                if (!this.processService.awaitTermination(10, TimeUnit.SECONDS)) {
-                    this.logger.info("Zatrzymano wątki procesu servera");
-                }
-            } catch (final Exception exception) {
-                this.logger.error("Nie udało się zatrzymać wątków procesu servera", exception);
-            }
-        }
-
         if (this.process != null && this.process.isAlive()) this.watchDog.saveAndResume();
 
         this.sendToConsole("stop");
@@ -295,6 +283,19 @@ public class ServerProcess {
         } catch (final Exception exception) {
             this.logger.critical("Nie można zapisać configu", exception);
         }
+
+        if (this.processService != null && !this.processService.isTerminated()) {
+            this.logger.info("Zatrzymywanie wątków procesu servera");
+            try {
+                this.processService.shutdown();
+                if (!this.processService.awaitTermination(10, TimeUnit.SECONDS)) {
+                    this.logger.info("Zatrzymano wątki procesu servera");
+                }
+            } catch (final Exception exception) {
+                this.logger.error("Nie udało się zatrzymać wątków procesu servera", exception);
+            }
+        }
+
         this.discord.disableBot();
     }
 
