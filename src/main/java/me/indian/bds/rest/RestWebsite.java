@@ -53,7 +53,22 @@ public class RestWebsite {
             final Javalin app = Javalin.create().start(port);
             final RateLimiter limiter = new RateLimiter(TimeUnit.MINUTES);
 
-            app.after(ctx -> ctx.res().setCharacterEncoding("UTF-8"));
+            app.after(ctx -> {
+                ctx.res().setCharacterEncoding("UTF-8");
+            });
+
+            app.get("/", ctx -> {
+                final String info = """
+                        Dostępne endointy to:
+                                                
+                        /api/stats/deaths - śmierci graczy\s
+                        /api/stats/playtime - czas gry w ms graczy\s
+                        /api/stats/players - gracze online i offline\s
+                        /api/{api-key}/backup/{filename} - pobierz któryś z dostępnych backup (wymagany klucz autoryzacji)\s
+                        """;
+
+                ctx.contentType("text/json").result(info);
+            });
 
             app.get("/api/stats/playtime", ctx -> {
                 limiter.incrementCounter(ctx, rateLimit);
