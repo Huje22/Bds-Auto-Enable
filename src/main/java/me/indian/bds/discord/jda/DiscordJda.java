@@ -148,6 +148,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                 Commands.slash("deaths", "Top 20 graczy z największą ilością śmierci")
         ).queue();
 
+        this.leaveGuilds();
     }
 
     public Role getHighestRole(final long memberID) {
@@ -198,6 +199,23 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
             this.consoleService.execute(() -> this.logChannel.sendMessageEmbeds(embed).queue());
         }
     }
+    
+    private void leaveGuilds(){
+        if(!this.discordConfig.isLeaveServers()) return 
+        for (final Guild guild1 : this.jda.getGuilds()) {
+            if (!guild1.getId().equals(serverID)) {
+                final String inviteLink = guild.getDefaultChannel().createInvite().complete().getUrl();
+                guild1.leave().queue();
+
+                    
+                 this.sendMessage("Opuściłem serwer o ID: " + guild.getId() + 
+               "/n Nazwie: " + guild.getName() +
+               "/n Zaproszenie: " + inviteLink
+               
+               );
+                 }
+        }
+      }
 
     @Override
     public void sendMessage(final String message) {
