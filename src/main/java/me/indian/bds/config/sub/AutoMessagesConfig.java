@@ -24,7 +24,8 @@ public class AutoMessagesConfig extends OkaeriConfig {
     @Comment({"Lista wiadomości , możesz użyć & do kolorów , aktualnie jedna wiadomość to jedna linia!"})
     private List<String> messages = Arrays.asList("&bTen server używa &aBDS-Auto-Enable&3 https://github.com/Huje22/Bds-Auto-Enable",
             "&aWpadnij na nasz discord&e https://discord.com/invite/&b56h83WPKdK",
-            "&bProjekt robiony dla servera&a Huje&e22&b !"
+            "&bProjekt robiony dla servera&a Huje&e22&b !",
+            "&bZasponsoruj &aHuje&e22&3 https://host2play.com/donation/UqJqPNW0"
     );
 
     public boolean isEnabled() {
