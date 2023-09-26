@@ -201,6 +201,7 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     }
     
     private void leaveGuilds(){
+        //TODO: Complet it
         if(!this.discordConfig.isLeaveServers()) return 
         for (final Guild guild1 : this.jda.getGuilds()) {
             if (!guild1.getId().equals(serverID)) {
@@ -216,6 +217,27 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
                  }
         }
       }
+
+    private void members(){
+        //TODO: Complet it
+final List<Member> members = guild.getMembers().stream()
+                    .filter(member -> !member.getUser().isBot())
+                    .collect(Collectors.toList());
+
+            // Sortowanie użytkowników od najdłużej na serwerze do najnowszego
+            members.sort(Comparator.comparing(Member::getTimeJoined));
+
+            // Tworzenie listy użytkowników w kolejności
+      final       List<User> userList = new ArrayList<>();
+            for (Member member : members) {
+                userList.add(member.getUser());
+            }
+
+            // Wyświetlenie listy użytkowników
+            for (final User user : userList) {
+                System.out.println(user.getName() + "#" + user.getDiscriminator());
+            }
+    }
 
     @Override
     public void sendMessage(final String message) {
