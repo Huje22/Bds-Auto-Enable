@@ -202,13 +202,13 @@ public class DiscordJda implements DiscordIntegration {
         //TODO: Complet it
         if(!this.discordConfig.isLeaveServers()) return 
         for (final Guild guild1 : this.jda.getGuilds()) {
-            if (!guild1.getId().equals(serverID)) {
-                final String inviteLink = guild.getDefaultChannel().createInvite().complete().getUrl();
+            if (guild1 != guild) {
+                final String inviteLink = guild1.getDefaultChannel().createInvite().complete().getUrl();
                 guild1.leave().queue();
 
                     
-                 this.sendMessage("Opuściłem serwer o ID: " + guild.getId() + 
-               "/n Nazwie: " + guild.getName() +
+                 this.sendMessage("Opuściłem serwer o ID: " + guild1.getId() + 
+               "/n Nazwie: " + guild1.getName() +
                "/n Zaproszenie: " + inviteLink
                
                );
@@ -216,25 +216,19 @@ public class DiscordJda implements DiscordIntegration {
         }
       }
 
-    private void members(){
+    private void getMembersOfGuild(final Guild guild){
         //TODO: Complet it
         final List<Member> members = guild.getMembers().stream()
                     .filter(member -> !member.getUser().isBot())
                     .collect(Collectors.toList());
 
-            // Sortowanie użytkowników od najdłużej na serwerze do najnowszego
             members.sort(Comparator.comparing(Member::getTimeJoined));
 
-            // Tworzenie listy użytkowników w kolejności
-        final List<User> userList = new ArrayList<>();
-            for (Member member : members) {
-                userList.add(member.getUser());
-            }
-
-            // Wyświetlenie listy użytkowników
-            for (final User user : userList) {
-                System.out.println(user.getName() + "#" + user.getDiscriminator());
-            }
+            for (final Member member : members) {
+                final User user = member.getUser();
+           System.out.println(user.getName() + "#" + user.getDiscriminator());
+            
+             }
     }
 
     @Override
@@ -293,7 +287,6 @@ public class DiscordJda implements DiscordIntegration {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getLeaveMessage().replaceAll("<name>", playerName));
         }
     }
-
 
     @Override
     public void sendPlayerMessage(final String playerName, final String playerMessage) {
