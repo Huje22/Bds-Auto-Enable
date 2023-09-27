@@ -20,7 +20,6 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -33,7 +32,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
+public class DiscordJda implements DiscordIntegration {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
@@ -45,7 +44,6 @@ public class DiscordJda extends ListenerAdapter implements DiscordIntegration {
     private JDA jda;
     private Guild guild;
     private TextChannel textChannel, consoleChannel, logChannel;
-
 
     public DiscordJda(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
