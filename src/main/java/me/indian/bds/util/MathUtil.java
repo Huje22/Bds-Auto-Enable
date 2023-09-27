@@ -30,6 +30,10 @@ public final class MathUtil {
         return Duration.ofMinutes(minutes).toMillis();
     }
 
+    public static long millisToMinutes(final long milis){
+        return Duration.ofMillis(millis).toMinutes();
+     }
+    
     public static long secondToMillis(final long seconds) {
         return Duration.ofSeconds(seconds).toMillis();
     }
