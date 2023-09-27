@@ -376,7 +376,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 .setTitle("Command info")
                 .setDescription("`" + user.getName() + "` **używa** `/" + event.getName() + "`")
                 .setColor(Color.BLUE)
-                .setFooter(user.getName(), user.getAvatarUrl())
+                .setFooter(DateUtil.getDate() + " " + user.getName(), user.getAvatarUrl())
                 .build();
     }
 }
