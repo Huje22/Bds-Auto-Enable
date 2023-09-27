@@ -8,6 +8,7 @@ import me.indian.bds.discord.jda.listener.CommandListener;
 import me.indian.bds.discord.jda.listener.JDAListener;
 import me.indian.bds.discord.jda.listener.MessageListener;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.PackModule;
@@ -28,6 +29,8 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -79,7 +82,6 @@ public class DiscordJda implements DiscordIntegration {
             this.jda = JDABuilder.create(this.discordConfig.getDiscordBotConfig().getToken(), GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.MESSAGE_CONTENT)
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS, CacheFlag.ONLINE_STATUS)
                     .enableCache(CacheFlag.EMOJI)
-                    .setActivity(this.getCustomActivity())
                     .setEnableShutdownHook(false)
                     .build();
             this.jda.awaitReady();
@@ -145,7 +147,8 @@ public class DiscordJda implements DiscordIntegration {
                 Commands.slash("playtime", "Top 20 graczy z największą ilością przegranego czasu"),
                 Commands.slash("deaths", "Top 20 graczy z największą ilością śmierci")
         ).queue();
-
+        
+        this.customStatusUpdate();
         this.leaveGuilds();
     }
 
@@ -165,36 +168,46 @@ public class DiscordJda implements DiscordIntegration {
         if (this.guild == null) return "";
         return (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");
     }
+    
+   private void customStatusUpdate(){
+        
+        final Timer timer= new Timer("Discord Status Changer", true);
+        final TimerTask statusTask = new TimerTask() {
+
+            @Override
+            public void run() {
+                jda.setActivity(this.getCustomActivity());
+            }
+        };
+        
+        this.timer.scheduleAtFixedRate(statusTask, 0, MathUtil.minutesToMillis(10));
+        
+       }
 
     private Activity getCustomActivity() {
-        final String activityMessage = this.discordConfig.getDiscordBotConfig().getActivityMessage();
-        switch (Activity.ActivityType.valueOf(this.discordConfig.getDiscordBotConfig().getActivity().toUpperCase())) {
+        final String activityMessage.replaceAll("<time>" , replacment) = this.discordConfig.getDiscordBotConfig().getactivityMessage.replaceAll("<time>" , replacment)();
+        final String replacment = MathUtil.millisToMinutes(serverProcess.getStartTime());
+       
+       switch (Activity.ActivityType.valueOf(this.discordConfig.getDiscordBotConfig().getActivity().toUpperCase())) {
             case PLAYING -> {
-                return Activity.playing(activityMessage);
+                return Activity.playing(activityMessage.replaceAll("<time>" , replacment));
             }
             case WATCHING -> {
-                return Activity.watching(activityMessage);
+                return Activity.watching(activityMessage.replaceAll("<time>" , replacment));
             }
             case COMPETING -> {
-                return Activity.competing(activityMessage);
+                return Activity.competing(activityMessage.replaceAll("<time>" , replacment));
             }
             case LISTENING -> {
-                return Activity.listening(activityMessage);
+                return Activity.listening(activityMessage.replaceAll("<time>" , replacment));
             }
             case STREAMING -> {
-                return Activity.streaming(activityMessage, this.discordConfig.getDiscordBotConfig().getStreamUrl());
+                return Activity.streaming(activityMessage.replaceAll("<time>" , replacment), this.discordConfig.getDiscordBotConfig().getStreamUrl());
             }
             default -> {
                 this.logger.error("Wykryto nie wspierany status! ");
-                return Activity.playing(activityMessage);
+                return Activity.playing(activityMessage.replaceAll("<time>" , replacment));
             }
-        }
-    }
-
-    public void logCommand(final MessageEmbed embed) {
-        if (this.jda != null && this.logChannel != null) {
-            if(embed.isEmpty()) return;
-            this.consoleService.execute(() -> this.logChannel.sendMessageEmbeds(embed).queue());
         }
     }
     
@@ -230,7 +243,14 @@ public class DiscordJda implements DiscordIntegration {
             
              }
     }
-
+    
+    public void logCommand(final MessageEmbed embed) {
+        if (this.jda != null && this.logChannel != null) {
+            if(embed.isEmpty()) return;
+            this.consoleService.execute(() -> this.logChannel.sendMessageEmbeds(embed).queue());
+        }
+    }
+   
     @Override
     public void sendMessage(final String message) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
@@ -256,6 +276,16 @@ public class DiscordJda implements DiscordIntegration {
                     .setColor(Color.BLUE)
                     .setFooter(footer)
                     .build();
+                    
+                    
+                    /*TODO: 
+                    Add fileds support:
+                        for (Field field : fields) {
+            embedBuilder.addField(field.getName(), field.getValue(), field.isInline());
+        }
+        */
+                    
+                    
             this.textChannel.sendMessageEmbeds(embed).queue();
         }
     }
