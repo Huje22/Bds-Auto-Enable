@@ -34,7 +34,9 @@ public class BotConfig extends OkaeriConfig {
     @Comment({"Aktywność"})
     @Comment({"Dostępne aktywności:  PLAYING, STREAMING, LISTENING, WATCHING, COMPETING"})
     private String activity = "PLAYING";
-    private String activityMessage = "Minecraft";
+    @Commenr({"Dokończy to"})
+    DOKOŃCZYĆ TO
+    private String activityMessage = "Minecraft <time>";
     private String streamUrl = "hhttps://www.youtube.com/@IndianBartonka?sub_confirmation=1";
 
 
