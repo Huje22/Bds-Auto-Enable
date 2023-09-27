@@ -3,6 +3,7 @@ package me.indian.bds.watchdog.monitor;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.RamMonitorConfig;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.logger.Logger;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
@@ -17,6 +18,7 @@ import java.util.TimerTask;
 public class RamMonitor {
 
     private final Timer ramMonitorTimer;
+    private final Logger logger;
     private final String prefix;
     private final RamMonitorConfig ramMonitorConfig;
     private DiscordIntegration discord;
@@ -25,6 +27,7 @@ public class RamMonitor {
 
     public RamMonitor(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.ramMonitorTimer = new Timer("RamMonitorTimer", true);
+        this.logger = bdsAutoEnable.getLogger();
         this.prefix = watchDog.getWatchDogPrefix();
         this.ramMonitorConfig = bdsAutoEnable.getConfig().getWatchDogConfig().getRamMonitor();
         this.running = false;
@@ -42,7 +45,6 @@ public class RamMonitor {
         final TimerTask appRamMonitor = new TimerTask() {
             @Override
             public void run() {
-                if (RamMonitor.this.ramMonitorConfig.isApp()) {
                     final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
                     final long freeMem = MathUtil.bytesToMB(heapMemoryUsage.getMax() - heapMemoryUsage.getUsed());
                     if (MathUtil.bytesToMB(heapMemoryUsage.getUsed()) >= ((long) (MathUtil.bytesToMB(heapMemoryUsage.getMax()) * 0.80))) {
@@ -55,14 +57,12 @@ public class RamMonitor {
 
                         RamMonitor.this.discord.sendAppRamAlert();
                     }
-                }
             }
         };
 
         final TimerTask machineRamMonitor = new TimerTask() {
             @Override
             public void run() {
-                if (RamMonitor.this.ramMonitorConfig.isMachine()) {
                     final long computerRam = StatusUtil.getAvailableRam();
                     final long computerFreeRam = StatusUtil.getFreeRam();
 
@@ -81,10 +81,23 @@ public class RamMonitor {
                         RamMonitor.this.discord.sendMachineRamAlert();
                     }
                 }
-            }
         };
 
+       
+     
+     if(this.ramMonitorConfig.isMachine()){
         this.ramMonitorTimer.scheduleAtFixedRate(machineRamMonitor, 0, MathUtil.secondToMillis(this.ramMonitorConfig.getCheckMachineTime()));
-        this.ramMonitorTimer.scheduleAtFixedRate(appRamMonitor, 0, MathUtil.secondToMillis(this.ramMonitorConfig.getCheckAppTime()));
-    }
+   } else{
+       this.logger.debug("Monitorowanie ramu maszyny jest wyłączone");
+       }
+   
+   if(this.ramMonitorConfig.isApp()){
+     this.ramMonitorTimer.scheduleAtFixedRate(appRamMonitor, 0, MathUtil.secondToMillis(this.ramMonitorConfig.getCheckAppTime()));
+   } else{
+       this.logger.debug("Monitorowanie ramu aplikacji jest wyłączone");
+       }
+   
+   NYGG
+
+}
 }
