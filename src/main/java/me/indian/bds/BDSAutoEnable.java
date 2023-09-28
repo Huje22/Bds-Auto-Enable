@@ -141,9 +141,8 @@ public class BDSAutoEnable {
 
     private void checkTimeZone() {
         final ZoneId zoneId = ZoneId.systemDefault();
-        final ZoneId warsawZone = ZoneId.systemDefault();
 
-        if (!zoneId.equals(warsawZone)) {
+        if (!zoneId.equals(ZoneId.of("Europe/Warsaw"))) {
             this.logger.warning("Twoja strefa czasowa to:&1 " + zoneId + "&r jeśli jesteś w polsce pamiętaj że czas może się przez to różnić");
         }
     }
