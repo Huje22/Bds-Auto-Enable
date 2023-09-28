@@ -8,8 +8,9 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.webhook.WebHook;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.version.VersionManager;
 import me.indian.bds.manager.player.PlayerManager;
+import me.indian.bds.manager.version.VersionManager;
+import me.indian.bds.rest.RestWebsite;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DateUtil;
@@ -18,10 +19,10 @@ import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.WatchDog;
-import me.indian.bds.rest.RestWebsite;
 
 import java.io.File;
 import java.lang.management.ManagementFactory;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Scanner;
 
@@ -42,7 +43,6 @@ public class BDSAutoEnable {
     private WatchDog watchDog;
 
     public BDSAutoEnable() {
-        System.out.println("Aktualna strefa czasowa: " + ZoneId.systemDefault());
         this.startTime = System.currentTimeMillis();
         this.runDate = DateUtil.getFixedDate();
         this.projectVersion = "1.0.0-Dev";
@@ -60,6 +60,7 @@ public class BDSAutoEnable {
         this.checkEncoding();
         this.checkFlags();
         this.checkMemory();
+        this.checkTimeZone();
         switch (this.config.getDiscordConfig().getIntegrationType()) {
             case WEBHOOK -> this.discord = new WebHook(this);
             case JDA -> this.discord = new DiscordJda(this);
@@ -135,6 +136,15 @@ public class BDSAutoEnable {
                 this.logger.critical("&cBrak odpowiednich uprawnień!");
                 System.exit(0);
             }
+        }
+    }
+
+    private void checkTimeZone() {
+        final ZoneId zoneId = ZoneId.systemDefault();
+        final ZoneId warsawZone = ZoneId.systemDefault();
+
+        if (!zoneId.equals(warsawZone)) {
+            this.logger.warning("Twoja strefa czasowa to:&1 " + zoneId + "&r jeśli jesteś w polsce pamiętaj że czas może się przez to różnić");
         }
     }
 
