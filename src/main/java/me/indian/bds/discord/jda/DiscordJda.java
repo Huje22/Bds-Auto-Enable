@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -147,7 +148,7 @@ public class DiscordJda implements DiscordIntegration {
                 Commands.slash("playtime", "Top 20 graczy z największą ilością przegranego czasu"),
                 Commands.slash("deaths", "Top 20 graczy z największą ilością śmierci")
         ).queue();
-        
+
         this.customStatusUpdate();
         this.leaveGuilds();
     }
@@ -168,138 +169,116 @@ public class DiscordJda implements DiscordIntegration {
         if (this.guild == null) return "";
         return (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");
     }
-    
-   private void customStatusUpdate(){
-        
-        final Timer timer= new Timer("Discord Status Changer", true);
+
+    private void customStatusUpdate() {
+
+        final Timer timer = new Timer("Discord Status Changer", true);
         final TimerTask statusTask = new TimerTask() {
 
             @Override
             public void run() {
-                jda.setActivity(this.getCustomActivity());
+                DiscordJda.this.jda.getPresence().setActivity(DiscordJda.this.getCustomActivity());
             }
         };
-        
-        this.timer.scheduleAtFixedRate(statusTask, 0, MathUtil.minutesToMillis(10));
-        
-       }
+
+        timer.scheduleAtFixedRate(statusTask, MathUtil.minutesToMillis(1), MathUtil.minutesToMillis(10));
+    }
 
     private Activity getCustomActivity() {
-        final String activityMessage.replaceAll("<time>" , replacment) = this.discordConfig.getDiscordBotConfig().getactivityMessage.replaceAll("<time>" , replacment)();
-        final String replacment = MathUtil.millisToMinutes(serverProcess.getStartTime());
-       
-       switch (Activity.ActivityType.valueOf(this.discordConfig.getDiscordBotConfig().getActivity().toUpperCase())) {
+        final String replacement = String.valueOf(MathUtil.millisToMinutes((System.currentTimeMillis() - this.bdsAutoEnable.getServerProcess().getStartTime())));
+        final String activityMessage = this.discordConfig.getDiscordBotConfig().getActivityMessage().replaceAll("<time>", replacement);
+
+        switch (Activity.ActivityType.valueOf(this.discordConfig.getDiscordBotConfig().getActivity().toUpperCase())) {
             case PLAYING -> {
-                return Activity.playing(activityMessage.replaceAll("<time>" , replacment));
+                return Activity.playing(activityMessage.replaceAll("<time>", replacement));
             }
             case WATCHING -> {
-                return Activity.watching(activityMessage.replaceAll("<time>" , replacment));
+                return Activity.watching(activityMessage.replaceAll("<time>", replacement));
             }
             case COMPETING -> {
-                return Activity.competing(activityMessage.replaceAll("<time>" , replacment));
+                return Activity.competing(activityMessage.replaceAll("<time>", replacement));
             }
             case LISTENING -> {
-                return Activity.listening(activityMessage.replaceAll("<time>" , replacment));
+                return Activity.listening(activityMessage.replaceAll("<time>", replacement));
             }
             case STREAMING -> {
-                return Activity.streaming(activityMessage.replaceAll("<time>" , replacment), this.discordConfig.getDiscordBotConfig().getStreamUrl());
+                return Activity.streaming(activityMessage.replaceAll("<time>", replacement), this.discordConfig.getDiscordBotConfig().getStreamUrl());
             }
             default -> {
                 this.logger.error("Wykryto nie wspierany status! ");
-                return Activity.playing(activityMessage.replaceAll("<time>" , replacment));
+                return Activity.playing(activityMessage.replaceAll("<time>", replacement));
             }
         }
     }
-    
-    private void leaveGuilds(){
-        //TODO: Complet it
-        if(!this.discordConfig.isLeaveServers()) return 
+
+    private void leaveGuilds() {
+        if (!this.discordConfig.getDiscordBotConfig().isLeaveServers()) return;
         for (final Guild guild1 : this.jda.getGuilds()) {
-            if (guild1 != guild) {
+            if (guild1 != this.guild) {
                 final String inviteLink = guild1.getDefaultChannel().createInvite().complete().getUrl();
                 guild1.leave().queue();
 
-                    
-                 this.sendMessage("Opuściłem serwer o ID: " + guild1.getId() + 
-               "/n Nazwie: " + guild1.getName() +
-               "/n Zaproszenie: " + inviteLink
-               
-               );
-                 }
+                this.sendMessage("Opuściłem serwer o ID: " + guild1.getId() +
+                        "\n Nazwie: " + guild1.getName() +
+                        "\n Zaproszenie: " + inviteLink
+
+                );
+            }
         }
-      }
-
-    private void getMembersOfGuild(final Guild guild){
-        //TODO: Complet it
-        final List<Member> members = guild.getMembers().stream()
-                    .filter(member -> !member.getUser().isBot())
-                    .collect(Collectors.toList());
-
-            members.sort(Comparator.comparing(Member::getTimeJoined));
-
-            for (final Member member : members) {
-                final User user = member.getUser();
-           System.out.println(user.getName() + "#" + user.getDiscriminator());
-            
-             }
     }
-    
+
+    private List<Member> getMembersOfGuild(final Guild guild) {
+        return guild.getMembers().stream()
+                .filter(member -> !member.getUser().isBot()).sorted(Comparator.comparing(Member::getTimeJoined)).toList();
+    }
+
     public void logCommand(final MessageEmbed embed) {
         if (this.jda != null && this.logChannel != null) {
-            if(embed.isEmpty()) return;
+            if (embed.isEmpty()) return;
             this.consoleService.execute(() -> this.logChannel.sendMessageEmbeds(embed).queue());
         }
     }
-   
+
     @Override
     public void sendMessage(final String message) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
-            if(message.isEmpty()) return;
+            if (message.isEmpty()) return;
             this.textChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue();
         }
     }
-    
+
     @Override
-    public void sendMessage(final String message , final Throwable throwable) {
-        this.sendMessage(message + 
-           "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```");
-    }	
-    
-    
+    public void sendMessage(final String message, final Throwable throwable) {
+        this.sendMessage(message +
+                "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```");
+    }
+
+
     @Override
     public void sendEmbedMessage(final String title, final String message, final String footer) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
-            if(title.isEmpty() || message.isEmpty() || footer.isEmpty()) return;
+            if (title.isEmpty() || message.isEmpty() || footer.isEmpty()) return;
             final MessageEmbed embed = new EmbedBuilder()
                     .setTitle(title)
                     .setDescription(message.replaceAll("<owner>", this.getOwnerMention()))
                     .setColor(Color.BLUE)
                     .setFooter(footer)
                     .build();
-                    
-                    
-                    /*TODO: 
-                    Add fileds support:
-                        for (Field field : fields) {
-            embedBuilder.addField(field.getName(), field.getValue(), field.isInline());
-        }
-        */
-                    
-                    
+
             this.textChannel.sendMessageEmbeds(embed).queue();
         }
     }
-    
+
     @Override
     public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer) {
-        this.sendEmbedMessage(title , message + 
-                    "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```" , footer);
-    }	
+        this.sendEmbedMessage(title, message +
+                "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```", footer);
+    }
 
     @Override
     public void writeConsole(final String message) {
         if (this.jda != null && this.consoleChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
-            if(message.isEmpty()) return;
+            if (message.isEmpty()) return;
             this.consoleService.execute(() -> this.consoleChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue());
         }
     }

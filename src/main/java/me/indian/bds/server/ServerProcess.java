@@ -364,7 +364,7 @@ public class ServerProcess {
 
     public void kickAllPlayers(final String msg) {
         if (this.playerManager.getOnlinePlayers().isEmpty()) {
-            this.logger.info("Lista graczy jest pusta");
+            this.logger.debug("Lista graczy jest pusta");
             return;
         }
         this.playerManager.getOnlinePlayers().forEach(name -> this.kick(name, msg));
@@ -372,7 +372,7 @@ public class ServerProcess {
 
     public void kick(final String who, final String reason) {
         if (this.playerManager.getOnlinePlayers().isEmpty()) {
-            this.logger.info("Lista graczy jest pusta");
+            this.logger.debug("Lista graczy jest pusta");
             return;
         }
         this.sendToConsole("kick " + who + " " + MessageUtil.colorize(reason));
@@ -380,7 +380,7 @@ public class ServerProcess {
 
     public void tellrawToAll(final String msg) {
         if (this.playerManager.getOnlinePlayers().isEmpty()) {
-            this.logger.info("Lista graczy jest pusta");
+            this.logger.debug("Lista graczy jest pusta");
             return;
         }
         this.sendToConsole(MessageUtil.colorize("tellraw @a {\"rawtext\":[{\"text\":\"" + msg + "\"}]}"));

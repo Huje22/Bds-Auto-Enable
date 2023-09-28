@@ -8,13 +8,13 @@ import java.time.format.DateTimeFormatter;
 public final class DateUtil {
 
     public static String getFixedDate() {
-        final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+        final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return now.format(formatter).replace(":", "-");
     }
 
     public static String getDate() {
-        final LocalDateTime now = LocalDateTime.now(ZoneId.of("Europe/Warsaw"));
+        final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return now.format(formatter);
     }

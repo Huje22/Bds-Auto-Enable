@@ -24,6 +24,9 @@ public class BotConfig extends OkaeriConfig {
     @Comment({"Kanał do logowania komend użytych przez użytkownika , Zostaw puste aby nie uruchamiać "})
     private long logID = 1L;
     @Comment({""})
+    @Comment({"Opuść wszystkie inne servery przy starcie bota "})
+    private boolean leaveServers = false;
+    @Comment({""})
     private List<String> ipMessage = Arrays.asList("Nasze IP: 127.0.0.1", "Nasz Port: 19132");
     @Comment({""})
     @Comment({"Pamiętaj że oznaczenie kogoś zawiera jego ID a ono jest długie!"})
@@ -31,17 +34,24 @@ public class BotConfig extends OkaeriConfig {
     private boolean deleteOnReachLimit = false;
     private String reachedMessage = "Osiągnięto dozwoloną ilosc znaków!";
     @Comment({""})
-    @Comment({"Aktywność"})
+    @Comment({"Aktywność , aktualizowana co 10min"})
     @Comment({"Dostępne aktywności:  PLAYING, STREAMING, LISTENING, WATCHING, COMPETING"})
     private String activity = "PLAYING";
-    @Commenr({"Dokończy to"})
-    DOKOŃCZYĆ TO
+    @Comment({""})
+    @Comment({"Wiadomość w statusie bota"})
+    @Comment({"<time> - czas w minutach przez jaki server jest online"})
     private String activityMessage = "Minecraft <time>";
+    @Comment({""})
+    @Comment({"URL do stream "})
     private String streamUrl = "hhttps://www.youtube.com/@IndianBartonka?sub_confirmation=1";
 
 
     public String getToken() {
         return this.token;
+    }
+
+    public long getServerID() {
+        return this.serverID;
     }
 
     public long getChannelID() {
@@ -56,8 +66,8 @@ public class BotConfig extends OkaeriConfig {
         return this.logID;
     }
 
-    public long getServerID() {
-        return this.serverID;
+    public boolean isLeaveServers() {
+        return this.leaveServers;
     }
 
     public List<String> getIpMessage() {
