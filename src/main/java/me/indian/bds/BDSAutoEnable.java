@@ -42,6 +42,7 @@ public class BDSAutoEnable {
     private WatchDog watchDog;
 
     public BDSAutoEnable() {
+        System.out.println("Aktualna strefa czasowa: " + ZoneId.systemDefault());
         this.startTime = System.currentTimeMillis();
         this.runDate = DateUtil.getFixedDate();
         this.projectVersion = "1.0.0-Dev";
