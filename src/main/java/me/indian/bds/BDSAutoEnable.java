@@ -54,9 +54,9 @@ public class BDSAutoEnable {
             it.saveDefaults();
             it.load(true);
         });
-        Defaults.init(this);
         this.logger = new Logger(this);
-        this.logger.alert("Numer wersji projektu: " + this.projectVersion);
+        this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
+        Defaults.init(this);
         this.checkEncoding();
         this.checkFlags();
         this.checkMemory();

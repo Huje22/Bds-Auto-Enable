@@ -73,7 +73,7 @@ public class VersionUpdater {
 
         this.serverProcess.tellrawToAllAndLogger(
                 this.prefix,
-                "&aWersja &b" + version + "&a będzie właśnie ładowana!",
+                "&aWersja &1" + version + "&a będzie właśnie ładowana!",
                 LogState.ALERT
         );
         this.serverProcess.setCanRun(false);

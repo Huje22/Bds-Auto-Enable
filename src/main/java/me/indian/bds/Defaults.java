@@ -1,6 +1,7 @@
 package me.indian.bds;
 
 import me.indian.bds.config.Config;
+import me.indian.bds.logger.Logger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,10 +11,12 @@ import java.util.concurrent.TimeUnit;
 public final class Defaults {
 
     private static Config config;
+    private static Logger logger;
     private static boolean wine;
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         config = bdsAutoEnable.getConfig();
+        logger = bdsAutoEnable.getLogger();
         wine = wineCheck();
     }
 
@@ -71,7 +74,8 @@ public final class Defaults {
                 }
             }
             if (!process.waitFor(30, TimeUnit.MILLISECONDS)) process.destroy();
-        } catch (final Exception ignore) {
+        } catch (final Exception exception) {
+            logger.debug("Nie znaleziono&1 WINE&r (Nie potrzebujesz go)");
         }
         return false;
     }
