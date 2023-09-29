@@ -126,7 +126,7 @@ public class ServerProcess {
                     this.discord.sendProcessEnabledMessage();
 
                     this.logger.debug("&bPID&r procesu servera to&1 " + this.process.pid());
-
+                    
                     final Thread output = new ThreadUtil("Console-Output").newThread(this::readConsoleOutput);
                     final Thread input = new ThreadUtil("Console-Input").newThread(this::writeConsoleInput);
 
@@ -250,7 +250,7 @@ public class ServerProcess {
         ThreadUtil.sleep(3);
         this.bdsAutoEnable.getPlayerManager().getStatsManager().saveAllData();
 
-        if (this.process != null && this.process.isAlive()) this.watchDog.saveAndResume();
+        if (this.isEnabled()) this.watchDog.saveAndResume();
 
         this.sendToConsole("stop");
 
@@ -388,7 +388,7 @@ public class ServerProcess {
 
     public void tellrawToPlayer(final String playerName, final String msg) {
         if (this.playerManager.getOnlinePlayers().isEmpty()) {
-            this.logger.info("Lista graczy jest pusta");
+            this.logger.debug("Lista graczy jest pusta");
             return;
         }
         this.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + msg + "\"}]}"));
