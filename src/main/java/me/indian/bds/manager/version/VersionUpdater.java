@@ -17,7 +17,7 @@ public class VersionUpdater {
     private final Logger logger;
     private final VersionManagerConfig versionManagerConfig;
     private final ServerProcess serverProcess;
-    private String prefix;
+    private final String prefix;
     private boolean running;
 
     public VersionUpdater(final BDSAutoEnable bdsAutoEnable, final VersionManager versionManager) {
@@ -26,6 +26,7 @@ public class VersionUpdater {
         this.logger = this.bdsAutoEnable.getLogger();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.versionManagerConfig = this.bdsAutoEnable.getConfig().getVersionManagerConfig();
+        this.prefix = "&b[&3VersionUpdater&b]";
         this.running = false;
     }
 
