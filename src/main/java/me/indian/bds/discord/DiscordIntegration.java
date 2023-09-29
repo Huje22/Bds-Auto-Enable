@@ -37,6 +37,8 @@ public interface DiscordIntegration {
 
     void sendMachineRamAlert();
 
+    void sendServerUpdateMessage(final String version);
+
     void writeConsole(final String message);
 
     void disableBot();

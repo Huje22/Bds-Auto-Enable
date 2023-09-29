@@ -376,6 +376,17 @@ public class DiscordJda implements DiscordIntegration {
     }
 
     @Override
+    public void sendServerUpdateMessage(final String version) {
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendServerUpdate()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getServerUpdate()
+                    .replaceAll("<version>", version)
+                    .replaceAll("<current>", this.config.getVersionManagerConfig().getVersion())
+
+            );
+        }
+    }
+
+    @Override
     public void disableBot() {
         if (this.jda != null) {
             if (this.jda.getStatus() == JDA.Status.CONNECTED) {

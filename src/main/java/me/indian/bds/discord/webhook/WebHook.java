@@ -8,8 +8,8 @@ import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ThreadUtil;
 
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -221,6 +221,17 @@ public class WebHook implements DiscordIntegration {
     public void sendMachineRamAlert() {
         if (this.config.getWatchDogConfig().getRamMonitor().isDiscordAlters()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getMachineRamAlter());
+        }
+    }
+
+    @Override
+    public void sendServerUpdateMessage(final String version) {
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendServerUpdate()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getServerUpdate()
+                    .replaceAll("<version>", version)
+                    .replaceAll("<current>", this.config.getVersionManagerConfig().getVersion())
+
+            );
         }
     }
 

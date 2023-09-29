@@ -50,7 +50,9 @@ public class MessagesConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Informacja na discord gdy maszyna ma mniej niż 1GB wolnego ramu"})
     private String machineRamAlter = "Maszyna ma mniej niż **1GB** dostępnego ramu!";
-
+    @Comment({""})
+    @Comment({"Informacja gdy server pobiera najnowszą wersje"})
+    private String serverUpdate = "Wersja **<version>** jest pobierana a nastepnie zostanie załadowana , aktualna załadowana to **<current>**";
 
     public String getReplyStatement() {
         return this.replyStatement;
@@ -110,5 +112,9 @@ public class MessagesConfig extends OkaeriConfig {
 
     public String getMachineRamAlter() {
         return this.machineRamAlter;
+    }
+
+    public String getServerUpdate() {
+        return this.serverUpdate;
     }
 }

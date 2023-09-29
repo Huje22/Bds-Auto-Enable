@@ -68,6 +68,7 @@ public class VersionUpdater {
     }
 
     private void autoUpdate(final String version) {
+        this.bdsAutoEnable.getDiscord().sendServerUpdateMessage(version);
         if (!this.versionManager.hasVersion(version)) {
             this.versionManager.downloadServerFiles(version);
         }
