@@ -1,6 +1,7 @@
 package me.indian.bds.server;
 
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.exception.BadThreadException;
@@ -107,6 +108,12 @@ public class ServerProcess {
                     switch (this.config.getSystem()) {
                         case LINUX -> {
                             if (this.config.isWine()) {
+                                if (!Defaults.hasWine()) {
+                                    this.logger.critical("#cNIE POSIADASZ #1WINE#C!");
+                                    System.exit(0);
+                                    return;
+                                }
+
                                 this.processBuilder = new ProcessBuilder("wine", this.finalFilePath);
                             } else {
                                 this.processBuilder = new ProcessBuilder("./" + this.config.getFileName());
