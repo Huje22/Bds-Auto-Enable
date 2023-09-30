@@ -23,6 +23,11 @@ public final class Defaults {
     public static String getSystem() {
         final String os = System.getProperty("os.name").toLowerCase();
 
+/* 
+TODO: Remove os question in Settings and return here os enum
+
+        */
+        
         if (os.contains("win")) {
             return "Windows";
         } else if (os.contains("nix") || os.contains("nux")) {
