@@ -27,11 +27,17 @@ public class BotConfig extends OkaeriConfig {
     @Comment({"Opuść wszystkie inne servery przy starcie bota "})
     private boolean leaveServers = false;
     @Comment({""})
+    @Comment({"Info po wpisaniu /ip"})
     private List<String> ipMessage = Arrays.asList("Nasze IP: 127.0.0.1", "Nasz Port: 19132");
     @Comment({""})
     @Comment({"Pamiętaj że oznaczenie kogoś zawiera jego ID a ono jest długie!"})
     private int allowedLength = 500;
+    @Comment({""})
+    @Comment({"Czy usunąć wiadomość po przekroczeniu liczby znaków?"})
     private boolean deleteOnReachLimit = false;
+    @Comment({""})
+    @Comment({"Informacja o przekroczeniu liczby znaków (na pv)"})
+
     private String reachedMessage = "Osiągnięto dozwoloną ilosc znaków!";
     @Comment({""})
     @Comment({"Aktywność , aktualizowana co 10min"})
@@ -43,7 +49,7 @@ public class BotConfig extends OkaeriConfig {
     private String activityMessage = "Minecraft <time>";
     @Comment({""})
     @Comment({"URL do stream "})
-    private String streamUrl = "hhttps://www.youtube.com/@IndianBartonka?sub_confirmation=1";
+    private String streamUrl = "https://www.youtube.com/@IndianBartonka?sub_confirmation=1";
 
 
     public String getToken() {

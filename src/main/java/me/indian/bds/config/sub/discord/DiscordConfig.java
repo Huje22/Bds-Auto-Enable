@@ -8,9 +8,9 @@ import me.indian.bds.discord.DiscordType;
 public class DiscordConfig extends OkaeriConfig {
 
     @Comment({""})
-    @Comment({"Implementacjia Bota / WebHooku"})
-    @Comment({"WEBHOOK - Możliwe tylko wysyłanie wiadomości do discord z uzyciem webhooku"})
-    @Comment({"JDA - Bot discord przy uzyciu biblioteki JDA"})
+    @Comment({"Implementacja Bota / WebHooku"})
+    @Comment({"WEBHOOK - Możliwe tylko wysyłanie wiadomości do discord z użyciem webhooku"})
+    @Comment({"JDA - Bot discord przy użyciu biblioteki JDA"})
     private DiscordType integrationType = DiscordType.JDA;
     @Comment({""})
     @Comment({"Ustawienia webhooka"})
@@ -27,7 +27,7 @@ public class DiscordConfig extends OkaeriConfig {
     private MessagesOptionsConfig messagesOptionsConfig = new MessagesOptionsConfig();
 
     @Comment({""})
-    @Comment({"Konfiguracija dostępnych wiadomości "})
+    @Comment({"Konfiguracja dostępnych wiadomości "})
     @CustomKey("messages")
     private MessagesConfig messagesConfig = new MessagesConfig();
 

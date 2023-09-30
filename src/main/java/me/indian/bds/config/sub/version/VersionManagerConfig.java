@@ -6,7 +6,7 @@ import eu.okaeri.configs.annotation.Comment;
 public class VersionManagerConfig extends OkaeriConfig {
 
     @Comment({""})
-    @Comment({"Versia która jest załadowana"})
+    @Comment({"Wersja która jest załadowana"})
     private String version = "1.20.15.01";
 
     @Comment({""})
@@ -14,7 +14,7 @@ public class VersionManagerConfig extends OkaeriConfig {
     private boolean loaded = false;
 
     @Comment({""})
-    @Comment({"Czy patrzec co dany czas czy dostepna jest nowa wersja"})
+    @Comment({"Czy patrzeć co dany czas czy dostępna jest nowa wersja"})
     private boolean checkVersion = true;
 
     @Comment({""})

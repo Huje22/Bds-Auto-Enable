@@ -24,7 +24,7 @@ public class LogConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment("W konsoli discord")
-    @Comment("UWAGA!!! Jeśli używasz 1gb ram dla aplikacji (co jest w miare optymalne) nie usuwaj nic z tąd albo daj więcej ram!!!!")
+    @Comment("UWAGA!!! Jeśli używasz 1gb ram dla aplikacji (co jest optymalne) nie usuwaj nic z tąd albo daj więcej ram!!!!")
     private List<String> noDiscordConsole = new ArrayList<>();
 
     public LogConfig() {

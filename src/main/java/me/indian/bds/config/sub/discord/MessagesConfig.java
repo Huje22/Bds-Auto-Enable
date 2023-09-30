@@ -52,7 +52,7 @@ public class MessagesConfig extends OkaeriConfig {
     private String machineRamAlter = "Maszyna ma mniej niż **1GB** dostępnego ramu!";
     @Comment({""})
     @Comment({"Informacja gdy server pobiera najnowszą wersje"})
-    private String serverUpdate = "Wersja **<version>** jest pobierana a nastepnie zostanie załadowana , aktualna załadowana to **<current>**";
+    private String serverUpdate = "Wersja **<version>** jest pobierana a następnie zostanie załadowana , aktualna załadowana to **<current>**";
 
     public String getReplyStatement() {
         return this.replyStatement;

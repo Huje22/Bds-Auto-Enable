@@ -23,9 +23,9 @@ import me.indian.bds.util.SystemOs;
 
 public class Config extends OkaeriConfig {
     @Comment({""})
-    @Comment("UWAGA , WSZYTKIE ZMIANY TUTAJ WYMAGAJĄ RESTARTU APLIKACJI")
+    @Comment("UWAGA , WSZYSTKIE ZMIANY TUTAJ WYMAGAJĄ RESTARTU APLIKACJI")
     @Comment({""})
-    @Comment({"Ustawienia menagera wersji"})
+    @Comment({"Ustawienia menedżera wersji"})
     @CustomKey("VersionManager")
     private VersionManagerConfig versionManagerConfig = new VersionManagerConfig();
 
@@ -40,7 +40,7 @@ public class Config extends OkaeriConfig {
     private SystemOs system = SystemOs.LINUX;
 
     @Comment({""})
-    @Comment({"Nazwa pliku który ma być włączony"})
+    @Comment({"Nazwa pliku servera"})
     @CustomKey("FileName")
     private String fileName = "bedrock_server";
 
