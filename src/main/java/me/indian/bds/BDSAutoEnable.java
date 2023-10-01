@@ -106,10 +106,12 @@ public class BDSAutoEnable {
 
     private void checkSystemSupport() {
         if (Defaults.getSystem() == SystemOs.UNSUPPORTED) {
+            /*
             if (this.config.isDebug()) {
                 this.logger.warning("&aTwój system nie jest wspierany lecz masz włączony&1 Debug&a robisz to na własne&c ryzyko&c!");
                 return;
             }
+            */
 
             this.logger.critical("&cTwój system nie jest wspierany!!");
             System.exit(0);
