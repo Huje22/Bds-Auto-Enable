@@ -105,7 +105,7 @@ public class ServerProcess {
             this.logger.debug("Nie można uruchomić procesu ponieważ&b canRun&r jest ustawione na:&b " + false);
             return;
         }
-        this.fileName = Defaults.getDefaultFileName();
+       this.finalFilePath = this.config.getFilesPath() + File.separator + this.fileName;
         this.processService.execute(() -> {
             if (this.isProcessRunning()) {
                 this.logger.info("Proces " + this.fileName + " jest już uruchomiony.");
