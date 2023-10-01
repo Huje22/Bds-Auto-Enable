@@ -86,7 +86,6 @@ public class BDSAutoEnable {
     public void init() {
         this.settings.loadSettings(this.scanner);
         this.playerManager.getStatsManager().startTasks();
-        this.checkExecutable();
         this.shutdownHook();
         this.watchDog = new WatchDog(this);
         this.serverProcess.initWatchDog(this.watchDog);
@@ -94,6 +93,7 @@ public class BDSAutoEnable {
         this.watchDog.getBackupModule().backup();
         this.watchDog.getRamMonitor().monitRamUsage();
         this.versionManager.loadVersion();
+        this.checkExecutable();
         this.watchDog.getPackModule().initPackModule();
         new RestWebsite(this).init();
         this.discord.init();
