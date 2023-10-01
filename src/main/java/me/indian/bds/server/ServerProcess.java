@@ -62,8 +62,8 @@ public class ServerProcess {
         this.canRun = true;
     }
 
-    public void init(final WatchDog watchDog) {
-        this.watchDog = watchDog;
+    public void init() {
+        this.watchDog = this.bdsAutoEnable.getWatchDog();
         this.fileName = Defaults.getDefaultFileName();
        }
 
