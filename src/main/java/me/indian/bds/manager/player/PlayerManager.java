@@ -115,7 +115,7 @@ public class PlayerManager {
     }
 
     private void checkPackDependency(final String logEntry) {
-        if (logEntry.contains("requesting dependency on beta APIs [@minecraft/server - 1.4.0-beta]")) {
+        if (logEntry.contains("BDS Auto Enable") && logEntry.contains("requesting dependency on beta APIs")) {
             final List<String> list = List.of("Wykryto że `Beta API's` nie są włączone!",
                     "Funkcje jak: `licznik czasu gry/śmierci` nie będą działać ",
                     "Bot też zostaje wyłączony"
@@ -127,6 +127,17 @@ public class PlayerManager {
             for (final String s : list) {
                 this.logger.alert(s.replaceAll("`", ""));
             }
+            this.discord.disableBot();
+        }
+        if (logEntry.contains("BDS Auto Enable") && logEntry.contains("requesting invalid module version")) {
+            this.discord.sendEmbedMessage("Zła wersja paczki",
+                    """
+                            Posiadasz złą wersje paczki!
+                             Usuń a nowa pobierze się sama\s
+                             Ewentualnie twój server wymaga aktualizacji
+                            **Bot zostaje przez to wyłączony**""",
+                    "Zła wersja paczki");
+            this.discord.sendMessage("<owner>");
             this.discord.disableBot();
         }
     }
