@@ -18,6 +18,7 @@ import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.SystemOs;
 import me.indian.bds.watchdog.WatchDog;
 
 import java.io.File;
@@ -57,6 +58,7 @@ public class BDSAutoEnable {
         this.logger = new Logger(this);
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
         Defaults.init(this);
+        this.checkSystemSupport();
         this.checkEncoding();
         this.checkFlags();
         this.checkMemory();
@@ -102,6 +104,17 @@ public class BDSAutoEnable {
 
     }
 
+    private void checkSystemSupport() {
+        if (Defaults.getSystem() == SystemOs.UNSUPPORTED) {
+            if (this.config.isDebug()) {
+                this.logger.warning("&aTwój system nie jest wspierany lecz masz włączony&1 Debug&a robisz to na własne&c ryzyko&c!");
+                return;
+            }
+
+            this.logger.critical("&cTwój system nie jest wspierany!!");
+            System.exit(0);
+        }
+    }
 
     private void checkFlags() {
         final List<String> flags = ManagementFactory.getRuntimeMXBean().getInputArguments();
