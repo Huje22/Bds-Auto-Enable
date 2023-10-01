@@ -317,7 +317,7 @@ public class Metrics {
      * @throws IOException If something did not work :(
      */
     private void loadConfig() throws IOException {
-        final File configFile = new File(Defaults.getAppDir() + File.separator + "bstats.json");
+        final File configFile = new File(Defaults.getAppDir() + "bstats.json");
 
         // Check if the config file exists
         if (!configFile.exists()) {

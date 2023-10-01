@@ -61,7 +61,7 @@ public class BackupModule {
         this.worldFile = new File(this.worldPath);
         this.discord = bdsAutoEnable.getDiscord();
         if (this.config.getWatchDogConfig().getBackup().isBackup()) {
-            this.backupFolder = new File(Defaults.getAppDir() + File.separator + "backup");
+            this.backupFolder = new File(Defaults.getAppDir() + "backup");
             if (!this.backupFolder.exists()) {
                 if (!this.backupFolder.mkdirs()) {
                     this.logger.error("Nie można utworzyć folderu backupów");

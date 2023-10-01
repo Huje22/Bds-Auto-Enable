@@ -31,7 +31,7 @@ public class StatsManager {
     public StatsManager(final BDSAutoEnable bdsAutoEnable, final PlayerManager playerManager) {
         this.logger = bdsAutoEnable.getLogger();
         this.playerStatsManagerTimer = new Timer("PlayerStatsMonitorTimer", true);
-        this.statsFolder = new File(Defaults.getAppDir() + File.separator + "stats");
+        this.statsFolder = new File(Defaults.getAppDir() + "stats");
         this.playTimeJson = new File(this.statsFolder.getPath() + File.separator + "playtime.json");
         this.deathsJson = new File(this.statsFolder.getPath() + File.separator + "deaths.json");
         this.createFiles();

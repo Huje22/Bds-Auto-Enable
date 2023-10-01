@@ -39,6 +39,7 @@ public class VersionManager {
     private final List<String> availableVersions;
     private final ServerProcess serverProcess;
     private final VersionUpdater versionUpdater;
+    private final SystemOs system;
     
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -46,10 +47,11 @@ public class VersionManager {
         this.config = this.bdsAutoEnable.getConfig();
         this.versionManagerConfig = this.config.getVersionManagerConfig();
         this.importantFiles = new ArrayList<>();
-        this.versionFolder = new File(Defaults.getAppDir() + File.separator + "versions");
+        this.versionFolder = new File(Defaults.getAppDir() + "versions");
         this.availableVersions = new ArrayList<>();
         this.serverProcess = bdsAutoEnable.getServerProcess();
         this.versionUpdater = new VersionUpdater(bdsAutoEnable, this);
+        this.system = Defaults.getSystem();
 
         if (!this.versionFolder.exists()) {
             if (this.versionFolder.mkdirs()) {
@@ -113,8 +115,8 @@ public class VersionManager {
     }
 
     public void loadVersion() {
-        final File bedrockFile = new File(this.config.getFilesPath() + File.separator + this.config.getFileName());
-        if (!bedrockFile.exists()) {
+        final File serverFile = new File(this.config.getFilesPath() + File.separator + Defaults.getDefaultFileName());
+        if (!serverFile.exists()) {
             this.versionManagerConfig.setLoaded(false);
             this.config.save();
         }
@@ -183,7 +185,7 @@ public class VersionManager {
     }
 
     private String getServerDownloadUrl(final String version) {
-        switch (this.config.getSystem()) {
+        switch (this.system) {
             case LINUX -> {
                 if (this.config.isWine()) {
                     return "https://minecraft.azureedge.net/bin-win/bedrock-server-" + version + ".zip";
@@ -199,7 +201,6 @@ public class VersionManager {
     }
 
     public String getLatestVersion() {
-        final SystemOs os = this.config.getSystem();
         try {
             final StringBuilder response = new StringBuilder();
             final URL url = new URL("https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json");
@@ -217,13 +218,17 @@ public class VersionManager {
                 }
                 final JsonObject jsonObject = JsonParser.parseString(response.toString()).getAsJsonObject();
 
-                if (os == SystemOs.LINUX) {
-                    return jsonObject.getAsJsonObject("linux").get("stable").getAsString();
-                } else if (os == SystemOs.WINDOWS) {
-                    return jsonObject.getAsJsonObject("windows").get("stable").getAsString();
+                switch (this.system) {
+                    case WINDOWS -> {
+                        return jsonObject.getAsJsonObject("windows").get("stable").getAsString();
+                    }
+                    case LINUX -> {
+                        return jsonObject.getAsJsonObject("linux").get("stable").getAsString();
+                    }
+                    default -> {
+                        return "";
+                    }
                 }
-
-                return "";
             } else {
                 this.logger.error("Błąd przy pobieraniu danych. Kod odpowiedzi: " + responseCode);
             }

@@ -7,9 +7,7 @@ import me.indian.bds.server.properties.ServerMovementAuth;
 import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ScannerUtil;
-import me.indian.bds.util.SystemOs;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -55,14 +53,6 @@ public class Settings {
     private void init(final ScannerUtil scannerUtil) {
         final long startTime = System.currentTimeMillis();
 
-        this.addSystemQuestion(scannerUtil);
-        System.out.println();
-
-        this.config.setFileName(scannerUtil.addStringQuestion(
-                (defaultValue) -> this.logger.info("&n&lPodaj nazwę pliku&r (Domyślnie: " + defaultValue + ")" + this.enter),
-                Defaults.getDefaultFileName(),
-                (input) -> this.logger.info("Nazwa pliku ustawiona na:&1 " + input)
-        ));
         System.out.println();
 
         if (Defaults.hasWine()) {
@@ -72,16 +62,7 @@ public class Settings {
                         this.logger.alert("Jeśli chcesz użyć&b WINE&r plik musi kończyć się na&1 .exe");
                     },
                     false,
-                    (input) -> {
-                        if (input) {
-                            if (!this.config.getFileName().contains(".exe")) {
-                                this.logger.alert("Plik  musi mieć końcówkę&1 .exe&r aby&b WINE&r mogło go wykonać.");
-                                this.logger.alert("Zmieniliśmy domyślną nazwe pliku na&1 bedrock_server.exe&r dla ciebie.");
-                                this.config.setFileName("bedrock_server.exe");
-                            }
-                        }
-                        this.logger.info("&bWINE&r ustawione na:&1 " + input);
-                    }
+                    (input) -> this.logger.info("&bWINE&r ustawione na:&1 " + input)
             ));
             System.out.println();
         }
@@ -271,8 +252,7 @@ public class Settings {
         this.logger.info("&n&lAktualne Dane");
         System.out.println();
         this.logger.info("&e----------&bAplikacja&e----------");
-        this.logger.info("System:&1 " + this.config.getSystem());
-        this.logger.info("Nazwa pliku:&1 " + this.config.getFileName());
+        this.logger.info("System:&1 " + Defaults.getSystem());
         this.logger.info("Wine:&1 " + this.config.isWine() + (Defaults.hasWine() ? " &d(&bPosiadasz&d)" : ""));
         this.logger.info("Ścieżka plików:&1 " + this.config.getFilesPath());
         this.logger.info("Wersja:&1 " + this.config.getVersionManagerConfig().getVersion());
@@ -362,22 +342,6 @@ public class Settings {
                         this.serverSettings(scannerUtil);
                     }
                 });
-    }
-
-    private void addSystemQuestion(final ScannerUtil scannerUtil){
-        SystemOs system;
-        try {
-            system = SystemOs.valueOf(scannerUtil.addStringQuestion((defaultValue) -> {
-                        this.logger.info("&n&lPodaj system&r (Wykryty system: " + defaultValue + ")" + this.enter);
-                        this.logger.info("Obsługiwane systemy: " + Arrays.toString(SystemOs.values()));
-                    }, Defaults.getSystem(),
-                    (input) -> this.logger.info("System ustawiony na:&1 " + input.toUpperCase())
-            ).toUpperCase());
-        } catch (final IllegalArgumentException exception) {
-            this.logger.error("Podano nie znany system , ustawiono domyślnie na: LINUX");
-            system = SystemOs.LINUX;
-        }
-        this.config.setSystem(system);
     }
 
     private void addPlayerPermissionQuestion(final ScannerUtil scannerUtil) {

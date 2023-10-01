@@ -2,6 +2,7 @@ package me.indian.bds.util;
 
 import com.sun.management.OperatingSystemMXBean;
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.manager.player.StatsManager;
 import me.indian.bds.server.ServerProcess;
@@ -130,7 +131,7 @@ public final class StatusUtil {
     public static long getServerRamUsage() {
         if (serverProcess.getProcess() == null || !serverProcess.getProcess().isAlive()) return 0;
         try {
-            switch (config.getSystem()) {
+            switch (Defaults.getSystem()) {
                 case WINDOWS -> {
                     return getMemoryUsageWindows(serverProcess.getProcess().pid());
                 }

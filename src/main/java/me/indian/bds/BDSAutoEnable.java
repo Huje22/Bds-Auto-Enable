@@ -49,7 +49,7 @@ public class BDSAutoEnable {
         this.scanner = new Scanner(System.in);
         this.config = ConfigManager.create(Config.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(Defaults.getAppDir() + File.separator + "config.yml");
+            it.withBindFile(Defaults.getAppDir() + "config.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
@@ -102,6 +102,7 @@ public class BDSAutoEnable {
 
     }
 
+
     private void checkFlags() {
         final List<String> flags = ManagementFactory.getRuntimeMXBean().getInputArguments();
         if (flags.isEmpty()) return;
@@ -116,7 +117,7 @@ public class BDSAutoEnable {
             if (!this.config.isDebug()) {
                 System.exit(-2137);
             } else {
-                this.logger.debug("&aDebug włączony, omijasz wymóg &bUTF-8&a na własne ryzyko&c!");
+                this.logger.debug("&aDebug włączony, omijasz wymóg &bUTF-8&a na własne&c ryzyko&c!");
             }
         } else {
             this.logger.debug("Wykryto wspierane kodowanie");
@@ -130,7 +131,7 @@ public class BDSAutoEnable {
     }
 
     private void checkExecutable() {
-        final String serverPath = this.config.getFilesPath() + File.separator + this.config.getFileName();
+        final String serverPath = this.config.getFilesPath() + File.separator + Defaults.getDefaultFileName();
         if (!FileUtil.canExecute(serverPath)) {
             if (!FileUtil.addExecutePerm(serverPath)) {
                 this.logger.critical("&cBrak odpowiednich uprawnień!");

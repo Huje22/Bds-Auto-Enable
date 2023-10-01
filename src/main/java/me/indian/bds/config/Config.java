@@ -10,7 +10,6 @@ import me.indian.bds.config.sub.log.LogConfig;
 import me.indian.bds.config.sub.rest.RestApiConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
-import me.indian.bds.util.SystemOs;
 
 
 @Header("################################################################")
@@ -33,16 +32,6 @@ public class Config extends OkaeriConfig {
     @Comment({"Pierwsze uruchomienie"})
     @CustomKey("FirstRun")
     private boolean firstRun = true;
-
-    @Comment({""})
-    @Comment({"System na którym uruchamiana jest aplikacja"})
-    @CustomKey("System")
-    private SystemOs system = SystemOs.LINUX;
-
-    @Comment({""})
-    @Comment({"Nazwa pliku servera"})
-    @CustomKey("FileName")
-    private String fileName = "bedrock_server";
 
     @Comment({""})
     @Comment({"Czy użyć wine?"})
@@ -96,22 +85,6 @@ public class Config extends OkaeriConfig {
 
     public void setFirstRun(final boolean firstRun) {
         this.firstRun = firstRun;
-    }
-
-    public SystemOs getSystem() {
-        return this.system;
-    }
-
-    public void setSystem(final SystemOs system) {
-        this.system = system;
-    }
-
-    public String getFileName() {
-        return this.fileName;
-    }
-
-    public void setFileName(final String fileName) {
-        this.fileName = fileName;
     }
 
     public boolean isWine() {

@@ -11,6 +11,7 @@ import me.indian.bds.manager.player.PlayerManager;
 import me.indian.bds.server.properties.Difficulty;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.SystemOs;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
 
@@ -37,6 +38,8 @@ public class ServerProcess {
     private final ExecutorService processService;
     private final Lock cmdLock, cmdResponseLock;
     private final String prefix;
+    private final SystemOs system;
+    private final String fileName;
     private String finalFilePath;
     private ProcessBuilder processBuilder;
     private Process process;
@@ -56,6 +59,8 @@ public class ServerProcess {
         this.cmdLock = new ReentrantLock();
         this.cmdResponseLock = new ReentrantLock();
         this.prefix = "&b[&3ServerProcess&b] ";
+        this.system = Defaults.getSystem();
+        this.fileName = Defaults.getDefaultFileName();
         this.canRun = true;
     }
 
@@ -66,9 +71,9 @@ public class ServerProcess {
     public boolean isProcessRunning() {
         try {
             String command = "";
-            switch (this.config.getSystem()) {
-                case LINUX -> command = "pgrep -f " + this.config.getFileName();
-                case WINDOWS -> command = "tasklist /NH /FI \"IMAGENAME eq " + this.config.getFileName() + "\"";
+            switch (this.system) {
+                case LINUX -> command = "pgrep -f " + this.fileName;
+                case WINDOWS -> command = "tasklist /NH /FI \"IMAGENAME eq " + this.fileName + "\"";
                 default -> {
                     this.logger.critical("Musisz podać odpowiedni system");
                     System.exit(0);
@@ -97,15 +102,15 @@ public class ServerProcess {
             this.logger.debug("Nie można uruchomić procesu ponieważ&b canRun&r jest ustawione na:&b " + false);
             return;
         }
-        this.finalFilePath = this.config.getFilesPath() + File.separator + this.config.getFileName();
+        this.finalFilePath = this.config.getFilesPath() + File.separator + this.fileName;
         this.processService.execute(() -> {
             if (this.isProcessRunning()) {
-                this.logger.info("Proces " + this.config.getFileName() + " jest już uruchomiony.");
+                this.logger.info("Proces " + this.fileName + " jest już uruchomiony.");
                 System.exit(0);
             } else {
-                this.logger.info("Proces " + this.config.getFileName() + " nie jest uruchomiony. Uruchamianie...");
+                this.logger.info("Proces " + this.fileName + " nie jest uruchomiony. Uruchamianie...");
                 try {
-                    switch (this.config.getSystem()) {
+                    switch (this.system) {
                         case LINUX -> {
                             if (this.config.isWine()) {
                                 if (!Defaults.hasWine()) {
@@ -116,7 +121,7 @@ public class ServerProcess {
 
                                 this.processBuilder = new ProcessBuilder("wine", this.finalFilePath);
                             } else {
-                                this.processBuilder = new ProcessBuilder("./" + this.config.getFileName());
+                                this.processBuilder = new ProcessBuilder("./" + this.fileName);
                                 this.processBuilder.environment().put("LD_LIBRARY_PATH", ".");
                                 this.processBuilder.directory(new File(this.config.getFilesPath()));
                             }

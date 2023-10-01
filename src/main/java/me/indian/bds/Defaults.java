@@ -2,6 +2,7 @@ package me.indian.bds;
 
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.SystemOs;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,29 +21,24 @@ public final class Defaults {
         wine = wineCheck();
     }
 
-    public static String getSystem() {
+    public static SystemOs getSystem() {
         final String os = System.getProperty("os.name").toLowerCase();
 
-/* 
-TODO: Remove os question in Settings and return here os enum
-
-        */
-        
         if (os.contains("win")) {
-            return "Windows";
+            return SystemOs.WINDOWS;
         } else if (os.contains("nix") || os.contains("nux")) {
-            return "Linux";
+            return SystemOs.LINUX;
         }
 //        else if (os.contains("mac")) {
 //            return "Mac";
 //        }
         else {
-            return "Nie wspierany system";
+            return SystemOs.UNSUPPORTED;
         }
     }
 
     public static String getDefaultFileName() {
-        switch (config.getSystem()) {
+        switch (getSystem()) {
             case LINUX -> {
                 return "bedrock_server";
             }
@@ -60,7 +56,7 @@ TODO: Remove os question in Settings and return here os enum
     }
 
     public static String getAppDir() {
-        return System.getProperty("user.dir") + File.separator + "BDS-Auto-Enable";
+        return System.getProperty("user.dir") + File.separator + "BDS-Auto-Enable" + File.separator;
     }
 
     public static String getWorldsPath() {

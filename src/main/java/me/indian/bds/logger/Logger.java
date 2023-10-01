@@ -35,7 +35,7 @@ public class Logger {
 
     private void initializeLogFile() {
         try {
-            final File logsDir = new File(Defaults.getAppDir() + File.separator + "logs");
+            final File logsDir = new File(Defaults.getAppDir() + "logs");
             if (!logsDir.exists()) {
                 if (!logsDir.mkdir()) logsDir.mkdirs();
             }
