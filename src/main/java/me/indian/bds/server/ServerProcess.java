@@ -39,8 +39,7 @@ public class ServerProcess {
     private final Lock cmdLock, cmdResponseLock;
     private final String prefix;
     private final SystemOs system;
-    private final String fileName;
-    private String finalFilePath;
+    private String finalFilePath,fileName;
     private ProcessBuilder processBuilder;
     private Process process;
     private PrintWriter writer;
@@ -60,13 +59,13 @@ public class ServerProcess {
         this.cmdResponseLock = new ReentrantLock();
         this.prefix = "&b[&3ServerProcess&b] ";
         this.system = Defaults.getSystem();
-        this.fileName = Defaults.getDefaultFileName();
         this.canRun = true;
     }
 
-    public void initWatchDog(final WatchDog watchDog) {
+    public void init(final WatchDog watchDog) {
         this.watchDog = watchDog;
-    }
+        this.fileName = Defaults.getDefaultFileName();
+       }
 
     public boolean isProcessRunning() {
         try {
@@ -106,7 +105,7 @@ public class ServerProcess {
             this.logger.debug("Nie można uruchomić procesu ponieważ&b canRun&r jest ustawione na:&b " + false);
             return;
         }
-        this.finalFilePath = this.config.getFilesPath() + File.separator + this.fileName;
+        this.fileName = Defaults.getDefaultFileName();
         this.processService.execute(() -> {
             if (this.isProcessRunning()) {
                 this.logger.info("Proces " + this.fileName + " jest już uruchomiony.");
