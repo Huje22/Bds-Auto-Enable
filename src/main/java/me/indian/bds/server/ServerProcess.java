@@ -92,6 +92,10 @@ public class ServerProcess {
             }
         } catch (final IOException | InterruptedException exception) {
             this.logger.critical("Nie można sprawdzić czy proces jest aktywny", exception);
+            this.discord.sendEmbedMessage("ServerProcess",
+                    "Nie można sprawdzić czy proces jest aktywny",
+                    exception,
+                    exception.getLocalizedMessage());
             System.exit(0);
         }
         return false;
@@ -154,6 +158,11 @@ public class ServerProcess {
                     this.startProcess();
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można uruchomić procesu", exception);
+
+                    this.discord.sendEmbedMessage("ServerProcess",
+                            "Nie można uruchomić procesu",
+                            exception,
+                            exception.getLocalizedMessage());
                     System.exit(0);
                 }
             }
@@ -181,8 +190,13 @@ public class ServerProcess {
                 }
             } catch (final Exception exception) {
                 this.logger.critical("Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
-                this.discord.sendMessage("<owner> Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji", exception);
-                System.exit(0);
+                this.discord.sendEmbedMessage("ServerProcess",
+                        "Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji",
+                        exception,
+                        exception.getLocalizedMessage());
+                this.discord.sendMessage("<owner>");
+
+                System.exit(1);
             }
         }
     }
@@ -247,8 +261,13 @@ public class ServerProcess {
                 }
             } catch (final Exception exception) {
                 this.logger.critical("Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
-                this.discord.sendMessage("<owner> Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji", exception);
-                System.exit(0);
+                this.discord.sendEmbedMessage("ServerProcess",
+                        "Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji",
+                        exception,
+                        exception.getLocalizedMessage());
+                this.discord.sendMessage("<owner>");
+
+                System.exit(1);
             }
         }
     }
