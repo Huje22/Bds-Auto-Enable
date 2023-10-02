@@ -70,7 +70,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         switch (event.getName()) {
             case "cmd" -> {
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                    if (this.serverProcess.isEnabled()) {
+                    if (!this.serverProcess.isEnabled()) {
                         event.reply("Server jest wyłączony").setEphemeral(true).queue();
                         return;
                     }
