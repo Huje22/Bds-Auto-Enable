@@ -22,9 +22,8 @@ import java.util.Map;
 public final class StatusUtil {
 
     private static final List<String> status = new ArrayList<>();
-    private static final File file = new File("/");
+    private static File file;
   //TODO: Dodać opcję opcij ustawienia tego pod katalog z plikami servera, takie wsparciem dla hostingow 
-    ddd
     private static BDSAutoEnable bdsAutoEnable;
     private static Logger logger;
     private static ServerProcess serverProcess;
@@ -37,7 +36,13 @@ public final class StatusUtil {
         StatusUtil.serverProcess = bdsAutoEnable.getServerProcess();
         StatusUtil.statsManager = bdsAutoEnable.getPlayerManager().getStatsManager();
         StatusUtil.config = bdsAutoEnable.getConfig();
-    }
+   final String filesPath = config.getFilesPath()
+    if(filesPath.equals("./") || filesPath.isEmpty()){
+      file = new File("/");
+   } else{
+       file = new File(filesPath);
+   }
+}
 
     public static List<String> getStatus(final boolean forDiscord) {
         status.clear();
