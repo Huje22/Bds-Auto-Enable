@@ -135,6 +135,12 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 event.replyEmbeds(embed).setEphemeral(true).queue();
             }
             case "backup" -> {
+                if (!this.config.getWatchDogConfig().getBackup().isBackup()) {
+               event.reply("Backupy są wyłączone")
+                   .setEphemeral(true).queue();
+                    return;
+                }
+                
                 final OptionMapping command = event.getOption("load");
                 if (command != null && !command.getAsString().isEmpty()) {
                     if (member.hasPermission(Permission.ADMINISTRATOR)) {
@@ -373,10 +379,10 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private MessageEmbed getCommandEmbed(final SlashCommandInteractionEvent event) {
         final User user = event.getUser();
         return new EmbedBuilder()
-                .setTitle("Command info")
-                .setDescription("`" + user.getName() + "` **używa** `/" + event.getName() + "`")
+                .setTitle("**Command info**")
+                .setDescription(`/" + event.getName() + "`")
                 .setColor(Color.BLUE)
-                .setFooter(DateUtil.getDate() + " " + user.getName(), user.getAvatarUrl())
+                .setFooter(user.getName() + " | " + DateUtil.getDate() , user.getAvatarUrl())
                 .build();
     }
 }
