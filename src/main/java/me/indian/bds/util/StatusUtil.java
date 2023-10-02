@@ -23,6 +23,8 @@ public final class StatusUtil {
 
     private static final List<String> status = new ArrayList<>();
     private static final File file = new File("/");
+  //TODO: Dodać opcję opcij ustawienia tego pod katalog z plikami servera, takie wsparciem dla hostingow 
+    ddd
     private static BDSAutoEnable bdsAutoEnable;
     private static Logger logger;
     private static ServerProcess serverProcess;
