@@ -3,6 +3,7 @@ package me.indian.bds.util;
 import com.sun.management.OperatingSystemMXBean;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
+import me.indian.bds.logger.Logger;
 import me.indian.bds.config.Config;
 import me.indian.bds.manager.player.StatsManager;
 import me.indian.bds.server.ServerProcess;
@@ -23,12 +24,14 @@ public final class StatusUtil {
     private static final List<String> status = new ArrayList<>();
     private static final File file = new File("/");
     private static BDSAutoEnable bdsAutoEnable;
+    private static Logger logger;
     private static ServerProcess serverProcess;
     private static StatsManager statsManager;
     private static Config config;
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         StatusUtil.bdsAutoEnable = bdsAutoEnable;
+      StatusUtil.logger = bdsAutoEnable.getLogger();
         StatusUtil.serverProcess = bdsAutoEnable.getServerProcess();
         StatusUtil.statsManager = bdsAutoEnable.getPlayerManager().getStatsManager();
         StatusUtil.config = bdsAutoEnable.getConfig();
@@ -140,9 +143,9 @@ public final class StatusUtil {
                 }
             }
         } catch (final IOException exception) {
-            exception.printStackTrace();
+            logger.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + Defaults.getSystem() , exception);
         }
-        return 0;
+        return -1;
     }
 
     public static long getAvailableRam() {
