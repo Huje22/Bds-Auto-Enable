@@ -139,7 +139,6 @@ public class BackupModule {
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można utworzyć kopii zapasowej", LogState.CRITICAL);
                 this.status = "Nie udało sie utworzyć kopij zapasowej";
                 this.logger.critical(this.status, exception);
-                exception.printStackTrace();
                 if (backup.delete()) {
                     this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUsunięto błędny backup", LogState.INFO);
                 } else {
