@@ -1,6 +1,7 @@
 package me.indian.bds.logger;
 
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.util.DateUtil;
@@ -46,6 +47,37 @@ public class Logger {
             e.printStackTrace();
         }
     }
+    
+    
+    
+ //TODO: Complet it
+ 
+    public void print(final Object log) {
+         this.logState = LogState.NONE;
+        if (this.printStream != null) {
+            this.printStream.println(ConsoleColors.removeColors(log));
+        }
+        
+        System.out.println(ConsoleColors.convertMinecraftColors(log));
+    }
+    
+     public void print(final Object log, final DiscordIntegration discord) {
+        this.print(log);
+        discord.writeConsole(log);
+    }
+    
+    public void print(final Object log, final Throwable throwable) {
+         this.print(log);
+         this.logThrowableToFile(throwable);
+        }
+    
+    public void print(final Object log, final DiscordIntegration discord) {
+        this.print(log, discord);
+    }
+    
+
+//
+
 
     public void info(final Object log) {
         this.logState = LogState.INFO;
@@ -125,6 +157,7 @@ public class Logger {
 
     public void logByState(final Object log, final LogState logState) {
         switch (logState) {
+            case NONE -> this.print(log);
             case INFO -> this.info(log);
             case ALERT -> this.alert(log);
             case CRITICAL -> this.critical(log);
@@ -136,6 +169,7 @@ public class Logger {
 
     public void logByState(final Object log, final Throwable throwable, final LogState logState) {
         switch (logState) {
+            case NONE ->  this.print(log, throwable);
             case INFO -> this.info(log, throwable);
             case ALERT -> this.alert(log, throwable);
             case CRITICAL -> this.critical(log, throwable);
@@ -145,13 +179,8 @@ public class Logger {
         }
     }
 
-    public void instantLogToFile(final Object log) {
-        if (this.printStream != null) {
-            this.printStream.println(ConsoleColors.removeColors(log));
-        }
-    }
 
-    public void logToFile(final Object log) {
+    private void logToFile(final Object log) {
         if (this.printStream != null) {
             this.printStream.println(DateUtil.getDate() + " [" + Thread.currentThread().getName() + "] " + this.logState + " " + ConsoleColors.removeColors(log));
         }
