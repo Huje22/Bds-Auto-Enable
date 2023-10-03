@@ -54,7 +54,7 @@ public class BackupModule {
         this.config = this.bdsAutoEnable.getConfig();
         this.watchDog = watchDog;
         this.backups = new ArrayList<>();
-        this.service = Executors.newScheduledThreadPool(5, new ThreadUtil("Watchdog-BackupModule"));
+        this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Watchdog-BackupModule"));
         this.timer = new Timer("Backup", true);
         this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
         this.worldPath = Defaults.getWorldsPath() + this.worldName;
@@ -206,8 +206,8 @@ public class BackupModule {
                 }
             }
             this.backups.sort(Collections.reverseOrder());
-        } catch (final IOException exception) {
-            exception.printStackTrace();
+        } catch (final Exception exception) {
+            this.logger.error("Nie można załadować dostępnych backup", exception);
         }
     }
 
