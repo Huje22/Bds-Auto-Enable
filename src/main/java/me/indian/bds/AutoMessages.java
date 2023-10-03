@@ -37,9 +37,10 @@ public class AutoMessages {
                 if (AutoMessages.this.serverProcess.isEnabled() && !AutoMessages.this.bdsAutoEnable.getPlayerManager().getOnlinePlayers().isEmpty()) {
                     if (!this.iterator.hasNext()) this.iterator = AutoMessages.this.messages.iterator();
                     final String prefix = AutoMessages.this.config.getAutoMessagesConfig().getPrefix();
-                    final int message = AutoMessages.this.random.nextInt(AutoMessages.this.messages.size());
-
+                    
                     if (AutoMessages.this.config.getAutoMessagesConfig().isRandom()) {
+                        final int message = AutoMessages.this.random.nextInt(AutoMessages.this.messages.size());
+                        
                         AutoMessages.this.serverProcess.tellrawToAll(prefix + AutoMessages.this.messages.get(message));
                     } else {
                         AutoMessages.this.serverProcess.tellrawToAll(prefix + this.iterator.next());
