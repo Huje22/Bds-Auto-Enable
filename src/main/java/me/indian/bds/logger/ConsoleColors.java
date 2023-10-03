@@ -107,7 +107,7 @@ public final class ConsoleColors {
             }
             return in + RESET;
         }
-        return "";
+        return input.toString();
     }
 
     public static String removeColors(final Object input) {
@@ -118,6 +118,6 @@ public final class ConsoleColors {
             }
             return in;
         }
-        return "";
+        return input.toString();
     }
 }
