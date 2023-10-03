@@ -283,6 +283,12 @@ public class DiscordJda implements DiscordIntegration {
         }
     }
 
+    
+    @Override
+    public void writeConsole(final String message, final Throwable throwable) {
+        this.writeConsole(message + "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```");
+    }
+
     @Override
     public void sendJoinMessage(final String playerName) {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendJoinMessage()) {
