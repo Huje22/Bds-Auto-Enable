@@ -53,7 +53,7 @@ public class Settings {
     private void init(final ScannerUtil scannerUtil) {
         final long startTime = System.currentTimeMillis();
 
-        System.out.println();
+        this.logger.print("");
 
         if (Defaults.hasWine()) {
             this.config.setWine(scannerUtil.addBooleanQuestion(
@@ -64,7 +64,7 @@ public class Settings {
                     false,
                     (input) -> this.logger.info("&bWINE&r ustawione na:&1 " + input)
             ));
-            System.out.println();
+            this.logger.print("");
         }
 
         this.config.setFilesPath(scannerUtil.addStringQuestion(
@@ -73,7 +73,7 @@ public class Settings {
                 (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)
         ));
         this.config.save();
-        System.out.println();
+        this.logger.print("");
 
         if (!this.config.getVersionManagerConfig().isLoaded()) this.versionQuestion(scannerUtil);
         this.serverProperties.loadProperties();
@@ -89,7 +89,7 @@ public class Settings {
                     (input) -> this.logger.info("Backup bedzie robiony co:&1 " + (input == 0 ? 60 : input + "&a minut")));
             this.config.getWatchDogConfig().getBackup().setBackupFrequency(backupFrequency == 0 ? 60 : backupFrequency);
         }
-        System.out.println();
+        this.logger.print("");
 
         scannerUtil.addBooleanQuestion(
                 (defaultValue) -> this.logger.info("&n&lRozpocząć częściową konfiguracje servera?&r (Domyślnie: " + defaultValue + ")" + this.enter),
@@ -107,7 +107,7 @@ public class Settings {
 
     private void serverSettings(final ScannerUtil scannerUtil) {
         this.logger.info("&aKonfiguracja servera&r");
-        System.out.println();
+        this.logger.print("");
 
         this.serverProperties.setServerPort(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
@@ -115,7 +115,7 @@ public class Settings {
                     this.logger.info("&cPamiętaj że twoja sieć musi miec dostępny ten port");
                 }, this.serverProperties.getServerPort(), (input) -> this.logger.info("Port v4 ustawiony na:&1 " + input)
         ));
-        System.out.println();
+        this.logger.print("");
 
         this.serverProperties.setServerPortV6(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
@@ -124,7 +124,7 @@ public class Settings {
                 }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&1 " + input)
         ));
 
-        System.out.println();
+        this.logger.print("");
 
         this.serverProperties.setMaxThreads(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
@@ -133,9 +133,9 @@ public class Settings {
                 }, 0,
                 (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + input)
         ));
-        System.out.println();
+        this.logger.print("");
         this.addPlayerPermissionQuestion(scannerUtil);
-        System.out.println();
+        this.logger.print("");
 
         this.serverProperties.setPlayerIdleTimeout(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
@@ -146,7 +146,7 @@ public class Settings {
                 this.serverProperties.getPlayerIdleTimeout(),
                 (input) -> this.logger.info("Timeout ustawiony na:&1 " + input)
         ));
-        System.out.println();
+        this.logger.print("");
 
         this.serverProperties.setServerBuildRadiusRatio(scannerUtil.addDoubleQuestion(
                 (defaultValue) -> {
@@ -163,7 +163,7 @@ public class Settings {
                     this.serverProperties.setClientSideChunkGeneration(true);
                 }
         ));
-        System.out.println();
+        this.logger.print("");
 
         this.serverProperties.setViewDistance(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
@@ -175,7 +175,7 @@ public class Settings {
                 this.serverProperties.getViewDistance(),
                 (input) -> this.logger.info("Maksymalny View Distance na:&1 " + input)
         ));
-        System.out.println();
+        this.logger.print("");
 
         this.serverProperties.setTickDistance(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
@@ -187,9 +187,9 @@ public class Settings {
                 (input) -> this.logger.info("Tick Distance na:&1 " + input)
         ));
 
-        System.out.println();
+        this.logger.print("");
         this.addServerAuthQuestion(scannerUtil);
-        System.out.println();
+        this.logger.print("");
 
         this.serverProperties.setServerAuthoritativeBlockBreaking(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
@@ -200,7 +200,7 @@ public class Settings {
                 this.serverProperties.isServerAuthoritativeBlockBreaking(),
                 (input) -> this.logger.info("Server Authoritative Block Breaking ustawiono na:&1 " + input)
         ));
-        System.out.println();
+        this.logger.print("");
 
         if (this.serverProperties.getServerAuthoritativeMovement() == ServerMovementAuth.SERVER_AUTH_REWIND) {
             this.serverProperties.setCorrectPlayerMovement(scannerUtil.addBooleanQuestion(
@@ -211,7 +211,7 @@ public class Settings {
                     this.serverProperties.isCorrectPlayerMovement(),
                     (input) -> this.logger.info("Correct Player Movement ustawiono na:&1 " + input)
             ));
-            System.out.println();
+            this.logger.print("");
         }
 
         this.serverProperties.setAllowCheats(scannerUtil.addBooleanQuestion(
@@ -222,7 +222,7 @@ public class Settings {
                 this.serverProperties.isAllowCheats(),
                 (input) -> this.logger.info("Allow Cheats ustawione na:&1 " + input)
         ));
-        System.out.println();
+        this.logger.print("");
 
         this.serverProperties.setTexturePackRequired(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
@@ -233,7 +233,7 @@ public class Settings {
                 this.serverProperties.isTexturePackRequired(),
                 (input) -> this.logger.info("Allow Cheats ustawione na:&1 " + input)
         ));
-        System.out.println();
+        this.logger.print("");
 
         this.serverProperties.setServerTelemetry(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
@@ -243,14 +243,14 @@ public class Settings {
                 this.serverProperties.isServerTelemetry(),
                 (input) -> this.logger.info("Telemetria servera ustawiona na:&1 " + input)
         ));
-        System.out.println();
+        this.logger.print("");
 
     }
 
     private void currentSettings(final Scanner scanner) {
-        System.out.println();
+        this.logger.print("");
         this.logger.info("&n&lAktualne Dane");
-        System.out.println();
+        this.logger.print("");
         this.logger.info("&e----------&bAplikacja&e----------");
         this.logger.info("System:&1 " + Defaults.getSystem());
         this.logger.info("Wine:&1 " + this.config.isWine() + (Defaults.hasWine() ? " &d(&bPosiadasz&d)" : ""));
@@ -265,22 +265,22 @@ public class Settings {
             this.logger.info("Nazwa świata:&1 " + this.serverProperties.getWorldName());
         }
 
-        System.out.println();
+        this.logger.print("");
         this.logger.info("&e-----------&bserver.properties&e----------");
         this.logger.info("Port v4:&1 " + this.serverProperties.getServerPort());
         this.logger.info("Port v6:&1 " + this.serverProperties.getServerPortV6());
-        System.out.println();
+        this.logger.print("");
 
         this.logger.info("Liczba wątków używana przez server:&1 " + this.serverProperties.getMaxThreads());
         this.logger.info("Allow Cheats:&1 " + this.serverProperties.isAllowCheats());
         this.logger.info("Timeout:&1 " + this.serverProperties.getPlayerIdleTimeout() + " &aminut");
-        System.out.println();
+        this.logger.print("");
 
         final double serverBuildRadiusRatio = this.serverProperties.getServerBuildRadiusRatio();
         this.logger.info("Server Build Radius Ratio:&1 " + (serverBuildRadiusRatio == -1.0 ? "Disabled" : serverBuildRadiusRatio));
         this.logger.info("View Distance:&1 " + this.serverProperties.getViewDistance());
         this.logger.info("Tick Distance:&1 " + this.serverProperties.getTickDistance());
-        System.out.println();
+        this.logger.print("");
 
         this.logger.info("Default Player Permission Level:&1 " + this.serverProperties.getDefaultPlayerPermissionLevel().getPermissionName());
         this.logger.info("Server Authoritative Movement:&1 " + this.serverProperties.getServerAuthoritativeMovement().getAuthName());
@@ -289,7 +289,7 @@ public class Settings {
         this.logger.info("Wymug tekstur:&1 " + this.serverProperties.isTexturePackRequired());
         this.logger.info("Allow Cheats:&1 " + this.serverProperties.isAllowCheats());
         this.logger.info("Emit server telemetry:&1 " + this.serverProperties.isServerTelemetry());
-        System.out.println();
+        this.logger.print("");
 
         this.logger.alert("&cWięcej opcji&e konfiguracji&c znajdziesz w config");
         this.logger.info("Kliknij enter aby kontynuować");
@@ -317,7 +317,7 @@ public class Settings {
                 this.config.getVersionManagerConfig().getVersion(), (input) -> this.logger.info("Wersja do załadowania ustawiona na:&1 " + input)
         ));
         this.bdsAutoEnable.getVersionManager().loadVersion();
-        System.out.println();
+        this.logger.print("");
     }
 
     private void anotherVersionQuestion(final ScannerUtil scannerUtil) {
