@@ -52,4 +52,6 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
   ----
 
+![bStats Servers](https://img.shields.io/bstats/servers/19727?style=for-the-badge)
+![bStats Players](https://img.shields.io/bstats/players/19727?style=for-the-badge)
 ![Latest Tag](https://img.shields.io/github/v/tag/Huje22/Bds-Auto-Enable?label=LATEST%20TAG&style=for-the-badge) <br>
