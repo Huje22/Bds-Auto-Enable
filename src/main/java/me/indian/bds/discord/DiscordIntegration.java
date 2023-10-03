@@ -41,5 +41,7 @@ public interface DiscordIntegration {
 
     void writeConsole(final String message);
 
+    void writeConsole(final String message, final Throwable throwable);
+
     void disableBot();
 }
