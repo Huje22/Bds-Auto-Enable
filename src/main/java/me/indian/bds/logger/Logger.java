@@ -71,8 +71,9 @@ public class Logger {
          this.logThrowableToFile(throwable);
         }
     
-    public void print(final Object log, final DiscordIntegration discord) {
-        this.print(log, discord);
+    public void print(final Object log, final Throwable throwable, final DiscordIntegration discord) {
+        this.print(log);
+        discord.writeConsole(log, );
     }
     
 
