@@ -6,28 +6,27 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
 </div>
 
-# **Uwaga**:
+# Uwaga
 
 * Program wymaga przynajmniej `1GB` ram do działania
 * Zaleca się używać integracii z discord (JDA)
 * Program wspiera użycie [**WINE**](https://github.com/wine-mirror/wine)
 
-# Program zawiera: <br/>
+# Program zawiera
 
 * Automatyczne włączenie servera po crashu
 * Łatwe załadowanie innej wersji
 * Tworzenie backupów świata co dany czas i manuałalnie (___Ładowanie backup wymaga nadal poprawy___)
 * Pisanie w konsoli w 99% (**Mogą wystąpić małe błędy**)
 * AutoMessages
-* Licznik czasu gry gracza (
-  Wymaga [BDS-Auto-Enable-Managment-Pack](https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack))
+* Licznik czasu gry gracza (Wymaga [BDS-Auto-Enable-Managment-Pack](https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack))
 * Licznik śmierci (Wymaga [BDS-Auto-Enable-Managment-Pack](https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack))
 * Integracje z Discordem
   (Wymaga [BDS-Auto-Enable-Managment-Pack](https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack) do obsługi wiekszej
   ilosci funkcij)
 * **Rest API** z czasem gry , liczbą śmierci i graczami online/offline
 
-# Polecenia: <br/>
+# Polecenia
 
 ### W konsoli
 
@@ -42,11 +41,11 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 * Wszystkie je jak i także ich opisy znajdziesz po wpisaniu `/` (Wymaga dodania bota z
   ___&scope=bot+applications.commands___ inaczej mogą wystąpić problemy)
 
-# Program nie wspiera: <br/>
+# Program nie wspiera
 
 * Wtyczek do Minecraft
 
-# **Szybkie info**:
+# Szybkie info
 
 * Paczka sama się pobierze do twojego świata i załaduje , potrzebujesz jedynie włączonych experymentów w tym świecie!
 
