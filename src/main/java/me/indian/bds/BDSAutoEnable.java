@@ -63,6 +63,7 @@ public class BDSAutoEnable {
         this.checkFlags();
         this.checkMemory();
         this.checkTimeZone();
+        //TODO: Dodać Java check
         switch (this.config.getDiscordConfig().getIntegrationType()) {
             case WEBHOOK -> this.discord = new WebHook(this);
             case JDA -> this.discord = new DiscordJda(this);
