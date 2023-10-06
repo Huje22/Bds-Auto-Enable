@@ -58,7 +58,7 @@ public class VersionUpdater {
                         VersionUpdater.this.serverProcess.tellrawToAllAndLogger(VersionUpdater.this.prefix,
                                 "&aWłączona jest&b Auto Aktualizacja&a po pobraniu najnowszej wersji zostaniecie wyrzuceni a server zmieni wersje!",
                                 LogState.ALERT);
-                        VersionUpdater.this.autoUpdate(latest);
+                        VersionUpdater.this.updateToLatest();
                     }
                 }
             }
@@ -67,7 +67,8 @@ public class VersionUpdater {
         timer.scheduleAtFixedRate(timerTask, 0, hours);
     }
 
-    private void autoUpdate(final String version) {
+    private void updateToLatest() {
+        final String version = this.versionManager.getLatestVersion();
         this.bdsAutoEnable.getDiscord().sendServerUpdateMessage(version);
         if (!this.versionManager.hasVersion(version)) {
             this.versionManager.downloadServerFiles(version);
@@ -79,19 +80,17 @@ public class VersionUpdater {
                 LogState.ALERT
         );
         this.serverProcess.setCanRun(false);
-        this.serverProcess.sendToConsole("stop");
 
-        try {
-            if(this.serverProcess.getProcess() == null){
-                this.autoUpdate(version);
-                return;
+        if (this.serverProcess.isEnabled()) {
+            this.serverProcess.kickAllPlayers(this.prefix + " &aAktualizowanie servera....");
+            this.serverProcess.sendToConsole("stop");
+            try {
+                this.serverProcess.getProcess().waitFor();
+            } catch (final InterruptedException exception) {
+                this.logger.error("", exception);
             }
-            this.serverProcess.getProcess().waitFor();
-        } catch (final InterruptedException exception) {
-            this.logger.error(exception);
         }
 
-        this.serverProcess.kickAllPlayers(this.prefix + " &aAktualizowanie servera....");
         this.versionManager.loadVersion(version);
         this.serverProcess.setCanRun(true);
         this.serverProcess.startProcess();

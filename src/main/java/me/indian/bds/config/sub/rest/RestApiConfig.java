@@ -16,7 +16,7 @@ public class RestApiConfig extends OkaeriConfig {
     @Comment({"/api/{api-key}/backup/{filename} - pobierz któryś z dostępnych backup (wymagany klucz autoryzacji)"})
     @Comment({""})
     @Comment({"Czy włączyć strone z Rest API?"})
-    private boolean enabled = true;
+    private boolean enabled = false;
     @Comment({""})
     @Comment({"Port strony "})
     private int port = 8080;

@@ -58,17 +58,19 @@ public class BDSAutoEnable {
         this.logger = new Logger(this);
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
         Defaults.init(this);
+        this.isJavaVersionLessThan17();
         this.checkSystemSupport();
         this.checkEncoding();
         this.checkFlags();
         this.checkMemory();
         this.checkTimeZone();
-        //TODO: Dodać Java check
         switch (this.config.getDiscordConfig().getIntegrationType()) {
             case WEBHOOK -> this.discord = new WebHook(this);
             case JDA -> this.discord = new DiscordJda(this);
-            default ->
-                    this.logger.error("Nie znany typ integracji discord! (" + this.config.getDiscordConfig().getIntegrationType() + ")");
+            default -> {
+                this.logger.error("Nie znany typ integracji discord! (" + this.config.getDiscordConfig().getIntegrationType() + ")");
+                System.exit(0);
+            }
         }
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
@@ -105,6 +107,23 @@ public class BDSAutoEnable {
 
     }
 
+    public void isJavaVersionLessThan17() {
+        final String javaVersion = System.getProperty("java.version");
+        final double version = Double.parseDouble(javaVersion.substring(0, 3));
+
+        if (version < 17.0) {
+            if (this.getConfig().isDebug()) {
+                this.logger.warning("&aDebug włączony, twoja wersja java &d(&1" + version
+                        + "&d)&a nie jest wspierana, robisz to na własne&c ryzyko&c!");
+                return;
+            }
+
+            this.logger.critical("Twoja wersja java (&1" + version
+                    + "&r) jest zbyt niska! Potrzebujesz javy &117+ ");
+            System.exit(0);
+        }
+    }
+
     private void checkSystemSupport() {
         if (Defaults.getSystem() == SystemOs.UNSUPPORTED) {
             /*
@@ -114,7 +133,7 @@ public class BDSAutoEnable {
             }
             */
 
-            this.logger.critical("&cTwój system nie jest wspierany!!");
+            this.logger.critical("&cTwój system nie jest wspierany!!&r Twój system to:&1 " + System.getProperty("os.name"));
             System.exit(0);
         }
     }
@@ -128,12 +147,12 @@ public class BDSAutoEnable {
     private void checkEncoding() {
         final String encoding = System.getProperty("file.encoding");
         if (!encoding.equalsIgnoreCase("UTF-8")) {
-            this.logger.critical("&cTwoje kodowanie to:&b " + encoding + ", &cmy wspieramy tylko&b: UTF-8");
-            this.logger.critical("&cProsimy ustawić swoje kodowanie na&b UTF-8&c abyśmy mogli dalej kontynuować!");
             if (!this.config.isDebug()) {
+                this.logger.critical("&cTwoje kodowanie to:&b " + encoding + ", &cmy wspieramy tylko&b: UTF-8");
+                this.logger.critical("&cProsimy ustawić swoje kodowanie na&b UTF-8&c abyśmy mogli dalej kontynuować!");
                 System.exit(-2137);
             } else {
-                this.logger.debug("&aDebug włączony, omijasz wymóg &bUTF-8&a na własne&c ryzyko&c!");
+                this.logger.warning("&aDebug włączony, omijasz wymóg &bUTF-8&a na własne&c ryzyko&c!");
             }
         } else {
             this.logger.debug("Wykryto wspierane kodowanie");

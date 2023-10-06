@@ -206,7 +206,7 @@ public class Metrics {
         // WARNING: You must not modify any part of this Metrics class, including the submit delay or frequency!
         // WARNING: Modifying this code will get your plugin banned on bStats. Just don't do it!
 
-        final int randomMinutes = 3 + random.nextInt(4); // 3 do 6 włącznie
+        final int randomMinutes = 3 + random.nextInt(6); // 3 do 6 włącznie
         final int secondRandomMinutes = 3 + random.nextInt(10);
 
 //        timer.scheduleAtFixedRate(submitTask, 0, MathUtil.minutesToMillis(2));

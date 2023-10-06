@@ -3,8 +3,8 @@ package me.indian.bds.util;
 import com.sun.management.OperatingSystemMXBean;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.config.Config;
+import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.player.StatsManager;
 import me.indian.bds.server.ServerProcess;
 
@@ -23,7 +23,6 @@ public final class StatusUtil {
 
     private static final List<String> status = new ArrayList<>();
     private static File file;
-  //TODO: Dodać opcję opcij ustawienia tego pod katalog z plikami servera, takie wsparciem dla hostingow 
     private static BDSAutoEnable bdsAutoEnable;
     private static Logger logger;
     private static ServerProcess serverProcess;
@@ -32,17 +31,17 @@ public final class StatusUtil {
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         StatusUtil.bdsAutoEnable = bdsAutoEnable;
-      StatusUtil.logger = bdsAutoEnable.getLogger();
+        StatusUtil.logger = bdsAutoEnable.getLogger();
         StatusUtil.serverProcess = bdsAutoEnable.getServerProcess();
         StatusUtil.statsManager = bdsAutoEnable.getPlayerManager().getStatsManager();
         StatusUtil.config = bdsAutoEnable.getConfig();
-   final String filesPath = config.getFilesPath()
-    if(filesPath.equals("./") || filesPath.isEmpty()){
-      file = new File("/");
-   } else{
-       file = new File(filesPath);
-   }
-}
+        final String filesPath = config.getFilesPath();
+        if (filesPath.equals("./") || filesPath.isEmpty()) {
+            file = new File("/");
+        } else {
+            file = new File(filesPath);
+        }
+    }
 
     public static List<String> getStatus(final boolean forDiscord) {
         status.clear();

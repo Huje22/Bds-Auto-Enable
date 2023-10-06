@@ -241,6 +241,11 @@ public class WebHook implements DiscordIntegration {
     }
 
     @Override
+    public void writeConsole(final String message, final Throwable throwable) {
+
+    }
+
+    @Override
     public void disableBot() {
 
     }

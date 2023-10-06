@@ -14,6 +14,7 @@ import me.indian.bds.watchdog.module.BackupModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
@@ -81,9 +82,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         return;
                     }
 
-                    this.discordJda.writeConsole(command);
-                    this.bdsAutoEnable.getLogger().instantLogToFile(command);
-                    System.out.println(command);
+                    this.bdsAutoEnable.getLogger().print(command, this.discordJda);
 
                     final MessageEmbed embed = new EmbedBuilder()
                             .setTitle("Ostatnia linijka z konsoli")
@@ -378,11 +377,17 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private MessageEmbed getCommandEmbed(final SlashCommandInteractionEvent event) {
         final User user = event.getUser();
+        final Guild guild = event.getGuild();
+        String guildName = "";
+        if (guild != null && !guild.getName().isEmpty()) {
+            guildName = guild.getName();
+        }
+
         return new EmbedBuilder()
                 .setTitle("**Command info**")
-                .setDescription(`/" + event.getName() + "`")
+                .setDescription("`/" + event.getName() + "`")
                 .setColor(Color.BLUE)
-                .setFooter(user.getName() + " | " + DateUtil.getDate() , user.getAvatarUrl())
+                .setFooter(user.getName() + " | " + guildName + " | " + DateUtil.getDate(), user.getAvatarUrl())
                 .build();
     }
 }

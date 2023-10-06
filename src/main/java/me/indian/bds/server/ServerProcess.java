@@ -196,6 +196,8 @@ public class ServerProcess {
                 this.discord.sendMessage("<owner>");
 
                 System.exit(1);
+            } finally {
+                consoleOutput.close();
             }
         }
     }
@@ -267,6 +269,8 @@ public class ServerProcess {
                 this.discord.sendMessage("<owner>");
 
                 System.exit(1);
+            } finally {
+                this.writer.close();
             }
         }
     }

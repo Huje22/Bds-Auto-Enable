@@ -306,7 +306,6 @@ public class ServerProperties {
         try {
             return Double.parseDouble(this.properties.getProperty("server-build-radius-ratio"));
         } catch (final NumberFormatException exception) {
-            this.logger.debug("", exception);
             return -1.0;
         }
     }
