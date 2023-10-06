@@ -253,6 +253,7 @@ public class ServerProcess {
                                 this.logger.info(s);
                             }
                         }
+                        case "update" -> this.bdsAutoEnable.getVersionManager().getVersionUpdater().updateToLatest();
                         default -> {
                             this.logger.instantLogToFile(input);
                             this.discord.writeConsole(input);

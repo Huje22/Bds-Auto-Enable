@@ -216,7 +216,19 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         .setColor(Color.BLUE)
                         .build();
 
-                event.replyEmbeds(embed).setEphemeral(true).queue();
+                if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                    Button button = Button.primary("update", "Update")
+                            .withEmoji(Emoji.fromUnicode("\uD83D\uDD3C"));
+                    if (current.equals(latest)) {
+                        button = button.asDisabled();
+                    } else {
+                        button = button.asEnabled();
+                    }
+
+                    event.replyEmbeds(embed).addActionRow(button).setEphemeral(true).queue();
+                } else {
+                    event.replyEmbeds(embed).setEphemeral(true).queue();
+                }
             }
         }
     }
@@ -226,12 +238,13 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         final Member member = event.getMember();
         if (member == null) return;
         if (!member.hasPermission(Permission.ADMINISTRATOR)) {
-            event.reply("Nie masz permisij!").setEphemeral(true).queue();
+            event.reply("Nie masz permisji!").setEphemeral(true).queue();
             return;
         }
         this.serveDifficultyButton(event);
         this.serveBackupButton(event);
         this.serveDeleteBackupButton(event);
+        this.serveUpdateButton(event);
     }
 
     private void serveDifficultyButton(final ButtonInteractionEvent event) {
@@ -292,6 +305,14 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         }
     }
 
+    private void serveUpdateButton(final ButtonInteractionEvent event) {
+        if (event.getComponentId().equals("update")) {
+            event.reply("Server jest już prawdopodobnie aktualizowany , jeśli nie zajrzyj w konsole")
+                    .setEphemeral(true).queue();
+            this.bdsAutoEnable.getVersionManager().getVersionUpdater().updateToLatest();
+        }
+    }
+
     private MessageEmbed getDifficultyEmbed() {
         final Difficulty currentDifficulty = this.bdsAutoEnable.getServerProperties().getDifficulty();
         final int currentDifficultyId = this.bdsAutoEnable.getServerProperties().getDifficulty().getDifficultyId();
@@ -333,7 +354,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 .setColor(Color.BLUE)
                 .build();
     }
-
 
     private MessageEmbed getBackupEmbed() {
         final String backupStatus = "`" + this.backupModule.getStatus() + "`\n";

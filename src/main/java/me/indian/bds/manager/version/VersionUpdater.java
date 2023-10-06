@@ -67,8 +67,9 @@ public class VersionUpdater {
         timer.scheduleAtFixedRate(timerTask, 0, hours);
     }
 
-    private void updateToLatest() {
+    public void updateToLatest() {
         final String version = this.versionManager.getLatestVersion();
+        if (this.versionManagerConfig.getVersion().equalsIgnoreCase(version)) return;
         this.bdsAutoEnable.getDiscord().sendServerUpdateMessage(version);
         if (!this.versionManager.hasVersion(version)) {
             this.versionManager.downloadServerFiles(version);

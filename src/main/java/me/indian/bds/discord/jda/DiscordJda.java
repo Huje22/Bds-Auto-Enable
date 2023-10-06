@@ -139,7 +139,7 @@ public class DiscordJda implements DiscordIntegration {
                 Commands.slash("backup", "Tworzenie bądź ostatni czas backupa")
                         .addOption(OptionType.STRING, "load", "Załaduj backup po jego pełnej nazwie", false),
                 Commands.slash("difficulty", "Zmienia poziom trudności"),
-                Commands.slash("version", "Wersja BDS-Auto-Enable i severa"),
+                Commands.slash("version", "Wersja BDS-Auto-Enable i severa, umożliwia update servera"),
                 Commands.slash("ping", "aktualny ping bot z serwerami discord"),
                 Commands.slash("stats", "Statystyki Servera i aplikacji."),
                 Commands.slash("cmd", "Wykonuje polecenie w konsoli.")
