@@ -191,28 +191,29 @@ public class Settings {
         this.addServerAuthQuestion(scannerUtil);
         this.logger.print("");
 
-        this.serverProperties.setServerAuthoritativeBlockBreaking(scannerUtil.addBooleanQuestion(
-                (defaultValue) -> {
-                    this.logger.info("&n&lUstaw Server Authoritative Block Breaking&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-                    this.logger.info("Jeśli ustawione na&b true&r, serwer będzie obliczać operacje wydobywania bloków synchronicznie z klientem, aby móc zweryfikować," +
-                            " czy klient powinien mieć możliwość niszczenia bloków wtedy, kiedy uważa, że może to zrobić.");
-                },
-                this.serverProperties.isServerAuthoritativeBlockBreaking(),
-                (input) -> this.logger.info("Server Authoritative Block Breaking ustawiono na:&1 " + input)
-        ));
-        this.logger.print("");
-
-        if (this.serverProperties.getServerAuthoritativeMovement() == ServerMovementAuth.SERVER_AUTH_REWIND) {
+        if (this.serverProperties.getServerAuthoritativeMovement() != ServerMovementAuth.CLIENT_AUTH) {
             this.serverProperties.setCorrectPlayerMovement(scannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
-                        this.logger.info("&n&lUstaw Correct Player Movement&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-                        this.logger.info("jeśli ustawione na&b true&r, pozycja klienta zostanie poprawiona do pozycji serwera, jeśli wynik ruchu przekroczy próg.");
+                        this.logger.info("&n&lUstaw Correct Player Movement&r (Polecamy ustawić na: " + defaultValue + ")" + this.enter);
+                        this.logger.info("Jeśli ustawione na&b true&r, pozycja klienta zostanie poprawiona do pozycji serwera, jeśli wynik ruchu przekroczy próg.");
+                        this.logger.info("Najlepiej działa z &b " + ServerMovementAuth.SERVER_AUTH_REWIND.getAuthName());
                     },
-                    this.serverProperties.isCorrectPlayerMovement(),
+                    true,
                     (input) -> this.logger.info("Correct Player Movement ustawiono na:&1 " + input)
             ));
             this.logger.print("");
         }
+
+        this.serverProperties.setServerAuthoritativeBlockBreaking(scannerUtil.addBooleanQuestion(
+                (defaultValue) -> {
+                    this.logger.info("&n&lUstaw Server Authoritative Block Breaking&r (Polecamy ustawić na: " + defaultValue + ")" + this.enter);
+                    this.logger.info("Jeśli ustawione na&b true&r, serwer będzie obliczać operacje wydobywania bloków synchronicznie z klientem, aby móc zweryfikować," +
+                            " czy klient powinien mieć możliwość niszczenia bloków wtedy, kiedy uważa, że może to zrobić.");
+                    this.logger.info("Działa jak anty nuker");
+                },true,
+                (input) -> this.logger.info("Server Authoritative Block Breaking ustawiono na:&1 " + input)
+        ));
+        this.logger.print("");
 
         this.serverProperties.setAllowCheats(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
