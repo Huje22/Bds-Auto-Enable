@@ -107,7 +107,7 @@ public class VersionManager {
             this.versionManagerConfig.setLoaded(true);
             this.versionManagerConfig.setVersion(version);
             this.logger.info("Załadowano versie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
-        } catch (final IOException exception) {
+        } catch (final Exception exception) {
             this.logger.critical("Nie można załadować wersji: " + version, exception);
             throw new RuntimeException(exception);
         }

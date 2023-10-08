@@ -3,7 +3,6 @@ package me.indian.bds.util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
@@ -14,7 +13,7 @@ import java.util.zip.ZipOutputStream;
 
 public final class ZipUtil {
 
-    public static void zipFolder(final String sourceFolderPath, final String zipFilePath) throws IOException {
+    public static void zipFolder(final String sourceFolderPath, final String zipFilePath) throws Exception {
         final File sourceFolder = new File(sourceFolderPath);
         try (final FileOutputStream fos = new FileOutputStream(zipFilePath);
              final ZipOutputStream zos = new ZipOutputStream(fos)) {
@@ -22,7 +21,7 @@ public final class ZipUtil {
         }
     }
 
-    public static void zipFiles(final List<String> srcFiles, final String zipFilePath) throws IOException {
+    public static void zipFiles(final List<String> srcFiles, final String zipFilePath) throws Exception {
         final FileOutputStream fos = new FileOutputStream(zipFilePath);
         final ZipOutputStream zipOut = new ZipOutputStream(fos);
 
@@ -44,13 +43,14 @@ public final class ZipUtil {
         fos.close();
     }
 
-    public static void unzipFile(final String zipFilePath, final String targetDirectory, final boolean deleteOnEnd) throws IOException {
+    public static void unzipFile(final String zipFilePath, final String targetDirectory, final boolean deleteOnEnd) throws Exception {
         final Path path = Path.of(zipFilePath);
         try (final ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(path))) {
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 final String entryName = zipEntry.getName();
                 final File outputFile = new File(targetDirectory, entryName);
+                if (entryName.contains(File.separator + ".")) continue;
                 if (zipEntry.isDirectory()) {
                     outputFile.mkdirs();
                 } else {
@@ -69,13 +69,14 @@ public final class ZipUtil {
         }
     }
 
-    public static void unzipFile(final String zipFilePath, final String targetDirectory, final boolean deleteOnEnd, final List<String> skipFiles) throws IOException {
+    public static void unzipFile(final String zipFilePath, final String targetDirectory, final boolean deleteOnEnd, final List<String> skipFiles) throws Exception {
         final Path path = Path.of(zipFilePath);
         try (final ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(path))) {
             ZipEntry zipEntry;
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 final String entryName = zipEntry.getName();
                 final File outputFile = new File(targetDirectory + File.separator + entryName);
+                if (entryName.contains(File.separator + ".")) continue;
                 if (outputFile.exists() && skipFiles.contains(outputFile.getAbsolutePath())) {
                     System.out.println("Omijam plik " + outputFile.getAbsolutePath());
                     continue;
@@ -99,7 +100,7 @@ public final class ZipUtil {
         }
     }
 
-    private static void addFolderToZip(final File folder, final String folderName, final ZipOutputStream zos) throws IOException {
+    private static void addFolderToZip(final File folder, final String folderName, final ZipOutputStream zos) throws Exception {
         final File[] files = folder.listFiles();
         if (files != null) {
             for (final File file : files) {
@@ -112,7 +113,7 @@ public final class ZipUtil {
         }
     }
 
-    private static void addFileToZip(final File file, final String folderName, final ZipOutputStream zos) throws IOException {
+    private static void addFileToZip(final File file, final String folderName, final ZipOutputStream zos) throws Exception {
         final byte[] buffer = new byte[1024];
         try (final FileInputStream fis = new FileInputStream(file)) {
             final String entryPath = folderName + File.separator + file.getName();

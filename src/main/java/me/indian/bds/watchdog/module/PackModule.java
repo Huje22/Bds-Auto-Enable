@@ -219,7 +219,7 @@ public class PackModule {
                 this.logger.error("Kod odpowiedzi strony: " + response);
                 System.exit(0);
             }
-        } catch (final IOException ioException) {
+        } catch (final Exception ioException) {
             this.logger.error("Nie można pobrać paczki " , ioException);
         }
     }
