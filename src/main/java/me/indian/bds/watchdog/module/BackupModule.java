@@ -1,21 +1,6 @@
 package me.indian.bds.watchdog.module;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
-import me.indian.bds.config.Config;
-import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.StatusUtil;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.util.ZipUtil;
-import me.indian.bds.watchdog.WatchDog;
-
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -28,6 +13,20 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.Defaults;
+import me.indian.bds.config.Config;
+import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.logger.LogState;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.FileUtil;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.ZipUtil;
+import me.indian.bds.watchdog.WatchDog;
 
 public class BackupModule {
 
@@ -70,9 +69,7 @@ public class BackupModule {
             if (!this.worldFile.exists()) {
                 this.logger.critical("Folder świata \"" + this.worldName + "\" nie istnieje");
                 this.logger.alert("Ścieżka " + this.worldPath);
-                Thread.currentThread().interrupt();
-                this.timer.cancel();
-                return;
+                this.createWorldFile();
             }
         }
 
@@ -171,12 +168,19 @@ public class BackupModule {
                             this.serverProcess.sendToConsole("stop");
                             try {
                                 this.serverProcess.getProcess().waitFor();
-//                                FileUtil.renameFolder(Path.of(this.worldPath), Path.of(Defaults.getWorldsPath() + "OLD_" + this.worldName));
+                                FileUtil.renameFolder(Path.of(this.worldPath), Path.of(Defaults.getWorldsPath() + "OLD_" + this.worldName));
                                 ThreadUtil.sleep(10); //Usypiam ten wątek aby nie doprowadzić do awarii chunk bo juz tak mi sie wydarzyło
-                                ZipUtil.unzipFile(path.toFile().getPath(), Defaults.getWorldsPath(), false);
-                            } catch (final Exception ioException) {
-                                this.bdsAutoEnable.getDiscord().sendMessage("Świat prawdopodobnie uległ awarii podczas próby załadowania backup");
-                                ioException.printStackTrace();
+                                ZipUtil.unzipFile(path.toString(), Defaults.getWorldsPath(), false);
+                            } catch (final Exception exception) {
+
+                                this.bdsAutoEnable.getDiscord().sendEmbedMessage("Ładowanie Backup",
+                                        "Świat prawdopodobnie uległ awarii podczas próby załadowania backup",
+                                        exception,
+                                        "---");
+
+                                this.logger.info("Świat prawdopodobnie uległ awarii podczas próby załadowania backup", exception);
+
+
                                 System.exit(1);
                                 return;
                             } finally {
@@ -207,6 +211,19 @@ public class BackupModule {
             this.backups.sort(Collections.reverseOrder());
         } catch (final Exception exception) {
             this.logger.error("Nie można załadować dostępnych backup", exception);
+        }
+    }
+
+    private void createWorldFile() {
+        if (!this.worldFile.exists()) {
+            if (!this.worldFile.mkdirs()) {
+                if (!this.worldFile.mkdir()) {
+                    this.logger.critical("Nie można utworzyć folderu świata!");
+                    System.exit(0);
+                    return;
+                }
+            }
+            this.logger.info("Utworzono brakujący folder świata");
         }
     }
 
