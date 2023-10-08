@@ -87,8 +87,8 @@ public class Metrics {
         Metrics.random = new Random();
         try {
             this.loadConfig();
-        } catch (final IOException e) {
-            bdsAutoEnable.getLogger().warning("Nie udało załadować się configu bStats!", e);
+        } catch (final IOException exception) {
+            bdsAutoEnable.getLogger().warning("Nie udało załadować się configu bStats!", exception);
         }
 
         if (this.enabled) {
@@ -141,7 +141,8 @@ public class Metrics {
         }
 
         if (logResponseStatusText) {
-            bdsAutoEnable.getLogger().info("Wysłano dane do bStats i otrzymano odpowiedź: " + builder);
+            bdsAutoEnable.getLogger().info("Wysłano dane do bStats i otrzyman (Z kodem&1"
+                    + connection.getResponseCode() + "&r) odpowiedź: " + builder.toString());
         }
     }
 
@@ -298,10 +299,10 @@ public class Metrics {
             try {
                 // Send the data
                 sendData(data);
-            } catch (final Exception e) {
+            } catch (final Exception exception) {
                 // Something went wrong! :(
                 if (logFailedRequests) {
-                    bdsAutoEnable.getLogger().warning("Nie można wysłać danych do&b bstats", e);
+                    bdsAutoEnable.getLogger().warning("Nie można wysłać danych do&b bstats", exception);
                 }
             }
         }).newThread().start();
@@ -372,7 +373,7 @@ public class Metrics {
          *
          * @param chartId The id of the chart.
          */
-        CustomChart(final String chartId) {
+        public CustomChart(final String chartId) {
             if (chartId == null || chartId.isEmpty()) {
                 throw new IllegalArgumentException("ChartId cannot be null or empty!");
             }
@@ -389,9 +390,9 @@ public class Metrics {
                     return null;
                 }
                 chart.add("data", data);
-            } catch (final Throwable t) {
+            } catch (final Throwable throwable) {
                 if (logFailedRequests) {
-                    bdsAutoEnable.getLogger().warning("Failed to get data for custom chart with id " + this.chartId + t);
+                    bdsAutoEnable.getLogger().warning("Failed to get data for custom chart with id " + this.chartId, throwable);
                 }
                 return null;
             }

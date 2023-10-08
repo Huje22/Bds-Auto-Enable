@@ -2,7 +2,12 @@ package me.indian.bds;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
-import me.indian.bds.bstats.OurMetrics;
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Scanner;
+import me.indian.bds.bstats.Metrics;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -20,12 +25,6 @@ import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.SystemOs;
 import me.indian.bds.watchdog.WatchDog;
-
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Scanner;
 
 
 public class BDSAutoEnable {
@@ -103,7 +102,7 @@ public class BDSAutoEnable {
         this.serverProcess.startProcess();
         this.versionManager.getVersionUpdater().checkForUpdate();
         new AutoMessages(this, this.serverProcess).start();
-        new OurMetrics(this);
+        new Metrics(this);
 
     }
 
