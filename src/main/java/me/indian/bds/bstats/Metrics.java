@@ -1,19 +1,8 @@
 package me.indian.bds.bstats;
 
-//TODO: Remove unused
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.ThreadUtil;
-
-import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -27,13 +16,18 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
-import java.util.concurrent.Callable;
 import java.util.zip.GZIPOutputStream;
+import javax.net.ssl.HttpsURLConnection;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.Defaults;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ThreadUtil;
 
 /**
  * bStats collects some data for plugin authors.
@@ -65,6 +59,11 @@ public class Metrics {
     private static ServerProcess server;
     // Instance of app
     private static BDSAutoEnable bdsAutoEnable;
+    // A list with all custom charts
+    private final List<CustomChart> charts = new ArrayList<>();
+    // Is bStats enabled on this server?
+    private boolean enabled;
+
 
     static {
         // You can use the property to disable the check in your test environment
@@ -78,11 +77,6 @@ public class Metrics {
             }
         }
     }
-
-    // A list with all custom charts
-    private final List<CustomChart> charts = new ArrayList<>();
-    // Is bStats enabled on this server?
-    private boolean enabled;
 
     public Metrics(final BDSAutoEnable bdsAutoEnable) {
         if (bdsAutoEnable == null) {
@@ -237,9 +231,8 @@ public class Metrics {
         for (final CustomChart customChart : this.charts) {
             // Add the data of the custom charts
             final JsonObject chart = customChart.getRequestJsonObject();
-            if (chart == null) { // If the chart is null, we skip it
-                continue;
-            }
+            // If the chart is null, we skip it
+            if (chart == null) continue;
             customCharts.add(chart);
         }
         data.add("customCharts", customCharts);
@@ -321,6 +314,7 @@ public class Metrics {
      */
     private void loadConfig() throws IOException {
         final File configFile = new File(Defaults.getAppDir() + "bstats.json");
+        final Gson gson = GsonUtil.getGson();
 
         // Check if the config file exists
         if (!configFile.exists()) {
@@ -328,7 +322,6 @@ public class Metrics {
             final BstatsConfig defaultConfig = new BstatsConfig(true, UUID.randomUUID().toString(), false, false, false);
 
             // Serialize the default configuration to JSON and save it to the config file
-            final Gson gson = GsonUtil.getGson();
             try (final FileWriter writer = new FileWriter(configFile)) {
                 gson.toJson(defaultConfig, writer);
             }
@@ -338,7 +331,6 @@ public class Metrics {
         }
 
         // Deserialize the configuration from JSON
-        final Gson gson = GsonUtil.getGson();
         try (final FileReader reader = new FileReader(configFile)) {
             final BstatsConfig configData = gson.fromJson(reader, BstatsConfig.class);
 

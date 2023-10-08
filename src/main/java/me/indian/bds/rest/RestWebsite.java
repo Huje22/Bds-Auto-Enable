@@ -53,9 +53,7 @@ public class RestWebsite {
             final Javalin app = Javalin.create().start(port);
             final RateLimiter limiter = new RateLimiter(TimeUnit.MINUTES);
 
-            app.after(ctx -> {
-                ctx.res().setCharacterEncoding("UTF-8");
-            });
+            app.after(ctx -> ctx.res().setCharacterEncoding("UTF-8"));
 
             app.get("/", ctx -> {
                 final String info = """
