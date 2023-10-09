@@ -10,7 +10,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
-
 public final class ZipUtil {
 
     public static void zipFolder(final String sourceFolderPath, final String zipFilePath) throws Exception {
@@ -22,51 +21,26 @@ public final class ZipUtil {
     }
 
     public static void zipFiles(final List<String> srcFiles, final String zipFilePath) throws Exception {
-        final FileOutputStream fos = new FileOutputStream(zipFilePath);
-        final ZipOutputStream zipOut = new ZipOutputStream(fos);
-
-        for (final String srcFile : srcFiles) {
-            final File fileToZip = new File(srcFile);
-            if (!fileToZip.exists()) continue;
-            final FileInputStream fis = new FileInputStream(fileToZip);
-            final ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
-            zipOut.putNextEntry(zipEntry);
-
-            final byte[] bytes = new byte[1024];
-            int length;
-            while ((length = fis.read(bytes)) >= 0) {
-                zipOut.write(bytes, 0, length);
-            }
-            fis.close();
-        }
-        zipOut.close();
-        fos.close();
-    }
-
-    public static void unzipFile(final String zipFilePath, final String targetDirectory, final boolean deleteOnEnd) throws Exception {
-        final Path path = Path.of(zipFilePath);
-        try (final ZipInputStream zipInputStream = new ZipInputStream(Files.newInputStream(path))) {
-            ZipEntry zipEntry;
-            while ((zipEntry = zipInputStream.getNextEntry()) != null) {
-                final String entryName = zipEntry.getName();
-                final File outputFile = new File(targetDirectory, entryName);
-                if (entryName.contains(File.separator + ".")) continue;
-                if (zipEntry.isDirectory()) {
-                    outputFile.mkdirs();
-                } else {
-                    try (final FileOutputStream outputStream = new FileOutputStream(outputFile)) {
-                        final byte[] buffer = new byte[1024];
-                        int length;
-                        while ((length = zipInputStream.read(buffer)) > 0) {
-                            outputStream.write(buffer, 0, length);
-                        }
+        try (final FileOutputStream fos = new FileOutputStream(zipFilePath);
+             final ZipOutputStream zipOut = new ZipOutputStream(fos)) {
+            for (final String srcFile : srcFiles) {
+                final File fileToZip = new File(srcFile);
+                if (!fileToZip.exists()) continue;
+                try (final FileInputStream fis = new FileInputStream(fileToZip)) {
+                    final ZipEntry zipEntry = new ZipEntry(fileToZip.getName());
+                    zipOut.putNextEntry(zipEntry);
+                    final byte[] bytes = new byte[1024];
+                    int length;
+                    while ((length = fis.read(bytes)) >= 0) {
+                        zipOut.write(bytes, 0, length);
                     }
                 }
             }
         }
-        if (deleteOnEnd) {
-            Files.deleteIfExists(path);
-        }
+    }
+
+    public static void unzipFile(final String zipFilePath, final String targetDirectory, final boolean deleteOnEnd) throws Exception {
+        unzipFile(zipFilePath, targetDirectory, deleteOnEnd, null);
     }
 
     public static void unzipFile(final String zipFilePath, final String targetDirectory, final boolean deleteOnEnd, final List<String> skipFiles) throws Exception {
@@ -77,7 +51,7 @@ public final class ZipUtil {
                 final String entryName = zipEntry.getName();
                 final File outputFile = new File(targetDirectory + File.separator + entryName);
                 if (entryName.contains(File.separator + ".")) continue;
-                if (outputFile.exists() && skipFiles.contains(outputFile.getAbsolutePath())) {
+                if (outputFile.exists() && skipFiles != null && skipFiles.contains(outputFile.getAbsolutePath())) {
                     System.out.println("Omijam plik " + outputFile.getAbsolutePath());
                     continue;
                 }
@@ -94,9 +68,9 @@ public final class ZipUtil {
                     }
                 }
             }
-        }
-        if (deleteOnEnd) {
-            Files.deleteIfExists(path);
+            if (deleteOnEnd) {
+                Files.deleteIfExists(path);
+            }
         }
     }
 

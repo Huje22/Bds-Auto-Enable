@@ -1,13 +1,6 @@
 package me.indian.bds.util;
 
 import com.sun.management.OperatingSystemMXBean;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
-import me.indian.bds.config.Config;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.player.StatsManager;
-import me.indian.bds.server.ServerProcess;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -18,11 +11,17 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.Defaults;
+import me.indian.bds.config.Config;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.manager.player.StatsManager;
+import me.indian.bds.server.ServerProcess;
 
 public final class StatusUtil {
 
     private static final List<String> status = new ArrayList<>();
-    private static File file;
+    private static final File file = new File(File.separator);
     private static BDSAutoEnable bdsAutoEnable;
     private static Logger logger;
     private static ServerProcess serverProcess;
@@ -35,12 +34,7 @@ public final class StatusUtil {
         StatusUtil.serverProcess = bdsAutoEnable.getServerProcess();
         StatusUtil.statsManager = bdsAutoEnable.getPlayerManager().getStatsManager();
         StatusUtil.config = bdsAutoEnable.getConfig();
-        final String filesPath = config.getFilesPath();
-        if (filesPath.equals("./") || filesPath.isEmpty()) {
-            file = new File("/");
-        } else {
-            file = new File(filesPath);
-        }
+
     }
 
     public static List<String> getStatus(final boolean forDiscord) {
@@ -124,17 +118,11 @@ public final class StatusUtil {
     }
 
     public static long availableDiskSpace() {
-        if (file.exists()) {
-            return file.getUsableSpace();
-        }
-        return 0;
+        return (file.exists() ? file.getUsableSpace() : 0);
     }
 
     public static long maxDiskSpace() {
-        if (file.exists()) {
-            return file.getTotalSpace();
-        }
-        return 0;
+        return (file.exists() ? file.getTotalSpace() : 0);
     }
 
     public static long getServerRamUsage() {
@@ -176,14 +164,14 @@ public final class StatusUtil {
                 }
             }
         }
-        return -1;
+        return 0;
     }
 
     private static long getMemoryUsageLinux(final long pid) throws IOException {
         final Process process = Runtime.getRuntime().exec("ps -p " + pid + " -o rss=");
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             final String line = reader.readLine();
-            return line != null ? Long.parseLong(line) : -1;
+            return line != null ? Long.parseLong(line) : 0;
         }
     }
 }
