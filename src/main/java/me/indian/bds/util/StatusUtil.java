@@ -138,7 +138,7 @@ public final class StatusUtil {
     }
 
     public static long getServerRamUsage() {
-        if (serverProcess.getProcess() == null || !serverProcess.getProcess().isAlive()) return 0;
+        if (serverProcess.isEnabled()) return 0;
         try {
             switch (Defaults.getSystem()) {
                 case WINDOWS -> {
