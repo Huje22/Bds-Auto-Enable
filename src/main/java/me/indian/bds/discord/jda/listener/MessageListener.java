@@ -1,5 +1,6 @@
 package me.indian.bds.discord.jda.listener;
 
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -14,8 +15,6 @@ import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-
-import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter implements JDAListener {
 
@@ -46,16 +45,18 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     @Override
     public void onMessageUpdate(final MessageUpdateEvent event) {
         if (event.getAuthor().isBot()) return;
+        final Member member = event.getMember();
         final User author = event.getAuthor();
         final Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
+        final String userName = (member != null ? member.getNickname() : author.getName());
 
         if (event.getChannel().asTextChannel() == this.textChannel) {
             final Role role = this.discordJda.getHighestRole(author.getIdLong());
             if (this.checkLength(message)) return;
 
             final String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
-                    .replaceAll("<name>", author.getName())
+                    .replaceAll("<name>", userName)
                     .replaceAll("<msg>", rawMessage)
                     .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
                     .replaceAll("<role>", role == null ? "" : role.getName()) + this.discordConfig.getDiscordMessagesConfig().getEdited();
@@ -73,7 +74,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final User author = event.getAuthor();
         final Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
-
+        final String userName = (member != null ? member.getNickname() : author.getName());
 
         if (event.getChannel().asTextChannel() == this.consoleChannel) {
             if (member == null) return;
@@ -93,7 +94,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             if (this.checkLength(message)) return;
 
             final String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
-                    .replaceAll("<name>", author.getName())
+                    .replaceAll("<name>", userName)
                     .replaceAll("<msg>", rawMessage)
                     .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
                     .replaceAll("<role>", role == null ? "" : role.getName());

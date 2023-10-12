@@ -1,12 +1,6 @@
 package me.indian.bds.manager.player;
 
 import com.google.gson.reflect.TypeToken;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MathUtil;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -18,6 +12,11 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.Defaults;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.MathUtil;
 
 public class StatsManager {
 
@@ -59,7 +58,7 @@ public class StatsManager {
             }
         };
 
-        this.playerStatsManagerTimer.scheduleAtFixedRate(saveDataTask, MathUtil.hoursToMillis(2), MathUtil.minutesToMilis(30));
+        this.playerStatsManagerTimer.scheduleAtFixedRate(saveDataTask, MathUtil.hoursToMillis(2), MathUtil.minutesToMillis(30));
         this.playerStatsManagerTimer.scheduleAtFixedRate(playTimeTask, 0, second);
         this.timerWorking = true;
     }
