@@ -35,6 +35,7 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 * `stats` - statystyki servera i aplikacij
 * `playtime` - top 20 graczy z najwiekszym czasem gry
 * `deaths` - top 20 graczy z największą ilością śmierci
+* `end` - zamyka server i aplikacje
 
 ### W Bocie
 

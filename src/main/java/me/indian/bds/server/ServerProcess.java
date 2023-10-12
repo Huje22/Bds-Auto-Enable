@@ -1,5 +1,17 @@
 package me.indian.bds.server;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
@@ -14,19 +26,6 @@ import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.SystemOs;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ServerProcess {
 
@@ -254,6 +253,15 @@ public class ServerProcess {
                             }
                         }
                         case "update" -> this.bdsAutoEnable.getVersionManager().getVersionUpdater().updateToLatest();
+                        case "end" -> {
+                            this.sendToConsole("stop");
+                            if (!this.process.waitFor(30, TimeUnit.SECONDS)) {
+                                this.process.destroy();
+                            }
+                            this.setCanRun(false);
+                            System.exit(0);
+                            this.instantShutdown();
+                        }
                         default -> {
                             this.logger.instantLogToFile(input);
                             this.discord.writeConsole(input);
@@ -333,7 +341,7 @@ public class ServerProcess {
 
         this.discord.disableBot();
     }
-
+    
     public void sendToConsole(final String command) {
         this.cmdLock.lock();
         this.cmdResponseLock.lock();
