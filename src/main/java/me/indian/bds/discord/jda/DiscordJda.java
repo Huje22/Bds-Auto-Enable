@@ -1,5 +1,14 @@
 package me.indian.bds.discord.jda;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.config.sub.discord.DiscordConfig;
@@ -20,21 +29,12 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class DiscordJda implements DiscordIntegration {
 
@@ -153,6 +153,20 @@ public class DiscordJda implements DiscordIntegration {
         this.leaveGuilds();
     }
 
+    public void sendPrivateMessage(final User user, final String message) {
+        if (!user.hasPrivateChannel()) return;
+        user.openPrivateChannel()
+                .queue(privateChannel -> privateChannel.sendMessage(message)
+                        .queue());
+    }
+
+    public void sendPrivateMessage(final User user, final MessageEmbed embed) {
+        if (!user.hasPrivateChannel()) return;
+        user.openPrivateChannel()
+                .queue(privateChannel -> privateChannel.sendMessageEmbeds(embed)
+                        .queue());
+    }
+
     public Role getHighestRole(final long memberID) {
         final Member member = this.guild.getMemberById(memberID);
         if (member == null) return null;
@@ -171,7 +185,6 @@ public class DiscordJda implements DiscordIntegration {
     }
 
     private void customStatusUpdate() {
-
         final Timer timer = new Timer("Discord Status Changer", true);
         final TimerTask statusTask = new TimerTask() {
 

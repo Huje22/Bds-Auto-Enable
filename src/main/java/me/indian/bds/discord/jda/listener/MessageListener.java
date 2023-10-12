@@ -113,21 +113,16 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     private boolean checkLength(final Message message) {
         if (message.getContentRaw().length() >= this.discordConfig.getDiscordBotConfig().getAllowedLength()) {
-            this.sendPrivateMessage(message.getAuthor(), this.discordConfig.getDiscordBotConfig().getReachedMessage());
+            this.discordJda.sendPrivateMessage(message.getAuthor(), this.discordConfig.getDiscordBotConfig().getReachedMessage());
             if (this.discordConfig.getDiscordBotConfig().isDeleteOnReachLimit()) {
                 message.delete().queue();
-                this.sendPrivateMessage(message.getAuthor(), "`" + message.getContentRaw() + "`");
+                this.discordJda.sendPrivateMessage(message.getAuthor(), "`" + message.getContentRaw() + "`");
             }
             return true;
         }
         return false;
     }
 
-    private void sendPrivateMessage(final User user, final String message) {
-        user.openPrivateChannel()
-                .queue(privateChannel -> privateChannel.sendMessage(message)
-                        .queue());
-    }
 
     private String generatorReply(final Message messageReference) {
         return messageReference == null ? "" : this.discordConfig.getDiscordMessagesConfig()
