@@ -152,7 +152,7 @@ public class StatsManager {
                 Files.createFile(path);
                 try (final FileWriter writer = new FileWriter(path.toFile())) {
                     writer.write("Jeśli aplikacja jest włączony edycja tych JSON nic nie da :D.");
-                    writer.write("\nDane są zapisywane do pliku co 2 godziny albo co restart servera.");
+                    writer.write("\nDane są zapisywane do pliku co 30 minut albo co restart servera.");
                 }
             } catch (final IOException exception) {
                 this.logger.debug("Nie udało się stworzyć pliku informacyjnego w katalogu&b stats&r" + exception);
