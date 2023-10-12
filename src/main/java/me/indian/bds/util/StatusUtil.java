@@ -126,7 +126,7 @@ public final class StatusUtil {
     }
 
     public static long getServerRamUsage() {
-        if (serverProcess.isEnabled()) return 0;
+        if (!serverProcess.isEnabled()) return 0;
         try {
             switch (Defaults.getSystem()) {
                 case WINDOWS -> {
@@ -136,7 +136,7 @@ public final class StatusUtil {
                     return getMemoryUsageLinux(serverProcess.getProcess().pid());
                 }
             }
-        } catch (final IOException exception) {
+        } catch (final Exception exception) {
             logger.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + Defaults.getSystem() , exception);
         }
         return -1;
@@ -164,14 +164,14 @@ public final class StatusUtil {
                 }
             }
         }
-        return 0;
+        return -1;
     }
 
     private static long getMemoryUsageLinux(final long pid) throws IOException {
         final Process process = Runtime.getRuntime().exec("ps -p " + pid + " -o rss=");
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             final String line = reader.readLine();
-            return line != null ? Long.parseLong(line) : 0;
+            return line != null ? Long.parseLong(line) : -1;
         }
     }
 }
