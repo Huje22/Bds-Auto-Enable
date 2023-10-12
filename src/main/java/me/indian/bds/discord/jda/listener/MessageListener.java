@@ -45,18 +45,17 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     @Override
     public void onMessageUpdate(final MessageUpdateEvent event) {
         if (event.getAuthor().isBot()) return;
-        final Member member = event.getMember();
+
         final User author = event.getAuthor();
         final Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
-        final String userName = (member != null ? member.getNickname() : author.getName());
 
         if (event.getChannel().asTextChannel() == this.textChannel) {
             final Role role = this.discordJda.getHighestRole(author.getIdLong());
             if (this.checkLength(message)) return;
 
             final String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
-                    .replaceAll("<name>", userName)
+                    .replaceAll("<name>", this.getUserName(event.getMember(), author))
                     .replaceAll("<msg>", rawMessage)
                     .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
                     .replaceAll("<role>", role == null ? "" : role.getName()) + this.discordConfig.getDiscordMessagesConfig().getEdited();
@@ -74,7 +73,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final User author = event.getAuthor();
         final Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
-        final String userName = (member != null ? member.getNickname() : author.getName());
 
         if (event.getChannel().asTextChannel() == this.consoleChannel) {
             if (member == null) return;
@@ -94,7 +92,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             if (this.checkLength(message)) return;
 
             final String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
-                    .replaceAll("<name>", userName)
+                    .replaceAll("<name>", this.getUserName(member, author))
                     .replaceAll("<msg>", rawMessage)
                     .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
                     .replaceAll("<role>", role == null ? "" : role.getName());
@@ -104,6 +102,14 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
     }
 
+    private String getUserName(final Member member, final User author) {
+        if (member != null) {
+            if (member.getNickname() != null) {
+                return member.getNickname();
+            }
+        }
+        return author.getName();
+    }
 
     private boolean checkLength(final Message message) {
         if (message.getContentRaw().length() >= this.discordConfig.getDiscordBotConfig().getAllowedLength()) {
@@ -116,7 +122,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
         return false;
     }
-
 
     private void sendPrivateMessage(final User user, final String message) {
         user.openPrivateChannel()
