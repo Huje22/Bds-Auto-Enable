@@ -65,6 +65,10 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
     }
 
+//TODO: Add method to do message receive and Update in one method
+//TODO: Add geting mention users/chanel/roles as name
+
+    
     @Override
     public void onMessageReceived(final MessageReceivedEvent event) {
         if (event.getAuthor().isBot() || event.isWebhookMessage()) return;
