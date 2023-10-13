@@ -129,4 +129,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                 .getReplyStatement().replaceAll("<msg>", messageReference.getContentRaw())
                 .replaceAll("<author>", messageReference.getAuthor().getName());
     }
+//TODO: Użyć getUserName();
+    
 }
