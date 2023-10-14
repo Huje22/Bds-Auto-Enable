@@ -19,7 +19,7 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.player.PlayerManager;
+import me.indian.bds.manager.server.ServerManager;
 import me.indian.bds.server.properties.Difficulty;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
@@ -33,7 +33,7 @@ public class ServerProcess {
     private final Logger logger;
     private final Config config;
     private final DiscordIntegration discord;
-    private final PlayerManager playerManager;
+    private final ServerManager serverManager;
     private final ExecutorService processService;
     private final Lock cmdLock, cmdResponseLock;
     private final String prefix;
@@ -52,7 +52,7 @@ public class ServerProcess {
         this.logger = this.bdsAutoEnable.getLogger();
         this.config = this.bdsAutoEnable.getConfig();
         this.discord = this.bdsAutoEnable.getDiscord();
-        this.playerManager = this.bdsAutoEnable.getPlayerManager();
+        this.serverManager = this.bdsAutoEnable.getServerManager();
         this.processService = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Server process"));
         this.cmdLock = new ReentrantLock();
         this.cmdResponseLock = new ReentrantLock();
@@ -148,8 +148,8 @@ public class ServerProcess {
                     input.start();
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
-                    this.playerManager.clearPlayers();
-                    this.playerManager.getStatsManager().saveAllData();
+                    this.serverManager.clearPlayers();
+                    this.serverManager.getStatsManager().saveAllData();
                     output.interrupt();
                     input.interrupt();
                     this.discord.sendDisabledMessage();
@@ -180,7 +180,7 @@ public class ServerProcess {
                     if (!this.containsNotAllowedToConsoleLog(line)) {
                         System.out.println(line);
                         this.lastLine = line;
-                        this.playerManager.initFromLog(line);
+                        this.serverManager.initFromLog(line);
                     }
                     if (!this.containsNotAllowedToDiscordConsoleLog(line)) {
                         this.discord.writeConsole(line);
@@ -291,7 +291,7 @@ public class ServerProcess {
 
         this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
         ThreadUtil.sleep(3);
-        this.bdsAutoEnable.getPlayerManager().getStatsManager().saveAllData();
+        this.bdsAutoEnable.getServerManager().getStatsManager().saveAllData();
 
         if (this.isEnabled()) this.watchDog.saveAndResume();
 
@@ -406,15 +406,15 @@ public class ServerProcess {
     }
 
     public void kickAllPlayers(final String msg) {
-        if (this.playerManager.getOnlinePlayers().isEmpty()) {
+        if (this.serverManager.getOnlinePlayers().isEmpty()) {
             this.logger.debug("Lista graczy jest pusta");
             return;
         }
-        this.playerManager.getOnlinePlayers().forEach(name -> this.kick(name, msg));
+        this.serverManager.getOnlinePlayers().forEach(name -> this.kick(name, msg));
     }
 
     public void kick(final String who, final String reason) {
-        if (this.playerManager.getOnlinePlayers().isEmpty()) {
+        if (this.serverManager.getOnlinePlayers().isEmpty()) {
             this.logger.debug("Lista graczy jest pusta");
             return;
         }
@@ -422,7 +422,7 @@ public class ServerProcess {
     }
 
     public void tellrawToAll(final String msg) {
-        if (this.playerManager.getOnlinePlayers().isEmpty()) {
+        if (this.serverManager.getOnlinePlayers().isEmpty()) {
             this.logger.debug("Lista graczy jest pusta");
             return;
         }
@@ -430,7 +430,7 @@ public class ServerProcess {
     }
 
     public void tellrawToPlayer(final String playerName, final String msg) {
-        if (this.playerManager.getOnlinePlayers().isEmpty()) {
+        if (this.serverManager.getOnlinePlayers().isEmpty()) {
             this.logger.debug("Lista graczy jest pusta");
             return;
         }
@@ -439,12 +439,12 @@ public class ServerProcess {
 
     public void tellrawToAllAndLogger(final String prefix, final String msg, final LogState logState) {
         this.logger.logByState("[To Minecraft] " + msg, logState);
-        if (!this.playerManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
+        if (!this.serverManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
     }
 
     public void tellrawToAllAndLogger(final String prefix, final String msg, final Throwable throwable, final LogState logState) {
         this.logger.logByState("[To Minecraft] " + msg, throwable, logState);
-        if (!this.playerManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
+        if (!this.serverManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
     }
 
     public boolean isCanRun() {

@@ -10,7 +10,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.rest.RestApiConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.player.PlayerManager;
+import me.indian.bds.manager.server.ServerManager;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.watchdog.module.BackupModule;
@@ -29,7 +29,7 @@ public class RestWebsite {
     private final Logger logger;
     private final DiscordIntegration discordIntegration;
     private final RestApiConfig restApiConfig;
-    private final PlayerManager playerManager;
+    private final ServerManager serverManager;
     private final BackupModule backupModule;
 
     public RestWebsite(final BDSAutoEnable bdsAutoEnable) {
@@ -37,7 +37,7 @@ public class RestWebsite {
         this.logger = this.bdsAutoEnable.getLogger();
         this.discordIntegration = this.bdsAutoEnable.getDiscord();
         this.restApiConfig = this.bdsAutoEnable.getConfig().getRestApiConfig();
-        this.playerManager = this.bdsAutoEnable.getPlayerManager();
+        this.serverManager = this.bdsAutoEnable.getServerManager();
         this.backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
     }
 
@@ -70,12 +70,12 @@ public class RestWebsite {
 
             app.get("/api/stats/playtime", ctx -> {
                 limiter.incrementCounter(ctx, rateLimit);
-                ctx.contentType("application/json").result(GsonUtil.getGson().toJson(this.playerManager.getStatsManager().getPlayTime()));
+                ctx.contentType("application/json").result(GsonUtil.getGson().toJson(this.serverManager.getStatsManager().getPlayTime()));
             });
 
             app.get("/api/stats/deaths", ctx -> {
                 limiter.incrementCounter(ctx, rateLimit);
-                ctx.contentType("application/json").result(GsonUtil.getGson().toJson(this.playerManager.getStatsManager().getDeaths()));
+                ctx.contentType("application/json").result(GsonUtil.getGson().toJson(this.serverManager.getStatsManager().getDeaths()));
             });
 
             app.get("/api/stats/players", ctx -> {
@@ -147,7 +147,7 @@ public class RestWebsite {
         final JsonObject json = new JsonObject();
         final JsonArray onlinePlayers = new JsonArray();
 
-        for (final String playerName : this.playerManager.getOnlinePlayers()) {
+        for (final String playerName : this.serverManager.getOnlinePlayers()) {
             onlinePlayers.add(playerName);
         }
 
@@ -155,7 +155,7 @@ public class RestWebsite {
 
         final JsonArray offlinePlayers = new JsonArray();
 
-        for (final String playerName : this.playerManager.getOfflinePlayers()) {
+        for (final String playerName : this.serverManager.getOfflinePlayers()) {
             offlinePlayers.add(playerName);
         }
 

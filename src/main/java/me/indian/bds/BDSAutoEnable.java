@@ -13,7 +13,7 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.webhook.WebHook;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.player.PlayerManager;
+import me.indian.bds.manager.server.ServerManager;
 import me.indian.bds.manager.version.VersionManager;
 import me.indian.bds.rest.RestWebsite;
 import me.indian.bds.server.ServerProcess;
@@ -37,7 +37,7 @@ public class BDSAutoEnable {
     private final Config config;
     private final Settings settings;
     private final ServerProcess serverProcess;
-    private final PlayerManager playerManager;
+    private final ServerManager serverManager;
     private final VersionManager versionManager;
     private DiscordIntegration discord;
     private WatchDog watchDog;
@@ -73,7 +73,7 @@ public class BDSAutoEnable {
         }
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
-        this.playerManager = new PlayerManager(this);
+        this.serverManager = new ServerManager(this);
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
         StatusUtil.init(this);
@@ -87,7 +87,7 @@ public class BDSAutoEnable {
 
     public void init() {
         this.settings.loadSettings(this.scanner);
-        this.playerManager.getStatsManager().startTasks();
+        this.serverManager.getStatsManager().startTasks();
         this.shutdownHook();
         this.watchDog = new WatchDog(this);
         this.serverProcess.init();
@@ -222,8 +222,8 @@ public class BDSAutoEnable {
         return this.versionManager;
     }
 
-    public PlayerManager getPlayerManager() {
-        return this.playerManager;
+    public ServerManager getServerManager() {
+        return this.serverManager;
     }
 
     public DiscordIntegration getDiscord() {

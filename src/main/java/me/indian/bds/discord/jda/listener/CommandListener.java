@@ -122,7 +122,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 event.replyEmbeds(embed).setEphemeral(true).queue();
             }
             case "list" -> {
-                final List<String> players = this.bdsAutoEnable.getPlayerManager().getOnlinePlayers();
+                final List<String> players = this.bdsAutoEnable.getServerManager().getOnlinePlayers();
                 final String list = "`" + MessageUtil.stringListToString(players, "`, `") + "`";
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Lista Graczy")

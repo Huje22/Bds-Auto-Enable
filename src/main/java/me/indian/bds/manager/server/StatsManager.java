@@ -1,4 +1,4 @@
-package me.indian.bds.manager.player;
+package me.indian.bds.manager.server;
 
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
@@ -24,10 +24,10 @@ public class StatsManager {
     private final Timer playerStatsManagerTimer;
     private final File statsFolder, playTimeJson, deathsJson;
     private final Map<String, Long> playTime, deaths;
-    private final PlayerManager playerManager;
+    private final ServerManager serverManager;
     private boolean timerWorking = false;
 
-    public StatsManager(final BDSAutoEnable bdsAutoEnable, final PlayerManager playerManager) {
+    public StatsManager(final BDSAutoEnable bdsAutoEnable, final ServerManager serverManager) {
         this.logger = bdsAutoEnable.getLogger();
         this.playerStatsManagerTimer = new Timer("PlayerStatsMonitorTimer", true);
         this.statsFolder = new File(Defaults.getAppDir() + "stats");
@@ -36,7 +36,7 @@ public class StatsManager {
         this.createFiles();
         this.playTime = this.loadPlayTime();
         this.deaths = this.loadDeaths();
-        this.playerManager = playerManager;
+        this.serverManager = serverManager;
     }
 
     public void startTasks() {
@@ -45,7 +45,7 @@ public class StatsManager {
         final TimerTask playTimeTask = new TimerTask() {
             @Override
             public void run() {
-                for (final String playerName : StatsManager.this.playerManager.getOnlinePlayers()) {
+                for (final String playerName : StatsManager.this.serverManager.getOnlinePlayers()) {
                     StatsManager.this.playTime.put(playerName, StatsManager.this.getPlayTimeByName(playerName) + second);
                 }
             }
