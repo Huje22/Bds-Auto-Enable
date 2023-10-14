@@ -50,7 +50,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final Member member = event.getMember();
         final User author = event.getAuthor();
         final Message message = event.getMessage();
-        final String rawMessage = message.getContentRaw();
 
         if (event.getChannel().asTextChannel() == this.textChannel) {
             this.sendMessage(member, author, message, true);

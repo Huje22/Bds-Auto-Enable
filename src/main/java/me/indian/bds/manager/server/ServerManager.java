@@ -95,7 +95,10 @@ public class ServerManager {
         if (matcher.find()) {
             final String playerChat = matcher.group(1);
             final String message = matcher.group(2);
-            this.discord.sendPlayerMessage(playerChat, message);
+            this.discord.sendPlayerMessage(playerChat, message
+                    .replaceAll("," , "")
+
+            );
         }
     }
 
