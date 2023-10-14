@@ -50,7 +50,7 @@ public final class ZipUtil {
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 final String entryName = zipEntry.getName();
                 final File outputFile = new File(targetDirectory + File.separator + entryName);
-                if (entryName.contains(File.separator + ".")) continue;
+                if (entryName.contains(File.separator + ".git")) continue;
                 if (outputFile.exists() && skipFiles != null && skipFiles.contains(outputFile.getAbsolutePath())) {
                     System.out.println("Omijam plik " + outputFile.getAbsolutePath());
                     continue;

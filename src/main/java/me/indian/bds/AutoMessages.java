@@ -19,9 +19,9 @@ public class AutoMessages {
     private final Random random;
     private final List<String> messages;
 
-    public AutoMessages(final BDSAutoEnable bdsAutoEnable, final ServerProcess serverProcess) {
+    public AutoMessages(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
-        this.serverProcess = serverProcess;
+        this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.timer = new Timer("AutoMessages", true);
         this.config = this.bdsAutoEnable.getConfig();
         this.random = new Random();

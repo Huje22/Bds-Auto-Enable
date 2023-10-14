@@ -43,7 +43,7 @@ public class BackupModule {
     private final DiscordIntegration discord;
     private final WatchDog watchDog;
     private ServerProcess serverProcess;
-    private String prefix;
+    private final String prefix;
     private File backupFolder;
     private String status;
     private long lastBackupMillis;
@@ -61,6 +61,7 @@ public class BackupModule {
         this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
         this.worldPath = Defaults.getWorldsPath() + this.worldName;
         this.worldFile = new File(this.worldPath);
+        this.prefix = this.watchDog.getWatchDogPrefix();
         this.discord = bdsAutoEnable.getDiscord();
         if (this.watchDogConfig.getBackup().isBackup()) {
             this.backupFolder = new File(Defaults.getAppDir() + "backup");
@@ -82,9 +83,8 @@ public class BackupModule {
         this.loading = false;
     }
 
-    public void initBackupModule(final ServerProcess serverProcess) {
-        this.prefix = this.watchDog.getWatchDogPrefix();
-        this.serverProcess = serverProcess;
+    public void initBackupModule() {
+        this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.loadAvailableBackups();
     }
 

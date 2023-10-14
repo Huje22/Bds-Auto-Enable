@@ -37,9 +37,9 @@ public class WatchDog {
         return this.ramMonitor;
     }
 
-    public void init(final ServerProcess serverProcess, final DiscordIntegration discord) {
-        this.backupModule.initBackupModule(serverProcess);
-        this.ramMonitor.initRamMonitor(discord, serverProcess);
+    public void init( final DiscordIntegration discord) {
+        this.backupModule.initBackupModule();
+        this.ramMonitor.initRamMonitor(discord);
     }
 
     public void saveWorld() {

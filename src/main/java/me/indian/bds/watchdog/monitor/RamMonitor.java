@@ -17,6 +17,7 @@ import java.util.TimerTask;
 
 public class RamMonitor {
 
+    private final BDSAutoEnable bdsAutoEnable;
     private final Timer ramMonitorTimer;
     private final Logger logger;
     private final String prefix;
@@ -26,17 +27,18 @@ public class RamMonitor {
     private boolean running;
 
     public RamMonitor(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
+        this.bdsAutoEnable = bdsAutoEnable;
         this.ramMonitorTimer = new Timer("RamMonitorTimer", true);
-        this.logger = bdsAutoEnable.getLogger();
+        this.logger = this.bdsAutoEnable.getLogger();
         this.prefix = watchDog.getWatchDogPrefix();
-        this.ramMonitorConfig = bdsAutoEnable.getConfig().getWatchDogConfig().getRamMonitor();
+        this.ramMonitorConfig = this.bdsAutoEnable.getConfig().getWatchDogConfig().getRamMonitor();
         this.running = false;
 
     }
 
-    public void initRamMonitor(final DiscordIntegration discord, final ServerProcess serverProcess) {
+    public void initRamMonitor(final DiscordIntegration discord) {
         this.discord = discord;
-        this.serverProcess = serverProcess;
+        this.serverProcess = this.bdsAutoEnable.getServerProcess();
     }
 
     public void monitRamUsage() {

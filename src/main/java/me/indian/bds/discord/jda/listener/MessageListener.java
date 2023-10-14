@@ -84,7 +84,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
     }
 
-    
+
     //TODO: Add geting mention users/chanel/roles as name
 
     private void sendMessage(final Member member, final User author, final Message message, final boolean edited) {
