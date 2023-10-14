@@ -448,6 +448,7 @@ public class ServerProcess {
 
     public void setCanRun(final boolean canRun) {
         this.canRun = canRun;
+        //TODO: dodac opcje aby na true mogla zmienic to kalas która ustawila to na false
     }
 
     public long getStartTime() {
