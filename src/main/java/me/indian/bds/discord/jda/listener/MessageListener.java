@@ -4,6 +4,7 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import net.dv8tion.jda.api.Permission;
@@ -46,6 +47,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     public void onMessageUpdate(final MessageUpdateEvent event) {
         if (event.getAuthor().isBot()) return;
 
+        final Member member = event.getMember();
         final User author = event.getAuthor();
         final Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
@@ -55,29 +57,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
     }
 
-//TODO: Add method to do message receive and Update in one method
-//TODO: Add geting mention users/chanel/roles as name
-
-   private void sendMessage(final Member member,final User author,final Message message, final boolean edited){
-           final String rawMessage = message.getContentRaw().replace("\n", " ");
-           final Role role = this.discordJda.getHighestRole(author.getIdLong());
-            if (this.checkLength(message)) return;
-
-            String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
-                    .replaceAll("<name>", this.getUserName(member, author))
-                    .replaceAll("<msg>", rawMessage)
-                    .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
-                    .replaceAll("<role>", role == null ? "" : role.getName());
-            if(edited){
-                msg += this.discordConfig.getDiscordMessagesConfig().getEdited();
-                }
-
-
-            this.serverProcess.tellrawToAll(msg);
-            this.logger.info(msg);
-            this.discordJda.writeConsole(msg);
-       }
-    
     @Override
     public void onMessageReceived(final MessageReceivedEvent event) {
         if (event.getAuthor().isBot() || event.isWebhookMessage()) return;
@@ -105,6 +84,28 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
     }
 
+    
+    //TODO: Add geting mention users/chanel/roles as name
+
+    private void sendMessage(final Member member, final User author, final Message message, final boolean edited) {
+        final String rawMessage = message.getContentRaw().replace("\n", " ");
+        final Role role = this.discordJda.getHighestRole(author.getIdLong());
+        if (this.checkLength(message)) return;
+
+        String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
+                .replaceAll("<name>", this.getUserName(member, author))
+                .replaceAll("<msg>", rawMessage)
+                .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
+                .replaceAll("<role>", role == null ? "" : role.getName());
+        if (edited) {
+            msg += this.discordConfig.getDiscordMessagesConfig().getEdited();
+        }
+
+        this.serverProcess.tellrawToAll(msg);
+        this.logger.info(msg);
+        this.discordJda.writeConsole(ConsoleColors.removeColors(msg));
+    }
+
     private String getUserName(final Member member, final User author) {
         if (member != null) {
             if (member.getNickname() != null) {
@@ -125,7 +126,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
         return false;
     }
-
 
     private String generatorReply(final Message messageReference) {
         return messageReference == null ? "" : this.discordConfig.getDiscordMessagesConfig()
