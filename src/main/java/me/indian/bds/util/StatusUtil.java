@@ -15,7 +15,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.player.StatsManager;
+import me.indian.bds.manager.server.StatsManager;
 import me.indian.bds.server.ServerProcess;
 
 public final class StatusUtil {
@@ -32,7 +32,7 @@ public final class StatusUtil {
         StatusUtil.bdsAutoEnable = bdsAutoEnable;
         StatusUtil.logger = bdsAutoEnable.getLogger();
         StatusUtil.serverProcess = bdsAutoEnable.getServerProcess();
-        StatusUtil.statsManager = bdsAutoEnable.getPlayerManager().getStatsManager();
+        StatusUtil.statsManager = bdsAutoEnable.getServerManager().getStatsManager();
         StatusUtil.config = bdsAutoEnable.getConfig();
 
     }
@@ -63,6 +63,7 @@ public final class StatusUtil {
         status.add("Pamięć ROM: `" + rom + " / " + maxRom + "`");
         status.add("");
         status.add("> **Statystyki servera**");
+        status.add("Ostatnie TPS: `" + bdsAutoEnable.getServerManager().getLastTPS() + "`");
         status.add("Pamięć RAM: `" + usedServerMemory + "`");
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime()) + "`");
         status.add("Następny restart za za: `" + DateUtil.formatTime(bdsAutoEnable.getWatchDog().getAutoRestartModule().calculateMillisUntilNextRestart()) + "`");

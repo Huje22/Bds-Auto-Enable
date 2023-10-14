@@ -24,6 +24,7 @@ public class AutoRestartModule {
     private final String prefix;
     private ServerProcess serverProcess;
     private long lastRestartMillis;
+    private boolean restarting;
 
     public AutoRestartModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -34,6 +35,7 @@ public class AutoRestartModule {
         this.discord = bdsAutoEnable.getDiscord();
         this.prefix = watchDog.getWatchDogPrefix();
         this.lastRestartMillis = System.currentTimeMillis();
+        this.restarting = false;
 
         this.run();
     }
@@ -64,12 +66,14 @@ public class AutoRestartModule {
     }
 
     public void restart(final boolean alert) {
-        if (!this.serverProcess.isEnabled()) {
-            this.logger.error("Nie można zrestartować servera gdy jest on wyłączony!");
-            return;
-        }
-        this.restartAlert();
         try {
+            if (this.restarting) return;
+            this.restarting = true;
+            if (!this.serverProcess.isEnabled()) {
+                this.logger.error("Nie można zrestartować servera gdy jest on wyłączony!");
+                return;
+            }
+            if (alert) this.restartAlert();
             this.serverProcess.kickAllPlayers("&aServer jest restartowany....");
             this.serverProcess.sendToConsole("stop");
 
@@ -90,6 +94,8 @@ public class AutoRestartModule {
                     exception,
                     " "
             );
+        } finally {
+            this.restarting = false;
         }
     }
 
