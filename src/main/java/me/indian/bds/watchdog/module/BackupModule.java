@@ -63,7 +63,7 @@ public class BackupModule {
         this.worldFile = new File(this.worldPath);
         this.prefix = this.watchDog.getWatchDogPrefix();
         this.discord = bdsAutoEnable.getDiscord();
-        if (this.watchDogConfig.getBackup().isBackup()) {
+        if (this.watchDogConfig.getBackupConfig().isBackup()) {
             this.backupFolder = new File(Defaults.getAppDir() + "backup");
             if (!this.backupFolder.exists()) {
                 if (!this.backupFolder.mkdirs()) {
@@ -89,8 +89,8 @@ public class BackupModule {
     }
 
     public void backup() {
-        if (this.watchDogConfig.getBackup().isBackup()) {
-            final long time = MathUtil.minutesToMillis(this.watchDogConfig.getBackup().getBackupFrequency());
+        if (this.watchDogConfig.getBackupConfig().isBackup()) {
+            final long time = MathUtil.minutesToMillis(this.watchDogConfig.getBackupConfig().getBackupFrequency());
             final TimerTask backupTask = new TimerTask() {
                 @Override
                 public void run() {
@@ -103,7 +103,7 @@ public class BackupModule {
     }
 
     public void forceBackup() {
-        if (!this.watchDogConfig.getBackup().isBackup()) {
+        if (!this.watchDogConfig.getBackupConfig().isBackup()) {
             this.logger.info("Backupy są&4 wyłączone");
             return;
         }
@@ -128,12 +128,12 @@ public class BackupModule {
             final File backup = new File(this.backupFolder.getAbsolutePath() + File.separator + this.worldName + " " + DateUtil.getFixedDate() + ".zip");
             try {
                 this.watchDog.saveWorld();
-                final double lastBackUpTime = this.watchDogConfig.getBackup().getLastBackupTime();
+                final double lastBackUpTime = this.watchDogConfig.getBackupConfig().getLastBackupTime();
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aTworzenie kopij zapasowej ostatnio trwało to&b " + lastBackUpTime + "&a sekund", LogState.INFO);
                 this.status = "Tworzenie backupa...";
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 final double backUpTime = ((System.currentTimeMillis() - startTime) / 1000.0);
-                this.watchDogConfig.getBackup().setLastBackupTime(backUpTime);
+                this.watchDogConfig.getBackupConfig().setLastBackupTime(backUpTime);
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund", LogState.INFO);
                 this.discord.sendBackupDoneMessage();
                 this.status = "Utworzono backup";
@@ -203,7 +203,7 @@ public class BackupModule {
     }
 
     private void loadAvailableBackups() {
-        if (!this.watchDogConfig.getBackup().isBackup()) return;
+        if (!this.watchDogConfig.getBackupConfig().isBackup()) return;
         this.backups.clear();
         try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(this.backupFolder.getPath()))) {
             for (final Path path : directoryStream) {
@@ -231,7 +231,7 @@ public class BackupModule {
     }
 
     public long calculateMillisUntilNextBackup() {
-        return Math.max(0, MathUtil.minutesToMillis(this.watchDogConfig.getBackup().getBackupFrequency()) - (System.currentTimeMillis() - this.lastBackupMillis));
+        return Math.max(0, MathUtil.minutesToMillis(this.watchDogConfig.getBackupConfig().getBackupFrequency()) - (System.currentTimeMillis() - this.lastBackupMillis));
     }
 
     public String getStatus() {

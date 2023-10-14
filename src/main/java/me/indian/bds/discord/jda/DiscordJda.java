@@ -382,14 +382,14 @@ public class DiscordJda implements DiscordIntegration {
 
     @Override
     public void sendAppRamAlert() {
-        if (this.config.getWatchDogConfig().getRamMonitor().isDiscordAlters()) {
+        if (this.config.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
             this.sendMessage(this.getOwnerMention() + this.discordConfig.getDiscordMessagesConfig().getAppRamAlter());
         }
     }
 
     @Override
     public void sendMachineRamAlert() {
-        if (this.config.getWatchDogConfig().getRamMonitor().isDiscordAlters()) {
+        if (this.config.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
             this.sendMessage(this.getOwnerMention() + this.discordConfig.getDiscordMessagesConfig().getMachineRamAlter());
         }
     }

@@ -11,18 +11,24 @@ public class WatchDogConfig extends OkaeriConfig {
     @Comment({"Backups"})
     @CustomKey("backup")
     private BackupConfig backupConfig = new BackupConfig();
-
     @Comment({""})
     @Comment({"RamMonitor"})
     @CustomKey("ramMonitor")
     private RamMonitorConfig ramMonitorConfig = new RamMonitorConfig();
+    @Comment({""})
+    @Comment({"AutoRestart"})
+    @CustomKey("autoRestart")
+    private AutoRestartConfig autoRestartConfig = new AutoRestartConfig();
 
-
-    public BackupConfig getBackup() {
+    public BackupConfig getBackupConfig() {
         return this.backupConfig;
     }
 
-    public RamMonitorConfig getRamMonitor() {
+    public RamMonitorConfig getRamMonitorConfig() {
         return this.ramMonitorConfig;
+    }
+
+    public AutoRestartConfig getAutoRestartConfig() {
+        return this.autoRestartConfig;
     }
 }

@@ -134,7 +134,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 event.replyEmbeds(embed).setEphemeral(true).queue();
             }
             case "backup" -> {
-                if (!this.config.getWatchDogConfig().getBackup().isBackup()) {
+                if (!this.config.getWatchDogConfig().getBackupConfig().isBackup()) {
                event.reply("Backupy są wyłączone")
                    .setEphemeral(true).queue();
                     return;

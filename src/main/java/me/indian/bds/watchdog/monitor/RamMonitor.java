@@ -31,7 +31,7 @@ public class RamMonitor {
         this.ramMonitorTimer = new Timer("RamMonitorTimer", true);
         this.logger = this.bdsAutoEnable.getLogger();
         this.prefix = watchDog.getWatchDogPrefix();
-        this.ramMonitorConfig = this.bdsAutoEnable.getConfig().getWatchDogConfig().getRamMonitor();
+        this.ramMonitorConfig = this.bdsAutoEnable.getConfig().getWatchDogConfig().getRamMonitorConfig();
         this.running = false;
 
     }
