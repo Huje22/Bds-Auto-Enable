@@ -20,12 +20,12 @@ public class WatchDog {
     private final ServerProcess serverProcess;
 
     public WatchDog(final BDSAutoEnable bdsAutoEnable) {
+        this.watchDogPrefix = "&b[&3WatchDog&b]";
+        this.serverProcess = bdsAutoEnable.getServerProcess();
         this.backupModule = new BackupModule(bdsAutoEnable, this);
         this.packModule = new PackModule(bdsAutoEnable, this);
         this.autoRestartModule = new AutoRestartModule(bdsAutoEnable, this);
         this.ramMonitor = new RamMonitor(bdsAutoEnable, this);
-        this.watchDogPrefix = "&b[&3WatchDog&b]";
-        this.serverProcess = bdsAutoEnable.getServerProcess();
     }
 
     public BackupModule getBackupModule() {
