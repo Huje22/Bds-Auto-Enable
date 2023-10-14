@@ -5,6 +5,7 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.watchdog.module.AutoRestartModule;
 import me.indian.bds.watchdog.module.BackupModule;
 import me.indian.bds.watchdog.module.PackModule;
 import me.indian.bds.watchdog.monitor.RamMonitor;
@@ -13,6 +14,7 @@ public class WatchDog {
 
     private final BackupModule backupModule;
     private final PackModule packModule;
+    private final AutoRestartModule autoRestartModule;
     private final RamMonitor ramMonitor;
     private final String watchDogPrefix;
     private final ServerProcess serverProcess;
@@ -20,6 +22,7 @@ public class WatchDog {
     public WatchDog(final BDSAutoEnable bdsAutoEnable) {
         this.backupModule = new BackupModule(bdsAutoEnable, this);
         this.packModule = new PackModule(bdsAutoEnable, this);
+        this.autoRestartModule = new AutoRestartModule(bdsAutoEnable, this);
         this.ramMonitor = new RamMonitor(bdsAutoEnable, this);
         this.watchDogPrefix = "&b[&3WatchDog&b]";
         this.serverProcess = bdsAutoEnable.getServerProcess();
@@ -33,12 +36,17 @@ public class WatchDog {
         return this.packModule;
     }
 
+    public AutoRestartModule getAutoRestartModule() {
+        return this.autoRestartModule;
+    }
+
     public RamMonitor getRamMonitor() {
         return this.ramMonitor;
     }
 
-    public void init( final DiscordIntegration discord) {
+    public void init(final DiscordIntegration discord) {
         this.backupModule.initBackupModule();
+        this.autoRestartModule.init();
         this.ramMonitor.initRamMonitor(discord);
     }
 

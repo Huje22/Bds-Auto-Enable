@@ -65,6 +65,8 @@ public final class StatusUtil {
         status.add("> **Statystyki servera**");
         status.add("Pamięć RAM: `" + usedServerMemory + "`");
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime()) + "`");
+        status.add("Następny restart za za: `" + DateUtil.formatTime(bdsAutoEnable.getWatchDog().getAutoRestartModule().calculateMillisUntilNextRestart()) + "`");
+        status.add("Następny backup za: `" + DateUtil.formatTime(bdsAutoEnable.getWatchDog().getBackupModule().calculateMillisUntilNextBackup()) + "`");
         status.add("");
         status.add("> **Statystyki aplikacji**");
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - bdsAutoEnable.getStartTime()) + "`");

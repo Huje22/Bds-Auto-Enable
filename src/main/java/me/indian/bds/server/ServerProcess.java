@@ -442,6 +442,11 @@ public class ServerProcess {
         if (!this.playerManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
     }
 
+    public void tellrawToAllAndLogger(final String prefix, final String msg, final Throwable throwable, final LogState logState) {
+        this.logger.logByState("[To Minecraft] " + msg, throwable, logState);
+        if (!this.playerManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
+    }
+
     public boolean isCanRun() {
         return this.canRun;
     }
