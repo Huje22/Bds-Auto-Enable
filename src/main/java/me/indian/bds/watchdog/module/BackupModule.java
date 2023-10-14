@@ -78,9 +78,10 @@ public class BackupModule {
         }
 
         this.status = "Brak";
-        this.lastBackupMillis = 0;
+        this.lastBackupMillis = System.currentTimeMillis();
         this.backuping = false;
         this.loading = false;
+        this.run();
     }
 
     public void initBackupModule() {
@@ -88,13 +89,13 @@ public class BackupModule {
         this.loadAvailableBackups();
     }
 
-    public void backup() {
+    private void run() {
         if (this.watchDogConfig.getBackupConfig().isBackup()) {
             final long time = MathUtil.minutesToMillis(this.watchDogConfig.getBackupConfig().getBackupFrequency());
             final TimerTask backupTask = new TimerTask() {
                 @Override
                 public void run() {
-                    BackupModule.this.forceBackup();
+                    BackupModule.this.backup();
                     BackupModule.this.lastBackupMillis = System.currentTimeMillis();
                 }
             };
@@ -102,7 +103,7 @@ public class BackupModule {
         }
     }
 
-    public void forceBackup() {
+    public void backup() {
         if (!this.watchDogConfig.getBackupConfig().isBackup()) {
             this.logger.info("Backupy są&4 wyłączone");
             return;

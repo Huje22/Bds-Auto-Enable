@@ -222,7 +222,7 @@ public class ServerProcess {
                             this.tellrawToAllAndLogger(this.prefix, "&aWersja minecraft:&b " + this.config.getVersionManagerConfig().getVersion(), LogState.INFO);
                             this.tellrawToAllAndLogger(this.prefix, "&aWersja BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
                         }
-                        case "backup" -> this.watchDog.getBackupModule().forceBackup();
+                        case "backup" -> this.watchDog.getBackupModule().backup();
                         case "test" -> {
                             for (final Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
                                 final Thread thread = entry.getKey();

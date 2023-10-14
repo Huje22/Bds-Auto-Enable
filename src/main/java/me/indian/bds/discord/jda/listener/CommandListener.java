@@ -300,7 +300,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private void serveBackupButton(final ButtonInteractionEvent event) {
         if (event.getComponentId().equals("backup")) {
-            this.backupModule.forceBackup();
+            this.backupModule.backup();
             event.reply("Backup jest tworzony").setEphemeral(true).queue();
         }
     }
