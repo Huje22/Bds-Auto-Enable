@@ -29,6 +29,7 @@ public class LogConfig extends OkaeriConfig {
 
     public LogConfig() {
         this.noDiscordConsole.addAll(this.noConsole);
+        this.noDiscordConsole.addAll(this.noFile);
     }
 
     public List<String> getNoFile() {
