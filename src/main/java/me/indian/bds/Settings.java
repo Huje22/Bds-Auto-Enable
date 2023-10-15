@@ -130,7 +130,8 @@ public class Settings {
                 (defaultValue) -> {
                     this.logger.info("&n&lLiczba wątków używana przez server&r ");
                     this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
-                }, 0,
+                    this.logger.alert("Z doświadczenia nie polecam ustawiać na więcej niż 10");
+                }, 8,
                 (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + input)
         ));
         this.logger.print("");
