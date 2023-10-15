@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Scanner;
@@ -204,7 +205,7 @@ public class ServerProcess {
     private void writeConsoleInput() {
         try (final Scanner consoleInput = new Scanner(System.in)) {
             try {
-                this.writer = new PrintWriter(this.process.getOutputStream());
+                this.writer = new PrintWriter(new OutputStreamWriter(this.process.getOutputStream()));
                 while (!Thread.currentThread().isInterrupted()) {
                     if (!consoleInput.hasNext()) continue;
                     final String input = consoleInput.nextLine();
@@ -355,8 +356,8 @@ public class ServerProcess {
                 return;
             }
 
-        this.writer.println(command);
-        this.writer.flush();
+            this.writer.println(command);
+            this.writer.flush();
         } catch(final Exception exception){
             this.logger.error("Wystąpił błąd podczas próby wysłania polecenia do konsoli" , exception);
          } finally {
