@@ -29,7 +29,11 @@ public class Settings {
 
     public void loadSettings(final Scanner scanner) {
         final ScannerUtil scannerUtil = new ScannerUtil(scanner);
-        if (!this.config.isFirstRun()) {
+       if (!this.config.isFirstRun()) {
+
+
+         //TODO: Dodać zapytanie o tym czy pytania mają być wyświetlane ponownie 
+           
             scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&n&lZastosować wcześniejsze ustawienia?&r (true/false) " + this.enter),
                     true,
                     (settings) -> {
