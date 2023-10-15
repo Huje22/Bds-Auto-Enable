@@ -45,7 +45,7 @@ public class BDSAutoEnable {
     public BDSAutoEnable() {
         this.startTime = System.currentTimeMillis();
         this.runDate = DateUtil.getFixedDate();
-        this.projectVersion = "1.0.0-Dev";
+        this.projectVersion = "0.0.1-Dev";
         this.scanner = new Scanner(System.in);
         this.config = ConfigManager.create(Config.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
