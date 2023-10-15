@@ -9,21 +9,21 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 # Uwaga
 
 * Program wymaga przynajmniej `1GB` ram do działania
-* Zaleca się używać integracii z discord (JDA)
+* Zaleca się używać integracji z discord (JDA)
 * Program wspiera użycie [**WINE**](https://github.com/wine-mirror/wine)
 
 # Program zawiera
 
 * Automatyczne włączenie servera po crashu
 * Łatwe załadowanie innej wersji
-* Tworzenie backupów świata co dany czas i manuałalnie (___Ładowanie backup wymaga nadal poprawy___)
+* Tworzenie backupów świata co dany czas i manualnie (___Ładowanie backup wymaga nadal poprawy___)
 * Pisanie w konsoli w 99% (**Mogą wystąpić małe błędy**)
 * AutoMessages
-* Licznik czasu gry gracza (Wymaga [BDS-Auto-Enable-Managment-Pack](https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack))
-* Licznik śmierci (Wymaga [BDS-Auto-Enable-Managment-Pack](https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack))
+* Licznik czasu gry gracza (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
+* Licznik śmierci (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
 * Integracje z Discordem
-  (Wymaga [BDS-Auto-Enable-Managment-Pack](https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack) do obsługi wiekszej
-  ilosci funkcij)
+  (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) do obsługi większej
+  ilości funkcji)
 * **Rest API** z czasem gry , liczbą śmierci i graczami online/offline
 
 # Polecenia
@@ -32,8 +32,8 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
 * `backup` - natychmiastowo wywołuje tworzenie backupa
 * `version` - pokazuje załadowaną versie minecraft + versie oprogramowania (w konsoli i graczom online)
-* `stats` - statystyki servera i aplikacij
-* `playtime` - top 20 graczy z najwiekszym czasem gry
+* `stats` - statystyki servera i aplikacji
+* `playtime` - top 20 graczy z największym czasem gry
 * `deaths` - top 20 graczy z największą ilością śmierci
 * `end` - zamyka server i aplikacje
 
