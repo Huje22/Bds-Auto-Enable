@@ -13,6 +13,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.events.message.MessageDeleteEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -83,6 +84,13 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
     }
 
+
+    @Override
+    public void onMessageDelete(final MessageDeleteEvent event) {
+        //TODO: Dokończyć to
+        System.out.println("Wiadomość została usunięta: " + event.getMessageId());
+
+    }
 
     //TODO: Add geting mention users/chanel/roles as name
 
