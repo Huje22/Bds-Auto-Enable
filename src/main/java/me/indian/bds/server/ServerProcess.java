@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -111,7 +109,7 @@ public class ServerProcess {
                 this.logger.info("Proces " + this.fileName + " jest już uruchomiony.");
                 System.exit(0);
             } else {
-                this.logger.info("Proces " + this.fileName + " nie jest uruchomiony. Uruchamianie...");
+                this.logger.debug("Proces " + this.fileName + " nie jest uruchomiony. Uruchamianie...");
                 try {
                     switch (this.system) {
                         case LINUX -> {
@@ -137,7 +135,7 @@ public class ServerProcess {
                     }
                     this.process = this.processBuilder.start();
                     this.startTime = System.currentTimeMillis();
-                    this.logger.info("Uruchomiono proces ");
+                    this.logger.info("Uruchomiono proces servera ");
                     this.discord.sendProcessEnabledMessage();
 
                     this.logger.debug("&bPID&r procesu servera to&1 " + this.process.pid());
@@ -334,12 +332,12 @@ public class ServerProcess {
         this.cmdLock.lock();
         this.cmdResponseLock.lock();
         try {
-            final OutputStream outputStream = this.process.getOutputStream();
-
             if (!this.isEnabled()) {
                 this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&c nullem&r albo nie jest aktywny");
                 return;
             }
+
+            final OutputStream outputStream = this.process.getOutputStream();
 
             if (outputStream == null) {
                 this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ, OutputStream servera jest&c nullem&r!");
