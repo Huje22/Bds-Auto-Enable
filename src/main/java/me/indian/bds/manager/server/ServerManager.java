@@ -88,22 +88,19 @@ public class ServerManager {
     }
 
     private void chatMessage(final String logEntry) {
-        final String patternString = "PlayerChat:([^,]+) Message:([^,]+)";
+        final String patternString = "PlayerChat:([^,]+) Message:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerChat = matcher.group(1);
             final String message = matcher.group(2);
-            this.discord.sendPlayerMessage(playerChat, message
-                    .replaceAll("," , "")
-
-            );
+            this.discord.sendPlayerMessage(playerChat, message);
         }
     }
 
     private void deathMessage(final String logEntry) {
-        final String patternString = "PlayerDeath:([^,]+) Casue:([^,]+)";
+        final String patternString = "PlayerDeath:([^,]+) Casue:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
