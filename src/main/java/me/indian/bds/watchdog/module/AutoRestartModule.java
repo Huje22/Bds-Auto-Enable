@@ -21,7 +21,7 @@ public class AutoRestartModule {
     private final AutoRestartConfig autoRestartConfig;
     private final DiscordIntegration discord;
     private final WatchDog watchDog;
-    private final String prefix;
+    private String prefix;
     private ServerProcess serverProcess;
     private long lastRestartMillis;
     private boolean restarting;
@@ -33,7 +33,6 @@ public class AutoRestartModule {
         this.watchDog = watchDog;
          this.timer = new Timer("AutoRestart", true);
         this.discord = bdsAutoEnable.getDiscord();
-        this.prefix = watchDog.getWatchDogPrefix();
         this.lastRestartMillis = System.currentTimeMillis();
         this.restarting = false;
 
@@ -42,6 +41,7 @@ public class AutoRestartModule {
 
     public void init() {
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
+        this.prefix = watchDog.getWatchDogPrefix();
     }
 
     private void run() {
