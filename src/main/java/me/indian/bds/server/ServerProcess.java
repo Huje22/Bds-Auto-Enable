@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.Map;
@@ -42,7 +43,6 @@ public class ServerProcess {
     private String finalFilePath,fileName;
     private ProcessBuilder processBuilder;
     private Process process;
-    private PrintWriter writer;
     private String lastLine;
     private long startTime;
     private WatchDog watchDog;
@@ -205,7 +205,6 @@ public class ServerProcess {
     private void writeConsoleInput() {
         try (final Scanner consoleInput = new Scanner(System.in)) {
             try {
-                this.writer = new PrintWriter(new OutputStreamWriter(this.process.getOutputStream()));
                 while (!Thread.currentThread().isInterrupted()) {
                     if (!consoleInput.hasNext()) continue;
                     final String input = consoleInput.nextLine();
@@ -279,8 +278,6 @@ public class ServerProcess {
                 this.discord.sendMessage("<owner>");
 
                 System.exit(1);
-            } finally {
-                this.writer.close();
             }
         }
     }
@@ -297,16 +294,6 @@ public class ServerProcess {
         if (this.isEnabled()) this.watchDog.saveAndResume();
 
         this.sendToConsole("stop");
-
-        if (this.writer != null) {
-            this.logger.info("Zatrzymywanie writera");
-            try {
-                this.writer.close();
-                this.logger.info("Zatrzymano writer");
-            } catch (final Exception exception) {
-                this.logger.error("Błąd podczas zamykania writera", exception);
-            }
-        }
 
         if (this.process != null && this.process.isAlive()) {
             this.logger.info("Niszczenie procesu servera");
@@ -347,17 +334,21 @@ public class ServerProcess {
         this.cmdLock.lock();
         this.cmdResponseLock.lock();
         try {
-            if (this.writer == null) {
-                this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ, Writer jest&c nullem&r!");
-                return;
-            }
+            final OutputStream outputStream = this.process.getOutputStream();
+
             if (!this.isEnabled()) {
                 this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&c nullem&r albo nie jest aktywny");
                 return;
             }
 
-            this.writer.println(command);
-            this.writer.flush();
+            if (outputStream == null) {
+                this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ, OutputStream servera jest&c nullem&r!");
+                return;
+            }
+
+            outputStream.write((command + "\n").getBytes());
+            outputStream.flush();
+
         } catch(final Exception exception){
             this.logger.error("Wystąpił błąd podczas próby wysłania polecenia do konsoli" , exception);
          } finally {
