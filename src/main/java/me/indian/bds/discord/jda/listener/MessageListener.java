@@ -95,13 +95,13 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     //TODO: Add geting mention users/chanel/roles as name
 
     private void sendMessage(final Member member, final User author, final Message message, final boolean edited) {
-        final String rawMessage = message.getContentRaw().replace("\n", " ");
+
         final Role role = this.discordJda.getHighestRole(author.getIdLong());
         if (this.checkLength(message)) return;
 
         String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
                 .replaceAll("<name>", this.getUserName(member, author))
-                .replaceAll("<msg>", rawMessage)
+                .replaceAll("<msg>", this.generateRawMessage(message))
                 .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
                 .replaceAll("<role>", role == null ? "" : role.getName());
         if (edited) {
@@ -134,9 +134,21 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         return false;
     }
 
+    private String generateRawMessage(final Message message){
+        String rawMessage = message.getContentRaw()
+                .replaceAll("\n", " ")
+                .replaceAll("\\\\", "");
+
+        if(!message.getAttachments().isEmpty()){
+            rawMessage += " (załącznik) ";
+        }
+
+      return   rawMessage;
+    }
+
     private String generatorReply(final Message messageReference) {
         return messageReference == null ? "" : this.discordConfig.getDiscordMessagesConfig().getReplyStatement()
-                .replaceAll("<msg>", messageReference.getContentRaw().replaceAll("\n", " "))
+                .replaceAll("<msg>", this.generateRawMessage(messageReference))
                 .replaceAll("<author>", this.getUserName(messageReference.getMember(), messageReference.getAuthor()));
     }   
 }
