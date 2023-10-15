@@ -127,8 +127,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     }
 
     private String generatorReply(final Message messageReference) {
-        return messageReference == null ? "" : this.discordConfig.getDiscordMessagesConfig()
-                .getReplyStatement().replaceAll("<msg>", messageReference.getContentRaw())
+        return messageReference == null ? "" : this.discordConfig.getDiscordMessagesConfig().getReplyStatement()
+                .replaceAll("<msg>", messageReference.getContentRaw().replaceAll("\n", " "))
                 .replaceAll("<author>", this.getUserName(messageReference.getMember(), messageReference.getAuthor()));
     }   
 }
