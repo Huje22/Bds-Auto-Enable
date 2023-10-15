@@ -177,7 +177,7 @@ public class ServerProperties {
     }
 
     public void setMaxThreads(final int threads) {
-        this.properties.setProperty("max-threads", String.valueOf(Math.max(threads, 0)));
+        this.properties.setProperty("max-threads", String.valueOf(MathUtil.getCorrectNumber(threads, 0, 12)));
         this.reloadServerProperties();
     }
 
