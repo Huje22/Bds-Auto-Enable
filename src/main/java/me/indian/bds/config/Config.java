@@ -34,6 +34,11 @@ public class Config extends OkaeriConfig {
     private boolean firstRun = true;
 
     @Comment({""})
+    @Comment({"Jeśli ustawisz na false następnym razem aplikacja uruchomi się bez zadawania żadnych pytań"})
+    @CustomKey("Questions")
+    private boolean questions = true;
+
+    @Comment({""})
     @Comment({"Czy użyć wine?"})
     @Comment({"Aby użyć wine trzeba mieć je pobrane!"})
     @CustomKey("Wine")
@@ -81,6 +86,14 @@ public class Config extends OkaeriConfig {
 
     public boolean isFirstRun() {
         return this.firstRun;
+    }
+
+    public boolean isQuestions() {
+        return this.questions;
+    }
+
+    public void setQuestions(final boolean questions) {
+        this.questions = questions;
     }
 
     public void setFirstRun(final boolean firstRun) {

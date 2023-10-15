@@ -1,5 +1,7 @@
 package me.indian.bds;
 
+import java.util.List;
+import java.util.Scanner;
 import me.indian.bds.config.Config;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.properties.PlayerPermissionLevel;
@@ -7,9 +9,6 @@ import me.indian.bds.server.properties.ServerMovementAuth;
 import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ScannerUtil;
-
-import java.util.List;
-import java.util.Scanner;
 
 public class Settings {
 
@@ -30,26 +29,28 @@ public class Settings {
     public void loadSettings(final Scanner scanner) {
         final ScannerUtil scannerUtil = new ScannerUtil(scanner);
        if (!this.config.isFirstRun()) {
-
-
-         //TODO: Dodać zapytanie o tym czy pytania mają być wyświetlane ponownie 
-           
-            scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&n&lZastosować wcześniejsze ustawienia?&r (true/false) " + this.enter),
-                    true,
-                    (settings) -> {
-                        if (settings) {
-                            this.serverProperties.loadProperties();
-                            if (this.config.getVersionManagerConfig().isLoaded()) {
-                                this.anotherVersionQuestion(scannerUtil);
-                            }
-                            this.againSetupServer(scannerUtil);
-                            this.currentSettings(scanner);
-                        } else {
-                            this.logger.info("Zaczynamy od nowa");
-                            this.init(scannerUtil);
-                        }
-                    });
-        } else {
+           if (!this.config.isQuestions()) {
+               this.serverProperties.loadProperties();
+               this.logger.info("Ominięto pytania");
+               return;
+           }
+           scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&n&lZastosować wcześniejsze ustawienia?&r (true/false) " + this.enter),
+                   true,
+                   (settings) -> {
+                       if (settings) {
+                           this.serverProperties.loadProperties();
+                           if (this.config.getVersionManagerConfig().isLoaded()) {
+                               this.anotherVersionQuestion(scannerUtil);
+                           }
+                           this.againSetupServer(scannerUtil);
+                           this.questionsSetting(scannerUtil);
+                           this.currentSettings(scanner);
+                       } else {
+                           this.logger.info("Zaczynamy od nowa");
+                           this.init(scannerUtil);
+                       }
+                   });
+       } else {
             this.init(scannerUtil);
         }
     }
@@ -104,6 +105,7 @@ public class Settings {
                     }
                 });
 
+        this.questionsSetting(scannerUtil);
         this.logger.info("Ukończono odpowiedzi w&a " + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         this.config.save();
         this.currentSettings(scannerUtil.getScanner());
@@ -251,6 +253,18 @@ public class Settings {
         ));
         this.logger.print("");
 
+    }
+
+    private void questionsSetting(final ScannerUtil scannerUtil) {
+        this.config.setQuestions(scannerUtil.addBooleanQuestion(
+                (defaultValue) -> {
+                    this.logger.info("&n&lCzy powtórzyć następnym razem pytania?&r (Domyślnie: " + defaultValue + ")" + this.enter);
+                    this.logger.info("&aJeśli ustawisz na&b false&a następnym razem aplikacja uruchomi się bez zadawania żadnych pytań!");
+                    this.logger.info("&aMożesz potem zmienić to w&e config.yml");
+                },
+                true,
+                (input) -> {
+                }));
     }
 
     private void currentSettings(final Scanner scanner) {
