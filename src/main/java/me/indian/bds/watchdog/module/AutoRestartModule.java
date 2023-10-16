@@ -99,6 +99,13 @@ public class AutoRestartModule {
         }
     }
 
+    public void noteRestart(){
+        //TODO: Dokończyć to 
+this.timer.cancel();
+        this.run();
+this.lastRestartMillis = System.currentTimeMillis();
+    }
+    
     private void restartAlert(){
         AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
                 "&aZa&1 10&a sekund zostanie zrestartowany server!" , LogState.INFO);
