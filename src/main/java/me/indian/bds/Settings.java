@@ -96,8 +96,22 @@ public class Settings {
         }
         this.logger.print("");
 
-//TODO: Add auto restart questions 
-        
+        final boolean autoRestart = scannerUtil.addBooleanQuestion(
+                (defaultValue) -> this.logger.info("&n&lWłączyć AutoRestart Servera?&r (Domyślnie: " + defaultValue + ")? " + this.enter),
+                true,
+                (input) -> this.logger.info("AutoRestart Servera ustawione na:&1 " + input));
+        this.logger.print("");
+
+        this.config.getWatchDogConfig().getAutoRestartConfig().setEnabled(autoRestart);
+
+        if (autoRestart) {
+            this.config.getWatchDogConfig().getAutoRestartConfig().setRestartTime(scannerUtil.addIntQuestion(
+                    (defaultValue) -> this.logger.info("&n&lCo ile godzin restartować server?&r (Polecane: " + defaultValue + ")? " + this.enter),
+                    4,
+                    (input) -> this.logger.info("Server będzie restartowany co&1 " + input + "&a godziny")));
+            this.logger.print("");
+        }
+
         scannerUtil.addBooleanQuestion(
                 (defaultValue) -> this.logger.info("&n&lRozpocząć częściową konfiguracje servera?&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 true,

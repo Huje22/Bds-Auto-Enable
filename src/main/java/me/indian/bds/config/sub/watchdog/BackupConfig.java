@@ -7,7 +7,7 @@ public class BackupConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Czy robić backupy?"})
-    private boolean backup = true;
+    private boolean backup = false;
     @Comment({""})
     @Comment({"Co ile min robić backup?"})
     private int backupFrequency = 60;

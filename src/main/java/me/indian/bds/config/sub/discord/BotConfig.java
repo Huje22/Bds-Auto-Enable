@@ -2,7 +2,6 @@ package me.indian.bds.config.sub.discord;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,11 +20,12 @@ public class BotConfig extends OkaeriConfig {
     @Comment({"Kanał na który zostaną wysyłane wiadomości z konsoli minecraft , Zostaw puste aby nie uruchamiać "})
     private long consoleID = 1L;
     @Comment({""})
-    @Comment({"Kanał do logowania komend użytych przez użytkownika , Zostaw puste aby nie uruchamiać "})
-    private long logID = 1L;
-    @Comment({""})
     @Comment({"Opuść wszystkie inne servery przy starcie bota "})
     private boolean leaveServers = false;
+    @Comment({""})
+    @Comment({"Czy tylko osoba wykonująca polecenie ma widzieć jego rezultat "})
+    @Comment({"Polecenia typu /backup load , nadal bedzie widzieć tylko wykonawca"})
+    private boolean setEphemeral = false;
     @Comment({""})
     @Comment({"Info po wpisaniu /ip"})
     private List<String> ipMessage = Arrays.asList("Nasze IP: 127.0.0.1", "Nasz Port: 19132");
@@ -37,7 +37,6 @@ public class BotConfig extends OkaeriConfig {
     private boolean deleteOnReachLimit = false;
     @Comment({""})
     @Comment({"Informacja o przekroczeniu liczby znaków (na pv)"})
-
     private String reachedMessage = "Osiągnięto dozwoloną ilosc znaków!";
     @Comment({""})
     @Comment({"Aktywność , aktualizowana co 10min"})
@@ -68,12 +67,12 @@ public class BotConfig extends OkaeriConfig {
         return this.consoleID;
     }
 
-    public long getLogID() {
-        return this.logID;
-    }
-
     public boolean isLeaveServers() {
         return this.leaveServers;
+    }
+
+    public boolean isSetEphemeral() {
+        return this.setEphemeral;
     }
 
     public List<String> getIpMessage() {

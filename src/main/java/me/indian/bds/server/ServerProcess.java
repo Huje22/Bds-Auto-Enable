@@ -147,6 +147,7 @@ public class ServerProcess {
                     input.start();
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
+                    this.watchDog.getAutoRestartModule().noteRestart();
                     this.serverManager.clearPlayers();
                     this.serverManager.getStatsManager().saveAllData();
                     output.interrupt();

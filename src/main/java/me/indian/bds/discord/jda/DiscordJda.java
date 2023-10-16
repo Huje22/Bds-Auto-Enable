@@ -24,6 +24,7 @@ import me.indian.bds.watchdog.module.PackModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
@@ -42,12 +43,12 @@ public class DiscordJda implements DiscordIntegration {
     private final Logger logger;
     private final Config config;
     private final DiscordConfig discordConfig;
-    private final long serverID, channelID, consoleID, logID;
+    private final long serverID, channelID, consoleID;
     private final List<JDAListener> listeners;
     private final ExecutorService consoleService;
     private JDA jda;
     private Guild guild;
-    private TextChannel textChannel, consoleChannel, logChannel;
+    private TextChannel textChannel, consoleChannel;
 
     public DiscordJda(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -57,7 +58,6 @@ public class DiscordJda implements DiscordIntegration {
         this.serverID = this.discordConfig.getDiscordBotConfig().getServerID();
         this.channelID = this.discordConfig.getDiscordBotConfig().getChannelID();
         this.consoleID = this.discordConfig.getDiscordBotConfig().getConsoleID();
-        this.logID = this.discordConfig.getDiscordBotConfig().getLogID();
         this.listeners = new ArrayList<>();
         this.listeners.add(new CommandListener(this, this.bdsAutoEnable));
         this.listeners.add(new MessageListener(this, this.bdsAutoEnable));
@@ -116,12 +116,6 @@ public class DiscordJda implements DiscordIntegration {
             this.logger.info("(konsola) Nie można odnaleźć kanału z ID &a" + this.consoleID);
         }
 
-        try {
-            this.logChannel = this.guild.getTextChannelById(this.logID);
-        } catch (final Exception exception) {
-            this.logger.info("(log) Nie można odnaleźć kanału z ID &a" + this.logID);
-        }
-
         for (final JDAListener listener : this.listeners) {
             try {
                 listener.init();
@@ -133,6 +127,7 @@ public class DiscordJda implements DiscordIntegration {
                 System.exit(0);
             }
         }
+        this.checkBotPermissions();
 
         this.guild.updateCommands().addCommands(
                 Commands.slash("list", "lista graczy online."),
@@ -151,6 +146,19 @@ public class DiscordJda implements DiscordIntegration {
 
         this.customStatusUpdate();
         this.leaveGuilds();
+    }
+
+    private void checkBotPermissions() {
+        final Member botMember = this.guild.getMember(this.jda.getSelfUser());
+        if (botMember == null) return;
+
+        if (!botMember.hasPermission(Permission.ADMINISTRATOR)) {
+            this.logger.error("Bot nie ma uprawnień administratora , są one wymagane");
+            this.sendEmbedMessage("Brak uprawnień",
+                    "**Bot nie posiada uprawnień administratora**\n" +
+                            "Są one wymagane do `100%` pewności że wszytko bedzie działać w nim",
+                    "Brak uprawnień");
+        }
     }
 
     public void sendPrivateMessage(final User user, final String message) {
@@ -243,13 +251,6 @@ public class DiscordJda implements DiscordIntegration {
     private List<Member> getMembersOfGuild(final Guild guild) {
         return guild.getMembers().stream()
                 .filter(member -> !member.getUser().isBot()).sorted(Comparator.comparing(Member::getTimeJoined)).toList();
-    }
-
-    public void logCommand(final MessageEmbed embed) {
-        if (this.jda != null && this.logChannel != null) {
-            if (embed.isEmpty()) return;
-            this.consoleService.execute(() -> this.logChannel.sendMessageEmbeds(embed).queue());
-        }
     }
 
     @Override

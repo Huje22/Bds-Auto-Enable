@@ -17,10 +17,11 @@ public class AutoRestartModule {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
-    private final Timer timer;
     private final AutoRestartConfig autoRestartConfig;
     private final DiscordIntegration discord;
     private final WatchDog watchDog;
+    private final Timer timer;
+    private TimerTask task;
     private String prefix;
     private ServerProcess serverProcess;
     private long lastRestartMillis;
@@ -31,7 +32,7 @@ public class AutoRestartModule {
         this.logger = this.bdsAutoEnable.getLogger();
         this.autoRestartConfig = this.bdsAutoEnable.getConfig().getWatchDogConfig().getAutoRestartConfig();
         this.watchDog = watchDog;
-         this.timer = new Timer("AutoRestart", true);
+        this.timer = new Timer("AutoRestart", true);
         this.discord = bdsAutoEnable.getDiscord();
         this.lastRestartMillis = System.currentTimeMillis();
         this.restarting = false;
@@ -41,12 +42,12 @@ public class AutoRestartModule {
 
     public void init() {
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
-        this.prefix = watchDog.getWatchDogPrefix();
+        this.prefix = this.watchDog.getWatchDogPrefix();
     }
 
     private void run() {
         final long restartTime = MathUtil.hoursToMillis(this.autoRestartConfig.getRestartTime());
-        final TimerTask task = new TimerTask() {
+        this.task = new TimerTask() {
             @Override
             public void run() {
                 if (!AutoRestartModule.this.serverProcess.isEnabled()) {
@@ -59,7 +60,7 @@ public class AutoRestartModule {
         };
 
         if (this.autoRestartConfig.isEnabled()) {
-            this.timer.scheduleAtFixedRate(task, restartTime, restartTime);
+            this.timer.schedule(this.task, restartTime, restartTime);
         } else {
             this.logger.debug("Automatyczny restart servera jest wyłączony");
         }
@@ -73,6 +74,7 @@ public class AutoRestartModule {
                 this.logger.error("Nie można zrestartować servera gdy jest on wyłączony!");
                 return;
             }
+            this.watchDog.saveAndResume();
             if (alert) this.restartAlert();
             this.serverProcess.kickAllPlayers("&aServer jest restartowany....");
             this.serverProcess.sendToConsole("stop");
@@ -92,29 +94,28 @@ public class AutoRestartModule {
             this.discord.sendEmbedMessage("Restart",
                     "Nie można zrestartować servera!",
                     exception,
-                    " "
-            );
+                    exception.getLocalizedMessage());
         } finally {
             this.restarting = false;
         }
     }
 
-    public void noteRestart(){
-        //TODO: Dokończyć to 
-this.timer.cancel();
+    public void noteRestart() {
+        if (!this.autoRestartConfig.isEnabled()) return;
+        this.task.cancel();
         this.run();
-this.lastRestartMillis = System.currentTimeMillis();
+        this.lastRestartMillis = System.currentTimeMillis();
     }
-    
-    private void restartAlert(){
+
+    private void restartAlert() {
         AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                "&aZa&1 10&a sekund zostanie zrestartowany server!" , LogState.INFO);
+                "&aZa&1 10&a sekund zostanie zrestartowany server!", LogState.INFO);
         ThreadUtil.sleep(10);
         AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                "&aZa&1 5&a sekund zostanie zrestartowany server!" , LogState.INFO);
+                "&aZa&1 5&a sekund zostanie zrestartowany server!", LogState.INFO);
         ThreadUtil.sleep(5);
         AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                "&aZa&1 4&a sekund zostanie zrestartowany server!" , LogState.INFO);
+                "&aZa&1 4&a sekund zostanie zrestartowany server!", LogState.INFO);
         ThreadUtil.sleep(4);
         AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
                 "&aZa&1 3&a sekund zostanie zrestartowany server!" , LogState.INFO);

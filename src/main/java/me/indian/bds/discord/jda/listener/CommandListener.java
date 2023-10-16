@@ -1,7 +1,14 @@
 package me.indian.bds.discord.jda.listener;
 
+import java.awt.Color;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
+import me.indian.bds.config.sub.discord.BotConfig;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerSetting;
@@ -14,10 +21,8 @@ import me.indian.bds.watchdog.module.BackupModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.MessageEmbed;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.emoji.Emoji;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
@@ -26,18 +31,12 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
-import java.awt.*;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-
 public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private final DiscordJda discordJda;
     private final BDSAutoEnable bdsAutoEnable;
     private final Config config;
+    private final BotConfig botConfig;
     private final List<Button> backupButtons, difficultyButtons;
     private JDA jda;
     private ServerProcess serverProcess;
@@ -47,6 +46,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.discordJda = discordJda;
         this.bdsAutoEnable = bdsAutoEnable;
         this.config = this.bdsAutoEnable.getConfig();
+        this.botConfig = this.config.getDiscordConfig().getDiscordBotConfig();
         this.backupButtons = new ArrayList<>();
         this.difficultyButtons = new ArrayList<>();
     }
@@ -66,7 +66,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     public void onSlashCommandInteraction(final SlashCommandInteractionEvent event) {
         final Member member = event.getMember();
         if (member == null) return;
-        this.discordJda.logCommand(this.getCommandEmbed(event));
 
         switch (event.getName()) {
             case "cmd" -> {
@@ -89,7 +88,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             .setDescription(this.serverProcess.commandAndResponse(command))
                             .setColor(Color.BLUE)
                             .build();
-                    event.replyEmbeds(embed).setEphemeral(d).queue();
+                    event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
                     //TODO: Dodać opcję do określenia w config czy ma się to pokazywać czy nie (w przypadku braku perm nie bedzie się pokazywc)
                 } else {
                     event.reply("Nie posiadasz permisji!!").setEphemeral(true).queue();
@@ -102,7 +101,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         .setColor(Color.BLUE)
                         .build();
 
-                event.replyEmbeds(embed).setEphemeral(true).queue();
+                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
             case "ip" -> {
                 final MessageEmbed embed = new EmbedBuilder()
@@ -111,7 +110,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         .setColor(Color.BLUE)
                         .build();
 
-                event.replyEmbeds(embed).setEphemeral(true).queue();
+                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
             case "stats" -> {
                 final MessageEmbed embed = new EmbedBuilder()
@@ -120,7 +119,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         .setColor(Color.BLUE)
                         .build();
 
-                event.replyEmbeds(embed).setEphemeral(true).queue();
+                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
             case "list" -> {
                 final List<String> players = this.bdsAutoEnable.getServerManager().getOnlinePlayers();
@@ -132,7 +131,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         .setColor(Color.BLUE)
                         .build();
 
-                event.replyEmbeds(embed).setEphemeral(true).queue();
+                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
             case "backup" -> {
                 if (!this.config.getWatchDogConfig().getBackupConfig().isBackup()) {
@@ -166,7 +165,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             .addActionRow(ActionRow.of(this.backupButtons).getComponents())
                             .setEphemeral(true).queue();
                 } else {
-                    event.replyEmbeds(this.getBackupEmbed()).setEphemeral(true).queue();
+                    event.replyEmbeds(this.getBackupEmbed()).setEphemeral(this.botConfig.isSetEphemeral()).queue();
                 }
             }
 
@@ -178,7 +177,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         .setColor(Color.BLUE)
                         .build();
 
-                event.replyEmbeds(embed).setEphemeral(true).queue();
+                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
 
             case "deaths" -> {
@@ -189,7 +188,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         .setColor(Color.BLUE)
                         .build();
 
-                event.replyEmbeds(embed).setEphemeral(true).queue();
+                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
             case "difficulty" -> {
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
@@ -197,7 +196,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                             .setEphemeral(true).queue();
                 } else {
-                    event.replyEmbeds(this.getDifficultyEmbed()).setEphemeral(true).queue();
+                    event.replyEmbeds(this.getDifficultyEmbed()).setEphemeral(this.botConfig.isSetEphemeral()).queue();
                 }
             }
             case "version" -> {
@@ -228,7 +227,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                     event.replyEmbeds(embed).addActionRow(button).setEphemeral(true).queue();
                 } else {
-                    event.replyEmbeds(embed).setEphemeral(true).queue();
+                    event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
                 }
             }
         }
@@ -393,22 +392,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
                         (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
                 .setColor(Color.BLUE)
-                .build();
-    }
-
-    private MessageEmbed getCommandEmbed(final SlashCommandInteractionEvent event) {
-        final User user = event.getUser();
-        final Guild guild = event.getGuild();
-        String guildName = "";
-        if (guild != null && !guild.getName().isEmpty()) {
-            guildName = guild.getName();
-        }
-
-        return new EmbedBuilder()
-                .setTitle("**Command info**")
-                .setDescription("`/" + event.getName() + "`")
-                .setColor(Color.BLUE)
-                .setFooter(user.getName() + " | " + guildName + " | " + DateUtil.getDate(), user.getAvatarUrl())
                 .build();
     }
 }

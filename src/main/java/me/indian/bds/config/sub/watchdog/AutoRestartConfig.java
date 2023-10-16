@@ -17,7 +17,15 @@ public class AutoRestartConfig extends OkaeriConfig {
         return this.enabled;
     }
 
+    public void setEnabled(final boolean enabled) {
+        this.enabled = enabled;
+    }
+
     public int getRestartTime() {
         return this.restartTime;
+    }
+
+    public void setRestartTime(final int restartTime) {
+        this.restartTime = restartTime;
     }
 }

@@ -182,7 +182,7 @@ public class BackupModule {
                                 this.bdsAutoEnable.getDiscord().sendEmbedMessage("Ładowanie Backup",
                                         "Świat prawdopodobnie uległ awarii podczas próby załadowania backup",
                                         exception,
-                                        "---");
+                                        exception.getLocalizedMessage());
 
                                 this.logger.info("Świat prawdopodobnie uległ awarii podczas próby załadowania backup", exception);
                                 System.exit(1);
