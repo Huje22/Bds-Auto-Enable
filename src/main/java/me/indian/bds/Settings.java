@@ -96,6 +96,8 @@ public class Settings {
         }
         this.logger.print("");
 
+//TODO: Add auto restart questions 
+        
         scannerUtil.addBooleanQuestion(
                 (defaultValue) -> this.logger.info("&n&lRozpocząć częściową konfiguracje servera?&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 true,
