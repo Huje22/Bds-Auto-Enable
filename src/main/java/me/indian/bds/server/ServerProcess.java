@@ -412,7 +412,16 @@ public class ServerProcess {
         this.sendToConsole("kick " + who + " " + MessageUtil.colorize(reason));
     }
 
-    public void tellrawToAll(String msg) {
+    public void tellrawToAll(final String msg) {
+        if (this.serverManager.getOnlinePlayers().isEmpty()) {
+            this.logger.debug("Lista graczy jest pusta");
+            return;
+        }
+
+        this.tellrawToPlayer("@a", msg);
+    }
+
+    public void tellrawToPlayer(final String playerName, String msg) {
         if (this.serverManager.getOnlinePlayers().isEmpty()) {
             this.logger.debug("Lista graczy jest pusta");
             return;
@@ -420,20 +429,11 @@ public class ServerProcess {
 
         msg = msg.replace("\"", "\\\"");
 
-        this.sendToConsole(MessageUtil.colorize("tellraw @a {\"rawtext\":[{\"text\":\"" + msg + "\"}]}"));
-    }
-
-    public void tellrawToPlayer(final String playerName, final String msg) {
-        if (this.serverManager.getOnlinePlayers().isEmpty()) {
-            this.logger.debug("Lista graczy jest pusta");
-            return;
-        }
         this.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + msg + "\"}]}"));
     }
 
     public void tellrawToAllAndLogger(final String prefix, final String msg, final LogState logState) {
-        this.logger.logByState("[To Minecraft] " + msg, logState);
-        if (!this.serverManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
+        this.tellrawToAllAndLogger(prefix, msg, null, logState);
     }
 
     public void tellrawToAllAndLogger(final String prefix, final String msg, final Throwable throwable, final LogState logState) {
