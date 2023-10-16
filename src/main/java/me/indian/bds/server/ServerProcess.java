@@ -412,11 +412,14 @@ public class ServerProcess {
         this.sendToConsole("kick " + who + " " + MessageUtil.colorize(reason));
     }
 
-    public void tellrawToAll(final String msg) {
+    public void tellrawToAll(String msg) {
         if (this.serverManager.getOnlinePlayers().isEmpty()) {
             this.logger.debug("Lista graczy jest pusta");
             return;
         }
+
+        msg = msg.replace("\"", "\\\"");
+
         this.sendToConsole(MessageUtil.colorize("tellraw @a {\"rawtext\":[{\"text\":\"" + msg + "\"}]}"));
     }
 
