@@ -481,6 +481,8 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToDiscordConsoleLog(final String msg) {
+       //TODO: Zmiennic to z not na allowed 
+        .
         for (final String s : this.config.getLogConfig().getNoDiscordConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
