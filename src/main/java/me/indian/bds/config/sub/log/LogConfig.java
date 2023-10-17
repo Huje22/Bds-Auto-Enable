@@ -24,13 +24,8 @@ public class LogConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment("W konsoli discord")
-    @Comment("UWAGA!!! Jeśli używasz 1gb ram dla aplikacji (co jest optymalne) nie usuwaj nic z tąd albo daj więcej ram!!!!")
-    private List<String> noDiscordConsole = new ArrayList<>();
-
-    public LogConfig() {
-        this.noDiscordConsole.addAll(this.noConsole);
-        this.noDiscordConsole.addAll(this.noFile);
-    }
+    @Comment("Jeśli log zawiera to bedzie to pokazywane w konsoli na discord")
+    private List<String> allowedInDiscordConsole = Arrays.asList("INFO]" , "");
 
     public List<String> getNoFile() {
         return this.noFile;
@@ -40,7 +35,7 @@ public class LogConfig extends OkaeriConfig {
         return this.noConsole;
     }
 
-    public List<String> getNoDiscordConsole() {
-        return this.noDiscordConsole;
+    public List<String> getAllowedInDiscordConsole() {
+        return this.allowedInDiscordConsole;
     }
 }

@@ -182,7 +182,7 @@ public class ServerProcess {
                         this.lastLine = line;
                         this.serverManager.initFromLog(line);
                     }
-                    if (!this.containsNotAllowedToDiscordConsoleLog(line)) {
+                    if (this.containsNotAllowedToDiscordConsoleLog(line)) {
                         this.discord.writeConsole(line);
                     }
                 }
@@ -481,13 +481,11 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToDiscordConsoleLog(final String msg) {
-       //TODO: Zmiennic to z not na allowed 
-        .
-        for (final String s : this.config.getLogConfig().getNoDiscordConsole()) {
+        for (final String s : this.config.getLogConfig().getAllowedInDiscordConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 }
