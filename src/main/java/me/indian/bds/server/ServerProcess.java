@@ -182,7 +182,7 @@ public class ServerProcess {
                         this.lastLine = line;
                         this.serverManager.initFromLog(line);
                     }
-                    if (this.containsNotAllowedToDiscordConsoleLog(line)) {
+                    if (this.containsAllowedToDiscordConsoleLog(line)) {
                         this.discord.writeConsole(line);
                     }
                 }
@@ -480,12 +480,12 @@ public class ServerProcess {
         return false;
     }
 
-    private boolean containsNotAllowedToDiscordConsoleLog(final String msg) {
+    private boolean containsAllowedToDiscordConsoleLog(final String msg) {
         for (final String s : this.config.getLogConfig().getAllowedInDiscordConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
-                return false;
+                return true;
             }
         }
-        return true;
+        return false;
     }
 }
