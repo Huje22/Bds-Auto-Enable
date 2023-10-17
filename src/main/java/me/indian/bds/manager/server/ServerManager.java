@@ -67,7 +67,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = matcher.group(1);
+            final String playerName = MessageUtil.fixMessage(matcher.group(1));
             this.onlinePlayers.remove(playerName);
             this.offlinePlayers.add(playerName);
             this.discord.sendLeaveMessage(playerName);
@@ -80,7 +80,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = matcher.group(1);
+            final String playerName = MessageUtil.fixMessage(matcher.group(1));
             this.onlinePlayers.add(playerName);
             this.offlinePlayers.remove(playerName);
             this.discord.sendJoinMessage(playerName);
@@ -93,8 +93,8 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerChat = matcher.group(1);
-            final String message = matcher.group(2);
+            final String playerChat = MessageUtil.fixMessage(matcher.group(1));
+            final String message = MessageUtil.fixMessage(matcher.group(2));
             this.discord.sendPlayerMessage(playerChat, message);
         }
     }
@@ -105,8 +105,8 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerDeath = matcher.group(1);
-            final String casue = matcher.group(2);
+            final String playerDeath = MessageUtil.fixMessage(matcher.group(1));
+            final String casue = MessageUtil.fixMessage(matcher.group(2));
             this.discord.sendDeathMessage(playerDeath, casue);
             this.statsManager.addDeaths(playerDeath, 1);
         }

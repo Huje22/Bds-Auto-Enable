@@ -429,7 +429,7 @@ public class ServerProcess {
 
         msg = msg.replace("\"", "\\\"");
 
-        this.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + msg + "\"}]}"));
+        this.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + MessageUtil.fixMessage(msg, true) + "\"}]}"));
     }
 
     public void tellrawToAllAndLogger(final String prefix, final String msg, final LogState logState) {

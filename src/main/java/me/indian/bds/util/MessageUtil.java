@@ -10,6 +10,25 @@ public final class MessageUtil {
         return msg.replaceAll("&", "§");
     }
 
+    public static String fixMessage(final String msg) {
+        return fixMessage(msg, false);
+    }
+
+    public static String fixMessage(final String msg, final boolean newLines) {
+        String msg2 = msg.replaceAll("\\\\", "")
+                .replaceAll("[\\uE000-\\uE0EA]", "?")
+                .replaceAll("\\$", "?")
+                .replaceAll("ঋ", "?")
+                .replaceAll("ༀ", "?")
+                .replaceAll("", "?");
+
+        if (!newLines) {
+            msg2 = msg2.replaceAll("\\r\\n|\\r|\\n", " ");
+        }
+
+        return msg2;
+    }
+
     public static String buildMessageFromArgs(final String[] args) {
         String message = "";
         for (final String arg : args) {

@@ -7,6 +7,7 @@ import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.MessageUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Message;
@@ -125,15 +126,13 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     }
 
     private String generateRawMessage(final Message message){
-        String rawMessage = message.getContentRaw()
-                .replaceAll("\n", " ")
-                .replaceAll("\\\\", "");
+        String rawMessage = MessageUtil.fixMessage(message.getContentRaw());
 
         if(!message.getAttachments().isEmpty()){
             rawMessage += " (załącznik) ";
         }
 
-      return   rawMessage;
+        return rawMessage;
     }
 
     private String generatorReply(final Message messageReference) {
