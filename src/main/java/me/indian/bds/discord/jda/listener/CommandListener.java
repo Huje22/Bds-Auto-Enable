@@ -88,8 +88,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             .setDescription(this.serverProcess.commandAndResponse(command))
                             .setColor(Color.BLUE)
                             .build();
-                    event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
-                    //TODO: Dodać opcję do określenia w config czy ma się to pokazywać czy nie (w przypadku braku perm nie bedzie się pokazywc)
+                    event.replyEmbeds(embed).setEphemeral(true).queue();
                 } else {
                     event.reply("Nie posiadasz permisji!!").setEphemeral(true).queue();
                 }
