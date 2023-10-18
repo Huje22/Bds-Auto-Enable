@@ -389,7 +389,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 .setDescription("Status ostatniego backup: " + backupStatus +
                         "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
                         "Pamięć ROM: `" + rom + " / " + maxRom + "`\n" +
-                        "Strefa czasowa maszyny: `" + ZoneId.systemDefault() +"`" +
+                        "Strefa czasowa maszyny: `" + ZoneId.systemDefault() +"`" + "Czas na maszynie: `" + DateUtil.getTimeHM() +"`" +
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
                         (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
                 .setColor(Color.BLUE)
