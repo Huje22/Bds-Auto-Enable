@@ -157,6 +157,11 @@ public class BackupModule {
     }
 
     public synchronized void loadBackup(final String backupName) {
+        if(!this.config.isDebug()){
+            this.logger.info("Ta funkcja jest nie stabilna , wymaga włączeniu Debugu");
+            return;
+        }
+
         if (this.loading) {
             this.logger.error("&cNie można załadować backup gdy jeden jest już ładowany ");
             return;

@@ -16,7 +16,7 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
 * Automatyczne włączenie servera po crashu
 * Łatwe załadowanie innej wersji
-* Tworzenie backupów świata co dany czas i manualnie (___Ładowanie backup wymaga nadal poprawy___)
+* Tworzenie backupów świata co dany czas i manualnie (___Ładowanie backup wymaga nadal wielkiej poprawy, wymaga debugu właczonego___)
 * Pisanie w konsoli w 99% (**Mogą wystąpić małe błędy**)
 * AutoMessages
 * Licznik czasu gry gracza (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))

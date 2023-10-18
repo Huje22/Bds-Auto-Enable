@@ -143,6 +143,10 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 final OptionMapping command = event.getOption("load");
                 if (command != null && !command.getAsString().isEmpty()) {
                     if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                        if(!this.config.isDebug()){
+                            event.reply("Ta funkcja jest nie stabilna , wymaga włączeniu Debugu").setEphemeral(true).queue();
+                            return;
+                        }
                         final String backupName = command.getAsString();
 
                         for (final Path path : this.backupModule.getBackups()) {
