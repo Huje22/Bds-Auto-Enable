@@ -19,6 +19,18 @@ public final class DateUtil {
         return now.format(formatter);
     }
 
+    public static String getTimeHM() {
+        final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return now.format(formatter);
+    }
+
+    public static String getTimeHMS() {
+        final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+        return now.format(formatter);
+    }
+
     public static long localDateToLong(final LocalDate localDate) {
         return localDate.toEpochDay();
     }
