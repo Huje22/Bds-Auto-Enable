@@ -14,6 +14,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -84,8 +85,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
     }
 
-    //TODO: Add geting mention users/chanel/roles as name
-
     private void sendMessage(final Member member, final User author, final Message message, final boolean edited) {
         final Role role = this.discordJda.getHighestRole(author.getIdLong());
         if (this.checkLength(message)) return;
@@ -130,6 +129,24 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
         if(!message.getAttachments().isEmpty()){
             rawMessage += " (załącznik) ";
+        }
+
+        for(final Member member : message.getMentions().getMembers()){
+            if(member == null) continue;
+            final long id = member.getIdLong();
+            rawMessage = rawMessage.replaceAll("<@" + id + ">", "@"+ this.getUserName(member, member.getUser()));
+        }
+
+        for(final GuildChannel guildChannel : message.getMentions().getChannels()){
+            if(guildChannel == null) continue;
+            final long id = guildChannel.getIdLong();
+            rawMessage = rawMessage.replaceAll("<#" + id + ">", "#" + guildChannel.getName());
+        }
+
+        for(final Role role : message.getMentions().getRoles()){
+            if(role == null) continue;
+            final long id = role.getIdLong();
+            rawMessage = rawMessage.replaceAll("<@" + id + ">", "@"+ role.getName());
         }
 
         return rawMessage;
