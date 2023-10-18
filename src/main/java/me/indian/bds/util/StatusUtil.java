@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -61,6 +62,7 @@ public final class StatusUtil {
         status.add("> **Statystyki maszyny**");
         status.add("Pamięć RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
         status.add("Pamięć ROM: `" + rom + " / " + maxRom + "`");
+        status.add("Strefa czasowa maszyny: `" + ZoneId.systemDefault() +"`");
         status.add("");
         status.add("> **Statystyki servera**");
         status.add("Ostatnie TPS: `" + bdsAutoEnable.getServerManager().getLastTPS() + "`");

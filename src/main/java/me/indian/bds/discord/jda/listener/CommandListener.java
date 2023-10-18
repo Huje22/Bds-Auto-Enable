@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
@@ -388,6 +389,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 .setDescription("Status ostatniego backup: " + backupStatus +
                         "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
                         "Pamięć ROM: `" + rom + " / " + maxRom + "`\n" +
+                        "Strefa czasowa maszyny: `" + ZoneId.systemDefault() +"`" +
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
                         (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
                 .setColor(Color.BLUE)
