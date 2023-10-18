@@ -24,6 +24,7 @@ public class LogConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment("W konsoli discord")
+    @Comment("ULEPSZYĆ TO WSZYTKO Z TYM")
     @Comment("Jeśli log zawiera to bedzie to pokazywane w konsoli na discord")
     private List<String> allowedInDiscordConsole = Arrays.asList("INFO]" , "");
 
