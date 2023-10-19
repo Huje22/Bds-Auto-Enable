@@ -2,7 +2,7 @@
 
 # BDS-Auto-Enable
 
-Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
+Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22** 
 
 </div>
 
@@ -25,6 +25,14 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
   (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) do obsługi większej
   ilości funkcji)
 * **Rest API** z czasem gry , liczbą śmierci i graczami online/offline
+
+# Jak to działa 
+Komunikuje się on z serverem BDS za pomocą wysyłania komend do konsoli a także czytania ważnych informacji z konsoli na przykład: <br>
+Paczka [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) wysyła do konsoli log 
+```
+PlayerChat:JndjanBartonka Message:Witaj
+```
+A aplikacji odczytuje nick gracza z `PlayerChat` i wiadomość z `Message` , i dalej na przykład wysyła wiadomość tą do discord , podobnie z dołączaniem gracza (w tym wypadku `PlayerJoin`) , i w tym wypadku dodaje gracza na listę graczy online i timer działający co 1s dodaje mu wtedy 1s czasu gry
 
 # Polecenia
 
