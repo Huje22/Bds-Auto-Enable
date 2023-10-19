@@ -52,7 +52,7 @@ public class ServerProcess {
         this.config = this.bdsAutoEnable.getConfig();
         this.discord = this.bdsAutoEnable.getDiscord();
         this.serverManager = this.bdsAutoEnable.getServerManager();
-        this.processService = Executors.newScheduledThreadPool(ThreadUtil.getThreadsCount(), new ThreadUtil("Server process"));
+        this.processService = Executors.newScheduledThreadPool(5, new ThreadUtil("Server process"));
         this.cmdLock = new ReentrantLock();
         this.cmdResponseLock = new ReentrantLock();
         this.prefix = "&b[&3ServerProcess&b] ";

@@ -1,14 +1,18 @@
 package me.indian.bds.manager.server;
 
-public class ServerStats{
+public class ServerStats {
 
-private final long totalUpTime;
+  private long totalUpTime;
 
-  public ServerStats(final long totalUpTime)(
-   this.totalUpTime = totalUpTime;
-}
+  public ServerStats(final long totalUpTime) {
+    this.totalUpTime = totalUpTime;
+  }
 
-public void addOnlineTime(final long time){
-this.totalUpTime += time;
-}
+  public long getTotalUpTime() {
+    return this.totalUpTime;
+  }
+
+  public void addOnlineTime(final long time) {
+    this.totalUpTime += time;
+  }
 }

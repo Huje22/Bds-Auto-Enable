@@ -11,6 +11,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.config.sub.discord.BotConfig;
 import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.manager.server.ServerStats;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerSetting;
 import me.indian.bds.server.properties.Difficulty;
@@ -175,10 +176,15 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
             case "playtime" -> {
                 final List<String> playTime = StatusUtil.getTopPlayTime(true, 100);
+                final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
+                final String totalUpTime = "Łączny czas działania servera: "
+                        + DateUtil.formatTime(serverStats.getTotalUpTime());
+
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Top 100 Czasu gry")
                         .setDescription((playTime.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(playTime)))
                         .setColor(Color.BLUE)
+                        .setFooter(totalUpTime)
                         .build();
 
                 event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();

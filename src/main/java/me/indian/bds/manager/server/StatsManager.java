@@ -4,7 +4,6 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,6 +14,7 @@ import java.util.TimerTask;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MathUtil;
 
@@ -26,8 +26,7 @@ public class StatsManager {
     private final Map<String, Long> playTime, deaths;
     private final ServerManager serverManager;
     private final ServerStats serverStats;
-    
-    
+
     public StatsManager(final BDSAutoEnable bdsAutoEnable, final ServerManager serverManager) {
         this.logger = bdsAutoEnable.getLogger();
         this.playerStatsManagerTimer = new Timer("PlayerStatsMonitorTimer", true);
@@ -40,6 +39,8 @@ public class StatsManager {
         this.deaths = this.loadDeaths();
         this.serverManager = serverManager;
         this.serverStats = this.loadServerStats();
+
+        this.startTasks();
     }
 
     private void startTasks() {
@@ -64,12 +65,30 @@ public class StatsManager {
         this.playerStatsManagerTimer.scheduleAtFixedRate(playTimeTask, 0, second);
     }
 
+    public void startCountServerTime(final ServerProcess serverProcess) {
+        final long second = MathUtil.secondToMillis(1);
+        final TimerTask serverTimeTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (serverProcess.isEnabled()) {
+                    StatsManager.this.serverStats.addOnlineTime(second);
+                }
+            }
+        };
+
+        this.playerStatsManagerTimer.scheduleAtFixedRate(serverTimeTask, 0, second);
+    }
+
     public Map<String, Long> getPlayTime() {
         return this.playTime;
     }
 
     public Map<String, Long> getDeaths() {
         return this.deaths;
+    }
+
+    public ServerStats getServerStats() {
+        return this.serverStats;
     }
 
     public long getPlayTimeByName(final String playerName) {
@@ -89,16 +108,12 @@ public class StatsManager {
         this.saveDeaths();
         this.saveServerStats();
     }
-    
-    public ServerStats getServerStats(){
-        return this.serverStats;
-        }
 
     private void savePlayTime() {
         try (final FileWriter writer = new FileWriter(this.playTimeJson)) {
             writer.write(GsonUtil.getGson().toJson(this.playTime));
             this.logger.info("Pomyślnie zapisano&b czas gry&r graczy");
-        } catch (final IOException exception) {
+        } catch (final Exception exception) {
             this.logger.critical("Nie udało się zapisać&b czasu gry&r graczy", exception);
         }
     }
@@ -107,7 +122,7 @@ public class StatsManager {
         try (final FileWriter writer = new FileWriter(this.deathsJson)) {
             writer.write(GsonUtil.getGson().toJson(this.deaths));
             this.logger.info("Pomyślnie zapisano&r liczbe&b śmierci&r graczy");
-        } catch (final IOException exception) {
+        } catch (final Exception exception) {
             this.logger.critical("Nie udało się zapisać liczby&b śmierci&r graczy", exception);
         }
     }
@@ -116,7 +131,7 @@ public class StatsManager {
         try (final FileWriter writer = new FileWriter(this.serverStatsJson)) {
             writer.write(GsonUtil.getGson().toJson(this.serverStats));
             this.logger.info("Pomyślnie zapisano&b statystyki servera");
-        } catch (final IOException exception) {
+        } catch (final Exception exception) {
             this.logger.critical("Nie udało się zapisać liczby&b śmierci&r graczy", exception);
         }
     }
@@ -127,7 +142,7 @@ public class StatsManager {
             }.getType();
             final HashMap<String, Long> loadedMap = GsonUtil.getGson().fromJson(reader, type);
             return (loadedMap == null ? new HashMap<>() : loadedMap);
-        } catch (final IOException exception) {
+        } catch (final Exception exception) {
             this.logger.critical("Nie udało się załadować&b czasu gry&r graczy", exception);
         }
         return new HashMap<>();
@@ -139,18 +154,22 @@ public class StatsManager {
             }.getType();
             final HashMap<String, Long> loadedMap = GsonUtil.getGson().fromJson(reader, type);
             return (loadedMap == null ? new HashMap<>() : loadedMap);
-        } catch (final IOException exception) {
+        } catch (final Exception exception) {
             this.logger.critical("Nie udało się załadować liczby&b śmierci&r graczy", exception);
-         }
+        }
         return new HashMap<>();
     }
-    
+
     private ServerStats loadServerStats() {
         try (final FileReader reader = new FileReader(this.serverStatsJson)) {
-            return GsonUtil.getGson().fromJson(reader, ServerStats.class);
-        } catch (final IOException exception) {
-            this.logger.critical("Nie udało się załadować&b statystyk servera", exception);
-         }
+            final ServerStats loadedStats = GsonUtil.getGson().fromJson(reader, ServerStats.class);
+
+            if (loadedStats != null) {
+                return loadedStats;
+            }
+        } catch (final Exception exception) {
+            this.logger.critical("Nie udało się załadować statystyk serwera", exception);
+        }
         return new ServerStats(0);
     }
 
@@ -173,8 +192,8 @@ public class StatsManager {
                     writer.write("Jeśli aplikacja jest włączony edycja tych JSON nic nie da :D.");
                     writer.write("\nDane są zapisywane do pliku co 30 minut albo co restart servera.");
                 }
-            } catch (final IOException exception) {
-                this.logger.debug("Nie udało się stworzyć pliku informacyjnego w katalogu&b stats&r" , exception);
+            } catch (final Exception exception) {
+                this.logger.debug("Nie udało się stworzyć pliku informacyjnego w katalogu&b stats&r", exception);
             }
         }
 
@@ -183,7 +202,7 @@ public class StatsManager {
                 if (!this.playTimeJson.createNewFile()) {
                     this.logger.critical("Nie można utworzyć&b playtime.json");
                 }
-            } catch (final IOException exception) {
+            } catch (final Exception exception) {
                 this.logger.critical("Nie udało się utworzyć&b playtime.json", exception);
             }
         }
@@ -193,7 +212,7 @@ public class StatsManager {
                 if (!this.deathsJson.createNewFile()) {
                     this.logger.critical("Nie udało się  utworzyć&b deaths.json");
                 }
-            } catch (final IOException exception) {
+            } catch (final Exception exception) {
                 this.logger.critical("Nie można utworzyć&b deaths.json", exception);
             }
         }
@@ -204,7 +223,7 @@ public class StatsManager {
                 if (!this.serverStatsJson.createNewFile()) {
                     this.logger.critical("Nie udało się  utworzyć&b server.json");
                 }
-            } catch (final IOException exception) {
+            } catch (final Exception exception) {
                 this.logger.critical("Nie można utworzyć&b server.json", exception);
             }
         }
