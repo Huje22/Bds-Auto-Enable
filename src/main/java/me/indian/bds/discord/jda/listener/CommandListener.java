@@ -69,6 +69,10 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         if (member == null) return;
 
         switch (event.getName()) {
+
+                //TODO: Użyć w niektórych miejscach sendEmbedMessage();
+                .
+                
             case "cmd" -> {
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
                     if (!this.serverProcess.isEnabled()) {
