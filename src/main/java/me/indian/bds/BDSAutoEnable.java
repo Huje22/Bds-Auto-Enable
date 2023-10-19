@@ -7,7 +7,6 @@ import java.lang.management.ManagementFactory;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Scanner;
-import me.indian.bds.bstats.Metrics;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;

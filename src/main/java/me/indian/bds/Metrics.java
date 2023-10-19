@@ -1,4 +1,4 @@
-package me.indian.bds.bstats;
+package me.indian.bds;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -22,8 +22,7 @@ import java.util.TimerTask;
 import java.util.UUID;
 import java.util.zip.GZIPOutputStream;
 import javax.net.ssl.HttpsURLConnection;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
+import me.indian.bds.config.MetricsConfig;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MathUtil;
@@ -320,7 +319,7 @@ public class Metrics {
         // Check if the config file exists
         if (!configFile.exists()) {
             // Create a default configuration object
-            final BstatsConfig defaultConfig = new BstatsConfig(true, UUID.randomUUID().toString(), false, false, false);
+            final MetricsConfig defaultConfig = new MetricsConfig(true, UUID.randomUUID().toString(), false, false, false);
 
             // Serialize the default configuration to JSON and save it to the config file
             try (final FileWriter writer = new FileWriter(configFile)) {
@@ -333,14 +332,14 @@ public class Metrics {
 
         // Deserialize the configuration from JSON
         try (final FileReader reader = new FileReader(configFile)) {
-            final BstatsConfig configData = gson.fromJson(reader, BstatsConfig.class);
+            final MetricsConfig configData = gson.fromJson(reader, MetricsConfig.class);
 
             // Load the data from the deserialized object
-            this.enabled = configData.enabled;
-            serverUUID = configData.serverUuid;
-            logFailedRequests = configData.logFailedRequests;
-            logSentData = configData.logSentData;
-            logResponseStatusText = configData.logResponseStatusText;
+            this.enabled = configData.isEnabled();
+            serverUUID = configData.getServerUuid();
+            logFailedRequests = configData.isLogFailedRequests();
+            logSentData = configData.isLogSentData();
+            logResponseStatusText = configData.isLogResponseStatusText();
         }
     }
 
