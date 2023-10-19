@@ -47,7 +47,6 @@ public class StatsManager {
         final TimerTask playTimeTask = new TimerTask() {
             @Override
             public void run() {
-                this.serverStats.addOnlineTime(second);
                 for (final String playerName : StatsManager.this.serverManager.getOnlinePlayers()) {
                     StatsManager.this.playTime.put(playerName, StatsManager.this.getPlayTimeByName(playerName) + second);
                 }
