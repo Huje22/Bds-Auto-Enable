@@ -174,9 +174,9 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             }
 
             case "playtime" -> {
-                final List<String> playTime = StatusUtil.getTopPlayTime(true, 20);
+                final List<String> playTime = StatusUtil.getTopPlayTime(true, 100);
                 final MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Top 20 Czasu gry")
+                        .setTitle("Top 100 Czasu gry")
                         .setDescription((playTime.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(playTime)))
                         .setColor(Color.BLUE)
                         .build();
@@ -185,9 +185,9 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             }
 
             case "deaths" -> {
-                final List<String> deaths = StatusUtil.getTopDeaths(true, 20);
+                final List<String> deaths = StatusUtil.getTopDeaths(true, 100);
                 final MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Top 20 ilości śmierci")
+                        .setTitle("Top 100 ilości śmierci")
                         .setDescription((deaths.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(deaths)))
                         .setColor(Color.BLUE)
                         .build();
