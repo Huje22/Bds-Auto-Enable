@@ -62,7 +62,7 @@ public final class StatusUtil {
         status.add("> **Statystyki maszyny**");
         status.add("Pamięć RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
         status.add("Pamięć ROM: `" + rom + " / " + maxRom + "`");
-        status.add("Strefa czasowa maszyny: `" + ZoneId.systemDefault() +"`" + "Czas na maszynie: `" + DateUtil.getTimeHM() +"`");
+        status.add("Strefa czasowa maszyny: `" + ZoneId.systemDefault() +"`" + " Czas na maszynie: `" + DateUtil.getTimeHM() +"`");
         status.add("");
         status.add("> **Statystyki servera**");
         status.add("Ostatnie TPS: `" + bdsAutoEnable.getServerManager().getLastTPS() + "`");
