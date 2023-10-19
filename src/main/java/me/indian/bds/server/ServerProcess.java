@@ -262,9 +262,9 @@ public class ServerProcess {
                             this.instantShutdown();
                         }
                         default -> {
+                            this.sendToConsole(input);
                             this.logger.instantLogToFile(input);
                             this.discord.writeConsole(input);
-                            this.sendToConsole(input);
                         }
                     }
                 }
