@@ -178,7 +178,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 final List<String> playTime = StatusUtil.getTopPlayTime(true, 100);
                 final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
                 final String totalUpTime = "Łączny czas działania servera: "
-                        + DateUtil.formatTime(serverStats.getTotalUpTime());
+                        + DateUtil.formatTimeWithoutMillis(serverStats.getTotalUpTime());
 
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Top 100 Czasu gry")
