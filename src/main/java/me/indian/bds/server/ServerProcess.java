@@ -346,6 +346,7 @@ public class ServerProcess {
 
             outputStream.write((command + "\n").getBytes());
             outputStream.flush();
+            this.logger.debug("Wysłano &b" + command);
 
         } catch(final Exception exception){
             this.logger.error("Wystąpił błąd podczas próby wysłania polecenia do konsoli" , exception);
@@ -438,8 +439,6 @@ public class ServerProcess {
     public Process getProcess() {
         return this.process;
     }
-
-//TODO: dodać metodę do liczenia czasu online servera
 
     private boolean containsNotAllowedToFileLog(final String msg) {
         for (final String s : this.config.getLogConfig().getNoFile()) {

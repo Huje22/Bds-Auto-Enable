@@ -153,8 +153,9 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     }
 
     private String generatorReply(final Message messageReference) {
+        //TODO: Dodać opcje wykrycia ręcznego oznaczeń
         return messageReference == null ? "" : this.discordConfig.getDiscordMessagesConfig().getReplyStatement()
-                .replaceAll("<msg>", this.generateRawMessage(messageReference))
+                .replaceAll("<msg>", this.generateRawMessage(messageReference).replaceAll("\\*\\*", ""))
                 .replaceAll("<author>", this.getUserName(messageReference.getMember(), messageReference.getAuthor()));
     }   
 }

@@ -74,6 +74,9 @@ public class AutoRestartModule {
                 this.logger.error("Nie można zrestartować servera gdy jest on wyłączony!");
                 return;
             }
+            this.serverProcess.tellrawToAllAndLogger(this.prefix,
+                    "&aPrzygotowanie do&b restartu&a servera",
+                    LogState.WARNING);
             this.watchDog.saveAndResume();
             if (alert) this.restartAlert();
             this.serverProcess.kickAllPlayers("&aServer jest restartowany....");

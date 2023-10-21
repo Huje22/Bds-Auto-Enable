@@ -96,7 +96,7 @@ public class BDSAutoEnable {
         this.watchDog.getPackModule().initPackModule();
         new RestWebsite(this).init();
         this.discord.init();
-        this.serverManager.getStatsManager().startCountServerTime(serverProcess);
+        this.serverManager.getStatsManager().startCountServerTime(this.serverProcess);
         this.serverProcess.startProcess();
         this.versionManager.getVersionUpdater().checkForUpdate();
         new AutoMessages(this).start();
