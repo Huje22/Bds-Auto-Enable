@@ -20,7 +20,6 @@ import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.server.ServerManager;
-import me.indian.bds.server.properties.Difficulty;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.SystemOs;
@@ -372,28 +371,6 @@ public class ServerProcess {
         ThreadUtil.sleep(1);
         this.cmdResponseLock.unlock();
         return this.lastLine == null ? "null" : this.lastLine;
-    }
-
-    public void changeSetting(final ServerSetting serverSetting, final Object option) {
-        switch (serverSetting) {
-            case difficulty -> {
-                if (option instanceof final Difficulty difficulty) {
-                    this.sendToConsole("changesetting " + serverSetting.getName() + " " + difficulty.getDifficultyName());
-                    this.bdsAutoEnable.getServerProperties().setDifficulty(difficulty);
-                    this.logger.info("Zmieniono&b difficulty&r na:&1 " + difficulty);
-                } else {
-                    this.logger.error("&b" + serverSetting.getName() + "&c przyjmuje wartości z enum&b Difficulty ");
-                }
-            }
-            case allowCheats -> {
-                if (option instanceof final Boolean opt) {
-                    this.sendToConsole("changesetting " + serverSetting.getName() + " " + opt);
-                    this.bdsAutoEnable.getServerProperties().setAllowCheats(opt);
-                    this.logger.info("Zmieniono&b difficulty&r na:&1 " + opt);
-                }
-            }
-            default -> this.logger.error("Nie znany typ:&1 " + serverSetting);
-        }
     }
 
     public void kickAllPlayers(final String msg) {

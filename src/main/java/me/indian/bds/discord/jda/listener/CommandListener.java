@@ -12,7 +12,6 @@ import me.indian.bds.config.Config;
 import me.indian.bds.config.sub.discord.BotConfig;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.ServerSetting;
 import me.indian.bds.server.ServerStats;
 import me.indian.bds.server.properties.Difficulty;
 import me.indian.bds.util.DateUtil;
@@ -260,25 +259,29 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private void serveDifficultyButton(final ButtonInteractionEvent event) {
         switch (event.getComponentId()) {
             case "peaceful" -> {
-                this.serverProcess.changeSetting(ServerSetting.difficulty, Difficulty.PEACEFUL);
+                this.serverProcess.sendToConsole("difficulty " + Difficulty.PEACEFUL.getDifficultyName());
+                this.bdsAutoEnable.getServerProperties().setDifficulty(Difficulty.PEACEFUL);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                         .setEphemeral(true).queue();
             }
             case "easy" -> {
-                this.serverProcess.changeSetting(ServerSetting.difficulty, Difficulty.EASY);
+                this.serverProcess.sendToConsole("difficulty " + Difficulty.EASY.getDifficultyName());
+                this.bdsAutoEnable.getServerProperties().setDifficulty(Difficulty.EASY);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                         .setEphemeral(true).queue();
             }
             case "normal" -> {
-                this.serverProcess.changeSetting(ServerSetting.difficulty, Difficulty.NORMAL);
+                this.serverProcess.sendToConsole("difficulty " + Difficulty.NORMAL.getDifficultyName());
+                this.bdsAutoEnable.getServerProperties().setDifficulty(Difficulty.NORMAL);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                         .setEphemeral(true).queue();
             }
             case "hard" -> {
-                this.serverProcess.changeSetting(ServerSetting.difficulty, Difficulty.HARD);
+                this.serverProcess.sendToConsole("difficulty " + Difficulty.HARD.getDifficultyName());
+                this.bdsAutoEnable.getServerProperties().setDifficulty(Difficulty.HARD);
                 event.replyEmbeds(this.getDifficultyEmbed())
                         .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
                         .setEphemeral(true).queue();
