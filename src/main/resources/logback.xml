@@ -9,11 +9,15 @@
     </appender>
 
 
-    <logger name="net.dv8tion.jda" level="OFF"/>
+    <!--    Intergacja z discord za pomocą JDA-->
 
-            <!--    Strona -->
-    <logger name="org.eclipse.jetty" level="OFF" />
-    <logger name="io.javalin" level="OFF" />
+    <!--    <logger name="net.dv8tion.jda" level="OFF"/>-->
+    <logger name="net.dv8tion.jda" level="ERROR"/>
+
+
+    <!--    Strona -->
+    <logger name="org.eclipse.jetty" level="OFF"/>
+    <logger name="io.javalin" level="OFF"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
