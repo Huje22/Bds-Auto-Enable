@@ -1,6 +1,7 @@
 package me.indian.bds.watchdog.module;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -135,7 +136,10 @@ public class BackupModule {
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 final double backUpTime = ((System.currentTimeMillis() - startTime) / 1000.0);
                 this.watchDogConfig.getBackupConfig().setLastBackupTime(backUpTime);
-                this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund", LogState.INFO);
+                this.serverProcess.tellrawToAllAndLogger(this.prefix,
+                        "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona " + this.getBackupSize(backup),
+                        LogState.INFO);
+
                 this.discord.sendBackupDoneMessage();
                 this.status = "Utworzono backup";
                 this.loadAvailableBackups();
@@ -234,6 +238,19 @@ public class BackupModule {
             }
             this.logger.info("Utworzono brakujący folder świata");
         }
+    }
+
+    private String getBackupSize(final File backup) {
+        long fileSizeBytes;
+        try {
+            fileSizeBytes = Files.size(backup.toPath());
+        } catch (final IOException exception) {
+            fileSizeBytes = -1;
+        }
+        final long gb = MathUtil.bytesToGB(fileSizeBytes);
+        final long mb = MathUtil.getMbFromBytesGb(fileSizeBytes);
+        final long kb = MathUtil.getKbFromBytesGb(fileSizeBytes);
+        return "&b" + gb + "&e GB &b" + mb + "&e MB &b" + kb + "&e KB";
     }
 
     public long calculateMillisUntilNextBackup() {
