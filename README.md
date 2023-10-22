@@ -32,7 +32,7 @@ Paczka [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enab
 ```
 PlayerChat:JndjanBartonka Message:Witaj
 ```
-A aplikacji odczytuje nick gracza z `PlayerChat` i wiadomość z `Message` , i dalej na przykład wysyła wiadomość tą do discord , podobnie z dołączaniem gracza (w tym wypadku `PlayerJoin`) , i w tym wypadku dodaje gracza na listę graczy online i timer działający co 1s dodaje mu wtedy 1s czasu gry
+A aplikacja odczytuje nick gracza z `PlayerChat` i wiadomość z `Message` , i dalej na przykład wysyła wiadomość tą do discord , podobnie z dołączaniem gracza (w tym wypadku `PlayerJoin`) , i w tym wypadku dodaje gracza na listę graczy online i timer działający co 1s dodaje mu wtedy 1s czasu gry
 
 # Polecenia
 
