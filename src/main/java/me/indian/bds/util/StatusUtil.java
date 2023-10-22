@@ -136,6 +136,11 @@ public final class StatusUtil {
         return (file.exists() ? file.getTotalSpace() : 0);
     }
 
+    public static long usedDiskSpace(){
+     return (this.maxDiskSpace() - this.availableDiskSpace());
+    }
+.
+    
     public static long getServerRamUsage() {
         if (!serverProcess.isEnabled()) return 0;
         try {
