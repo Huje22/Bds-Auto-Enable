@@ -106,16 +106,15 @@ public class BDSAutoEnable {
 
     public void isJavaVersionLessThan17() {
         final String javaVersion = System.getProperty("java.version");
-        final double version = Double.parseDouble(javaVersion.substring(0, 3));
 
-        if (version < 17.0) {
+        if (Defaults.isJava17()) {
             if (this.getConfig().isDebug()) {
-                this.logger.warning("&aDebug włączony, twoja wersja java &d(&1" + version
+                this.logger.warning("&aDebug włączony, twoja wersja java &d(&1" + javaVersion
                         + "&d)&a nie jest wspierana, robisz to na własne&c ryzyko&c!");
                 return;
             }
 
-            this.logger.critical("Twoja wersja java (&1" + version
+            this.logger.critical("Twoja wersja java (&1" + javaVersion
                     + "&r) jest zbyt niska! Potrzebujesz javy &117+ ");
             System.exit(0);
         }
@@ -173,10 +172,8 @@ public class BDSAutoEnable {
     }
 
     private void checkTimeZone() {
-        final ZoneId zoneId = ZoneId.systemDefault();
-
-        if (!zoneId.equals(ZoneId.of("Europe/Warsaw"))) {
-            this.logger.warning("Twoja strefa czasowa to:&1 " + zoneId + "&r jeśli jesteś w polsce pamiętaj że czas może się przez to różnić");
+        if (Defaults.isPolisTimeZone()) {
+            this.logger.warning("Twoja strefa czasowa to:&1 " + ZoneId.systemDefault() + "&r jeśli jesteś w polsce pamiętaj że czas może się przez to różnić");
         }
     }
 

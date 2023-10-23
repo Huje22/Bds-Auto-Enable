@@ -1,13 +1,13 @@
 package me.indian.bds;
 
-import me.indian.bds.config.Config;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.SystemOs;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
+import me.indian.bds.config.Config;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.SystemOs;
 
 public final class Defaults {
 
@@ -63,6 +63,18 @@ public final class Defaults {
         return config.getFilesPath() + File.separator + "worlds" + File.separator;
     }
 
+    public static boolean hasWine() {
+        return wine;
+    }
+
+    public static boolean isPolisTimeZone() {
+        return ZoneId.systemDefault().equals(ZoneId.of("Europe/Warsaw"));
+    }
+
+    public static boolean isJava17() {
+        return Double.parseDouble(System.getProperty("java.version").substring(0, 3)) < 17.0;
+    }
+
     private static boolean wineCheck() {
         try {
             final Process process = Runtime.getRuntime().exec("wine --version");
@@ -79,9 +91,5 @@ public final class Defaults {
             logger.debug("Nie znaleziono&1 WINE&r (Nie potrzebujesz go)");
         }
         return false;
-    }
-
-    public static boolean hasWine() {
-        return wine;
     }
 }
