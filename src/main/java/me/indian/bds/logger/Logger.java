@@ -1,14 +1,13 @@
 package me.indian.bds.logger;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.util.DateUtil;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 
 public class Logger {
 
