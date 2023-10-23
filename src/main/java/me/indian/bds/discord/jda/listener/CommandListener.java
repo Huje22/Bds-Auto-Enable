@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
@@ -371,8 +370,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private MessageEmbed getBackupEmbed() {
         final String backupStatus = "`" + this.backupModule.getStatus() + "`\n";
         final long gbSpace = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
+        final String usedRom = "Użyty: " + MathUtil.bytesToGB(StatusUtil.usedDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(StatusUtil.usedDiskSpace()) + " MB";
         final String rom = "Dostępny: " + gbSpace + " GB " + MathUtil.getMbFromBytesGb(StatusUtil.availableDiskSpace()) + " MB";
-        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(StatusUtil.maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(StatusUtil.maxDiskSpace()) + " MB";
 
         final List<String> description = new ArrayList<>();
         this.backupButtons.clear();
@@ -401,8 +400,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 .setTitle("Backup info")
                 .setDescription("Status ostatniego backup: " + backupStatus +
                         "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
-                        "Pamięć ROM: `" + rom + " / " + maxRom + "`\n" +
-                        "Strefa czasowa maszyny: `" + ZoneId.systemDefault() +"`" + " Czas na maszynie: `" + DateUtil.getTimeHM() +"`\n" +
+                        "Użyj `/stats` po więcej przydatnych informacji \n" +
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
                         (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
                 .setColor(Color.BLUE)

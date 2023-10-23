@@ -56,23 +56,28 @@ public final class StatusUtil {
         final String committedAppMemory = "Przydzielone " + MathUtil.bytesToMB(heapMemoryUsage.getCommitted()) + " MB";
         final String maxAppMemory = "Dostępne " + MathUtil.bytesToMB(heapMemoryUsage.getMax()) + " MB";
 
+        final String usedRom = "Użyty: " + MathUtil.bytesToGB(usedDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(usedDiskSpace()) + " MB";
         final String rom = "Dostępny: " + MathUtil.bytesToGB(availableDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(availableDiskSpace()) + " MB";
-        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(maxDiskSpace()) + " MB";
+//        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(maxDiskSpace()) + " MB";
 
         status.add("> **Statystyki maszyny**");
         status.add("Pamięć RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
-        status.add("Pamięć ROM: `" + rom + " / " + maxRom + "`");
-        status.add("Strefa czasowa maszyny: `" + ZoneId.systemDefault() +"`" + " Czas na maszynie: `" + DateUtil.getTimeHM() +"`");
+        status.add("Pamięć ROM: `" + usedRom + " / " + rom + "`");
+
+        if (!Defaults.isPolisTimeZone()) {
+            status.add("Strefa czasowa maszyny: `" + ZoneId.systemDefault() + "`" + " Czas na maszynie: `" + DateUtil.getTimeHM() + "`");
+        }
+
         status.add("");
         status.add("> **Statystyki servera**");
         status.add("Ostatnie TPS: `" + bdsAutoEnable.getServerManager().getLastTPS() + "`");
         status.add("Pamięć RAM: `" + usedServerMemory + "`");
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime()) + "`");
 
-        if(config.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
+        if (config.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
             status.add("Następny restart za za: `" + DateUtil.formatTime(bdsAutoEnable.getWatchDog().getAutoRestartModule().calculateMillisUntilNextRestart()) + "`");
         }
-        if(config.getWatchDogConfig().getBackupConfig().isBackup()) {
+        if (config.getWatchDogConfig().getBackupConfig().isBackup()) {
             status.add("Następny backup za: `" + DateUtil.formatTime(bdsAutoEnable.getWatchDog().getBackupModule().calculateMillisUntilNextBackup()) + "`");
         }
 
@@ -137,9 +142,8 @@ public final class StatusUtil {
     }
 
     public static long usedDiskSpace(){
-     return (this.maxDiskSpace() - this.availableDiskSpace());
+        return (maxDiskSpace() - availableDiskSpace());
     }
-.
     
     public static long getServerRamUsage() {
         if (!serverProcess.isEnabled()) return 0;
