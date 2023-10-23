@@ -49,6 +49,14 @@ A aplikacja odczytuje nick gracza z `PlayerChat` i wiadomość z `Message` , i d
 
 * Wszystkie je jak i także ich opisy znajdziesz po wpisaniu `/` (Wymaga dodania bota z
   ___&scope=bot+applications.commands___ inaczej mogą wystąpić problemy)
+  
+# Użyte biblioteki
+[Okaeri Configs - do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
+[Gson - do plików i samych Json](https://github.com/google/gson)<br>
+[JDA - Integracja z discord](https://github.com/discord-jda/JDA)<br>
+[Javalin - Rest API](https://github.com/javalin/javalin)<br>
+[Logback - Tylko do wyłączenia niektórych wiadomości z Javalin i JDA](https://github.com/qos-ch/logback)<br>
+
 
 # Program nie wspiera
 
