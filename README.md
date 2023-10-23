@@ -69,5 +69,6 @@ A aplikacja odczytuje nick gracza z `PlayerChat` i wiadomość z `Message` , i d
   ----
 
 ![bStats Servers](https://img.shields.io/bstats/servers/19727?style=for-the-badge)
-![bStats Players](https://img.shields.io/bstats/players/19727?style=for-the-badge)
-![Latest Tag](https://img.shields.io/github/v/tag/Huje22/Bds-Auto-Enable?label=LATEST%20TAG&style=for-the-badge) <br>
+![bStats Players](https://img.shields.io/bstats/players/19727?style=for-the-badge) <br>
+![Latest Tag](https://img.shields.io/github/v/tag/Huje22/Bds-Auto-Enable?label=LATEST%20TAG&style=for-the-badge) 
+![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/m/Huje22/BDS-Auto-Enable?style=for-the-badge)
