@@ -127,24 +127,24 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     private String generateRawMessage(final Message message){
         String rawMessage = MessageUtil.fixMessage(message.getContentRaw());
 
-        if(!message.getAttachments().isEmpty()){
+        if (!message.getAttachments().isEmpty()) {
             rawMessage += " (załącznik) ";
         }
 
-        for(final Member member : message.getMentions().getMembers()){
-            if(member == null) continue;
-            final long id = member.getIdLong();
-            rawMessage = rawMessage.replaceAll("<@" + id + ">", "@"+ this.getUserName(member, member.getUser()));
+        for (final User user : message.getMentions().getUsers()) {
+            if (user == null) continue;
+            final long id = user.getIdLong();
+            rawMessage = rawMessage.replaceAll("<@" + id + ">", "@" + this.getUserName(null, user));
         }
 
-        for(final GuildChannel guildChannel : message.getMentions().getChannels()){
-            if(guildChannel == null) continue;
+        for (final GuildChannel guildChannel : message.getMentions().getChannels()) {
+            if (guildChannel == null) continue;
             final long id = guildChannel.getIdLong();
             rawMessage = rawMessage.replaceAll("<#" + id + ">", "#" + guildChannel.getName());
         }
 
-        for(final Role role : message.getMentions().getRoles()){
-            if(role == null) continue;
+        for (final Role role : message.getMentions().getRoles()) {
+            if (role == null) continue;
             final long id = role.getIdLong();
             rawMessage = rawMessage.replaceAll("<@" + id + ">", "@"+ role.getName());
         }
