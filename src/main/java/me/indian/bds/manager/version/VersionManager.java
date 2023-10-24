@@ -67,6 +67,7 @@ public class VersionManager {
         this.importantFiles.add(this.config.getFilesPath() + File.separator + "allowlist.json");
         this.importantFiles.add(this.config.getFilesPath() + File.separator + "server.properties");
         this.importantFiles.add(this.config.getFilesPath() + File.separator + "config" + File.separator + "default" + File.separator + "permissions.json");
+        this.importantFiles.add(this.config.getFilesPath() + File.separator + "permissions.json");
     }
 
     private void loadVersionsInfo() {
