@@ -1,14 +1,14 @@
 package me.indian.bds.manager.version;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
-
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class VersionUpdater {
 
@@ -40,7 +40,7 @@ public class VersionUpdater {
         }
         this.running = true;
 
-        final long hours = MathUtil.hoursToMillis(this.versionManagerConfig.getVersionCheckFrequency());
+        final long hours = MathUtil.hoursTo(this.versionManagerConfig.getVersionCheckFrequency(), TimeUnit.MILLISECONDS);
         final Timer timer = new Timer("Version Updater", true);
 
         final TimerTask timerTask = new TimerTask() {

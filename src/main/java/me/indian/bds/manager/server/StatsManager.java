@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
 import me.indian.bds.logger.Logger;
@@ -62,7 +63,7 @@ public class StatsManager {
             }
         };
 
-        this.playerStatsManagerTimer.scheduleAtFixedRate(saveDataTask, MathUtil.hoursToMillis(2), MathUtil.minutesToMillis(30));
+        this.playerStatsManagerTimer.scheduleAtFixedRate(saveDataTask, MathUtil.hoursTo(2, TimeUnit.MILLISECONDS), MathUtil.minutesTo(30, TimeUnit.MILLISECONDS));
         this.playerStatsManagerTimer.scheduleAtFixedRate(playTimeTask, 0, second);
     }
 

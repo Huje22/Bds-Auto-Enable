@@ -4,6 +4,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.time.Duration;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 public final class MathUtil {
 
@@ -22,18 +23,38 @@ public final class MathUtil {
         return Math.max(min, Math.min(max, number));
     }
 
-    public static long hoursToMillis(final int hours) {
-        return Duration.ofHours(hours).toMillis();
+    public static long daysFrom(final long time, final TimeUnit sourceUnit) {
+        return sourceUnit.toDays(time);
     }
 
-    public static long minutesToMillis(final int minutes) {
-        return Duration.ofMinutes(minutes).toMillis();
+    public static long daysTo(final long time, final TimeUnit targetUnit) {
+        return targetUnit.convert(time, TimeUnit.DAYS);
     }
 
-    public static long millisToMinutes(final long millis) {
-        return Duration.ofMillis(millis).toMinutes();
+    public static long hoursFrom(final long time, final TimeUnit sourceUnit) {
+        return sourceUnit.toHours(time);
     }
-    
+
+    public static long hoursTo(final long time, final TimeUnit targetUnit) {
+        return targetUnit.convert(time, TimeUnit.HOURS);
+    }
+
+    public static long minutesFrom(final long time, final TimeUnit sourceUnit) {
+        return sourceUnit.toMinutes(time);
+    }
+
+    public static long minutesTo(final long time, final TimeUnit targetUnit) {
+        return targetUnit.convert(time, TimeUnit.MINUTES);
+    }
+
+    public static long millisTo(final long time, final TimeUnit targetUnit) {
+        return targetUnit.convert(time, TimeUnit.MILLISECONDS);
+    }
+
+    public static long millisFrom(final long time, final TimeUnit sourceUnit) {
+        return sourceUnit.toMillis(time);
+    }
+
     public static long secondToMillis(final long seconds) {
         return Duration.ofSeconds(seconds).toMillis();
     }

@@ -13,6 +13,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
@@ -92,7 +93,7 @@ public class BackupModule {
 
     private void run() {
         if (this.watchDogConfig.getBackupConfig().isBackup()) {
-            final long time = MathUtil.minutesToMillis(this.watchDogConfig.getBackupConfig().getBackupFrequency());
+            final long time = MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS);
             final TimerTask backupTask = new TimerTask() {
                 @Override
                 public void run() {
@@ -253,7 +254,7 @@ public class BackupModule {
     }
 
     public long calculateMillisUntilNextBackup() {
-        return Math.max(0, MathUtil.minutesToMillis(this.watchDogConfig.getBackupConfig().getBackupFrequency()) - (System.currentTimeMillis() - this.lastBackupMillis));
+        return Math.max(0, MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS) - (System.currentTimeMillis() - this.lastBackupMillis));
     }
 
     public String getStatus() {

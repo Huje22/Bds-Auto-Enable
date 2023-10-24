@@ -202,11 +202,11 @@ public class DiscordJda implements DiscordIntegration {
             }
         };
 
-        timer.scheduleAtFixedRate(statusTask, MathUtil.minutesToMillis(1), MathUtil.minutesToMillis(10));
+        timer.scheduleAtFixedRate(statusTask, MathUtil.minutesTo(1, TimeUnit.MILLISECONDS), MathUtil.minutesTo(10, TimeUnit.MILLISECONDS));
     }
 
     private Activity getCustomActivity() {
-        final String replacement = String.valueOf(MathUtil.millisToMinutes((System.currentTimeMillis() - this.bdsAutoEnable.getServerProcess().getStartTime())));
+        final String replacement = String.valueOf(MathUtil.millisTo((System.currentTimeMillis() - this.bdsAutoEnable.getServerProcess().getStartTime()), TimeUnit.MINUTES));
         final String activityMessage = this.discordConfig.getDiscordBotConfig().getActivityMessage().replaceAll("<time>", replacement);
 
         switch (Activity.ActivityType.valueOf(this.discordConfig.getDiscordBotConfig().getActivity().toUpperCase())) {

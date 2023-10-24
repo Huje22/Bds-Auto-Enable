@@ -46,7 +46,7 @@ public class AutoRestartModule {
     }
 
     private void run() {
-        final long restartTime = MathUtil.hoursToMillis(this.autoRestartConfig.getRestartTime());
+        final long restartTime = MathUtil.hoursTo(this.autoRestartConfig.getRestartTime(), TimeUnit.MILLISECONDS);
         this.task = new TimerTask() {
             @Override
             public void run() {
@@ -132,6 +132,6 @@ public class AutoRestartModule {
     }
 
     public long calculateMillisUntilNextRestart() {
-        return Math.max(0, (MathUtil.hoursToMillis(this.autoRestartConfig.getRestartTime()) + 10) - (System.currentTimeMillis() - this.lastRestartMillis));
+        return Math.max(0, (MathUtil.hoursTo(this.autoRestartConfig.getRestartTime(), TimeUnit.MILLISECONDS) + 10) - (System.currentTimeMillis() - this.lastRestartMillis));
     }
 }

@@ -20,6 +20,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 import javax.net.ssl.HttpsURLConnection;
 import me.indian.bds.config.MetricsConfig;
@@ -207,8 +208,7 @@ public class Metrics {
         final int randomMinutes = 3 + random.nextInt(6);
         final int secondRandomMinutes = 3 + random.nextInt(10);
 
-//        timer.scheduleAtFixedRate(submitTask, 0, MathUtil.minutesToMillis(2));
-        timer.scheduleAtFixedRate(submitTask, MathUtil.minutesToMillis(randomMinutes + secondRandomMinutes), MathUtil.minutesToMillis(30));
+        timer.scheduleAtFixedRate(submitTask, MathUtil.minutesTo(randomMinutes + secondRandomMinutes, TimeUnit.MILLISECONDS), MathUtil.minutesTo(30, TimeUnit.MILLISECONDS));
     }
 
     /**
