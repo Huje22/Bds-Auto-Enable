@@ -61,7 +61,7 @@ public class PackModule {
         this.getPackInfo();
     }
 
-    private void getPackInfo() {
+    public void getPackInfo() {
         if (!this.packExists()) {
             this.logger.error("Nie można odnaleźć paczki&b " + this.packName);
             this.downloadPack();

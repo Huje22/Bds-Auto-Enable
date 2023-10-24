@@ -132,6 +132,7 @@ public class ServerProcess {
                             System.exit(0);
                         }
                     }
+                    this.watchDog.getPackModule().getPackInfo();
                     this.process = this.processBuilder.start();
                     this.startTime = System.currentTimeMillis();
                     this.logger.info("Uruchomiono proces servera ");
