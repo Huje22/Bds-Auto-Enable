@@ -60,7 +60,9 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     @Override
     public void onMessageReceived(final MessageReceivedEvent event) {
-        if (event.getAuthor().isBot() || event.isWebhookMessage()) return;
+        if (event.getAuthor().isBot() || event.isWebhookMessage()) return; 
+
+        //TODO: Dodać wsparcie dla webhookow 
 
         final Member member = event.getMember();
         final User author = event.getAuthor();
