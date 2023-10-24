@@ -104,10 +104,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     }
 
     private String getUserName(final Member member, final User author) {
-        if (member != null) {
-            if (member.getNickname() != null) {
+        if (member != null && member.getNickname() != null) {
                 return member.getNickname();
-            }
         }
         return author.getName();
     }
