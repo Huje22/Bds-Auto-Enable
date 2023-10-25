@@ -10,6 +10,7 @@ import java.util.Scanner;
 import java.util.UUID;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.DiscordType;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.webhook.WebHook;
 import me.indian.bds.logger.Logger;
@@ -39,7 +40,7 @@ public class BDSAutoEnable {
     private final ServerProcess serverProcess;
     private final ServerManager serverManager;
     private final VersionManager versionManager;
-    private DiscordIntegration discord;
+    private final DiscordIntegration discord;
     private WatchDog watchDog;
 
     public BDSAutoEnable() {
@@ -59,20 +60,13 @@ public class BDSAutoEnable {
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
         this.logger.info("&aUUID&r aplikacji&b " + this.appUUID);
         Defaults.init(this);
+        this.discord = this.determinateDiscordIntegration();
         this.isJavaVersionLessThan17();
         this.checkSystemSupport();
         this.checkEncoding();
         this.checkFlags();
         this.checkMemory();
         this.checkTimeZone();
-        switch (this.config.getDiscordConfig().getIntegrationType()) {
-            case WEBHOOK -> this.discord = new WebHook(this);
-            case JDA -> this.discord = new DiscordJda(this);
-            default -> {
-                this.logger.error("Nie znany typ integracji discord! (" + this.config.getDiscordConfig().getIntegrationType() + ")");
-                System.exit(0);
-            }
-        }
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
         this.serverManager = new ServerManager(this);
@@ -177,6 +171,21 @@ public class BDSAutoEnable {
     private void checkTimeZone() {
         if (Defaults.isPolisTimeZone()) {
             this.logger.warning("Twoja strefa czasowa to:&1 " + ZoneId.systemDefault() + "&r jeśli jesteś w polsce pamiętaj że czas może się przez to różnić");
+        }
+    }
+
+    private DiscordIntegration determinateDiscordIntegration() {
+        final DiscordType integration = this.config.getDiscordConfig().getIntegrationType();
+        if (integration == null) throw new RuntimeException("Integracja z discord nie może być nullem!");
+
+        switch (integration) {
+            case WEBHOOK -> {
+                return new WebHook(this);
+            }
+            case JDA -> {
+                return new DiscordJda(this);
+            }
+            default -> throw new RuntimeException("Nie znany typ integracji discord! (" + integration + ")");
         }
     }
 
