@@ -107,7 +107,7 @@ public class BDSAutoEnable {
     public void isJavaVersionLessThan17() {
         final String javaVersion = System.getProperty("java.version");
 
-        if (Defaults.isJava17()) {
+        if (Defaults.isJavaLoverThan17()) {
             if (this.getConfig().isDebug()) {
                 this.logger.warning("&aDebug włączony, twoja wersja java &d(&1" + javaVersion
                         + "&d)&a nie jest wspierana, robisz to na własne&c ryzyko&c!");

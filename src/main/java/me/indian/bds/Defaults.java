@@ -71,7 +71,7 @@ public final class Defaults {
         return ZoneId.systemDefault().equals(ZoneId.of("Europe/Warsaw"));
     }
 
-    public static boolean isJava17() {
+    public static boolean isJavaLoverThan17() {
         return Double.parseDouble(System.getProperty("java.version").substring(0, 3)) < 17.0;
     }
 
