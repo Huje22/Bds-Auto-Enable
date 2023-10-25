@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
 import javax.net.ssl.HttpsURLConnection;
@@ -319,7 +318,7 @@ public class Metrics {
         // Check if the config file exists
         if (!configFile.exists()) {
             // Create a default configuration object
-            final MetricsConfig defaultConfig = new MetricsConfig(true, UUID.randomUUID().toString(), false, false, false);
+            final MetricsConfig defaultConfig = new MetricsConfig(true, false, false, false);
 
             // Serialize the default configuration to JSON and save it to the config file
             try (final FileWriter writer = new FileWriter(configFile)) {
@@ -336,7 +335,7 @@ public class Metrics {
 
             // Load the data from the deserialized object
             this.enabled = configData.isEnabled();
-            serverUUID = configData.getServerUuid();
+            serverUUID = bdsAutoEnable.getAppUUID();
             logFailedRequests = configData.isLogFailedRequests();
             logSentData = configData.isLogSentData();
             logResponseStatusText = configData.isLogResponseStatusText();

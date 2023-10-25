@@ -7,6 +7,7 @@ import java.lang.management.ManagementFactory;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Scanner;
+import java.util.UUID;
 import me.indian.bds.config.Config;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -29,7 +30,7 @@ import me.indian.bds.watchdog.WatchDog;
 public class BDSAutoEnable {
 
     private final long startTime;
-    private final String projectVersion, runDate;
+    private final String projectVersion, runDate, appUUID;
     private final Scanner scanner;
     private final Logger logger;
     private final ServerProperties serverProperties;
@@ -55,6 +56,8 @@ public class BDSAutoEnable {
         });
         this.logger = new Logger(this);
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
+        this.appUUID = this.getAppUUID();
+        this.logger.info("&aUUID&r aplikacji&b " + this.appUUID);
         Defaults.init(this);
         this.isJavaVersionLessThan17();
         this.checkSystemSupport();
@@ -200,6 +203,16 @@ public class BDSAutoEnable {
 
     public String getProjectVersion() {
         return this.projectVersion;
+    }
+
+    public String getAppUUID() {
+        if (this.config.getUuid().isEmpty()) {
+            final String uuid = UUID.randomUUID().toString();
+            this.config.setUuid(uuid);
+            this.config.save();
+            return uuid;
+        }
+        return this.appUUID;
     }
 
     public Config getConfig() {

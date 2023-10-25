@@ -76,6 +76,11 @@ public class Config extends OkaeriConfig {
     private DiscordConfig discordConfig = new DiscordConfig();
 
     @Comment({""})
+    @Comment({"UUID aplikacji"})
+    @CustomKey("UUID")
+    private String uuid = "";
+
+    @Comment({""})
     @Comment({"Debug, dodatkowe wiadomości w konsoli dla developerów"})
     @CustomKey("Debug")
     private boolean debug = false;
@@ -134,6 +139,14 @@ public class Config extends OkaeriConfig {
 
     public RestApiConfig getRestApiConfig() {
         return this.restApiConfig;
+    }
+
+    public String getUuid() {
+        return this.uuid;
+    }
+
+    public void setUuid(final String uuid) {
+        this.uuid = uuid;
     }
 
     public boolean isDebug() {
