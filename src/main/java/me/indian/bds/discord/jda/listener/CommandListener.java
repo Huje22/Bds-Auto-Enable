@@ -331,7 +331,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.difficultyButtons.clear();
 
         final Button peaceful = Button.primary("peaceful", "Pokojowy").withEmoji(Emoji.fromUnicode("☮️"));
-        final Button easy = Button.primary("easy", "Easy").withEmoji(Emoji.fromFormatted("<:NOOB:717474733167476766>"));
+        final Button easy = Button.primary("easy", "Łatwy").withEmoji(Emoji.fromFormatted("<:NOOB:717474733167476766>"));
         final Button normal = Button.primary("normal", "Normalny").withEmoji(Emoji.fromFormatted("<:bao_block_grass:1019717534976577617>"));
         final Button hard = Button.primary("hard", "Trudny").withEmoji(Emoji.fromUnicode("⚠️"));
 
@@ -359,7 +359,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             this.difficultyButtons.add(hard.asDisabled());
         }
 
-
         return new EmbedBuilder()
                 .setTitle("Difficulty")
                 .setDescription("Aktualny poziom trudności to: " + "`" + currentDifficulty.getDifficultyName() + "`")
@@ -370,12 +369,11 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private MessageEmbed getBackupEmbed() {
         final String backupStatus = "`" + this.backupModule.getStatus() + "`\n";
         final long gbSpace = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
-        final String usedRom = "Użyty: " + MathUtil.bytesToGB(StatusUtil.usedDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(StatusUtil.usedDiskSpace()) + " MB";
-        final String rom = "Dostępny: " + gbSpace + " GB " + MathUtil.getMbFromBytesGb(StatusUtil.availableDiskSpace()) + " MB";
 
         final List<String> description = new ArrayList<>();
         this.backupButtons.clear();
-        this.backupButtons.add(Button.primary("backup", "Backup").withEmoji(Emoji.fromFormatted("<:bds:1138355151258783745>")));
+        this.backupButtons.add(Button.primary("backup", "Backup")
+                .withEmoji(Emoji.fromFormatted("<:bds:1138355151258783745>")));
 
         for (final Path path : this.backupModule.getBackups()) {
             final String fileName = path.getFileName().toString();
