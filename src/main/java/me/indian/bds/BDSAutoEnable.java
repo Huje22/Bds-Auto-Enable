@@ -54,9 +54,9 @@ public class BDSAutoEnable {
             it.saveDefaults();
             it.load(true);
         });
+        this.appUUID = this.getAppUUID();
         this.logger = new Logger(this);
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
-        this.appUUID = this.getAppUUID();
         this.logger.info("&aUUID&r aplikacji&b " + this.appUUID);
         Defaults.init(this);
         this.isJavaVersionLessThan17();
@@ -189,8 +189,8 @@ public class BDSAutoEnable {
             try {
                 if (this.scanner != null) this.scanner.close();
                 this.serverProcess.instantShutdown();
-            } catch (final Exception e) {
-                e.printStackTrace();
+            } catch (final Exception exception) {
+                this.logger.error("Wystąpił błąd podczas próby uruchomienia shutdown hooku " , exception);
             }
         });
         shutdown.setName("Shutdown");
