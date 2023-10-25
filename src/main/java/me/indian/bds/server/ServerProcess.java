@@ -400,15 +400,15 @@ public class ServerProcess {
         this.tellrawToPlayer("@a", msg);
     }
 
-    public void tellrawToPlayer(final String playerName, String msg) {
+    public void tellrawToPlayer(final String playerName, final String msg) {
         if (this.serverManager.getOnlinePlayers().isEmpty()) {
             this.logger.debug("Lista graczy jest pusta");
             return;
         }
 
-        msg = msg.replace("\"", "\\\"");
+        final String msg2 = MessageUtil.fixMessage(msg, true).replace("\"", "\\\"");
 
-        this.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + MessageUtil.fixMessage(msg, true) + "\"}]}"));
+        this.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + msg2 + "\"}]}"));
     }
 
     public void tellrawToAllAndLogger(final String prefix, final String msg, final LogState logState) {
