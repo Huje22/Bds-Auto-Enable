@@ -56,22 +56,31 @@ public class Logger {
         System.out.println(ConsoleColors.convertMinecraftColors(log));
     }
     
-     public void print(final Object log, final DiscordIntegration discord) {
+     public void print(final Object log, final DiscordIntegration discord , final DiscordChannelType channelType) {
          this.print(log);
          if (discord == null) {
              throw new RuntimeException("Integracja z discord podana w logerze jest null");
          }
-         discord.writeConsole(log.toString());
-     }
+
+         switch(channelType){
+ 
+             case CHAT ->    discord.sendMessage(log.toString());     
+             case CONSOLE -> discord.writeConsole(log.toString());
+         }
+         }
     
     public void print(final Object log, final Throwable throwable) {
          this.print(log);
          this.logThrowableToFile(throwable);
         }
     
-    public void print(final Object log, final Throwable throwable, final DiscordIntegration discord) {
-        this.print(log);
-        discord.writeConsole(log.toString(), throwable);
+    public void print(final Object log, final Throwable throwable, final DiscordIntegration discord,final DiscordChannelType channelType) {
+        this.print(log, throwable);
+               switch(channelType){
+ 
+             case CHAT ->    discord.sendMessage(log.toString(),throwable);     
+             case CONSOLE -> discord.writeConsole(log.toString(),throwable);
+         }
     }
 
     public void info(final Object log) {
