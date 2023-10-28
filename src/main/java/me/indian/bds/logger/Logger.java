@@ -66,6 +66,7 @@ public class Logger {
  
              case CHAT ->    discord.sendMessage(log.toString());     
              case CONSOLE -> discord.writeConsole(log.toString());
+             default -> this.debug("Nieznany typ kanału discord&1 " +channelType);
          }
          }
     
@@ -80,8 +81,11 @@ public class Logger {
  
              case CHAT ->    discord.sendMessage(log.toString(),throwable);     
              case CONSOLE -> discord.writeConsole(log.toString(),throwable);
+             default -> this.debug("Nieznany typ kanału discord&1 " +channelType);
          }
     }
+
+    //TODO: Dokończyć to
 
     public void info(final Object log) {
         this.logState = LogState.INFO;
