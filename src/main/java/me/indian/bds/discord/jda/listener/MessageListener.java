@@ -7,6 +7,7 @@ import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MessageUtil;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
@@ -73,7 +74,10 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             if (member == null) return;
             if (member.hasPermission(Permission.ADMINISTRATOR)) {
                 this.serverProcess.sendToConsole(rawMessage);
-                this.logger.print(rawMessage);
+                this.logger.print("[" + DateUtil.getDate() + " DISCORD] " +
+                        author.getName() +
+                        " (" + author.getIdLong() + ") -> " +
+                        rawMessage);
             } else {
                 event.getChannel().sendMessage("Nie masz uprawnień administratora aby wysłać tu wiadomość").queue(msg -> {
                     msg.delete().queueAfter(5, TimeUnit.SECONDS);

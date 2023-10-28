@@ -9,6 +9,7 @@ import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.config.sub.discord.BotConfig;
+import me.indian.bds.discord.DiscordLogChannelType;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerStats;
@@ -81,7 +82,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         return;
                     }
 
-                    this.bdsAutoEnable.getLogger().print(command, this.discordJda);
+                    this.bdsAutoEnable.getLogger().print(command, this.discordJda, DiscordLogChannelType.CONSOLE);
 
                     final MessageEmbed embed = new EmbedBuilder()
                             .setTitle("Ostatnia linijka z konsoli")
