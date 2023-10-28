@@ -48,8 +48,8 @@ public class Logger {
             this.logFile = new File(logsDir, "ServerLog-" + this.bdsAutoEnable.getRunDate() + ".log");
             final FileOutputStream fileOutputStream = new FileOutputStream(this.logFile, true);
             this.printStream = new PrintStream(fileOutputStream);
-        } catch (final Exception e) {
-            e.printStackTrace();
+        } catch (final Exception exception) {
+           this.error("Nie można utworzyć&1 PrintStream&r aby zapisywac logi do pliku " , exception);
         }
     }
 
