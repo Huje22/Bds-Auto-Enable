@@ -315,7 +315,8 @@ public class Metrics {
         final File configFile = new File(Defaults.getAppDir() + "bstats.json");
         final Gson gson = GsonUtil.getGson();
 
-         this.serverUUID = bdsAutoEnable.getAppUUID();
+         serverUUID = bdsAutoEnable.getAppUUID();
+         
         // Check if the config file exists
         if (!configFile.exists()) {
             // Create a default configuration object

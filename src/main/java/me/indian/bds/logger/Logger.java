@@ -49,7 +49,7 @@ public class Logger {
             final FileOutputStream fileOutputStream = new FileOutputStream(this.logFile, true);
             this.printStream = new PrintStream(fileOutputStream);
         } catch (final Exception exception) {
-           this.error("Nie można utworzyć&1 PrintStream&r aby zapisywac logi do pliku " , exception);
+           this.error("Nie można utworzyć&1 PrintStream&r aby zapisywać logi do pliku " , exception);
         }
     }
 
