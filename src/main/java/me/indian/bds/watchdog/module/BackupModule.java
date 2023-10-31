@@ -137,13 +137,16 @@ public class BackupModule {
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 final double backUpTime = ((System.currentTimeMillis() - startTime) / 1000.0);
                 this.watchDogConfig.getBackupConfig().setLastBackupTime(backUpTime);
+                this.loadAvailableBackups();
                 this.serverProcess.tellrawToAllAndLogger(this.prefix,
                         "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona " + this.getBackupSize(backup),
+                        LogState.INFO);
+                this.serverProcess.tellrawToAllAndLogger(this.prefix,
+                        "&aDostępne jest&d " + this.backups.size() + "&a kopi zapasowych" ,
                         LogState.INFO);
 
                 this.discord.sendBackupDoneMessage();
                 this.status = "Utworzono backup";
-                this.loadAvailableBackups();
             } catch (final Exception exception) {
                 this.status = "Nie udało sie utworzyć kopij zapasowej";
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4" + this.status, exception, LogState.CRITICAL);
