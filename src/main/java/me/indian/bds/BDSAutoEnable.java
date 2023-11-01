@@ -58,7 +58,7 @@ public class BDSAutoEnable {
         this.appUUID = this.getAppUUID();
         this.logger = new Logger(this);
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
-        this.logger.debug("&aUUID&r aplikacji&b " + this.appUUID);
+        this.logger.debug("&aUUID&r aplikacji:&b " + this.appUUID);
         Defaults.init(this);
         this.discord = this.determinateDiscordIntegration();
         this.isJavaVersionLessThan17();
@@ -169,7 +169,7 @@ public class BDSAutoEnable {
     }
 
     private void checkTimeZone() {
-        if (Defaults.isPolisTimeZone()) {
+        if (!Defaults.isPolisTimeZone()) {
             this.logger.warning("Twoja strefa czasowa to:&1 " + ZoneId.systemDefault() + "&r jeśli jesteś w polsce pamiętaj że czas może się przez to różnić");
         }
     }
