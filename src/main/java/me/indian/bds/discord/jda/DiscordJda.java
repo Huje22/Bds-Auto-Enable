@@ -185,6 +185,13 @@ public class DiscordJda implements DiscordIntegration {
         return highestRole;
     }
 
+    public String getUserName(final Member member, final User author) {
+        if (member != null && member.getNickname() != null) {
+            return member.getNickname();
+        }
+        return author.getName();
+    }
+
     public String getOwnerMention() {
         if (this.guild == null) return "";
         return (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");

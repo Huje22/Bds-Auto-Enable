@@ -94,7 +94,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         if (this.isMaxLength(message)) return;
 
         String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
-                .replaceAll("<name>", this.getUserName(member, author))
+                .replaceAll("<name>", this.discordJda.getUserName(member, author))
                 .replaceAll("<msg>", this.generateRawMessage(message))
                 .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
                 .replaceAll("<role>", role == null ? "" : role.getName());
@@ -108,13 +108,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         this.serverProcess.tellrawToAll(msg);
         this.logger.info(msg);
         this.discordJda.writeConsole(ConsoleColors.removeColors(msg));
-    }
-
-    private String getUserName(final Member member, final User author) {
-        if (member != null && member.getNickname() != null) {
-            return member.getNickname();
-        }
-        return author.getName();
     }
 
     private boolean isMaxLength(final Message message) {
@@ -139,7 +132,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         for (final User user : message.getMentions().getUsers()) {
             if (user == null) continue;
             final long id = user.getIdLong();
-            rawMessage = rawMessage.replaceAll("<@" + id + ">", "@" + this.getUserName(null, user));
+            rawMessage = rawMessage.replaceAll("<@" + id + ">", "@" + this.discordJda.getUserName(null, user));
         }
 
         for (final GuildChannel guildChannel : message.getMentions().getChannels()) {
@@ -160,6 +153,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     private String generatorReply(final Message messageReference) {
         return messageReference == null ? "" : this.discordConfig.getDiscordMessagesConfig().getReplyStatement()
                 .replaceAll("<msg>", this.generateRawMessage(messageReference).replaceAll("\\*\\*", ""))
-                .replaceAll("<author>", this.getUserName(messageReference.getMember(), messageReference.getAuthor()));
+                .replaceAll("<author>", this.discordJda.getUserName(messageReference.getMember(), messageReference.getAuthor()));
     }
 }
