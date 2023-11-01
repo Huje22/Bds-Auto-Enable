@@ -58,7 +58,7 @@ public class BDSAutoEnable {
         this.appUUID = this.getAppUUID();
         this.logger = new Logger(this);
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
-        this.logger.info("&aUUID&r aplikacji&b " + this.appUUID);
+        this.logger.debug("&aUUID&r aplikacji&b " + this.appUUID);
         Defaults.init(this);
         this.discord = this.determinateDiscordIntegration();
         this.isJavaVersionLessThan17();
@@ -216,12 +216,10 @@ public class BDSAutoEnable {
 
     public String getAppUUID() {
         if (this.config.getUuid().isEmpty()) {
-            final String uuid = UUID.randomUUID().toString();
-            this.config.setUuid(uuid);
+            this.config.setUuid(UUID.randomUUID().toString());
             this.config.save();
-            return uuid;
         }
-        return this.appUUID;
+        return this.config.getUuid();
     }
 
     public Config getConfig() {
