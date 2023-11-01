@@ -37,7 +37,7 @@ public class ServerProcess {
     private final Lock cmdLock, cmdResponseLock;
     private final String prefix;
     private final SystemOs system;
-    private String finalFilePath,fileName;
+    private String finalFilePath, fileName;
     private ProcessBuilder processBuilder;
     private Process process;
     private String lastLine;
@@ -62,7 +62,7 @@ public class ServerProcess {
     public void init() {
         this.watchDog = this.bdsAutoEnable.getWatchDog();
         this.fileName = Defaults.getDefaultFileName();
-       }
+    }
 
     public boolean isProcessRunning() {
         try {
@@ -102,7 +102,7 @@ public class ServerProcess {
             this.logger.debug("Nie można uruchomić procesu ponieważ&b canRun&r jest ustawione na:&b " + false);
             return;
         }
-       this.finalFilePath = this.config.getFilesPath() + File.separator + this.fileName;
+        this.finalFilePath = this.config.getFilesPath() + File.separator + this.fileName;
         this.processService.execute(() -> {
             if (this.isProcessRunning()) {
                 this.logger.info("Proces " + this.fileName + " jest już uruchomiony.");
@@ -270,7 +270,7 @@ public class ServerProcess {
 
         this.discord.disableBot();
     }
-    
+
     public void sendToConsole(final String command) {
         this.cmdLock.lock();
         this.cmdResponseLock.lock();
@@ -293,9 +293,9 @@ public class ServerProcess {
             outputStream.flush();
             this.logger.debug("Wysłano &b" + command);
 
-        } catch(final Exception exception){
-            this.logger.error("Wystąpił błąd podczas próby wysłania polecenia do konsoli" , exception);
-         } finally {
+        } catch (final Exception exception) {
+            this.logger.error("Wystąpił błąd podczas próby wysłania polecenia do konsoli", exception);
+        } finally {
             this.cmdLock.unlock();
             this.cmdResponseLock.unlock();
         }

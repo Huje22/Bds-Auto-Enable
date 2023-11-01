@@ -58,7 +58,7 @@ public class WatchDog {
         final int time = (int) MathUtil
                 .getCorrectNumber((this.watchDogConfig.getBackupConfig().getLastBackupTime() / 5), 5, 60);
 
-        this.serverProcess.tellrawToAllAndLogger(this.watchDogPrefix, "&aZapisywanie świata, będzie to trwało około&1 " + time +"&a sekund", LogState.INFO);
+        this.serverProcess.tellrawToAllAndLogger(this.watchDogPrefix, "&aZapisywanie świata, będzie to trwało około&1 " + time + "&a sekund", LogState.INFO);
         this.serverProcess.sendToConsole("save hold");
         ThreadUtil.sleep(time);
     }

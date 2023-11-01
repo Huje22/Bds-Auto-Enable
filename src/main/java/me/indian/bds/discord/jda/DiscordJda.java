@@ -297,7 +297,7 @@ public class DiscordJda implements DiscordIntegration {
         }
     }
 
-    
+
     @Override
     public void writeConsole(final String message, final Throwable throwable) {
         this.writeConsole(message + "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```");

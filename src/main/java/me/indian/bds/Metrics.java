@@ -58,11 +58,6 @@ public class Metrics {
     private static ServerProcess server;
     // Instance of app
     private static BDSAutoEnable bdsAutoEnable;
-    // A list with all custom charts
-    private final List<CustomChart> charts = new ArrayList<>();
-    // Is bStats enabled on this server?
-    private boolean enabled;
-
 
     static {
         // You can use the property to disable the check in your test environment
@@ -76,6 +71,11 @@ public class Metrics {
             }
         }
     }
+
+    // A list with all custom charts
+    private final List<CustomChart> charts = new ArrayList<>();
+    // Is bStats enabled on this server?
+    private boolean enabled;
 
     public Metrics(final BDSAutoEnable bdsAutoEnable) {
         if (bdsAutoEnable == null) {
@@ -216,7 +216,7 @@ public class Metrics {
      *
      * @return The app specific data.
      */
-    public JsonObject getPluginData(){
+    public JsonObject getPluginData() {
         final JsonObject data = new JsonObject();
 
         final String appName = "BDS-Auto-Enable";
@@ -315,8 +315,8 @@ public class Metrics {
         final File configFile = new File(Defaults.getAppDir() + "bstats.json");
         final Gson gson = GsonUtil.getGson();
 
-         serverUUID = bdsAutoEnable.getAppUUID();
-         
+        serverUUID = bdsAutoEnable.getAppUUID();
+
         // Check if the config file exists
         if (!configFile.exists()) {
             // Create a default configuration object
@@ -359,7 +359,7 @@ public class Metrics {
             }
         }
     }
-    
+
     /**
      * Represents a custom chart.
      */

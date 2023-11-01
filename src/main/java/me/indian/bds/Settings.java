@@ -28,29 +28,29 @@ public class Settings {
 
     public void loadSettings(final Scanner scanner) {
         final ScannerUtil scannerUtil = new ScannerUtil(scanner);
-       if (!this.config.isFirstRun()) {
-           if (!this.config.isQuestions()) {
-               this.serverProperties.loadProperties();
-               this.logger.info("Ominięto pytania");
-               return;
-           }
-           scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&n&lZastosować wcześniejsze ustawienia?&r (true/false) " + this.enter),
-                   true,
-                   (settings) -> {
-                       if (settings) {
-                           this.serverProperties.loadProperties();
-                           if (this.config.getVersionManagerConfig().isLoaded()) {
-                               this.anotherVersionQuestion(scannerUtil);
-                           }
-                           this.againSetupServer(scannerUtil);
-                           this.questionsSetting(scannerUtil);
-                           this.currentSettings(scanner);
-                       } else {
-                           this.logger.info("Zaczynamy od nowa");
-                           this.init(scannerUtil);
-                       }
-                   });
-       } else {
+        if (!this.config.isFirstRun()) {
+            if (!this.config.isQuestions()) {
+                this.serverProperties.loadProperties();
+                this.logger.info("Ominięto pytania");
+                return;
+            }
+            scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&n&lZastosować wcześniejsze ustawienia?&r (true/false) " + this.enter),
+                    true,
+                    (settings) -> {
+                        if (settings) {
+                            this.serverProperties.loadProperties();
+                            if (this.config.getVersionManagerConfig().isLoaded()) {
+                                this.anotherVersionQuestion(scannerUtil);
+                            }
+                            this.againSetupServer(scannerUtil);
+                            this.questionsSetting(scannerUtil);
+                            this.currentSettings(scanner);
+                        } else {
+                            this.logger.info("Zaczynamy od nowa");
+                            this.init(scannerUtil);
+                        }
+                    });
+        } else {
             this.init(scannerUtil);
         }
     }
@@ -233,7 +233,7 @@ public class Settings {
                     this.logger.info("Jeśli ustawione na&b true&r, serwer będzie obliczać operacje wydobywania bloków synchronicznie z klientem, aby móc zweryfikować," +
                             " czy klient powinien mieć możliwość niszczenia bloków wtedy, kiedy uważa, że może to zrobić.");
                     this.logger.info("Działa jak anty nuker");
-                },true,
+                }, true,
                 (input) -> this.logger.info("Server Authoritative Block Breaking ustawiono na:&1 " + input)
         ));
         this.logger.print("");
@@ -368,8 +368,8 @@ public class Settings {
                     }
                 });
     }
-    
-    private void againSetupServer(final ScannerUtil scannerUtil){
+
+    private void againSetupServer(final ScannerUtil scannerUtil) {
         scannerUtil.addBooleanQuestion(
                 (defaultValue) -> this.logger.info("&n&lSkonfigurować ponownie server?&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 false,

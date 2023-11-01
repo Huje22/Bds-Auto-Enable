@@ -4,12 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.ZipUtil;
-import me.indian.bds.watchdog.WatchDog;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -19,6 +13,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.ZipUtil;
+import me.indian.bds.watchdog.WatchDog;
 
 public class PackModule {
 
@@ -98,7 +97,7 @@ public class PackModule {
                 this.loadPack();
             }
         } catch (final Exception exception) {
-            this.logger.critical("Nie udało się pozyskać informacji o paczce!" , exception);
+            this.logger.critical("Nie udało się pozyskać informacji o paczce!", exception);
             System.exit(0);
         }
     }
@@ -127,7 +126,7 @@ public class PackModule {
                 }
             }
         } catch (final Exception exception) {
-            this.logger.critical("Nie udało się zobaczyć czy paczka jest załadowana!" , exception);
+            this.logger.critical("Nie udało się zobaczyć czy paczka jest załadowana!", exception);
             System.exit(0);
         }
     }
@@ -158,7 +157,7 @@ public class PackModule {
                 this.loaded = true;
             }
         } catch (final Exception exception) {
-            this.logger.critical("Nie udało się załadować paczki!" , exception);
+            this.logger.critical("Nie udało się załadować paczki!", exception);
             System.exit(0);
         }
     }
@@ -220,7 +219,7 @@ public class PackModule {
                 System.exit(0);
             }
         } catch (final Exception ioException) {
-            this.logger.error("Nie można pobrać paczki " , ioException);
+            this.logger.error("Nie można pobrać paczki ", ioException);
         }
     }
 

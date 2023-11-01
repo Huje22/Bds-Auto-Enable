@@ -199,7 +199,7 @@ public class BDSAutoEnable {
                 if (this.scanner != null) this.scanner.close();
                 this.serverProcess.instantShutdown();
             } catch (final Exception exception) {
-                this.logger.error("Wystąpił błąd podczas próby uruchomienia shutdown hooku " , exception);
+                this.logger.error("Wystąpił błąd podczas próby uruchomienia shutdown hooku ", exception);
             }
         });
         shutdown.setName("Shutdown");

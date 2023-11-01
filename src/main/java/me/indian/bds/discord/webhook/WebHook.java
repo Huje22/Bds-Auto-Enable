@@ -2,6 +2,11 @@ package me.indian.bds.discord.webhook;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.Config;
 import me.indian.bds.config.sub.discord.DiscordConfig;
@@ -10,12 +15,6 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
-
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class WebHook implements DiscordIntegration {
 
@@ -33,7 +32,7 @@ public class WebHook implements DiscordIntegration {
         this.webhookURL = this.discordConfig.getWebHookConfig().getUrl();
         this.avatarUrl = this.discordConfig.getWebHookConfig().getAvatarUrl();
         this.service = Executors.newScheduledThreadPool(4, new ThreadUtil("Discord-WebHook"));
-   }
+    }
 
     @Override
     public void init() {
@@ -77,10 +76,10 @@ public class WebHook implements DiscordIntegration {
     }
 
     @Override
-    public void sendMessage(final String message , final Throwable throwable) {
-        this.sendMessage(message + 
-           "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```");
-    }	
+    public void sendMessage(final String message, final Throwable throwable) {
+        this.sendMessage(message +
+                "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```");
+    }
 
     @Override
     public void sendEmbedMessage(final String title, final String message, final String footer) {
@@ -127,11 +126,11 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer) {
-       this.sendEmbedMessage(title , message + 
-                    "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```" , footer);
-    }	
+        this.sendEmbedMessage(title, message +
+                "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```", footer);
+    }
 
-   @Override
+    @Override
     public void sendJoinMessage(final String playerName) {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendJoinMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getJoinMessage().replaceAll("<name>", playerName));

@@ -101,7 +101,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         if (edited) {
             msg += this.discordConfig.getDiscordMessagesConfig().getEdited();
         }
-        if(message.isWebhookMessage()){
+        if (message.isWebhookMessage()) {
             msg += this.discordConfig.getDiscordMessagesConfig().getWebhook();
         }
 
@@ -112,7 +112,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     private String getUserName(final Member member, final User author) {
         if (member != null && member.getNickname() != null) {
-                return member.getNickname();
+            return member.getNickname();
         }
         return author.getName();
     }
@@ -129,7 +129,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         return false;
     }
 
-    private String generateRawMessage(final Message message){
+    private String generateRawMessage(final Message message) {
         String rawMessage = MessageUtil.fixMessage(message.getContentRaw());
 
         if (!message.getAttachments().isEmpty()) {
@@ -151,7 +151,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         for (final Role role : message.getMentions().getRoles()) {
             if (role == null) continue;
             final long id = role.getIdLong();
-            rawMessage = rawMessage.replaceAll("<@" + id + ">", "@"+ role.getName());
+            rawMessage = rawMessage.replaceAll("<@" + id + ">", "@" + role.getName());
         }
 
         return rawMessage;
@@ -161,5 +161,5 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         return messageReference == null ? "" : this.discordConfig.getDiscordMessagesConfig().getReplyStatement()
                 .replaceAll("<msg>", this.generateRawMessage(messageReference).replaceAll("\\*\\*", ""))
                 .replaceAll("<author>", this.getUserName(messageReference.getMember(), messageReference.getAuthor()));
-    }   
+    }
 }

@@ -44,8 +44,8 @@ public class BackupModule {
     private final File worldFile;
     private final DiscordIntegration discord;
     private final WatchDog watchDog;
-    private ServerProcess serverProcess;
     private final String prefix;
+    private ServerProcess serverProcess;
     private File backupFolder;
     private String status;
     private long lastBackupMillis;
@@ -142,7 +142,7 @@ public class BackupModule {
                         "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona " + this.getBackupSize(backup),
                         LogState.INFO);
                 this.serverProcess.tellrawToAllAndLogger(this.prefix,
-                        "&aDostępne jest&d " + this.backups.size() + "&a kopi zapasowych" ,
+                        "&aDostępne jest&d " + this.backups.size() + "&a kopi zapasowych",
                         LogState.INFO);
 
                 this.discord.sendBackupDoneMessage();
@@ -164,7 +164,7 @@ public class BackupModule {
     }
 
     public synchronized void loadBackup(final String backupName) {
-        if(!this.config.isDebug()){
+        if (!this.config.isDebug()) {
             this.logger.info("Ta funkcja jest nie stabilna , wymaga włączeniu Debugu");
             return;
         }

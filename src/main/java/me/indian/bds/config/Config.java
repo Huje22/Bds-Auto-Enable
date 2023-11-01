@@ -93,16 +93,16 @@ public class Config extends OkaeriConfig {
         return this.firstRun;
     }
 
+    public void setFirstRun(final boolean firstRun) {
+        this.firstRun = firstRun;
+    }
+
     public boolean isQuestions() {
         return this.questions;
     }
 
     public void setQuestions(final boolean questions) {
         this.questions = questions;
-    }
-
-    public void setFirstRun(final boolean firstRun) {
-        this.firstRun = firstRun;
     }
 
     public boolean isWine() {

@@ -1,14 +1,13 @@
 package me.indian.bds;
 
-import me.indian.bds.config.Config;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.MathUtil;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import me.indian.bds.config.Config;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.MathUtil;
 
 public class AutoMessages {
 
@@ -37,10 +36,10 @@ public class AutoMessages {
                 if (AutoMessages.this.serverProcess.isEnabled() && !AutoMessages.this.bdsAutoEnable.getServerManager().getOnlinePlayers().isEmpty()) {
                     if (!this.iterator.hasNext()) this.iterator = AutoMessages.this.messages.iterator();
                     final String prefix = AutoMessages.this.config.getAutoMessagesConfig().getPrefix();
-                    
+
                     if (AutoMessages.this.config.getAutoMessagesConfig().isRandom()) {
                         final int message = AutoMessages.this.random.nextInt(AutoMessages.this.messages.size());
-                        
+
                         AutoMessages.this.serverProcess.tellrawToAll(prefix + AutoMessages.this.messages.get(message));
                     } else {
                         AutoMessages.this.serverProcess.tellrawToAll(prefix + this.iterator.next());

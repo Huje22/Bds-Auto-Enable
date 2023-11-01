@@ -141,10 +141,10 @@ public final class StatusUtil {
         return (file.exists() ? file.getTotalSpace() : 0);
     }
 
-    public static long usedDiskSpace(){
+    public static long usedDiskSpace() {
         return (maxDiskSpace() - availableDiskSpace());
     }
-    
+
     public static long getServerRamUsage() {
         if (!serverProcess.isEnabled()) return 0;
         try {
@@ -157,7 +157,7 @@ public final class StatusUtil {
                 }
             }
         } catch (final Exception exception) {
-            logger.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + Defaults.getSystem() , exception);
+            logger.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + Defaults.getSystem(), exception);
         }
         return -1;
     }

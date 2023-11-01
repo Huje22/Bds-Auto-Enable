@@ -69,7 +69,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         if (member == null) return;
 
         switch (event.getName()) {
-             case "cmd" -> {
+            case "cmd" -> {
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
                     if (!this.serverProcess.isEnabled()) {
                         event.reply("Server jest wyłączony").setEphemeral(true).queue();
@@ -135,15 +135,15 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             }
             case "backup" -> {
                 if (!this.config.getWatchDogConfig().getBackupConfig().isBackup()) {
-               event.reply("Backupy są wyłączone")
-                   .setEphemeral(true).queue();
+                    event.reply("Backupy są wyłączone")
+                            .setEphemeral(true).queue();
                     return;
                 }
-                
+
                 final OptionMapping command = event.getOption("load");
                 if (command != null && !command.getAsString().isEmpty()) {
                     if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                        if(!this.config.isDebug()){
+                        if (!this.config.isDebug()) {
                             event.reply("Ta funkcja jest nie stabilna , wymaga włączeniu Debugu").setEphemeral(true).queue();
                             return;
                         }

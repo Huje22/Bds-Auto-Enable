@@ -2,7 +2,7 @@
 
 # BDS-Auto-Enable
 
-Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22** 
+Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
 
 </div>
@@ -17,23 +17,33 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
 * Automatyczne włączenie servera po crashu
 * Łatwe załadowanie innej wersji
-* Tworzenie backupów świata co dany czas i manualnie (___Ładowanie backup wymaga nadal wielkiej poprawy, wymaga debugu właczonego___)
+* Tworzenie backupów świata co dany czas i manualnie (
+  ___Ładowanie backup wymaga nadal wielkiej poprawy, wymaga debugu właczonego___)
 * Pisanie w konsoli w 99% (**Mogą wystąpić małe błędy**)
 * AutoMessages
-* Licznik czasu gry gracza (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
+* Licznik czasu gry gracza (
+  Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
 * Licznik śmierci (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
 * Integracje z Discordem
-  (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) do obsługi większej
+  (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) do obsługi
+  większej
   ilości funkcji)
 * **Rest API** z czasem gry , liczbą śmierci i graczami online/offline
 
-# Jak to działa 
-Komunikuje się on z serverem BDS za pomocą wysyłania komend do konsoli a także czytania ważnych informacji z konsoli na przykład: <br>
-Paczka [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) wysyła do konsoli log 
+# Jak to działa
+
+Komunikuje się on z serverem BDS za pomocą wysyłania komend do konsoli a także czytania ważnych informacji z konsoli na
+przykład: <br>
+Paczka [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) wysyła do konsoli
+log
+
 ```
 PlayerChat:JndjanBartonka Message:Witaj
 ```
-A aplikacja odczytuje nick gracza z `PlayerChat` i wiadomość z `Message` , i dalej na przykład wysyła wiadomość tą do discord , podobnie z dołączaniem gracza (w tym wypadku `PlayerJoin`) , i w tym wypadku dodaje gracza na listę graczy online i timer działający co 1s dodaje mu wtedy 1s czasu gry
+
+A aplikacja odczytuje nick gracza z `PlayerChat` i wiadomość z `Message` , i dalej na przykład wysyła wiadomość tą do
+discord , podobnie z dołączaniem gracza (w tym wypadku `PlayerJoin`) , i w tym wypadku dodaje gracza na listę graczy
+online i timer działający co 1s dodaje mu wtedy 1s czasu gry
 
 # Polecenia
 
@@ -50,14 +60,14 @@ A aplikacja odczytuje nick gracza z `PlayerChat` i wiadomość z `Message` , i d
 
 * Wszystkie je jak i także ich opisy znajdziesz po wpisaniu `/` (Wymaga dodania bota z
   ___&scope=bot+applications.commands___ inaczej mogą wystąpić problemy)
-  
+
 # Użyte biblioteki
+
 [Okaeri Configs - do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
 [Gson - do plików i samych Json](https://github.com/google/gson)<br>
 [JDA - Integracja z discord](https://github.com/discord-jda/JDA)<br>
 [Javalin - Rest API](https://github.com/javalin/javalin)<br>
 [Logback - Tylko do wyłączenia niektórych wiadomości z Javalin i JDA](https://github.com/qos-ch/logback)<br>
-
 
 # Program nie wspiera
 
@@ -71,5 +81,5 @@ A aplikacja odczytuje nick gracza z `PlayerChat` i wiadomość z `Message` , i d
 
 ![bStats Servers](https://img.shields.io/bstats/servers/19727?style=for-the-badge)
 ![bStats Players](https://img.shields.io/bstats/players/19727?style=for-the-badge) <br>
-![Latest Tag](https://img.shields.io/github/v/tag/Huje22/Bds-Auto-Enable?label=LATEST%20TAG&style=for-the-badge) 
+![Latest Tag](https://img.shields.io/github/v/tag/Huje22/Bds-Auto-Enable?label=LATEST%20TAG&style=for-the-badge)
 ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/m/Huje22/BDS-Auto-Enable?style=for-the-badge)
