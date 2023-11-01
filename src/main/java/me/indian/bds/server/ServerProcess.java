@@ -156,11 +156,11 @@ public class ServerProcess {
                     this.startProcess();
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można uruchomić procesu", exception);
-
                     this.discord.sendEmbedMessage("ServerProcess",
                             "Nie można uruchomić procesu",
                             exception,
                             exception.getLocalizedMessage());
+
                     System.exit(0);
                 }
             }
@@ -207,66 +207,9 @@ public class ServerProcess {
                 while (!Thread.currentThread().isInterrupted()) {
                     if (!consoleInput.hasNext()) continue;
                     final String input = consoleInput.nextLine();
-
-                    if (input.startsWith("say")) this.discord.sendPlayerMessage("say", input.substring(3));
-
-                    switch (input.toLowerCase()) {
-                        case "stop" -> {
-                            this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
-                            this.kickAllPlayers(this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem");
-                            if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
-                            this.sendToConsole("stop");
-                        }
-                        case "version" -> {
-                            this.tellrawToAllAndLogger(this.prefix, "&aWersja minecraft:&b " + this.config.getVersionManagerConfig().getVersion(), LogState.INFO);
-                            this.tellrawToAllAndLogger(this.prefix, "&aWersja BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
-                        }
-                        case "backup" -> this.watchDog.getBackupModule().backup();
-                        case "test" -> {
-                            for (final Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
-                                final Thread thread = entry.getKey();
-
-                                System.out.println("Thread ID: " + thread.getId());
-                                System.out.println("Thread Name: " + thread.getName());
-                                System.out.println("Thread State: " + thread.getState());
-                                System.out.println("Thread Is Active: " + thread.isAlive());
-                                System.out.println("Thread Is Daemon: " + thread.isDaemon());
-                                System.out.println("Thread Is Interrupted: " + thread.isInterrupted());
-
-                                System.out.println("-----------------------------");
-                            }
-                        }
-                        case "stats" -> {
-                            for (final String s : StatusUtil.getStatus(false)) {
-                                this.logger.info(s);
-                            }
-                        }
-                        case "playtime" -> {
-                            for (final String s : StatusUtil.getTopPlayTime(false, 20)) {
-                                this.logger.info(s);
-                            }
-                        }
-                        case "deaths" -> {
-                            for (final String s : StatusUtil.getTopDeaths(false, 20)) {
-                                this.logger.info(s);
-                            }
-                        }
-                        case "update" -> this.bdsAutoEnable.getVersionManager().getVersionUpdater().updateToLatest();
-                        case "end" -> {
-                            this.sendToConsole("stop");
-                            if (!this.process.waitFor(30, TimeUnit.SECONDS)) {
-                                this.process.destroy();
-                            }
-                            this.setCanRun(false);
-                            System.exit(0);
-                            this.instantShutdown();
-                        }
-                        default -> {
-                            this.sendToConsole(input);
-                            this.logger.instantLogToFile(input);
-                            this.discord.writeConsole(input);
-                        }
-                    }
+                    this.sendToConsole(input);
+                    this.logger.instantLogToFile(input);
+                    this.discord.writeConsole(input);
                 }
             } catch (final Exception exception) {
                 this.logger.critical("Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
@@ -276,7 +219,7 @@ public class ServerProcess {
                         exception.getLocalizedMessage());
                 this.discord.sendMessage("<owner>");
 
-                System.exit(1);
+                System.exit(0);
             }
         }
     }
@@ -290,11 +233,10 @@ public class ServerProcess {
         ThreadUtil.sleep(3);
         this.bdsAutoEnable.getServerManager().getStatsManager().saveAllData();
 
-        if (this.isEnabled()) this.watchDog.saveAndResume();
+        if (this.isEnabled()) {
+            this.watchDog.saveAndResume();
+            this.sendToConsole("stop");
 
-        this.sendToConsole("stop");
-
-        if (this.process != null && this.process.isAlive()) {
             this.logger.info("Niszczenie procesu servera");
             try {
                 this.process.destroy();
@@ -344,6 +286,8 @@ public class ServerProcess {
                 this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ, OutputStream servera jest&c nullem&r!");
                 return;
             }
+
+            if (this.handleCustomCommands(command)) return;
 
             outputStream.write((command + "\n").getBytes());
             outputStream.flush();
@@ -439,6 +383,76 @@ public class ServerProcess {
 
     public Process getProcess() {
         return this.process;
+    }
+
+    private boolean handleCustomCommands(final String command) {
+        if (command.startsWith("say")) this.discord.sendPlayerMessage("say", command.substring(3));
+        switch (command.toLowerCase()) {
+            case "stop" -> {
+                this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
+                this.kickAllPlayers(this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem");
+                if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
+                return false;
+            }
+            case "version" -> {
+                this.tellrawToAllAndLogger(this.prefix, "&aWersja minecraft:&b " + this.config.getVersionManagerConfig().getVersion(), LogState.INFO);
+                this.tellrawToAllAndLogger(this.prefix, "&aWersja BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
+                return true;
+            }
+            case "backup" -> {
+                this.watchDog.getBackupModule().backup();
+                return true;
+            }
+            case "test" -> {
+                for (final Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
+                    final Thread thread = entry.getKey();
+
+                    System.out.println("Thread ID: " + thread.getId());
+                    System.out.println("Thread Name: " + thread.getName());
+                    System.out.println("Thread State: " + thread.getState());
+                    System.out.println("Thread Is Active: " + thread.isAlive());
+                    System.out.println("Thread Is Daemon: " + thread.isDaemon());
+                    System.out.println("Thread Is Interrupted: " + thread.isInterrupted());
+
+                    System.out.println("-----------------------------");
+                }
+                return true;
+            }
+            case "stats" -> {
+                for (final String s : StatusUtil.getStatus(false)) {
+                    this.logger.info(s);
+                }
+                return true;
+            }
+            case "playtime" -> {
+                for (final String s : StatusUtil.getTopPlayTime(false, 20)) {
+                    this.logger.info(s);
+                }
+                return true;
+            }
+            case "deaths" -> {
+                for (final String s : StatusUtil.getTopDeaths(false, 20)) {
+                    this.logger.info(s);
+                }
+                return true;
+            }
+            case "update" -> {
+                this.bdsAutoEnable.getVersionManager().getVersionUpdater().updateToLatest();
+                return true;
+            }
+            case "end" -> {
+                this.setCanRun(false);
+                this.sendToConsole("stop");
+                try {
+                    if (!this.process.waitFor(30, TimeUnit.SECONDS)) {
+                        this.process.destroy();
+                    }
+                } catch (final InterruptedException ignored) {
+                }
+                System.exit(0);
+            }
+        }
+        return false;
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {
