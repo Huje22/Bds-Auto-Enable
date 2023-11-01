@@ -140,8 +140,8 @@ public class Metrics {
         }
 
         if (logResponseStatusText) {
-            bdsAutoEnable.getLogger().info("Wysłano dane do bStats i otrzyman (Z kodem&1"
-                    + connection.getResponseCode() + "&r) odpowiedź: " + builder.toString());
+            bdsAutoEnable.getLogger().info("Wysłano dane do bStats i otrzyman (Z kodem&1 "
+                    + connection.getResponseCode() + "&r) odpowiedź: " + builder);
         }
     }
 
