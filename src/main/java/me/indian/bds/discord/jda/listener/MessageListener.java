@@ -48,7 +48,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     @Override
     public void onMessageUpdate(final MessageUpdateEvent event) {
-        if (event.getAuthor().isBot()) return;
+        if (event.getAuthor().equals(this.discordJda.getJda().getSelfUser())) return;
 
         final Member member = event.getMember();
         final User author = event.getAuthor();
@@ -61,9 +61,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     @Override
     public void onMessageReceived(final MessageReceivedEvent event) {
-        if (event.getAuthor().isBot() || event.isWebhookMessage()) return; 
-
-        //TODO: Dodać wsparcie dla webhookow 
+        if (event.getAuthor().equals(this.discordJda.getJda().getSelfUser())) return;
 
         final Member member = event.getMember();
         final User author = event.getAuthor();
@@ -102,6 +100,9 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                 .replaceAll("<role>", role == null ? "" : role.getName());
         if (edited) {
             msg += this.discordConfig.getDiscordMessagesConfig().getEdited();
+        }
+        if(message.isWebhookMessage()){
+            msg += this.discordConfig.getDiscordMessagesConfig().getWebhook();
         }
 
         this.serverProcess.tellrawToAll(msg);

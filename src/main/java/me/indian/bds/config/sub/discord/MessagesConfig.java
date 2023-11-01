@@ -12,6 +12,9 @@ public class MessagesConfig extends OkaeriConfig {
     @Comment({"Informacja o tym że wiadomość została edytowana"})
     private String edited = " (Edytowano)";
     @Comment({""})
+    @Comment({"Informacja o tym że wiadomość to webhook"})
+    private String webhook = " (Webhook)";
+    @Comment({""})
     @Comment({"Informacja o dołączeniu gracza"})
     private String joinMessage = "Gracz **<name>** dołączył do gry";
     @Comment({""})
@@ -60,6 +63,10 @@ public class MessagesConfig extends OkaeriConfig {
 
     public String getEdited() {
         return this.edited;
+    }
+
+    public String getWebhook() {
+        return this.webhook;
     }
 
     public String getJoinMessage() {
