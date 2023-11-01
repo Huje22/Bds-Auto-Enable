@@ -11,6 +11,7 @@ import me.indian.bds.config.Config;
 import me.indian.bds.config.sub.discord.BotConfig;
 import me.indian.bds.discord.DiscordLogChannelType;
 import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.logger.LogState;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerStats;
 import me.indian.bds.server.properties.Difficulty;
@@ -302,10 +303,14 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     event.replyEmbeds(this.getBackupEmbed())
                             .addActionRow(ActionRow.of(this.backupButtons).getComponents())
                             .setEphemeral(true).queue();
+                    this.serverProcess.tellrawToAllAndLogger("&7[&bDiscord&7]",
+                            "&aUżytkownik&b " + this.discordJda.getUserName(event.getMember(), event.getUser()) +
+                                    "&a usunął backup&b " + fileName + "&a za pomocą&e discord"
+                            , LogState.INFO);
+
                     return;
                 } catch (final Exception exception) {
                     event.reply("Nie udało się usunąć backupa " + fileName + " " + exception.getMessage()).setEphemeral(true).queue();
-                    exception.printStackTrace();
                 }
             }
         }
