@@ -93,7 +93,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     private void sendMessage(final Member member, final User author, final Message message, final boolean edited) {
         final Role role = this.discordJda.getHighestRole(author.getIdLong());
-        if (this.checkLength(message)) return;
+        if (this.isMaxLength(message)) return;
 
         String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
                 .replaceAll("<name>", this.getUserName(member, author))
@@ -116,13 +116,13 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         return author.getName();
     }
 
-    private boolean checkLength(final Message message) {
+    private boolean isMaxLength(final Message message) {
+        if (!this.discordConfig.getDiscordBotConfig().isDeleteOnReachLimit()) return false;
+
         if (message.getContentRaw().length() >= this.discordConfig.getDiscordBotConfig().getAllowedLength()) {
             this.discordJda.sendPrivateMessage(message.getAuthor(), this.discordConfig.getDiscordBotConfig().getReachedMessage());
-            if (this.discordConfig.getDiscordBotConfig().isDeleteOnReachLimit()) {
-                message.delete().queue();
-                this.discordJda.sendPrivateMessage(message.getAuthor(), "`" + message.getContentRaw() + "`");
-            }
+            message.delete().queue();
+            this.discordJda.sendPrivateMessage(message.getAuthor(), "`" + message.getContentRaw() + "`");
             return true;
         }
         return false;
