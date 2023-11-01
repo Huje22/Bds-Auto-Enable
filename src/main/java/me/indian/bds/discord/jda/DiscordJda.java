@@ -92,28 +92,26 @@ public class DiscordJda implements DiscordIntegration {
             return;
         }
 
-        try {
-            this.guild = this.jda.getGuildById(this.serverID);
-        } catch (final Exception exception) {
-            this.logger.info("Nie można odnaleźć servera z ID &a" + this.serverID);
+        this.guild = this.jda.getGuildById(this.serverID);
+        if (this.guild == null) {
             this.jda.shutdown();
             this.jda = null;
-            return;
+            throw new NullPointerException("Nie można odnaleźć servera o ID " + this.serverID);
         }
 
-        try {
-            this.textChannel = this.guild.getTextChannelById(this.channelID);
-        } catch (final Exception exception) {
-            this.logger.info("Nie można odnaleźć kanału z ID &a" + this.channelID);
+        this.textChannel = this.guild.getTextChannelById(this.channelID);
+        if (this.textChannel == null) {
             this.jda.shutdown();
             this.jda = null;
-            return;
+            throw new NullPointerException("Nie można odnaleźć kanału z ID " + this.channelID);
         }
 
-        try {
-            this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
-        } catch (final Exception exception) {
-            this.logger.info("(konsola) Nie można odnaleźć kanału z ID &a" + this.consoleID);
+        this.textChannel.getManager().setSlowmode(1).queue();
+
+        this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
+
+        if (this.consoleChannel == null) {
+            this.logger.error("(konsola) Nie można odnaleźć kanału z ID &a" + this.consoleID);
         }
 
         for (final JDAListener listener : this.listeners) {
@@ -123,7 +121,7 @@ public class DiscordJda implements DiscordIntegration {
                 this.jda.addEventListener(listener);
                 this.logger.debug("Zarejestrowano listener JDA:&b " + listener.getClass().getSimpleName());
             } catch (final Exception exception) {
-                this.logger.critical("Wystąpił błąd podczas ładowania listenera: &b" + listener.getClass().getSimpleName(), exception);
+                this.logger.critical("Wystąpił błąd podczas ładowania listeneru: &b" + listener.getClass().getSimpleName(), exception);
                 System.exit(0);
             }
         }
