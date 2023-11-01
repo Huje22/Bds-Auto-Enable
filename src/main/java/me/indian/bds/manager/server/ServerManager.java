@@ -138,6 +138,7 @@ public class ServerManager {
     private void serverEnabled(final String logEntry) {
         if (logEntry.contains("Server started")) {
             this.discord.sendEnabledMessage();
+            this.lastTPS = 20;
         }
     }
 
