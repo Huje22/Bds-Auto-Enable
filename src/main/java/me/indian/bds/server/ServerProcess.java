@@ -455,6 +455,8 @@ public class ServerProcess {
         return false;
     }
 
+//TODO: this.allowedCommands.stream().anyMatch(s -> s.toLowerCase().contains(cmd.toLowerCase()));
+
     private boolean containsNotAllowedToFileLog(final String msg) {
         for (final String s : this.config.getLogConfig().getNoFile()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
