@@ -79,6 +79,7 @@ public class AutoRestartModule {
                     LogState.WARNING);
             this.watchDog.saveAndResume();
             if (alert) this.restartAlert();
+            //TODO: Dodać informacje ma discord o restartownowaniu servera 
             this.serverProcess.kickAllPlayers("&aServer jest restartowany....");
             this.serverProcess.sendToConsole("stop");
 
