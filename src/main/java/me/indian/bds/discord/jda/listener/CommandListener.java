@@ -178,7 +178,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 final List<String> playTime = StatusUtil.getTopPlayTime(true, 100);
                 final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
                 final String totalUpTime = "Łączny czas działania servera: "
-                        + DateUtil.formatTimeWithoutMillis(serverStats.getTotalUpTime());
+                        + DateUtil.formatTime(serverStats.getTotalUpTime() , "days hours minutes seconds ");
 
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Top 100 Czasu gry")
@@ -403,7 +403,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         return new EmbedBuilder()
                 .setTitle("Backup info")
                 .setDescription("Status ostatniego backup: " + backupStatus +
-                        "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup()) + "`\n" +
+                        "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup(), "days hours minutes seconds millis ") + "`\n" +
                         "Użyj `/stats` po więcej przydatnych informacji \n" +
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
                         (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))

@@ -39,61 +39,43 @@ public final class DateUtil {
         return LocalDate.ofEpochDay(days);
     }
 
-
-    //TODO: Zwracać tylko long + w formatTime dodać boolean: days, hours, i resztę 
-    
-    public static String formatDays(final long millis) {
+    public static long formatDays(final long millis) {
         final long totalSeconds = millis / 1000;
         final long totalMinutes = totalSeconds / 60;
         final long totalHours = totalMinutes / 60;
-        final long days = totalHours / 24;
 
-        return days + " dni";
+        return totalHours / 24;
     }
 
-    public static String formatHours(final long millis) {
+    public static long formatHours(final long millis) {
         final long totalSeconds = millis / 1000;
         final long totalMinutes = totalSeconds / 60;
         final long totalHours = totalMinutes / 60;
-        final long hours = totalHours % 24;
 
-        return hours + " godzin";
+        return totalHours % 24;
     }
 
-    public static String formatMinutes(final long millis) {
+    public static long formatMinutes(final long millis) {
         final long totalSeconds = millis / 1000;
         final long totalMinutes = totalSeconds / 60;
-        final long minutes = totalMinutes % 60;
 
-        return minutes + " minut";
+        return totalMinutes % 60;
     }
 
-    public static String formatSeconds(final long millis) {
+    public static long formatSeconds(final long millis) {
         final long totalSeconds = millis / 1000;
-        final long seconds = totalSeconds % 60;
 
-        return seconds + " sekund";
+        return totalSeconds % 60;
     }
 
-    public static String formatTimeWithoutMillis(final long millis) {
+    public static String formatTime(final long millis, final String times) {
         String formattedTime = "";
 
-        formattedTime += formatDays(millis) + " ";
-        formattedTime += formatHours(millis) + " ";
-        formattedTime += formatMinutes(millis) + " ";
-        formattedTime += formatSeconds(millis) + " ";
-
-        return formattedTime;
-    }
-
-    public static String formatTime(final long millis) {
-        String formattedTime = "";
-
-        formattedTime += formatDays(millis) + " ";
-        formattedTime += formatHours(millis) + " ";
-        formattedTime += formatMinutes(millis) + " ";
-        formattedTime += formatSeconds(millis) + " ";
-        formattedTime += millis % 1000 + " milisekund";
+        if (times.toLowerCase().contains("days".toLowerCase())) formattedTime += formatDays(millis) + " dni ";
+        if (times.toLowerCase().contains("hours".toLowerCase())) formattedTime += formatHours(millis) + " godzin ";
+        if (times.toLowerCase().contains("minutes".toLowerCase())) formattedTime += formatMinutes(millis) + " minut ";
+        if (times.toLowerCase().contains("seconds".toLowerCase())) formattedTime += formatSeconds(millis) + " sekund ";
+        if (times.toLowerCase().contains("millis".toLowerCase())) formattedTime += millis % 1000 + " milisekund";
 
         return formattedTime;
     }
