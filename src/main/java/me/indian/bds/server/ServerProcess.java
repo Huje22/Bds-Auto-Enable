@@ -455,32 +455,15 @@ public class ServerProcess {
         return false;
     }
 
-//TODO: this.allowedCommands.stream().anyMatch(s -> s.toLowerCase().contains(cmd.toLowerCase()));
-
     private boolean containsNotAllowedToFileLog(final String msg) {
-        for (final String s : this.config.getLogConfig().getNoFile()) {
-            if (msg.toLowerCase().contains(s.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
+        return this.config.getLogConfig().getNoFile().stream().anyMatch(s -> s.toLowerCase().contains(msg.toLowerCase()));
     }
 
     private boolean containsNotAllowedToConsoleLog(final String msg) {
-        for (final String s : this.config.getLogConfig().getNoConsole()) {
-            if (msg.toLowerCase().contains(s.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
+        return this.config.getLogConfig().getNoConsole().stream().anyMatch(s -> s.toLowerCase().contains(msg.toLowerCase()));
     }
 
     private boolean containsNotAllowedToDiscordConsoleLog(final String msg) {
-        for (final String s : this.config.getLogConfig().getNoDiscordConsole()) {
-            if (msg.toLowerCase().contains(s.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
+        return this.config.getLogConfig().getNoDiscordConsole().stream().anyMatch(s -> s.toLowerCase().contains(msg.toLowerCase()));
     }
 }
