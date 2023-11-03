@@ -39,6 +39,9 @@ public final class DateUtil {
         return LocalDate.ofEpochDay(days);
     }
 
+
+    //TODO: Zwracać tylko long + w formatTime dodać boolean: days, hours, i resztę 
+    
     public static String formatDays(final long millis) {
         final long totalSeconds = millis / 1000;
         final long totalMinutes = totalSeconds / 60;
