@@ -225,12 +225,19 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendServerUpdateMessage(final String version) {
-        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendServerUpdate()) {
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendServerUpdateMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getServerUpdate()
                     .replaceAll("<version>", version)
                     .replaceAll("<current>", this.config.getVersionManagerConfig().getVersion())
 
             );
+        }
+    }
+
+    @Override
+    public void sendRestartMessage() {
+        if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendRestartMessage()) {
+            this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getRestartMessage());
         }
     }
 

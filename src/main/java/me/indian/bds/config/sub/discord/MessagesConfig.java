@@ -56,6 +56,10 @@ public class MessagesConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Informacja gdy server pobiera najnowszą wersje"})
     private String serverUpdate = "Wersja **<version>** jest pobierana a następnie zostanie załadowana , aktualna załadowana to **<current>**";
+    @Comment({""})
+    @Comment({"Informacja gdy server jest restartowany"})
+    private String restartMessage = "**Server jest restartowany**";
+
 
     public String getReplyStatement() {
         return this.replyStatement;
@@ -123,5 +127,9 @@ public class MessagesConfig extends OkaeriConfig {
 
     public String getServerUpdate() {
         return this.serverUpdate;
+    }
+
+    public String getRestartMessage() {
+        return this.restartMessage;
     }
 }

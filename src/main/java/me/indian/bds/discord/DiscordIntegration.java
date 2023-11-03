@@ -39,6 +39,8 @@ public interface DiscordIntegration {
 
     void sendServerUpdateMessage(final String version);
 
+    void sendRestartMessage();
+
     void writeConsole(final String message);
 
     void writeConsole(final String message, final Throwable throwable);

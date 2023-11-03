@@ -37,7 +37,11 @@ public class MessagesOptionsConfig extends OkaeriConfig {
     private boolean sendDestroyedMessage = true;
     @Comment({""})
     @Comment({"Wysyłać wiadomość o aktualizowaniu wersji servera"})
-    private boolean sendServerUpdate = true;
+    private boolean sendServerUpdateMessage = true;
+
+    @Comment({""})
+    @Comment({"Wysyłać wiadomość o restarcie servera"})
+    private boolean sendRestartMessage = true;
 
     public boolean isSendBackupMessage() {
         return this.sendBackupMessage;
@@ -79,7 +83,11 @@ public class MessagesOptionsConfig extends OkaeriConfig {
         return this.sendDestroyedMessage;
     }
 
-    public boolean isSendServerUpdate() {
-        return this.sendServerUpdate;
+    public boolean isSendServerUpdateMessage() {
+        return this.sendServerUpdateMessage;
+    }
+
+    public boolean isSendRestartMessage() {
+        return this.sendRestartMessage;
     }
 }
