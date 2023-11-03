@@ -442,13 +442,6 @@ public class ServerProcess {
             }
             case "end" -> {
                 this.setCanRun(false);
-                this.sendToConsole("stop");
-                try {
-                    if (!this.process.waitFor(30, TimeUnit.SECONDS)) {
-                        this.process.destroy();
-                    }
-                } catch (final InterruptedException ignored) {
-                }
                 System.exit(0);
             }
         }
