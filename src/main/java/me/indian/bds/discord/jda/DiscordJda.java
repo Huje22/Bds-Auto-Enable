@@ -178,8 +178,6 @@ public class DiscordJda implements DiscordIntegration {
 
                     this.lastOnlinePlayers = onlinePlayers;
 
-                    System.out.println("Zmieniono");
-
                     manager.setName(DiscordJda.this.discordConfig.getDiscordBotConfig().getOnlinePlayersMessage()
                             .replaceAll("<online>", String.valueOf(onlinePlayers))
                             .replaceAll("<max>", String.valueOf(maxPlayers))
@@ -194,6 +192,8 @@ public class DiscordJda implements DiscordIntegration {
             );
         }
     }
+
+    //TODO: Dodać kanał dla TPS (pomyśle jeszcze nad tym)
 
     private void checkBotPermissions() {
         final Member botMember = this.guild.getMember(this.jda.getSelfUser());
