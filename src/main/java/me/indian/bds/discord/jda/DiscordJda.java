@@ -32,8 +32,10 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
+import net.dv8tion.jda.api.managers.channel.concrete.VoiceChannelManager;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
@@ -43,12 +45,14 @@ public class DiscordJda implements DiscordIntegration {
     private final Logger logger;
     private final Config config;
     private final DiscordConfig discordConfig;
-    private final long serverID, channelID, consoleID;
-    private final List<JDAListener> listeners;
+    private final long serverID, channelID, consoleID, onlinePlayersID;
+    private final Timer discordTimer;
     private final ExecutorService consoleService;
+    private final List<JDAListener> listeners;
     private JDA jda;
     private Guild guild;
     private TextChannel textChannel, consoleChannel;
+    private VoiceChannel onlinePlayersChannel;
 
     public DiscordJda(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -58,11 +62,14 @@ public class DiscordJda implements DiscordIntegration {
         this.serverID = this.discordConfig.getDiscordBotConfig().getServerID();
         this.channelID = this.discordConfig.getDiscordBotConfig().getChannelID();
         this.consoleID = this.discordConfig.getDiscordBotConfig().getConsoleID();
+        this.discordTimer = new Timer("Discord timer", true);
+        this.onlinePlayersID = this.discordConfig.getDiscordBotConfig().getOnlinePlayersID();
+        this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
+
         this.listeners = new ArrayList<>();
         this.listeners.add(new CommandListener(this, this.bdsAutoEnable));
         this.listeners.add(new MessageListener(this, this.bdsAutoEnable));
 
-        this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
     }
 
     @Override
@@ -96,14 +103,14 @@ public class DiscordJda implements DiscordIntegration {
         if (this.guild == null) {
             this.jda.shutdown();
             this.jda = null;
-            throw new NullPointerException("Nie można odnaleźć servera o ID " + this.serverID);
+            throw new NullPointerException("Nie można odnaleźć servera o ID&b " + this.serverID);
         }
 
         this.textChannel = this.guild.getTextChannelById(this.channelID);
         if (this.textChannel == null) {
             this.jda.shutdown();
             this.jda = null;
-            throw new NullPointerException("Nie można odnaleźć kanału z ID " + this.channelID);
+            throw new NullPointerException("Nie można odnaleźć kanału z ID&b " + this.channelID);
         }
 
         this.textChannel.getManager().setSlowmode(1).queue();
@@ -111,7 +118,14 @@ public class DiscordJda implements DiscordIntegration {
         this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
 
         if (this.consoleChannel == null) {
-            this.logger.error("(konsola) Nie można odnaleźć kanału z ID &a" + this.consoleID);
+            this.logger.debug("(konsola) Nie można odnaleźć kanału z ID &b " + this.consoleID);
+        }
+
+        this.onlinePlayersChannel = this.guild.getVoiceChannelById(this.onlinePlayersID);
+        this.setOnlinePlayersCount();
+
+        if (this.onlinePlayersChannel == null) {
+            this.logger.debug("(Gracz online) Nie można odnaleźć kanału głosowego z ID &b " + this.onlinePlayersID);
         }
 
         for (final JDAListener listener : this.listeners) {
@@ -146,7 +160,40 @@ public class DiscordJda implements DiscordIntegration {
         this.leaveGuilds();
     }
 
-    //TODO: Dodać info o osobach na kanale ustawionym przez użytkownika 
+    private void setOnlinePlayersCount() {
+        if (this.onlinePlayersChannel != null) {
+            final VoiceChannelManager manager = this.onlinePlayersChannel.getManager();
+
+            final TimerTask onlinePlayersTask = new TimerTask() {
+
+                int lastOnlinePlayers;
+
+                @Override
+                public void run() {
+                    final int onlinePlayers = DiscordJda.this.bdsAutoEnable.getServerManager().getOnlinePlayers().size();
+                    final int maxPlayers = DiscordJda.this.bdsAutoEnable.getServerProperties().getMaxPlayers();
+
+                    //Sprawdzam tak aby na darmo nie wysyłać requesta do discord
+                    if (onlinePlayers == 0 && this.lastOnlinePlayers == 0) return;
+
+                    this.lastOnlinePlayers = onlinePlayers;
+
+                    System.out.println("Zmieniono");
+
+                    manager.setName(DiscordJda.this.discordConfig.getDiscordBotConfig().getOnlinePlayersMessage()
+                            .replaceAll("<online>", String.valueOf(onlinePlayers))
+                            .replaceAll("<max>", String.valueOf(maxPlayers))
+                    ).queue();
+
+                }
+            };
+
+            this.discordTimer.scheduleAtFixedRate(onlinePlayersTask,
+                    MathUtil.minutesTo(1, TimeUnit.MILLISECONDS),
+                    MathUtil.minutesTo(1, TimeUnit.MILLISECONDS)
+            );
+        }
+    }
 
     private void checkBotPermissions() {
         final Member botMember = this.guild.getMember(this.jda.getSelfUser());
@@ -424,6 +471,12 @@ public class DiscordJda implements DiscordIntegration {
     public void disableBot() {
         if (this.jda != null) {
             if (this.jda.getStatus() == JDA.Status.CONNECTED) {
+
+                if (this.onlinePlayersChannel != null) {
+                    this.onlinePlayersChannel.getManager().setName("Offline").queue();
+                    ThreadUtil.sleep(1);
+                }
+
                 try {
                     this.jda.shutdown();
                     if (!this.jda.awaitShutdown(10L, TimeUnit.SECONDS)) {
