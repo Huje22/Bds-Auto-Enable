@@ -68,6 +68,10 @@ public final class DateUtil {
         return totalSeconds % 60;
     }
 
+
+    //TODO: Spróbuj wyliczyć dni, minuty itp z pomocą MathUtila
+
+    
     public static String formatTime(final long millis, final String times) {
         String formattedTime = "";
 
