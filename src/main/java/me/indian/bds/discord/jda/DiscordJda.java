@@ -146,6 +146,8 @@ public class DiscordJda implements DiscordIntegration {
         this.leaveGuilds();
     }
 
+    //TODO: Dodać info o osobach na kanale ustawionym przez użytkownika 
+
     private void checkBotPermissions() {
         final Member botMember = this.guild.getMember(this.jda.getSelfUser());
         if (botMember == null) return;
