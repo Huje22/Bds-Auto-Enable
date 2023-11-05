@@ -78,6 +78,10 @@ online i timer działający co 1s dodaje mu wtedy 1s czasu gry
 * Paczka sama się pobierze do twojego świata i załaduje , potrzebujesz jedynie włączonych experymentów w tym świecie!
 
   ----
+  
+<div align="center">
+
+  ![Bstats](https://bstats.org/signatures/bukkit/BDS-Auto-Enable.svg)
 
 ![bStats Servers](https://img.shields.io/bstats/servers/19727?style=for-the-badge)
 ![bStats Players](https://img.shields.io/bstats/players/19727?style=for-the-badge) <br>
