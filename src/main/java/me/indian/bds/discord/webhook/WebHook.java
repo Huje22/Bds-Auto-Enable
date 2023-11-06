@@ -51,7 +51,7 @@ public class WebHook implements DiscordIntegration {
 
                 final String finalMessage = message
                     .replaceAll("<owner>", "")
-                    .replaceAll("@"  "/@");
+                    .replaceAll("@"  "\@");
                 
                 final JsonObject jsonPayload = new JsonObject();
                 jsonPayload.addProperty("content", finalMessage);
