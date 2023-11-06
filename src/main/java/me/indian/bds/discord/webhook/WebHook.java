@@ -54,7 +54,8 @@ public class WebHook implements DiscordIntegration {
                 jsonPayload.addProperty("content", finalMessage);
                 jsonPayload.addProperty("username", this.name);
                 jsonPayload.addProperty("avatar_url", this.avatarUrl);
-
+                jsonPayload.put("tts", false);
+                
                 if (finalMessage.isEmpty()) {
                     this.logger.error("Nie można wysłać pustej wiadomości!");
                     return;
@@ -94,7 +95,8 @@ public class WebHook implements DiscordIntegration {
                 final JsonObject jsonPayload = new JsonObject();
                 jsonPayload.addProperty("username", this.name);
                 jsonPayload.addProperty("avatar_url", this.avatarUrl);
-
+                jsonPayload.put("tts", false);
+                
                 final JsonObject embed = new JsonObject();
                 embed.addProperty("title", title);
                 embed.addProperty("description", message.replaceAll("<owner>", ""));
