@@ -377,6 +377,7 @@ public class DiscordJda implements DiscordIntegration {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getMinecraftToDiscordMessage()
                     .replaceAll("<name>", playerName)
                     .replaceAll("<msg>", playerMessage)
+                    .replaceAll("@"  "\@")
                     .replaceAll("@everyone", "/everyone/")
                     .replaceAll("@here", "/here/")
             );
