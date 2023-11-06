@@ -49,7 +49,10 @@ public class WebHook implements DiscordIntegration {
                 connection.setRequestMethod("POST");
                 connection.setDoOutput(true);
 
-                final String finalMessage = message.replaceAll("<owner>", "");
+                final String finalMessage = message
+                    .replaceAll("<owner>", "")
+                    .replaceAll("@"  "/@");
+                
                 final JsonObject jsonPayload = new JsonObject();
                 jsonPayload.addProperty("content", finalMessage);
                 jsonPayload.addProperty("username", this.name);
