@@ -20,6 +20,12 @@ public class BotConfig extends OkaeriConfig {
     @Comment({"Kanał na który zostaną wysyłane wiadomości z konsoli minecraft , Zostaw puste aby nie uruchamiać "})
     private long consoleID = 1L;
     @Comment({""})
+    @Comment({"Kanał (voice) gdzie bedzie pokazane ile graczy jest online na serwerze, Zostaw puste aby nie uruchamiać"})
+    private long onlinePlayersID = 1L;
+    @Comment({""})
+    @Comment({"Nazwa kanału głosowego , zmienia się ona co 1min "})
+    private String onlinePlayersMessage = "Gracze online <online> / <max>";
+    @Comment({""})
     @Comment({"Opuść wszystkie inne servery przy starcie bota "})
     private boolean leaveServers = false;
     @Comment({""})
@@ -29,12 +35,6 @@ public class BotConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Info po wpisaniu /ip"})
     private List<String> ipMessage = Arrays.asList("Nasze IP: 127.0.0.1", "Nasz Port: 19132");
-    @Comment({""})
-    @Comment({"Kanał (voice) gdzie bedzie pokazane ile graczy jest online na serwerze, Zostaw puste aby nie uruchamiać"})
-    private long onlinePlayersID = 1L;
-    @Comment({""})
-    @Comment({"Nazwa kanału głosowego , zmienia się ona co 1min "})
-    private String onlinePlayersMessage = "Gracze online <online> / <max>";
     @Comment({""})
     @Comment({"Pamiętaj że oznaczenie kogoś zawiera jego ID a ono jest długie!"})
     private int allowedLength = 500;
