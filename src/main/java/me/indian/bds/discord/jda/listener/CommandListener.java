@@ -114,6 +114,9 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
             case "stats" -> {
+
+                //TODO: Dodać obsługę restartu, włączenia/wyłączenia guzikami
+                
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Statystyki ")
                         .setDescription(MessageUtil.listToSpacedString(StatusUtil.getStatus(true)))
