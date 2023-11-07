@@ -115,7 +115,7 @@ public class BackupModule {
         final long gb = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
         if (gb < 10) {
             this.serverProcess.tellrawToAllAndLogger(this.prefix,
-                    "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&d)&a aby wykonać&b backup&c!",
+                    "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!",
                     LogState.WARNING);
             return;
         }
