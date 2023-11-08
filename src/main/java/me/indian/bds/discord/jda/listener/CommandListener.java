@@ -91,6 +91,13 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             .setColor(Color.BLUE)
                             .build();
                     event.replyEmbeds(embed).setEphemeral(true).queue();
+
+/* TODO: Użyć
+event.deferReply().queue(); (to musi być pierwsze)
+event.getHook().editOriginal(
+    */
+
+                    
                 } else {
                     event.reply("Nie posiadasz permisji!!").setEphemeral(true).queue();
                 }
