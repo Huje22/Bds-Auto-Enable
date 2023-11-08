@@ -78,15 +78,15 @@ public final class StatusUtil {
         status.add("> **Statystyki servera**");
         status.add("Ostatnie TPS: `" + bdsAutoEnable.getServerManager().getLastTPS() + "`");
         status.add("Pamięć RAM: `" + usedServerMemory + "`");
-        status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime(), "days hours minutes seconds millis ") + "`");
-        status.add("Łączny czas działania servera: `" + DateUtil.formatTime(serverStats.getTotalUpTime(), "days hours minutes seconds ") + "`");
         if (config.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
             status.add("Następny restart za za: `" + DateUtil.formatTime(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart(), "days hours minutes seconds millis ") + "`");
         }
         if (config.getWatchDogConfig().getBackupConfig().isBackup()) {
             status.add("Następny backup za: `" + DateUtil.formatTime(watchDog.getBackupModule().calculateMillisUntilNextBackup(), "days hours minutes seconds millis ") + "`");
         }
-
+        status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime(), "days hours minutes seconds millis ") + "`");
+        status.add("Łączny czas działania servera: `" + DateUtil.formatTime(serverStats.getTotalUpTime(), "days hours minutes seconds ") + "`");
+      
         status.add("");
         status.add("> **Statystyki aplikacji**");
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - bdsAutoEnable.getStartTime(), "days hours minutes seconds millis ") + "`");
