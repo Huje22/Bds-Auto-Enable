@@ -7,7 +7,8 @@ import java.util.TreeMap;
 public final class ConsoleColors {
 
     private static final Map<String, String> COLOR_MAP = new HashMap<>();
-
+    private final static Map<String, ColorSet> COLORS = new HashMap<>();
+    
     private static final String BLACK = "\u001B[30m";
     private static final String RED = "\u001B[31m";
     private static final String GREEN = "\u001B[32m";
