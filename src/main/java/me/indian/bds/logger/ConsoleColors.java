@@ -99,6 +99,13 @@ public final class ConsoleColors {
         COLOR_MAP.put("#e", BRIGHT_YELLOW_BACKGROUND);
         COLOR_MAP.put("#f", BRIGHT_WHITE_BACKGROUND);
     }
+    
+    public static String getMinecraftColorFromANSI(final String ansi){
+        for (final Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
+              if (anis.equals(entry.getValue())) return entry.getKey());
+            }
+        return "";
+        }
 
     public static String convertMinecraftColors(final Object input) {
         if (input instanceof String in) {
