@@ -77,6 +77,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         return;
                     }
 
+                    event.deferReply().setEphemeral(true).queue();
+                    
                     final String command = event.getOption("command").getAsString();
                     if (command.isEmpty()) {
                         event.reply("Polecenie nie może być puste!").setEphemeral(true).queue();
@@ -89,9 +91,10 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             .setTitle("Ostatnia linijka z konsoli")
                             .setDescription(this.serverProcess.commandAndResponse(command))
                             .setColor(Color.BLUE)
+                        .setFooter("Używasz: " + command);
                             .build();
-                    event.replyEmbeds(embed).setEphemeral(true).queue();
 
+                    event.getHook().editOriginal(embed).setEphemeral(true).queue();
 /* TODO: Użyć
 event.deferReply().queue(); (to musi być pierwsze)
 event.getHook().editOriginal(
