@@ -158,7 +158,7 @@ public final class ConsoleColors {
             int blue = Math.abs(b - set.blue);
             closest.put(red + green + blue, color);
         });
-        return closest.firstEntry().getValue();
+        return getMinecraftColorFromANSI(closest.firstEntry().getValue());
     }
     
         private static class ColorSet {
