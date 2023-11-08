@@ -113,7 +113,7 @@ public class BackupModule {
 
         if (!this.worldFile.exists()) return;
         final long gb = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
-        if (gb < 10) {
+        if (gb < 2) {
             this.serverProcess.tellrawToAllAndLogger(this.prefix,
                     "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!",
                     LogState.WARNING);
@@ -277,5 +277,13 @@ public class BackupModule {
 
     public List<Path> getBackups() {
         return this.backups;
+    }
+
+    public boolean isBackuping() {
+        return this.backuping;
+    }
+
+    public boolean isLoading() {
+        return this.loading;
     }
 }

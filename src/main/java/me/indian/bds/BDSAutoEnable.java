@@ -169,9 +169,8 @@ public class BDSAutoEnable {
     }
 
     private void checkTimeZone() {
-        //TODO: Dać domyślnie strefe czasową na polską 
         if (!Defaults.isPolisTimeZone()) {
-            this.logger.warning("Twoja strefa czasowa to:&1 " + ZoneId.systemDefault() + "&r jeśli jesteś w polsce pamiętaj że czas może się przez to różnić");
+            this.logger.warning("Twoja strefa czasowa to:&1 " + ZoneId.systemDefault() + "&r czas logów aplikacji bedzie polski a servera inny ");
         }
     }
 

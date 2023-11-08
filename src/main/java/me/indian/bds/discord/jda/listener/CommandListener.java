@@ -19,6 +19,7 @@ import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -39,7 +40,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private final BDSAutoEnable bdsAutoEnable;
     private final Config config;
     private final BotConfig botConfig;
-    private final List<Button> backupButtons, difficultyButtons;
+    private final List<Button> backupButtons, difficultyButtons, statsButtons;
     private JDA jda;
     private ServerProcess serverProcess;
     private BackupModule backupModule;
@@ -51,6 +52,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.botConfig = this.config.getDiscordConfig().getDiscordBotConfig();
         this.backupButtons = new ArrayList<>();
         this.difficultyButtons = new ArrayList<>();
+        this.statsButtons = new ArrayList<>();
     }
 
     @Override
@@ -78,7 +80,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     }
 
                     event.deferReply().setEphemeral(true).queue();
-                    
+
                     final String command = event.getOption("command").getAsString();
                     if (command.isEmpty()) {
                         event.reply("Polecenie nie może być puste!").setEphemeral(true).queue();
@@ -91,16 +93,11 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             .setTitle("Ostatnia linijka z konsoli")
                             .setDescription(this.serverProcess.commandAndResponse(command))
                             .setColor(Color.BLUE)
-                        .setFooter("Używasz: " + command);
+                            .setFooter("Używasz: " + command)
                             .build();
 
-                    event.getHook().editOriginal(embed).setEphemeral(true).queue();
-/* TODO: Użyć
-event.deferReply().queue(); (to musi być pierwsze)
-event.getHook().editOriginal(
-    */
+                    event.getHook().editOriginalEmbeds(embed).queue();
 
-                    
                 } else {
                     event.reply("Nie posiadasz permisji!!").setEphemeral(true).queue();
                 }
@@ -124,16 +121,13 @@ event.getHook().editOriginal(
                 event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
             case "stats" -> {
-
-                //TODO: Dodać obsługę restartu, włączenia/wyłączenia guzikami
-                
-                final MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Statystyki ")
-                        .setDescription(MessageUtil.listToSpacedString(StatusUtil.getStatus(true)))
-                        .setColor(Color.BLUE)
-                        .build();
-
-                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
+                if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                    event.replyEmbeds(this.getStatsEmbed()).setEphemeral(true)
+                            .setActionRow(ActionRow.of(this.statsButtons).getComponents())
+                            .queue();
+                } else {
+                    event.replyEmbeds(this.getStatsEmbed()).setEphemeral(this.botConfig.isSetEphemeral()).queue();
+                }
             }
             case "list" -> {
                 final List<String> players = this.bdsAutoEnable.getServerManager().getOnlinePlayers();
@@ -268,6 +262,7 @@ event.getHook().editOriginal(
         this.serveBackupButton(event);
         this.serveDeleteBackupButton(event);
         this.serveUpdateButton(event);
+        this.serveStatsButtons(event);
     }
 
     private void serveDifficultyButton(final ButtonInteractionEvent event) {
@@ -331,8 +326,13 @@ event.getHook().editOriginal(
 
     private void serveBackupButton(final ButtonInteractionEvent event) {
         if (event.getComponentId().equals("backup")) {
+            event.deferReply().setEphemeral(true).queue();
             this.backupModule.backup();
-            event.reply("Backup jest tworzony").setEphemeral(true).queue();
+
+            ThreadUtil.sleep((int) this.config.getWatchDogConfig().getBackupConfig().getLastBackupTime() + 3);
+            event.getHook().editOriginalEmbeds(this.getBackupEmbed())
+                    .setActionRow(this.backupButtons).queue();
+
         }
     }
 
@@ -342,6 +342,48 @@ event.getHook().editOriginal(
                     .setEphemeral(true).queue();
             this.bdsAutoEnable.getVersionManager().getVersionUpdater().updateToLatest();
         }
+    }
+
+    private void serveStatsButtons(final ButtonInteractionEvent event) {
+        if (!event.getComponentId().contains("stats_")) return;
+        event.deferReply().queue();
+        switch (event.getComponentId()) {
+            case "stats_enable" -> {
+                this.serverProcess.setCanRun(true);
+                this.serverProcess.startProcess();
+            }
+            case "stats_disable" -> {
+                this.serverProcess.setCanRun(false);
+                this.serverProcess.kickAllPlayers("&aServer został wyłączony za pośrednictwem&b discord");
+                this.serverProcess.sendToConsole("stop");
+            }
+        }
+        ThreadUtil.sleep(3);
+        event.getHook().editOriginalEmbeds(this.getStatsEmbed())
+                .setActionRow(ActionRow.of(this.statsButtons).getComponents())
+                .queue();
+    }
+
+    private MessageEmbed getStatsEmbed() {
+
+        this.statsButtons.clear();
+
+        final Button enable = Button.primary("stats_enable", "Włącz").withEmoji(Emoji.fromUnicode("✅"));
+        final Button disable = Button.primary("stats_disable", "Wyłącz").withEmoji(Emoji.fromUnicode("🛑"));
+
+        if (this.serverProcess.isEnabled()) {
+            this.statsButtons.add(enable.asDisabled());
+            this.statsButtons.add(disable);
+        } else {
+            this.statsButtons.add(enable);
+            this.statsButtons.add(disable.asDisabled());
+        }
+
+        return new EmbedBuilder()
+                .setTitle("Statystyki ")
+                .setDescription(MessageUtil.listToSpacedString(StatusUtil.getStatus(true)))
+                .setColor(Color.BLUE)
+                .build();
     }
 
     private MessageEmbed getDifficultyEmbed() {
@@ -417,9 +459,8 @@ event.getHook().editOriginal(
                 .setTitle("Backup info")
                 .setDescription("Status ostatniego backup: " + backupStatus +
                         "Następny backup za: `" + DateUtil.formatTime(this.backupModule.calculateMillisUntilNextBackup(), "days hours minutes seconds millis ") + "`\n" +
-                        "Użyj `/stats` po więcej przydatnych informacji \n" +
                         (description.isEmpty() ? "**Brak dostępnych backup**" : "**Dostępne backupy**:\n" + MessageUtil.listToSpacedString(description) + "\n") +
-                        (gbSpace < 10 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
+                        (gbSpace < 2 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
                 .setColor(Color.BLUE)
                 .build();
     }

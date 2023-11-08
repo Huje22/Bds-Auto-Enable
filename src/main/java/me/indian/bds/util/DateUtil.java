@@ -7,26 +7,28 @@ import java.time.format.DateTimeFormatter;
 
 public final class DateUtil {
 
+    private static final ZoneId polishZone = ZoneId.of("Europe/Warsaw");
+
     public static String getFixedDate() {
-        final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        final LocalDateTime now = LocalDateTime.now(polishZone);
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return now.format(formatter).replace(":", "-");
     }
 
     public static String getDate() {
-        final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        final LocalDateTime now = LocalDateTime.now(polishZone);
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return now.format(formatter);
     }
 
     public static String getTimeHM() {
-        final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        final LocalDateTime now = LocalDateTime.now(polishZone);
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         return now.format(formatter);
     }
 
     public static String getTimeHMS() {
-        final LocalDateTime now = LocalDateTime.now(ZoneId.systemDefault());
+        final LocalDateTime now = LocalDateTime.now(polishZone);
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         return now.format(formatter);
     }
@@ -67,10 +69,6 @@ public final class DateUtil {
 
         return totalSeconds % 60;
     }
-
-
-    //TODO: Spróbuj wyliczyć dni, minuty itp z pomocą MathUtila
-
     
     public static String formatTime(final long millis, final String times) {
         String formattedTime = "";
