@@ -28,7 +28,7 @@ public class MessagesConfig extends OkaeriConfig {
     private String minecraftToDiscordMessage = "**<name>** »» <msg>";
     @Comment({""})
     @Comment({"Wygląd wiadomości z Discord na Minecraft "})
-    private String discordToMinecraftMessage = "&7[&bDiscord&7] &e<role> &l&a<name>&r<reply> »» <msg>";
+    private String discordToMinecraftMessage = "&7[&bDiscord&7] <role> &l&a<name>&r<reply> »» <msg>";
     @Comment({""})
     @Comment({"Informacja na discord o włączeniu servera"})
     private String enabledMessage = ":white_check_mark: Server włączony";

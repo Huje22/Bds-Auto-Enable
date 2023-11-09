@@ -8,7 +8,7 @@ public final class ConsoleColors {
 
     private static final Map<String, String> COLOR_MAP = new HashMap<>();
     private final static Map<String, ColorSet> COLORS = new HashMap<>();
-    
+
     private static final String BLACK = "\u001B[30m";
     private static final String RED = "\u001B[31m";
     private static final String GREEN = "\u001B[32m";
@@ -100,33 +100,30 @@ public final class ConsoleColors {
         COLOR_MAP.put("#d", BRIGHT_PURPLE_BACKGROUND);
         COLOR_MAP.put("#e", BRIGHT_YELLOW_BACKGROUND);
         COLOR_MAP.put("#f", BRIGHT_WHITE_BACKGROUND);
-        
-        
+
+
+        // WYMAGA TO WIELKICH USPRAWNIEŃ
         COLORS.put(BLACK, new ColorSet(0, 0, 0));
         COLORS.put(DARK_BLUE, new ColorSet(0, 0, 170));
-        COLORS.put(DARK_GREEN, new ColorSet(0, 170, 0));
-        COLORS.put(DARK_AQUA, new ColorSet(0, 170, 170));
+        COLORS.put(GREEN, new ColorSet(0, 170, 0));
+        COLORS.put(CYAN, new ColorSet(0, 170, 170));
         COLORS.put(DARK_RED, new ColorSet(170, 0, 0));
-        COLORS.put(DARK_PURPLE, new ColorSet(170, 0, 170));
-        COLORS.put(GOLD, new ColorSet(255, 170, 0));
-        COLORS.put(GRAY, new ColorSet(170, 170, 170));
+        COLORS.put(PURPLE, new ColorSet(170, 0, 170));
+        COLORS.put(YELLOW, new ColorSet(255, 170, 0));
+        COLORS.put(BRIGHT_GRAY, new ColorSet(170, 170, 170));
         COLORS.put(DARK_GRAY, new ColorSet(85, 85, 85));
         COLORS.put(BLUE, new ColorSet(85, 85, 255));
-        COLORS.put(GREEN, new ColorSet(85, 255, 85));
-        COLORS.put(AQUA, new ColorSet(85, 255, 255));
+        COLORS.put(BRIGHT_CYAN, new ColorSet(85, 255, 255));
         COLORS.put(RED, new ColorSet(255, 85, 85));
         COLORS.put(LIGHT_PURPLE, new ColorSet(255, 85, 255));
-        COLORS.put(YELLOW, new ColorSet(255, 255, 85));
-        COLORS.put(WHITE, new ColorSet(255, 255, 255));
-      
     }
-    
-    public static String getMinecraftColorFromANSI(final String ansi){
+
+    public static String getMinecraftColorFromANSI(final String ansi) {
         for (final Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
-              if (anis.equals(entry.getValue())) return entry.getKey());
-            }
-        return "";
+            if (ansi.equals(entry.getValue())) return entry.getKey();
         }
+        return "";
+    }
 
     public static String convertMinecraftColors(final Object input) {
         if (input instanceof String in) {
@@ -148,30 +145,21 @@ public final class ConsoleColors {
         }
         return input.toString();
     }
-    
 
     // Source: https://gist.github.com/mikroskeem/428f82fbf12f52f29cc6199482c77fb5
-    public static String getMinecraftColorFromRGB(int r, int g, int b) {
-        Map<Integer, String> closest = new TreeMap<>();
+    public static String getMinecraftColorFromRGB(final int r, final int g, final int b) {
+        // WYMAGA TO WIELKICH USPRAWNIEŃ
+        final TreeMap<Integer, String> closest = new TreeMap<>();
         COLORS.forEach((color, set) -> {
-            int red = Math.abs(r - set.red);
-            int green = Math.abs(g - set.green);
-            int blue = Math.abs(b - set.blue);
+            final int red = Math.abs(r - set.red);
+            final int green = Math.abs(g - set.green);
+            final int blue = Math.abs(b - set.blue);
             closest.put(red + green + blue, color);
         });
         return getMinecraftColorFromANSI(closest.firstEntry().getValue());
     }
-    
-        private static class ColorSet {
 
-        final int red;
-        final int green;
-        final int blue;
+    private record ColorSet(int red, int green, int blue) {
 
-        ColorSet(int red, int green, int blue) {
-            this.red = red;
-            this.green = green;
-            this.blue = blue;
-        }
     }
 }

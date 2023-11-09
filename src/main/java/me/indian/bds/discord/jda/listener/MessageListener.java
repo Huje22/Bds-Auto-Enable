@@ -1,5 +1,6 @@
 package me.indian.bds.discord.jda.listener;
 
+import java.awt.Color;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.DiscordConfig;
@@ -97,7 +98,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                 .replaceAll("<name>", this.discordJda.getUserName(member, author))
                 .replaceAll("<msg>", this.generateRawMessage(message))
                 .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
-                .replaceAll("<role>", role == null ? "" : role.getName());
+                .replaceAll("<role>", this.getRoleColor(role));
         if (edited) {
             msg += this.discordConfig.getDiscordMessagesConfig().getEdited();
         }
@@ -105,9 +106,22 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             msg += this.discordConfig.getDiscordMessagesConfig().getWebhook();
         }
 
+        //Daje to ostatnie aby okreslic czy wiadomosc nadal jest pusta
+        if (message.getContentRaw().isEmpty()) {
+            msg += message.getJumpUrl();
+        }
+
         this.serverProcess.tellrawToAll(msg);
         this.logger.info(msg);
         this.discordJda.writeConsole(ConsoleColors.removeColors(msg));
+    }
+
+    private String getRoleColor(final Role role) {
+        if (role == null) return "";
+        final Color col = role.getColor();
+        final String color = ConsoleColors.getMinecraftColorFromRGB(col.getRed(), col.getBlue(), col.getGreen());
+
+        return color + role.getName();
     }
 
     private boolean isMaxLength(final Message message) {

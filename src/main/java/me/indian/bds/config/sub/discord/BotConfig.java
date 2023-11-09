@@ -2,6 +2,7 @@ package me.indian.bds.config.sub.discord;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.CustomKey;
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,11 +21,9 @@ public class BotConfig extends OkaeriConfig {
     @Comment({"Kanał na który zostaną wysyłane wiadomości z konsoli minecraft , Zostaw puste aby nie uruchamiać "})
     private long consoleID = 1L;
     @Comment({""})
-    @Comment({"Kanał (voice) gdzie bedzie pokazane ile graczy jest online na serwerze, Zostaw puste aby nie uruchamiać"})
-    private long onlinePlayersID = 1L;
-    @Comment({""})
-    @Comment({"Nazwa kanału głosowego , zmienia się ona co 1min "})
-    private String onlinePlayersMessage = "Gracze online <online> / <max>";
+    @Comment({"Ustawienia kanałów statystyk"})
+    @CustomKey("statsChannels")
+    private StatsChannelsConfig statsChannelsConfig = new StatsChannelsConfig();
     @Comment({""})
     @Comment({"Opuść wszystkie inne servery przy starcie bota "})
     private boolean leaveServers = false;
@@ -73,12 +72,8 @@ public class BotConfig extends OkaeriConfig {
         return this.consoleID;
     }
 
-    public long getOnlinePlayersID() {
-        return this.onlinePlayersID;
-    }
-
-    public String getOnlinePlayersMessage() {
-        return this.onlinePlayersMessage;
+    public StatsChannelsConfig getStatsChannelsConfig() {
+        return this.statsChannelsConfig;
     }
 
     public boolean isLeaveServers() {

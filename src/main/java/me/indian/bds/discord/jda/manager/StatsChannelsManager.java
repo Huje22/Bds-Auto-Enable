@@ -4,61 +4,51 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
-import me.indian.bds.config.sub.discord.DiscordConfig;
-import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.jda.listener.CommandListener;
-import me.indian.bds.discord.jda.listener.JDAListener;
-import me.indian.bds.discord.jda.listener.MessageListener;
+import me.indian.bds.config.sub.discord.StatsChannelsConfig;
+import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.MessageUtil;
-import net.dv8tion.jda.api.JDA;
-import net.dv8tion.jda.api.JDABuilder;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ThreadUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.managers.channel.concrete.VoiceChannelManager;
 
-public class ChannelManager{
+public class StatsChannelsManager {
 
     private final BDSAutoEnable bdsAutoEnable;
-  private final DiscordJda discordJda;
+    private final DiscordJda discordJda;
     private final Logger logger;
-    private final Config config;
-    private final DiscordConfig discordConfig;
+    private final StatsChannelsConfig statsChannelsConfig;
     private final long onlinePlayersID;
     private final Timer timer;
-    private final List<JDAListener> listeners;
-    private final JDA jda;
-  private final Guild guild;
+    private final Guild guild;
     private VoiceChannel onlinePlayersChannel;
-  
-public ChannelManager(final BDSAutoEnable bdsAutoEnable, final DiscordJda discordJda) {
+
+    public StatsChannelsManager(final BDSAutoEnable bdsAutoEnable, final DiscordJda discordJda) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.discordJda = discordJda;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.config = this.bdsAutoEnable.getConfig();
-        this.discordConfig = this.config.getDiscordConfig();
+        this.statsChannelsConfig = this.bdsAutoEnable.getConfig().getDiscordConfig()
+                .getDiscordBotConfig().getStatsChannelsConfig();
         this.timer = new Timer("Discord Channel Manager Timer", true);
-        this.onlinePlayersID = this.discordConfig.getDiscordBotConfig().getOnlinePlayersID();
-        this.jda = this.discordJda.getJda();
-        this.guild = this.discordJda.getGuidl();
-  
+        this.onlinePlayersID = this.statsChannelsConfig.getOnlinePlayersID();
+        this.guild = this.discordJda.getGuild();
 
-}
+    }
 
-
-  public void init(){
-    this.onlinePlayersChannel = this.guild.getVoiceChannelById(this.onlinePlayersID);
-      this.setOnlinePlayersCount();
+    public void init() {
+        this.onlinePlayersChannel = this.guild.getVoiceChannelById(this.onlinePlayersID);
+        this.setOnlinePlayersCount();
 
         if (this.onlinePlayersChannel == null) {
             this.logger.debug("(Gracz online) Nie można odnaleźć kanału głosowego z ID &b " + this.onlinePlayersID);
         }
-    
-          }
-  
 
-  private void setOnlinePlayersCount() {
+    }
+
+    //TODO: Dodać kanał dla TPS (pomyśle jeszcze nad tym)
+
+    private void setOnlinePlayersCount() {
         if (this.onlinePlayersChannel != null) {
             final VoiceChannelManager manager = this.onlinePlayersChannel.getManager();
 
@@ -68,27 +58,34 @@ public ChannelManager(final BDSAutoEnable bdsAutoEnable, final DiscordJda discor
 
                 @Override
                 public void run() {
-                    final int onlinePlayers = DiscordJda.this.bdsAutoEnable.getServerManager().getOnlinePlayers().size();
-                    final int maxPlayers = DiscordJda.this.bdsAutoEnable.getServerProperties().getMaxPlayers();
+                    final int onlinePlayers = StatsChannelsManager.this.bdsAutoEnable.getServerManager().getOnlinePlayers().size();
+                    final int maxPlayers = StatsChannelsManager.this.bdsAutoEnable.getServerProperties().getMaxPlayers();
 
                     //Sprawdzam tak aby na darmo nie wysyłać requesta do discord
                     if (onlinePlayers == 0 && this.lastOnlinePlayers == 0) return;
 
                     this.lastOnlinePlayers = onlinePlayers;
 
-                    manager.setName(DiscordJda.this.discordConfig.getDiscordBotConfig().getOnlinePlayersMessage()
+                    manager.setName(StatsChannelsManager.this.statsChannelsConfig.getOnlinePlayersMessage()
                             .replaceAll("<online>", String.valueOf(onlinePlayers))
                             .replaceAll("<max>", String.valueOf(maxPlayers))
                     ).queue();
-
                 }
             };
 
             this.timer.scheduleAtFixedRate(onlinePlayersTask,
                     MathUtil.minutesTo(1, TimeUnit.MILLISECONDS),
-                    MathUtil.minutesTo(1, TimeUnit.MILLISECONDS)
+                    MathUtil.secondToMillis(30)
             );
         }
-  }
+    }
 
+    public void onShutdown() {
+        if (this.onlinePlayersChannel != null) {
+            this.onlinePlayersChannel.getManager().setName("Offline").queue();
+            ThreadUtil.sleep(2);
+        }
+
+
+    }
 }
