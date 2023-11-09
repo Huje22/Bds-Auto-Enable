@@ -106,11 +106,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             msg += this.discordConfig.getDiscordMessagesConfig().getWebhook();
         }
 
-        //Daje to ostatnie aby okreslic czy wiadomosc nadal jest pusta
-        if (message.getContentRaw().isEmpty()) {
-            msg += message.getJumpUrl();
-        }
-
         this.serverProcess.tellrawToAll(msg);
         this.logger.info(msg);
         this.discordJda.writeConsole(ConsoleColors.removeColors(msg));
@@ -159,6 +154,11 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             if (role == null) continue;
             final long id = role.getIdLong();
             rawMessage = rawMessage.replaceAll("<@" + id + ">", "@" + role.getName());
+        }
+
+        //Daje to ostatnie aby okreslic czy wiadomosc nadal jest pusta
+        if (rawMessage.isEmpty()) {
+            rawMessage += message.getJumpUrl();
         }
 
         return rawMessage;
