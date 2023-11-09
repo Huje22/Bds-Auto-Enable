@@ -10,7 +10,7 @@ public class AutoRestartConfig extends OkaeriConfig {
     private boolean enabled = true;
     @Comment({""})
     @Comment({"Co ile godzin ma się on restartować?"})
-    private int restartTime = 4;
+    private int restartTime = 10;
 
 
     public boolean isEnabled() {
