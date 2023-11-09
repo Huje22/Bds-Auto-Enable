@@ -160,6 +160,10 @@ public class DiscordJda implements DiscordIntegration {
         this.leaveGuilds();
     }
 
+
+    //TODO: Dodać klase "ChannelManager" gdzie będę zarządzał kanałami i w niej Metodę init
+
+    
     private void setOnlinePlayersCount() {
         if (this.onlinePlayersChannel != null) {
             final VoiceChannelManager manager = this.onlinePlayersChannel.getManager();
