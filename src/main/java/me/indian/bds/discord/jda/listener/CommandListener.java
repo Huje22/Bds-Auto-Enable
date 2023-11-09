@@ -346,7 +346,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private void serveStatsButtons(final ButtonInteractionEvent event) {
         if (!event.getComponentId().contains("stats_")) return;
-        event.deferReply().queue();
+        event.deferReply().setEphemeral(true).queue();
         switch (event.getComponentId()) {
             case "stats_enable" -> {
                 this.serverProcess.setCanRun(true);
