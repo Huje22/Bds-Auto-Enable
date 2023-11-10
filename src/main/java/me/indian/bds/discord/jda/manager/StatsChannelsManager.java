@@ -60,9 +60,13 @@ public class StatsChannelsManager {
                 public void run() {
                     final int onlinePlayers = StatsChannelsManager.this.bdsAutoEnable.getServerManager().getOnlinePlayers().size();
                     final int maxPlayers = StatsChannelsManager.this.bdsAutoEnable.getServerProperties().getMaxPlayers();
-
+          
                     //Sprawdzam tak aby na darmo nie wysyłać requesta do discord
                     if (onlinePlayers == 0 && this.lastOnlinePlayers == 0) return;
+
+                     // Ustawiam kanał aby pozyskać go znów bo jak jest edytowany ręcznie to chyba dostaję nową instancję 
+                      onlinePlayersChannel = this.guild.getVoiceChannelById(this.onlinePlayersID);
+                     if (onlinePlayersChannel == null) return;
 
                     this.lastOnlinePlayers = onlinePlayers;
 
