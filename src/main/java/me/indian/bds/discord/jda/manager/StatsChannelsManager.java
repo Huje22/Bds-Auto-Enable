@@ -50,8 +50,7 @@ public class StatsChannelsManager {
 
     private void setOnlinePlayersCount() {
         if (this.onlinePlayersChannel != null) {
-            final VoiceChannelManager manager = this.onlinePlayersChannel.getManager();
-
+   
             final TimerTask onlinePlayersTask = new TimerTask() {
 
                 int lastOnlinePlayers;
@@ -65,12 +64,14 @@ public class StatsChannelsManager {
                     if (onlinePlayers == 0 && this.lastOnlinePlayers == 0) return;
 
                      // Ustawiam kanał aby pozyskać go znów bo jak jest edytowany ręcznie to chyba dostaję nową instancję 
-                      onlinePlayersChannel = this.guild.getVoiceChannelById(this.onlinePlayersID);
-                     if (onlinePlayersChannel == null) return;
+                    //   onlinePlayersChannel = this.guild.getVoiceChannelById(this.onlinePlayersID);
+                    // if (onlinePlayersChannel == null) return;
 
+                    logger.print(onlinePlayersChannel);
+                    
                     this.lastOnlinePlayers = onlinePlayers;
 
-                    manager.setName(StatsChannelsManager.this.statsChannelsConfig.getOnlinePlayersMessage()
+                    onlinePlayersChannel.getManager().setName(StatsChannelsManager.this.statsChannelsConfig.getOnlinePlayersMessage()
                             .replaceAll("<online>", String.valueOf(onlinePlayers))
                             .replaceAll("<max>", String.valueOf(maxPlayers))
                     ).queue();
