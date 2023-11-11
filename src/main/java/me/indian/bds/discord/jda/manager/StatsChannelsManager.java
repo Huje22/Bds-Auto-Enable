@@ -1,8 +1,5 @@
 package me.indian.bds.discord.jda.manager;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.StatsChannelsConfig;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -11,7 +8,10 @@ import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ThreadUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
-import net.dv8tion.jda.api.managers.channel.concrete.VoiceChannelManager;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class StatsChannelsManager {
 
@@ -59,19 +59,13 @@ public class StatsChannelsManager {
                 public void run() {
                     final int onlinePlayers = StatsChannelsManager.this.bdsAutoEnable.getServerManager().getOnlinePlayers().size();
                     final int maxPlayers = StatsChannelsManager.this.bdsAutoEnable.getServerProperties().getMaxPlayers();
-          
+
                     //Sprawdzam tak aby na darmo nie wysyłać requesta do discord
                     if (onlinePlayers == 0 && this.lastOnlinePlayers == 0) return;
 
-                     // Ustawiam kanał aby pozyskać go znów bo jak jest edytowany ręcznie to chyba dostaję nową instancję 
-                    //   onlinePlayersChannel = this.guild.getVoiceChannelById(this.onlinePlayersID);
-                    // if (onlinePlayersChannel == null) return;
-
-                    logger.print(onlinePlayersChannel);
-                    
                     this.lastOnlinePlayers = onlinePlayers;
 
-                    onlinePlayersChannel.getManager().setName(StatsChannelsManager.this.statsChannelsConfig.getOnlinePlayersMessage()
+                    StatsChannelsManager.this.onlinePlayersChannel.getManager().setName(StatsChannelsManager.this.statsChannelsConfig.getOnlinePlayersMessage()
                             .replaceAll("<online>", String.valueOf(onlinePlayers))
                             .replaceAll("<max>", String.valueOf(maxPlayers))
                     ).queue();
@@ -88,9 +82,6 @@ public class StatsChannelsManager {
     public void onShutdown() {
         if (this.onlinePlayersChannel != null) {
             this.onlinePlayersChannel.getManager().setName("Offline").queue();
-            ThreadUtil.sleep(2);
         }
-
-
     }
 }
