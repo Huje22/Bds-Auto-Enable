@@ -200,8 +200,8 @@ public class ServerManager {
             serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
             serverProcess.tellrawToPlayer(playerCommand, "&a!help&4 -&b pomocna lista komend");
             serverProcess.tellrawToPlayer(playerCommand, "&a!tps&4 -&b Ticki na sekunde servera");
-            serverProcess.tellrawToPlayer(playerCommand, "&a!playtime&4 -&b top 20 graczy z największym czasem gry");
-            serverProcess.tellrawToPlayer(playerCommand, "&a!deaths&4 -&b top 20 graczy z największą ilością śmierci");
+            serverProcess.tellrawToPlayer(playerCommand, "&a!playtime&4 -&b top 10 graczy z największym czasem gry");
+            serverProcess.tellrawToPlayer(playerCommand, "&a!deaths&4 -&b top 10 graczy z największą ilością śmierci");
             serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
 
         } else if (command.contains("playtime")) {
