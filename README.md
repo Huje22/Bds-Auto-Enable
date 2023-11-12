@@ -61,6 +61,13 @@ online i timer działający co 1s dodaje mu wtedy 1s czasu gry
 * Wszystkie je jak i także ich opisy znajdziesz po wpisaniu `/` (Wymaga dodania bota z
   ___&scope=bot+applications.commands___ inaczej mogą wystąpić problemy)
 
+### Na serwerze
+  **Działają tylko gdy server ma paczke [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) (Działają tylko gdy paczka jest najwyżej)**
+* `!help` - lista poleceń
+* `!tps` - Ticki na sekunde servera
+* `!playtime` - Top 10 graczy z największym czasem gry
+* `!deaths` - Top 10 graczy z największą ilością śmierci
+ 
 # Użyte biblioteki
 
 [Okaeri Configs - do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
