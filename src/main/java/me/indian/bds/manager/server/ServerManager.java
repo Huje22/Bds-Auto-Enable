@@ -1,16 +1,19 @@
 package me.indian.bds.manager.server;
 
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.ThreadUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.ThreadUtil;
 
 
 public class ServerManager {
@@ -39,8 +42,10 @@ public class ServerManager {
             //Metody związane z graczem
             this.playerJoin(logEntry);
             this.playerQuit(logEntry);
-            this.chatMessage(logEntry);
             this.deathMessage(logEntry);
+            this.chatMessage(logEntry);
+            this.customCommand(logEntry);
+
             //Dodatkowe metody
             this.serverEnabled(logEntry);
             this.checkPackDependency(logEntry);
@@ -97,6 +102,18 @@ public class ServerManager {
             final String playerChat = MessageUtil.fixMessage(matcher.group(1));
             final String message = MessageUtil.fixMessage(matcher.group(2));
             this.discord.sendPlayerMessage(playerChat, message);
+        }
+    }
+
+    private void customCommand(final String logEntry) {
+        final String patternString = "PlayerCommand:([^,]+) Command:(.+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerCommand = MessageUtil.fixMessage(matcher.group(1));
+            final String command = MessageUtil.fixMessage(matcher.group(2));
+            this.handleCustomCommand(playerCommand, command);
         }
     }
 
@@ -167,6 +184,41 @@ public class ServerManager {
                     "Zła wersja paczki");
             this.discord.sendMessage("<owner>");
             this.discord.disableBot();
+        }
+    }
+
+    private void handleCustomCommand(final String playerCommand, final String command) {
+        final ServerProcess serverProcess = this.bdsAutoEnable.getServerProcess();
+        if (serverProcess == null) {
+            this.logger.debug("&bServerProcess&r jest&c null");
+            return;
+        }
+
+        // !tps jest handlowane w https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack
+
+        if (command.contains("help")) {
+            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
+            serverProcess.tellrawToPlayer(playerCommand, "&a!help&4 -&b pomocna lista komend");
+            serverProcess.tellrawToPlayer(playerCommand, "&a!tps&4 -&b Ticki na sekunde servera");
+            serverProcess.tellrawToPlayer(playerCommand, "&a!playtime&4 -&b top 20 graczy z największym czasem gry");
+            serverProcess.tellrawToPlayer(playerCommand, "&a!deaths&4 -&b top 20 graczy z największą ilością śmierci");
+            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
+
+        } else if (command.contains("playtime")) {
+            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
+            for (final String s : StatusUtil.getTopPlayTime(false, 10)) {
+                serverProcess.tellrawToPlayer(playerCommand, s);
+            }
+            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
+
+        } else if (command.contains("deaths")) {
+            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
+            for (final String s : StatusUtil.getTopDeaths(false, 10)) {
+                serverProcess.tellrawToPlayer(playerCommand, s);
+            }
+            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
+        } else {
+            serverProcess.tellrawToPlayer(playerCommand, "&cNie znaleziono takiego polecenia");
         }
     }
 
