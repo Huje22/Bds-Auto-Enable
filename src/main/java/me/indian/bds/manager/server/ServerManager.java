@@ -190,6 +190,12 @@ public class ServerManager {
     private void handleCustomCommand(final String playerCommand, final String command) {
         
         //TODO: Dodać obsługę argumentów 
+
+
+
+
+
+
         
         final ServerProcess serverProcess = this.bdsAutoEnable.getServerProcess();
         if (serverProcess == null) {
