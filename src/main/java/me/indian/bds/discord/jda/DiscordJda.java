@@ -418,10 +418,16 @@ public class DiscordJda implements DiscordIntegration {
     }
 
     @Override
-    public void disableBot() {
+    public void startShutdown(){
+
+        this.statsChannelsManager.onShutdown();
+                
+    }
+
+    @Override
+    public void shutdown() {
         if (this.jda != null) {
             if (this.jda.getStatus() == JDA.Status.CONNECTED) {
-                this.statsChannelsManager.onShutdown();
                 try {
                     this.jda.shutdown();
                     if (!this.jda.awaitShutdown(10L, TimeUnit.SECONDS)) {
