@@ -45,5 +45,7 @@ public interface DiscordIntegration {
 
     void writeConsole(final String message, final Throwable throwable);
 
-    void disableBot();
+    void startShutdown();
+  
+    void shutdown();
 }
