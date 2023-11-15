@@ -225,6 +225,7 @@ public class ServerProcess {
     }
 
     public void instantShutdown() {
+        this.discord.startShutdown();
         this.logger.alert("Wyłączanie...");
         this.discord.sendDisablingMessage();
         this.setCanRun(false);
@@ -268,7 +269,7 @@ public class ServerProcess {
             }
         }
 
-        this.discord.disableBot();
+        this.discord.shutdown();
     }
 
     public void sendToConsole(final String command) {

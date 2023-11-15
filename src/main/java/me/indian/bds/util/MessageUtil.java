@@ -48,8 +48,7 @@ public final class MessageUtil {
         return message;
     }
 
-    public static String[] splitString(String input) {
-        // Użyj metody split(), aby podzielić string po spacji
+    public static String[] splitString(final String input) {
         return input.split("\\s+");
     }
 

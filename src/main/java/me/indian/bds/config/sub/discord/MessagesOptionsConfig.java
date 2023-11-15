@@ -7,7 +7,7 @@ public class MessagesOptionsConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Wysyłać wiadomość o zrobieniu backup"})
-    private boolean sendBackupMessage = true;
+    private boolean sendBackupMessage = false;
     @Comment({""})
     @Comment({"Wysyłać wiadomość o dołączeniu gracza"})
     private boolean sendJoinMessage = true;
@@ -28,17 +28,16 @@ public class MessagesOptionsConfig extends OkaeriConfig {
     private boolean sendDisablingMessage = true;
     @Comment({""})
     @Comment({"Wysyłać wiadomość o włączeniu procesu servera"})
-    private boolean sendProcessEnabledMessage = true;
+    private boolean sendProcessEnabledMessage = false;
     @Comment({""})
     @Comment({"Wysyłać wiadomość o włączeniu servera"})
     private boolean sendEnabledMessage = true;
     @Comment({""})
     @Comment({"Wysyłać wiadomość o zniszczeniu procesu"})
-    private boolean sendDestroyedMessage = true;
+    private boolean sendDestroyedMessage = false;
     @Comment({""})
     @Comment({"Wysyłać wiadomość o aktualizowaniu wersji servera"})
     private boolean sendServerUpdateMessage = true;
-
     @Comment({""})
     @Comment({"Wysyłać wiadomość o restarcie servera"})
     private boolean sendRestartMessage = true;

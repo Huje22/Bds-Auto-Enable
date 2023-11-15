@@ -257,7 +257,12 @@ public class WebHook implements DiscordIntegration {
     }
 
     @Override
-    public void disableBot() {
+    public void startShutdown() {
+
+    }
+
+    @Override
+    public void shutdown() {
 
     }
 }

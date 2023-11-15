@@ -1,5 +1,11 @@
 package me.indian.bds.manager.server;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.Logger;
@@ -7,13 +13,6 @@ import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class ServerManager {
@@ -113,7 +112,7 @@ public class ServerManager {
         if (matcher.find()) {
             final String playerCommand = MessageUtil.fixMessage(matcher.group(1));
             final String command = MessageUtil.fixMessage(matcher.group(2));
-            this.handleCustomCommand(playerCommand, command);
+            this.handleCustomCommand(playerCommand, MessageUtil.splitString(command));
         }
     }
 
@@ -172,7 +171,7 @@ public class ServerManager {
             for (final String s : list) {
                 this.logger.alert(s.replaceAll("`", ""));
             }
-            this.discord.disableBot();
+            this.discord.shutdown();
         }
         if (logEntry.contains("BDS Auto Enable") && logEntry.contains("requesting invalid module version")) {
             this.discord.sendEmbedMessage("Zła wersja paczki",
@@ -183,20 +182,13 @@ public class ServerManager {
                             **Bot zostaje przez to wyłączony**""",
                     "Zła wersja paczki");
             this.discord.sendMessage("<owner>");
-            this.discord.disableBot();
+            this.discord.shutdown();
         }
     }
 
-    private void handleCustomCommand(final String playerCommand, final String command) {
-        
-        //TODO: Dodać obsługę argumentów 
+    private void handleCustomCommand(final String playerCommand, final String[] args) {
+        //TODO: Dodać obsługę argumentów
 
-
-
-
-
-
-        
         final ServerProcess serverProcess = this.bdsAutoEnable.getServerProcess();
         if (serverProcess == null) {
             this.logger.debug("&bServerProcess&r jest&c null");
@@ -205,7 +197,7 @@ public class ServerManager {
 
         // !tps jest handlowane w https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack
 
-        if (command.contains("help")) {
+        if (args[0].contains("help")) {
             serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
             serverProcess.tellrawToPlayer(playerCommand, "&a!help&4 -&b pomocna lista komend");
             serverProcess.tellrawToPlayer(playerCommand, "&a!tps&4 -&b Ticki na sekunde servera");
@@ -213,14 +205,14 @@ public class ServerManager {
             serverProcess.tellrawToPlayer(playerCommand, "&a!deaths&4 -&b Top 10 graczy z największą ilością śmierci");
             serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
 
-        } else if (command.contains("playtime")) {
+        } else if (args[0].contains("playtime")) {
             serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
             for (final String s : StatusUtil.getTopPlayTime(false, 10)) {
                 serverProcess.tellrawToPlayer(playerCommand, s);
             }
             serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
 
-        } else if (command.contains("deaths")) {
+        } else if (args[0].contains("deaths")) {
             serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
             for (final String s : StatusUtil.getTopDeaths(false, 10)) {
                 serverProcess.tellrawToPlayer(playerCommand, s);
