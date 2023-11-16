@@ -59,7 +59,7 @@ public class BackupModule {
         this.watchDog = watchDog;
         this.backups = new ArrayList<>();
         this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Watchdog-BackupModule"));
-        this.timer = new Timer("Backup", true);
+        this.timer = new Timer("Backup-Timer", true);
         this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
         this.worldPath = Defaults.getWorldsPath() + this.worldName;
         this.worldFile = new File(this.worldPath);
