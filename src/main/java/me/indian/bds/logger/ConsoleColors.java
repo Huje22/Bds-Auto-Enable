@@ -110,7 +110,7 @@ public final class ConsoleColors {
         COLORS.put(DARK_RED, new ColorSet(170, 0, 0));
         COLORS.put(PURPLE, new ColorSet(170, 0, 170));
         COLORS.put(YELLOW, new ColorSet(255, 170, 0));
-        COLORS.put(BRIGHT_GRAY, new ColorSet(170, 170, 170));
+        COLORS.put(BRIGHT_GRAY, new ColorSet(170, 170, 170)); // w miarę git
         COLORS.put(DARK_GRAY, new ColorSet(85, 85, 85));
         COLORS.put(BLUE, new ColorSet(85, 85, 255));
         COLORS.put(BRIGHT_CYAN, new ColorSet(85, 255, 255));
