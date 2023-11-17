@@ -81,6 +81,13 @@ public class StatsManager {
         this.playerStatsManagerTimer.scheduleAtFixedRate(serverTimeTask, 0, second);
     }
 
+    /*
+TOOD:
+Ulepszyć statystyki w sposób jaki obmyśliłem przy użyciu GTP
+https://chat.openai.com/share/3c3eb5d3-92ce-42e4-b1bb-b9030865ba35
+
+    */
+
     public Map<String, Long> getPlayTime() {
         return this.playTime;
     }
