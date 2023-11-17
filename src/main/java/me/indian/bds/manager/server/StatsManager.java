@@ -63,7 +63,7 @@ public class StatsManager {
             }
         };
 
-        this.playerStatsManagerTimer.scheduleAtFixedRate(saveDataTask, MathUtil.hoursTo(2, TimeUnit.MILLISECONDS), MathUtil.minutesTo(30, TimeUnit.MILLISECONDS));
+        this.playerStatsManagerTimer.scheduleAtFixedRate(saveDataTask, MathUtil.hoursTo(1, TimeUnit.MILLISECONDS), MathUtil.minutesTo(30, TimeUnit.MILLISECONDS));
         this.playerStatsManagerTimer.scheduleAtFixedRate(playTimeTask, 0, second);
     }
 

@@ -408,14 +408,13 @@ public class ServerProcess {
                 for (final Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
                     final Thread thread = entry.getKey();
 
-                    System.out.println("Thread ID: " + thread.getId());
-                    System.out.println("Thread Name: " + thread.getName());
-                    System.out.println("Thread State: " + thread.getState());
-                    System.out.println("Thread Is Active: " + thread.isAlive());
-                    System.out.println("Thread Is Daemon: " + thread.isDaemon());
-                    System.out.println("Thread Is Interrupted: " + thread.isInterrupted());
-
-                    System.out.println("-----------------------------");
+                    this.logger.print("Thread ID: " + thread.getId());
+                    this.logger.print("Thread Name: " + thread.getName());
+                    this.logger.print("Thread State: " + thread.getState());
+                    this.logger.print("Thread Is Active: " + thread.isAlive());
+                    this.logger.print("Thread Is Daemon: " + thread.isDaemon());
+                    this.logger.print("Thread Is Interrupted: " + thread.isInterrupted());
+                    this.logger.print("-----------------------------");
                 }
                 return true;
             }

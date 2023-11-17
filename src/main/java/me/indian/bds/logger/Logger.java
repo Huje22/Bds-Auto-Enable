@@ -168,15 +168,7 @@ public class Logger {
     }
 
     public void logByState(final Object log, final LogState logState) {
-        switch (logState) {
-            case NONE -> this.print(log);
-            case INFO -> this.info(log);
-            case ALERT -> this.alert(log);
-            case CRITICAL -> this.critical(log);
-            case ERROR -> this.error(log);
-            case WARNING -> this.warning(log);
-            case DEBUG -> this.debug(log);
-        }
+        this.logByState(log , null , logState);
     }
 
     public void logByState(final Object log, final Throwable throwable, final LogState logState) {
