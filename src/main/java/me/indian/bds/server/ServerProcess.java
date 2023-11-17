@@ -114,7 +114,7 @@ public class ServerProcess {
                         case LINUX -> {
                             if (this.config.isWine()) {
                                 if (!Defaults.hasWine()) {
-                                    this.logger.critical("#cNIE POSIADASZ #1WINE#C!");
+                                    this.logger.critical("^#cNIE POSIADASZ ^#1WINE^#C!");
                                     System.exit(0);
                                     return;
                                 }
