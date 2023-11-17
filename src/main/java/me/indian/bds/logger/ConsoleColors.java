@@ -103,20 +103,28 @@ public final class ConsoleColors {
 
 
         // WYMAGA TO WIELKICH USPRAWNIEŃ
-        COLORS.put(BLACK, new ColorSet(0, 0, 0));
-        COLORS.put(DARK_BLUE, new ColorSet(0, 0, 170));
-        COLORS.put(GREEN, new ColorSet(0, 170, 0));
-        COLORS.put(CYAN, new ColorSet(0, 170, 170)); // ten w miarę git działa 
-        COLORS.put(DARK_RED, new ColorSet(170, 0, 0));
-        COLORS.put(PURPLE, new ColorSet(170, 0, 170));
-        COLORS.put(YELLOW, new ColorSet(255, 170, 0));
-        COLORS.put(BRIGHT_GRAY, new ColorSet(170, 170, 170)); // w miarę git
-        COLORS.put(DARK_GRAY, new ColorSet(85, 85, 85));
-        COLORS.put(BLUE, new ColorSet(85, 85, 255));
-        COLORS.put(BRIGHT_CYAN, new ColorSet(85, 255, 255));
-        COLORS.put(RED, new ColorSet(255, 85, 85));
-        COLORS.put(LIGHT_PURPLE, new ColorSet(255, 85, 255));
-    }
+      COLORS.put(BLACK, new ColorSet(0, 0, 0));
+        COLORS.put(RED, new ColorSet(255, 0, 0));
+        COLORS.put(GREEN, new ColorSet(0, 255, 0));
+        COLORS.put(YELLOW, new ColorSet(255, 255, 0));
+        COLORS.put(DARK_BLUE, new ColorSet(0, 0, 255));
+        COLORS.put(PURPLE, new ColorSet(255, 0, 255));
+        COLORS.put(LIGHT_PURPLE, new ColorSet(255, 182, 193)); // Ustalona wartość RGB dla LIGHT_PURPLE
+        COLORS.put(CYAN, new ColorSet(0, 255, 255));
+        COLORS.put(WHITE, new ColorSet(255, 255, 255));
+        COLORS.put(BRIGHT_RED, new ColorSet(255, 0, 0));
+        COLORS.put(BRIGHT_GREEN, new ColorSet(0, 255, 0));
+        COLORS.put(BRIGHT_YELLOW, new ColorSet(255, 255, 0));
+        COLORS.put(BLUE, new ColorSet(0, 0, 255));
+        COLORS.put(BRIGHT_PURPLE, new ColorSet(255, 0, 255));
+        COLORS.put(BRIGHT_CYAN, new ColorSet(0, 255, 255));
+        COLORS.put(BRIGHT_WHITE, new ColorSet(255, 255, 255));
+        COLORS.put(BRIGHT_GRAY, new ColorSet(211, 211, 211)); // Ustalona wartość RGB dla BRIGHT_GRAY
+        COLORS.put(DARK_GRAY, new ColorSet(169, 169, 169)); // Ustalona wartość RGB dla DARK_GRAY
+        COLORS.put(LIGHT_GRAY, new ColorSet(211, 211, 211));
+        COLORS.put(SILVER, new ColorSet(192, 192, 192)); // Ustalona wartość RGB dla SILVER
+        COLORS.put(DARK_RED, new ColorSet(139, 0, 0)); // Ustalona wartość RGB dla DARK_RED
+}
 
     public static String getMinecraftColorFromANSI(final String ansi) {
         for (final Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
