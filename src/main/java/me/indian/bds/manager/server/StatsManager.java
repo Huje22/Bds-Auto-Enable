@@ -81,13 +81,6 @@ public class StatsManager {
         this.playerStatsManagerTimer.scheduleAtFixedRate(serverTimeTask, 0, second);
     }
 
-    /*
-TOOD:
-Ulepszyć statystyki w sposób jaki obmyśliłem przy użyciu GTP
-https://chat.openai.com/share/3c3eb5d3-92ce-42e4-b1bb-b9030865ba35
-
-    */
-
     public Map<String, Long> getPlayTime() {
         return this.playTime;
     }
@@ -173,9 +166,7 @@ https://chat.openai.com/share/3c3eb5d3-92ce-42e4-b1bb-b9030865ba35
         try (final FileReader reader = new FileReader(this.serverStatsJson)) {
             final ServerStats loadedStats = GsonUtil.getGson().fromJson(reader, ServerStats.class);
 
-            if (loadedStats != null) {
-                return loadedStats;
-            }
+            if (loadedStats != null) return loadedStats;
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się załadować statystyk serwera", exception);
         }
