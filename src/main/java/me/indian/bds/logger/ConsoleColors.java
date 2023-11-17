@@ -12,7 +12,8 @@ public final class ConsoleColors {
     private static final String BLACK = "\u001B[30m";
     private static final String RED = "\u001B[31m";
     private static final String GREEN = "\u001B[32m";
-    private static final String YELLOW = "\u001B[0;33m";
+    private static final String YELLOW = "\u001B[0;93m";
+    private static final String GOLD = "\u001B[0;33m";
     private static final String DARK_BLUE = "\u001B[34m";
     private static final String PURPLE = "\u001B[35m";
     private static final String LIGHT_PURPLE = "\u001B[0;95m";
@@ -21,7 +22,6 @@ public final class ConsoleColors {
 
     private static final String BRIGHT_RED = "\u001B[91m";
     private static final String BRIGHT_GREEN = "\u001B[92m";
-    private static final String BRIGHT_YELLOW = "\u001B[93m";
     private static final String BLUE = "\u001B[94m";
     private static final String BRIGHT_PURPLE = "\u001B[95m";
     private static final String BRIGHT_CYAN = "\u001B[96m";
@@ -64,7 +64,7 @@ public final class ConsoleColors {
         COLOR_MAP.put("&3", CYAN);
         COLOR_MAP.put("&4", RED);
         COLOR_MAP.put("&5", PURPLE);
-        COLOR_MAP.put("&6", YELLOW);
+        COLOR_MAP.put("&6", GOLD);
         COLOR_MAP.put("&7", LIGHT_GRAY);
         COLOR_MAP.put("&8", DARK_GRAY);
         COLOR_MAP.put("&9", BLUE);
@@ -72,7 +72,7 @@ public final class ConsoleColors {
         COLOR_MAP.put("&b", BRIGHT_CYAN);
         COLOR_MAP.put("&c", BRIGHT_RED);
         COLOR_MAP.put("&d", LIGHT_PURPLE);
-        COLOR_MAP.put("&e", BRIGHT_YELLOW);
+        COLOR_MAP.put("&e", YELLOW);
         COLOR_MAP.put("&f", WHITE);
 
         COLOR_MAP.put("&i", SILVER);
@@ -101,30 +101,22 @@ public final class ConsoleColors {
         COLOR_MAP.put("^#e", BRIGHT_YELLOW_BACKGROUND);
         COLOR_MAP.put("^#f", BRIGHT_WHITE_BACKGROUND);
 
-
         // WYMAGA TO WIELKICH USPRAWNIEŃ
-      COLORS.put(BLACK, new ColorSet(0, 0, 0));
-        COLORS.put(RED, new ColorSet(255, 0, 0));
-        COLORS.put(GREEN, new ColorSet(0, 255, 0));
-        COLORS.put(YELLOW, new ColorSet(255, 255, 0));
-        COLORS.put(DARK_BLUE, new ColorSet(0, 0, 255));
-        COLORS.put(PURPLE, new ColorSet(255, 0, 255));
-        COLORS.put(LIGHT_PURPLE, new ColorSet(255, 182, 193)); // Ustalona wartość RGB dla LIGHT_PURPLE
-        COLORS.put(CYAN, new ColorSet(0, 255, 255));
-        COLORS.put(WHITE, new ColorSet(255, 255, 255));
-        COLORS.put(BRIGHT_RED, new ColorSet(255, 0, 0));
-        COLORS.put(BRIGHT_GREEN, new ColorSet(0, 255, 0));
-        COLORS.put(BRIGHT_YELLOW, new ColorSet(255, 255, 0));
-        COLORS.put(BLUE, new ColorSet(0, 0, 255));
-        COLORS.put(BRIGHT_PURPLE, new ColorSet(255, 0, 255));
-        COLORS.put(BRIGHT_CYAN, new ColorSet(0, 255, 255));
-        COLORS.put(BRIGHT_WHITE, new ColorSet(255, 255, 255));
-        COLORS.put(BRIGHT_GRAY, new ColorSet(211, 211, 211)); // Ustalona wartość RGB dla BRIGHT_GRAY
-        COLORS.put(DARK_GRAY, new ColorSet(169, 169, 169)); // Ustalona wartość RGB dla DARK_GRAY
-        COLORS.put(LIGHT_GRAY, new ColorSet(211, 211, 211));
-        COLORS.put(SILVER, new ColorSet(192, 192, 192)); // Ustalona wartość RGB dla SILVER
-        COLORS.put(DARK_RED, new ColorSet(139, 0, 0)); // Ustalona wartość RGB dla DARK_RED
-}
+        // Układane z pomocą https://minecraft.fandom.com/wiki/Formatting_codes
+        COLORS.put(BLACK, new ColorSet(0, 0, 0));
+        COLORS.put(DARK_BLUE, new ColorSet(0, 170, 0));
+        COLORS.put(CYAN, new ColorSet(0, 170, 170));
+        COLORS.put(DARK_RED, new ColorSet(170, 0, 0));
+        COLORS.put(PURPLE, new ColorSet(170, 0, 170));
+        COLORS.put(GOLD, new ColorSet(255, 170, 0));
+        COLORS.put(BRIGHT_GRAY, new ColorSet(170, 170, 170));
+        COLORS.put(DARK_GRAY, new ColorSet(85, 85, 85));
+        COLORS.put(BLUE, new ColorSet(85, 85, 255));
+        COLORS.put(BRIGHT_CYAN, new ColorSet(85, 255, 255));
+        COLORS.put(BRIGHT_RED, new ColorSet(255, 85, 85));
+        COLORS.put(LIGHT_PURPLE, new ColorSet(255, 85, 255));
+        COLORS.put(YELLOW, new ColorSet(255, 255, 85));
+    }
 
     public static String getMinecraftColorFromANSI(final String ansi) {
         for (final Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
@@ -154,20 +146,17 @@ public final class ConsoleColors {
         return input.toString();
     }
 
-    // Source: https://gist.github.com/mikroskeem/428f82fbf12f52f29cc6199482c77fb5
+    //Robione na podstawie https://github.com/PetteriM1/DiscordChat/blob/master/src/main/java/me/petterim1/discordchat/DiscordListener.java#L165
+    //Nadal wymaga usprawnień
     public static String getMinecraftColorFromRGB(final int r, final int g, final int b) {
-        // WYMAGA TO WIELKICH USPRAWNIEŃ
-        final TreeMap<Integer, String> closest = new TreeMap<>();
+        final TreeMap<Double, String> closest = new TreeMap<>();
         COLORS.forEach((color, set) -> {
-            final int red = Math.abs(r - set.red);
-            final int green = Math.abs(g - set.green);
-            final int blue = Math.abs(b - set.blue);
-            closest.put(red + green + blue, color);
+            final double distance = Math.sqrt(Math.pow(r - set.red, 2) + Math.pow((g - set.green) * 1.5, 2) + Math.pow(b - set.blue, 2));
+            closest.put(distance, color);
         });
-        return getMinecraftColorFromANSI(closest.firstEntry().getValue());
+        return closest.firstEntry().getValue();
     }
 
     private record ColorSet(int red, int green, int blue) {
-
     }
 }

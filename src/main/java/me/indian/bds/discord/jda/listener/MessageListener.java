@@ -98,7 +98,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                 .replaceAll("<name>", this.discordJda.getUserName(member, author))
                 .replaceAll("<msg>", this.generateRawMessage(message))
                 .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
-                .replaceAll("<role>", this.getRoleColor(role));
+                .replaceAll("<role>", this.getColoredRole(role));
         if (edited) {
             msg += this.discordConfig.getDiscordMessagesConfig().getEdited();
         }
@@ -114,9 +114,15 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     private String getRoleColor(final Role role) {
         if (role == null) return "";
         final Color col = role.getColor();
-        final String color = ConsoleColors.getMinecraftColorFromRGB(col.getRed(), col.getBlue(), col.getGreen());
+        return ConsoleColors.getMinecraftColorFromRGB(col.getRed(), col.getGreen(), col.getBlue());
+    }
 
-        return color + role.getName();
+    private String getColoredRole(final Role role) {
+        if (role == null) return "";
+        final Color col = role.getColor();
+        final String color = ConsoleColors.getMinecraftColorFromRGB(col.getRed(), col.getGreen(), col.getBlue());
+
+        return color + role.getName() + "&r";
     }
 
     private boolean isMaxLength(final Message message) {
@@ -153,7 +159,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         for (final Role role : message.getMentions().getRoles()) {
             if (role == null) continue;
             final long id = role.getIdLong();
-            rawMessage = rawMessage.replaceAll("<@" + id + ">", "@" + role.getName());
+            rawMessage = rawMessage.replaceAll("<@&" + id + ">",
+                    this.getRoleColor(role) + "@" + role.getName() + "&r");
         }
 
         //Daje to ostatnie aby okreslic czy wiadomosc nadal jest pusta
