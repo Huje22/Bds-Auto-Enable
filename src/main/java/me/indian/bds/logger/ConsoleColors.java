@@ -106,7 +106,7 @@ public final class ConsoleColors {
         COLORS.put(BLACK, new ColorSet(0, 0, 0));
         COLORS.put(DARK_BLUE, new ColorSet(0, 0, 170));
         COLORS.put(GREEN, new ColorSet(0, 170, 0));
-        COLORS.put(CYAN, new ColorSet(0, 170, 170));
+        COLORS.put(CYAN, new ColorSet(0, 170, 170)); // ten w miarę git działa 
         COLORS.put(DARK_RED, new ColorSet(170, 0, 0));
         COLORS.put(PURPLE, new ColorSet(170, 0, 170));
         COLORS.put(YELLOW, new ColorSet(255, 170, 0));
