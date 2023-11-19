@@ -22,8 +22,16 @@ import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.PackModule;
-import net.dv8tion.jda.api.*;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
@@ -444,6 +452,18 @@ public class DiscordJda implements DiscordIntegration {
         return this.jda;
     }
 
+    public long getServerID() {
+        return this.serverID;
+    }
+
+    public long getChannelID() {
+        return this.channelID;
+    }
+
+    public long getConsoleID() {
+        return this.consoleID;
+    }
+
     public Guild getGuild() {
         return this.guild;
     }
@@ -456,15 +476,7 @@ public class DiscordJda implements DiscordIntegration {
         return this.consoleChannel;
     }
 
-    public long getServerID() {
-        return this.serverID;
-    }
-
-    public long getChannelID() {
-        return this.channelID;
-    }
-
-    public long getConsoleID() {
-        return this.consoleID;
+    public StatsChannelsManager getStatsChannelsManager() {
+        return this.statsChannelsManager;
     }
 }

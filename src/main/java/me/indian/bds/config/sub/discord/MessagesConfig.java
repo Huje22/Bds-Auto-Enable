@@ -9,8 +9,14 @@ public class MessagesConfig extends OkaeriConfig {
     @Comment({"Część wyświetlona gdy ktoś odpowie na czyjąś wiadomość"})
     private String replyStatement = " (&dOdpowiada na&a: &a<author> &r»»&b <msg> &r)";
     @Comment({""})
+    @Comment({"Część wyświetlana, gdy ktoś odpowiada na wiadomość od bota, aby odpowiedzi na wiadomości graczy wyglądały lepiej"})
+    private String botReplyStatement = " (&dOdpowiada na&a: <msg> &r)";
+    @Comment({""})
     @Comment({"Informacja o tym że wiadomość została edytowana"})
     private String edited = " (Edytowano)";
+    @Comment({""})
+    @Comment({"Informacja o tym że w wiadomości jest załącznik"})
+    private String attachment = " (Załącznik) ";
     @Comment({""})
     @Comment({"Informacja o tym że wiadomość to webhook"})
     private String webhook = " (Webhook)";
@@ -62,11 +68,19 @@ public class MessagesConfig extends OkaeriConfig {
 
 
     public String getReplyStatement() {
-        return this.replyStatement;
+        return this.botReplyStatement;
+    }
+
+    public String getBotReplyStatement() {
+        return this.botReplyStatement;
     }
 
     public String getEdited() {
         return this.edited;
+    }
+
+    public String getAttachment() {
+        return this.attachment;
     }
 
     public String getWebhook() {

@@ -48,7 +48,7 @@ public final class MessageUtil {
         return message;
     }
 
-    public static String[] splitString(final String input) {
+    public static String[] stringToArgs(final String input) {
         return input.split("\\s+");
     }
 

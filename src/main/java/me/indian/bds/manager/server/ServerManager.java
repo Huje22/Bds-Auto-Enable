@@ -8,6 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
@@ -112,7 +113,7 @@ public class ServerManager {
         if (matcher.find()) {
             final String playerCommand = MessageUtil.fixMessage(matcher.group(1));
             final String command = MessageUtil.fixMessage(matcher.group(2));
-            this.handleCustomCommand(playerCommand, MessageUtil.splitString(command));
+            this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command));
         }
     }
 
@@ -148,6 +149,8 @@ public class ServerManager {
             }
 
             this.lastTPS = tps;
+
+            if (this.discord instanceof final DiscordJda jda) jda.getStatsChannelsManager().setTpsCount(tps);
         }
     }
 

@@ -9,6 +9,13 @@ public final class ConsoleColors {
     private static final Map<String, String> COLOR_MAP = new HashMap<>();
     private final static Map<String, ColorSet> COLORS = new HashMap<>();
 
+    private static final String RESET = "\u001B[0m";
+    private static final String BOLD = "\033[1m";
+    private static final String OBFUSCATED = "\033[8m";
+    private static final String ITALIC = "\033[3m";
+    private static final String UNDERLINE = "\033[4m";
+    private static final String STRIKETHROUGH = "\033[9m";
+
     private static final String BLACK = "\u001B[30m";
     private static final String RED = "\u001B[31m";
     private static final String GREEN = "\u001B[32m";
@@ -19,26 +26,20 @@ public final class ConsoleColors {
     private static final String LIGHT_PURPLE = "\u001B[0;95m";
     private static final String CYAN = "\u001B[36m";
     private static final String WHITE = "\u001B[37m";
+    private static final String BLUE = "\u001B[94m";
 
     private static final String BRIGHT_RED = "\u001B[91m";
     private static final String BRIGHT_GREEN = "\u001B[92m";
-    private static final String BLUE = "\u001B[94m";
     private static final String BRIGHT_PURPLE = "\u001B[95m";
     private static final String BRIGHT_CYAN = "\u001B[96m";
     private static final String BRIGHT_WHITE = "\u001B[97m";
-
     private static final String BRIGHT_GRAY = "\u001B[37m";
+
     private static final String DARK_GRAY = "\u001B[90m";
     private static final String LIGHT_GRAY = "\u001B[37;1m";
     private static final String SILVER = "\u001B[90;1m";
     private static final String DARK_RED = "\u001B[31;1m";
 
-    private static final String RESET = "\u001B[0m";
-    private static final String BOLD = "\033[1m";
-    private static final String OBFUSCATED = "\033[8m";
-    private static final String ITALIC = "\033[3m";
-    private static final String UNDERLINE = "\033[4m";
-    private static final String STRIKETHROUGH = "\033[9m";
     private static final String BLACK_BACKGROUND = "\u001B[40m";
     private static final String RED_BACKGROUND = "\u001B[41m";
     private static final String GREEN_BACKGROUND = "\u001B[42m";

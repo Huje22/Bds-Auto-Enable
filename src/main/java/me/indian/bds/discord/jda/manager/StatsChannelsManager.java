@@ -1,17 +1,15 @@
 package me.indian.bds.discord.jda.manager;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.StatsChannelsConfig;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.ThreadUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
-
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class StatsChannelsManager {
 
@@ -19,10 +17,11 @@ public class StatsChannelsManager {
     private final DiscordJda discordJda;
     private final Logger logger;
     private final StatsChannelsConfig statsChannelsConfig;
-    private final long onlinePlayersID;
+    private static int latsTPS;
     private final Timer timer;
     private final Guild guild;
-    private VoiceChannel onlinePlayersChannel;
+    private final long onlinePlayersID, tpsID;
+    private VoiceChannel onlinePlayersChannel, tpsChannel;
 
     public StatsChannelsManager(final BDSAutoEnable bdsAutoEnable, final DiscordJda discordJda) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -32,25 +31,41 @@ public class StatsChannelsManager {
                 .getDiscordBotConfig().getStatsChannelsConfig();
         this.timer = new Timer("Discord Channel Manager Timer", true);
         this.onlinePlayersID = this.statsChannelsConfig.getOnlinePlayersID();
+        this.tpsID = this.statsChannelsConfig.getTpsID();
         this.guild = this.discordJda.getGuild();
 
+        latsTPS = 0;
     }
 
     public void init() {
         this.onlinePlayersChannel = this.guild.getVoiceChannelById(this.onlinePlayersID);
+        this.tpsChannel = this.guild.getVoiceChannelById(this.tpsID);
         this.setOnlinePlayersCount();
 
         if (this.onlinePlayersChannel == null) {
             this.logger.debug("(Gracz online) Nie można odnaleźć kanału głosowego z ID &b " + this.onlinePlayersID);
         }
 
+        if (this.tpsChannel == null) {
+            this.logger.debug("(TPS) Nie można odnaleźć kanału głosowego z ID &b " + this.onlinePlayersID);
+        }
+
     }
 
-    //TODO: Dodać kanał dla TPS (pomyśle jeszcze nad tym)
+    public void setTpsCount(final int tps) {
+        if (this.tpsChannel != null) {
+            if (tps == latsTPS) return;
+            latsTPS = tps;
+
+            this.tpsChannel.getManager().setName(this.statsChannelsConfig.getTpsName()
+                            .replaceAll("<tps>", String.valueOf(tps)))
+                    .queue();
+        }
+    }
 
     private void setOnlinePlayersCount() {
         if (this.onlinePlayersChannel != null) {
-   
+
             final TimerTask onlinePlayersTask = new TimerTask() {
 
                 int lastOnlinePlayers;
@@ -65,7 +80,7 @@ public class StatsChannelsManager {
 
                     this.lastOnlinePlayers = onlinePlayers;
 
-                    StatsChannelsManager.this.onlinePlayersChannel.getManager().setName(StatsChannelsManager.this.statsChannelsConfig.getOnlinePlayersMessage()
+                    StatsChannelsManager.this.onlinePlayersChannel.getManager().setName(StatsChannelsManager.this.statsChannelsConfig.getOnlinePlayersName()
                             .replaceAll("<online>", String.valueOf(onlinePlayers))
                             .replaceAll("<max>", String.valueOf(maxPlayers))
                     ).queue();
@@ -82,6 +97,9 @@ public class StatsChannelsManager {
     public void onShutdown() {
         if (this.onlinePlayersChannel != null) {
             this.onlinePlayersChannel.getManager().setName("Offline").queue();
+        }
+        if (this.tpsChannel != null) {
+            this.tpsChannel.getManager().setName("Offline").queue();
         }
     }
 }
