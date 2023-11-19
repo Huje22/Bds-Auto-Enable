@@ -154,7 +154,7 @@ public final class ConsoleColors {
             final double distance = Math.sqrt(Math.pow(r - set.red, 2) + Math.pow((g - set.green) * 1.5, 2) + Math.pow(b - set.blue, 2));
             closest.put(distance, color);
         });
-        return closest.firstEntry().getValue();
+        return getMinecraftColorFromANSI(closest.firstEntry().getValue());
     }
 
     private record ColorSet(int red, int green, int blue) {
