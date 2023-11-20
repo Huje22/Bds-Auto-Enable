@@ -22,13 +22,6 @@ import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 
 public class Config extends OkaeriConfig {
     @Comment({""})
-    @Comment("UWAGA , WSZYSTKIE ZMIANY TUTAJ WYMAGAJĄ RESTARTU APLIKACJI")
-    @Comment({""})
-    @Comment({"Ustawienia menedżera wersji"})
-    @CustomKey("VersionManager")
-    private VersionManagerConfig versionManagerConfig = new VersionManagerConfig();
-
-    @Comment({""})
     @Comment({"Pierwsze uruchomienie"})
     @CustomKey("FirstRun")
     private boolean firstRun = true;
@@ -50,32 +43,6 @@ public class Config extends OkaeriConfig {
     private String filesPath = "./";
 
     @Comment({""})
-    @Comment({"Ustawienia strony Rest API"})
-    @CustomKey("RestAPI")
-    private RestApiConfig restApiConfig = new RestApiConfig();
-
-    @Comment({""})
-    @Comment({"Watchdog"})
-    @CustomKey("WatchDog")
-    private WatchDogConfig watchDogConfig = new WatchDogConfig();
-
-    @Comment({""})
-    @Comment({"Automessages"})
-    @CustomKey("AutoMessages")
-    private AutoMessagesConfig autoMessagesConfig = new AutoMessagesConfig();
-
-    @Comment({""})
-    @Comment({"Ustawienia logowania"})
-    @Comment({"Nie zapisuje tych informacj które zawierają dane znaki i słowa"})
-    @CustomKey("Log")
-    private LogConfig logConfig = new LogConfig();
-
-    @Comment({""})
-    @Comment({"Ustawienia discord"})
-    @CustomKey("Discord")
-    private DiscordConfig discordConfig = new DiscordConfig();
-
-    @Comment({""})
     @Comment({"UUID aplikacji"})
     @CustomKey("UUID")
     private String uuid = "";
@@ -85,71 +52,5 @@ public class Config extends OkaeriConfig {
     @CustomKey("Debug")
     private boolean debug = false;
 
-    public VersionManagerConfig getVersionManagerConfig() {
-        return this.versionManagerConfig;
-    }
-
-    public boolean isFirstRun() {
-        return this.firstRun;
-    }
-
-    public void setFirstRun(final boolean firstRun) {
-        this.firstRun = firstRun;
-    }
-
-    public boolean isQuestions() {
-        return this.questions;
-    }
-
-    public void setQuestions(final boolean questions) {
-        this.questions = questions;
-    }
-
-    public boolean isWine() {
-        return this.wine;
-    }
-
-    public void setWine(final boolean wine) {
-        this.wine = wine;
-    }
-
-    public String getFilesPath() {
-        return this.filesPath;
-    }
-
-    public void setFilesPath(final String filesPath) {
-        this.filesPath = filesPath;
-    }
-
-    public WatchDogConfig getWatchDogConfig() {
-        return this.watchDogConfig;
-    }
-
-    public AutoMessagesConfig getAutoMessagesConfig() {
-        return this.autoMessagesConfig;
-    }
-
-    public LogConfig getLogConfig() {
-        return this.logConfig;
-    }
-
-    public DiscordConfig getDiscordConfig() {
-        return this.discordConfig;
-    }
-
-    public RestApiConfig getRestApiConfig() {
-        return this.restApiConfig;
-    }
-
-    public String getUuid() {
-        return this.uuid;
-    }
-
-    public void setUuid(final String uuid) {
-        this.uuid = uuid;
-    }
-
-    public boolean isDebug() {
-        return this.debug;
-    }
+   //TODO: Oddać gettery i settery
 }
