@@ -21,7 +21,7 @@ public class Logger {
 
     public Logger(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
-        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getConfig();
+        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getAppConfig();
         this.logState = LogState.NONE;
         this.updatePrefix();
         this.initializeLogFile();

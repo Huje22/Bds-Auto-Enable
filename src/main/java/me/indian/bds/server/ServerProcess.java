@@ -102,7 +102,7 @@ public class ServerProcess {
             this.logger.debug("Nie można uruchomić procesu ponieważ&b canRun&r jest ustawione na:&b " + false);
             return;
         }
-        this.finalFilePath = this.appConfigManager.getConfig().getFilesPath() + File.separator + this.fileName;
+        this.finalFilePath = this.appConfigManager.getAppConfig().getFilesPath() + File.separator + this.fileName;
         this.processService.execute(() -> {
             if (this.isProcessRunning()) {
                 this.logger.info("Proces " + this.fileName + " jest już uruchomiony.");
@@ -112,7 +112,7 @@ public class ServerProcess {
                 try {
                     switch (this.system) {
                         case LINUX -> {
-                            if (this.appConfigManager.getConfig().isWine()) {
+                            if (this.appConfigManager.getAppConfig().isWine()) {
                                 if (!Defaults.hasWine()) {
                                     this.logger.critical("^#cNIE POSIADASZ ^#1WINE^#C!");
                                     System.exit(0);
@@ -123,7 +123,7 @@ public class ServerProcess {
                             } else {
                                 this.processBuilder = new ProcessBuilder("./" + this.fileName);
                                 this.processBuilder.environment().put("LD_LIBRARY_PATH", ".");
-                                this.processBuilder.directory(new File(this.appConfigManager.getConfig().getFilesPath()));
+                                this.processBuilder.directory(new File(this.appConfigManager.getAppConfig().getFilesPath()));
                             }
                         }
                         case WINDOWS -> this.processBuilder = new ProcessBuilder(this.finalFilePath);

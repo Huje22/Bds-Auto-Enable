@@ -54,7 +54,7 @@ public class BackupModule {
     public BackupModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getConfig();
+        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getAppConfig();
         this.watchDogConfig = this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig();
         this.watchDog = watchDog;
         this.backups = new ArrayList<>();

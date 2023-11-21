@@ -16,7 +16,7 @@ public final class Defaults {
     private static boolean wine;
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
-        appConfig = bdsAutoEnable.getAppConfigManager().getConfig();
+        appConfig = bdsAutoEnable.getAppConfigManager().getAppConfig();
         logger = bdsAutoEnable.getLogger();
         wine = wineCheck();
     }

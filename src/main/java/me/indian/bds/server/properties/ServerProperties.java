@@ -3,7 +3,6 @@ package me.indian.bds.server.properties;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Properties;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfig;
@@ -21,7 +20,7 @@ public class ServerProperties {
 
     public ServerProperties(final BDSAutoEnable bdsAutoEnable) {
         this.properties = new Properties();
-        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getConfig();
+        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getAppConfig();
         this.logger = this.bdsAutoEnable.getLogger();
         this.propertiesFile = new File(this.appConfig.getFilesPath() + File.separator + "server.properties");
     }

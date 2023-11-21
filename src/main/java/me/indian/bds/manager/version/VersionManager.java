@@ -43,7 +43,7 @@ public class VersionManager {
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getConfig();
+        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getAppConfig();
         this.versionManagerConfig = this.bdsAutoEnable.getAppConfigManager().getVersionManagerConfig();
         this.importantFiles = new ArrayList<>();
         this.versionFolder = new File(Defaults.getAppDir() + "versions");

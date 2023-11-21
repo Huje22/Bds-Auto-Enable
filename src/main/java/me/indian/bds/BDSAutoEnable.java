@@ -49,7 +49,7 @@ public class BDSAutoEnable {
         this.projectVersion = "0.0.1-Dev";
         this.scanner = new Scanner(System.in);
         this.appConfigManager = new AppConfigManager();
-        this.appConfig = this.appConfigManager.getConfig();
+        this.appConfig = this.appConfigManager.getAppConfig();
         this.appUUID = this.getAppUUID();
         this.logger = new Logger(this);
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);

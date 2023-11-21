@@ -101,7 +101,7 @@ public class AppConfigManager {
         this.autoMessagesConfig.save();
     }
 
-    public AppConfig getConfig() {
+    public AppConfig getAppConfig() {
         return this.appConfig;
     }
 

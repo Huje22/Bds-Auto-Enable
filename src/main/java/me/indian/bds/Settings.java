@@ -26,7 +26,7 @@ public class Settings {
         this.bdsAutoEnable = bdsAutoEnable;
         this.serverProperties = this.bdsAutoEnable.getServerProperties();
         this.logger = this.bdsAutoEnable.getLogger();
-        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getConfig();
+        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getAppConfig();
         this.watchDogConfig = this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig();
         this.versionManagerConfig = this.bdsAutoEnable.getAppConfigManager().getVersionManagerConfig();
         this.enter = " [Enter = Domyślnie]";
