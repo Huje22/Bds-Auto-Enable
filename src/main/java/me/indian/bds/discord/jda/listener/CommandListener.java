@@ -116,6 +116,14 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 final LinkingManager linkingManager = this.discordJda.getLinkingManager();
                 final long id = member.getIdLong();
 
+
+//TODO: dodać info o tym że po 5h gry dostaję się role
+
+                final long played hours = MathUtil.hoursFrom(bdsAutoEnable.getServerManager().getStatsManager().getPlayTimeByName(name) ,TimeUnit.MILLISECONDS);
+
+            if(hours < 5) {}
+            
+                
                 if (linkingManager.isLinked(id)) {
                     event.reply("Twoje konto jest już połączone z: **" + linkingManager.getNameByID(id) + "**").setEphemeral(true).queue();
                     return;
