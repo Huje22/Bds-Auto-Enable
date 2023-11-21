@@ -3,7 +3,12 @@ package me.indian.bds.config.sub.discord;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
+import eu.okaeri.configs.annotation.Header;
 import me.indian.bds.discord.DiscordType;
+
+@Header("################################################################")
+@Header("#           Ustawienia Integracji z Discord                    #")
+@Header("################################################################")
 
 public class DiscordConfig extends OkaeriConfig {
 
@@ -14,21 +19,21 @@ public class DiscordConfig extends OkaeriConfig {
     private DiscordType integrationType = DiscordType.JDA;
     @Comment({""})
     @Comment({"Ustawienia webhooka"})
-    @CustomKey("webHook")
+    @CustomKey("WebHook")
     private WebHookConfig webHookConfig = new WebHookConfig();
     @Comment({""})
     @Comment({"Ustawienia Bota"})
-    @CustomKey("bot")
+    @CustomKey("Bot")
     private BotConfig botConfig = new BotConfig();
 
     @Comment({""})
     @Comment({"Ustawienia Wiadomości"})
-    @CustomKey("messagesOptions")
+    @CustomKey("MessagesOptions")
     private MessagesOptionsConfig messagesOptionsConfig = new MessagesOptionsConfig();
 
     @Comment({""})
     @Comment({"Konfiguracja dostępnych wiadomości "})
-    @CustomKey("messages")
+    @CustomKey("Messages")
     private MessagesConfig messagesConfig = new MessagesConfig();
 
     public DiscordType getIntegrationType() {

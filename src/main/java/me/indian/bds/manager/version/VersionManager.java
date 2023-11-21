@@ -2,15 +2,6 @@ package me.indian.bds.manager.version;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
-import me.indian.bds.config.Config;
-import me.indian.bds.config.sub.version.VersionManagerConfig;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.SystemOs;
-import me.indian.bds.util.ZipUtil;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -27,12 +18,20 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.Defaults;
+import me.indian.bds.config.AppConfig;
+import me.indian.bds.config.sub.version.VersionManagerConfig;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.SystemOs;
+import me.indian.bds.util.ZipUtil;
 
 public class VersionManager {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
-    private final Config config;
+    private final AppConfig appConfig;
     private final VersionManagerConfig versionManagerConfig;
     private final List<String> importantFiles;
     private final File versionFolder;
@@ -44,8 +43,8 @@ public class VersionManager {
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.config = this.bdsAutoEnable.getConfig();
-        this.versionManagerConfig = this.config.getVersionManagerConfig();
+        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getConfig();
+        this.versionManagerConfig = this.bdsAutoEnable.getAppConfigManager().getVersionManagerConfig();
         this.importantFiles = new ArrayList<>();
         this.versionFolder = new File(Defaults.getAppDir() + "versions");
         this.availableVersions = new ArrayList<>();
@@ -64,10 +63,10 @@ public class VersionManager {
 
         this.loadVersionsInfo();
 
-        this.importantFiles.add(this.config.getFilesPath() + File.separator + "allowlist.json");
-        this.importantFiles.add(this.config.getFilesPath() + File.separator + "server.properties");
-        this.importantFiles.add(this.config.getFilesPath() + File.separator + "config" + File.separator + "default" + File.separator + "permissions.json");
-        this.importantFiles.add(this.config.getFilesPath() + File.separator + "permissions.json");
+        this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "allowlist.json");
+        this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "server.properties");
+        this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "config" + File.separator + "default" + File.separator + "permissions.json");
+        this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "permissions.json");
     }
 
     private void loadVersionsInfo() {
@@ -104,7 +103,7 @@ public class VersionManager {
                 this.downloadServerFiles(version);
             }
             final long startTime = System.currentTimeMillis();
-            ZipUtil.unzipFile(verFile.getAbsolutePath(), this.config.getFilesPath(), false, this.importantFiles);
+            ZipUtil.unzipFile(verFile.getAbsolutePath(), this.appConfig.getFilesPath(), false, this.importantFiles);
             this.versionManagerConfig.setLoaded(true);
             this.versionManagerConfig.setVersion(version);
             this.logger.info("Załadowano versie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
@@ -112,14 +111,14 @@ public class VersionManager {
             this.logger.critical("Nie można załadować wersji: " + version, exception);
             throw new RuntimeException(exception);
         }
-        this.config.save();
+        this.versionManagerConfig.save();
     }
 
     public void loadVersion() {
-        final File serverFile = new File(this.config.getFilesPath() + File.separator + Defaults.getDefaultFileName());
+        final File serverFile = new File(this.appConfig.getFilesPath() + File.separator + Defaults.getDefaultFileName());
         if (!serverFile.exists()) {
             this.versionManagerConfig.setLoaded(false);
-            this.config.save();
+            this.versionManagerConfig.save();
         }
 
         if (!this.versionManagerConfig.isLoaded()) {
@@ -188,7 +187,7 @@ public class VersionManager {
     private String getServerDownloadUrl(final String version) {
         switch (this.system) {
             case LINUX -> {
-                if (this.config.isWine()) {
+                if (this.appConfig.isWine()) {
                     return "https://minecraft.azureedge.net/bin-win/bedrock-server-" + version + ".zip";
                 } else {
                     return "https://minecraft.azureedge.net/bin-linux/bedrock-server-" + version + ".zip";
@@ -197,7 +196,7 @@ public class VersionManager {
             case WINDOWS -> {
                 return "https://minecraft.azureedge.net/bin-win/bedrock-server-" + version + ".zip";
             }
-            default -> throw new RuntimeException("Nieprawidłowy system");
+            default -> throw new RuntimeException("Niewspierany system");
         }
     }
 

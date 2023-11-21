@@ -248,7 +248,7 @@ public class Metrics {
         // Minecraft specific data
         final int playerAmount = bdsAutoEnable.getServerManager().getOnlinePlayers().size();
         final int onlineMode = bdsAutoEnable.getServerProperties().isOnlineMode() ? 1 : 0;
-        final String softwareVersion = bdsAutoEnable.getConfig().getVersionManagerConfig().getVersion();
+        final String softwareVersion = bdsAutoEnable.getAppConfigManager().getVersionManagerConfig().getVersion();
         final String softwareName = "BDS-Auto-Enable";
 
         // OS/Java specific data

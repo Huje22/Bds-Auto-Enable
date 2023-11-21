@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
-import me.indian.bds.config.Config;
+import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.server.StatsManager;
 import me.indian.bds.server.ServerProcess;
@@ -28,14 +28,14 @@ public final class StatusUtil {
     private static Logger logger;
     private static ServerProcess serverProcess;
     private static StatsManager statsManager;
-    private static Config config;
+    private static AppConfigManager appConfigManager;
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         StatusUtil.bdsAutoEnable = bdsAutoEnable;
         StatusUtil.logger = bdsAutoEnable.getLogger();
         StatusUtil.serverProcess = bdsAutoEnable.getServerProcess();
         StatusUtil.statsManager = bdsAutoEnable.getServerManager().getStatsManager();
-        StatusUtil.config = bdsAutoEnable.getConfig();
+        StatusUtil.appConfigManager = bdsAutoEnable.getAppConfigManager();
 
     }
 
@@ -73,10 +73,10 @@ public final class StatusUtil {
         status.add("> **Statystyki servera**");
         status.add("Ostatnie TPS: `" + bdsAutoEnable.getServerManager().getLastTPS() + "`");
         status.add("Pamięć RAM: `" + usedServerMemory + "`");
-        if (config.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
+        if (appConfigManager.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
             status.add("Następny restart za za: `" + DateUtil.formatTime(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart(), "days hours minutes seconds millis ") + "`");
         }
-        if (config.getWatchDogConfig().getBackupConfig().isBackup()) {
+        if (appConfigManager.getWatchDogConfig().getBackupConfig().isBackup()) {
             status.add("Następny backup za: `" + DateUtil.formatTime(watchDog.getBackupModule().calculateMillisUntilNextBackup(), "days hours minutes seconds millis ") + "`");
         }
         status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime(), "days hours minutes seconds millis ") + "`");

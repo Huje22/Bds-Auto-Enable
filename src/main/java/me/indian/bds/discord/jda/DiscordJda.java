@@ -10,7 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
+import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.listener.CommandListener;
@@ -42,10 +42,9 @@ public class DiscordJda implements DiscordIntegration {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
-    private final Config config;
+    private final AppConfigManager appConfigManager;
     private final DiscordConfig discordConfig;
     private final long serverID, channelID, consoleID;
-    private final Timer discordTimer;
     private final ExecutorService consoleService;
     private final List<JDAListener> listeners;
     private JDA jda;
@@ -56,12 +55,11 @@ public class DiscordJda implements DiscordIntegration {
     public DiscordJda(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.config = this.bdsAutoEnable.getConfig();
-        this.discordConfig = this.config.getDiscordConfig();
+        this.appConfigManager = bdsAutoEnable.getAppConfigManager();
+        this.discordConfig = this.appConfigManager.getDiscordConfig();
         this.serverID = this.discordConfig.getDiscordBotConfig().getServerID();
         this.channelID = this.discordConfig.getDiscordBotConfig().getChannelID();
         this.consoleID = this.discordConfig.getDiscordBotConfig().getConsoleID();
-        this.discordTimer = new Timer("Discord timer", true);
         this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
 
         this.listeners = new ArrayList<>();
@@ -395,14 +393,14 @@ public class DiscordJda implements DiscordIntegration {
 
     @Override
     public void sendAppRamAlert() {
-        if (this.config.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
+        if (this.appConfigManager.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
             this.sendMessage(this.getOwnerMention() + this.discordConfig.getDiscordMessagesConfig().getAppRamAlter());
         }
     }
 
     @Override
     public void sendMachineRamAlert() {
-        if (this.config.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
+        if (this.appConfigManager.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
             this.sendMessage(this.getOwnerMention() + this.discordConfig.getDiscordMessagesConfig().getMachineRamAlter());
         }
     }
@@ -412,7 +410,7 @@ public class DiscordJda implements DiscordIntegration {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendServerUpdateMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getServerUpdate()
                     .replaceAll("<version>", version)
-                    .replaceAll("<current>", this.config.getVersionManagerConfig().getVersion())
+                    .replaceAll("<current>", this.appConfigManager.getVersionManagerConfig().getVersion())
 
             );
         }
@@ -427,9 +425,7 @@ public class DiscordJda implements DiscordIntegration {
 
     @Override
     public void startShutdown(){
-
-        this.statsChannelsManager.onShutdown();
-                
+        if (this.statsChannelsManager != null) this.statsChannelsManager.onShutdown();
     }
 
     @Override

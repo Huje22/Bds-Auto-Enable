@@ -5,7 +5,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
-import me.indian.bds.config.Config;
+import me.indian.bds.config.AppConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.DiscordLogChannelType;
 import me.indian.bds.util.DateUtil;
@@ -13,7 +13,7 @@ import me.indian.bds.util.DateUtil;
 public class Logger {
 
     private final BDSAutoEnable bdsAutoEnable;
-    private final Config config;
+    private final AppConfig appConfig;
     private File logFile;
     private String prefix;
     private LogState logState;
@@ -21,7 +21,7 @@ public class Logger {
 
     public Logger(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
-        this.config = this.bdsAutoEnable.getConfig();
+        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getConfig();
         this.logState = LogState.NONE;
         this.updatePrefix();
         this.initializeLogFile();
@@ -152,7 +152,7 @@ public class Logger {
     }
 
     public void debug(final Object log) {
-        if (this.config.isDebug()) {
+        if (this.appConfig.isDebug()) {
             this.logState = LogState.DEBUG;
             this.updatePrefix();
             this.logToFile(log);
@@ -161,7 +161,7 @@ public class Logger {
     }
 
     public void debug(final Object log, final Throwable throwable) {
-        if (this.config.isDebug()) {
+        if (this.appConfig.isDebug()) {
             this.debug(log);
             this.logThrowableToFile(throwable);
         }

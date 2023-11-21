@@ -2,27 +2,38 @@ package me.indian.bds.config.sub.version;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
+import eu.okaeri.configs.annotation.CustomKey;
+import eu.okaeri.configs.annotation.Header;
+
+@Header("################################################################")
+@Header("#           Ustawienia Managera Wersji                         #")
+@Header("################################################################")
 
 public class VersionManagerConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Wersja która jest załadowana"})
-    private String version = "1.20.15.01";
+    @CustomKey("Version")
+    private String version = "1.20.41.02";
 
     @Comment({""})
     @Comment({"Nie zmieniaj tego!"})
+    @CustomKey("Loaded")
     private boolean loaded = false;
 
     @Comment({""})
     @Comment({"Czy patrzeć co dany czas czy dostępna jest nowa wersja"})
+    @CustomKey("CheckVersion")
     private boolean checkVersion = true;
 
     @Comment({""})
     @Comment({"Czy po sprawdzeniu zaktualizować jeśli to możliwe?"})
+    @CustomKey("AutoUpdate")
     private boolean autoUpdate = false;
 
     @Comment({""})
     @Comment({"Co ile godzin sprawdzać aktualną wersję?"})
+    @CustomKey("VersionCheckFrequency")
     private int versionCheckFrequency = 1;
 
 

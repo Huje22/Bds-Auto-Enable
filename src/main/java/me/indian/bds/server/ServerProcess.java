@@ -14,7 +14,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
-import me.indian.bds.config.Config;
+import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
@@ -30,7 +30,7 @@ public class ServerProcess {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
-    private final Config config;
+    private final AppConfigManager appConfigManager;
     private final DiscordIntegration discord;
     private final ServerManager serverManager;
     private final ExecutorService processService;
@@ -48,7 +48,7 @@ public class ServerProcess {
     public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.config = this.bdsAutoEnable.getConfig();
+        this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.discord = this.bdsAutoEnable.getDiscord();
         this.serverManager = this.bdsAutoEnable.getServerManager();
         this.processService = Executors.newScheduledThreadPool(5, new ThreadUtil("Server process"));
@@ -102,7 +102,7 @@ public class ServerProcess {
             this.logger.debug("Nie można uruchomić procesu ponieważ&b canRun&r jest ustawione na:&b " + false);
             return;
         }
-        this.finalFilePath = this.config.getFilesPath() + File.separator + this.fileName;
+        this.finalFilePath = this.appConfigManager.getConfig().getFilesPath() + File.separator + this.fileName;
         this.processService.execute(() -> {
             if (this.isProcessRunning()) {
                 this.logger.info("Proces " + this.fileName + " jest już uruchomiony.");
@@ -112,7 +112,7 @@ public class ServerProcess {
                 try {
                     switch (this.system) {
                         case LINUX -> {
-                            if (this.config.isWine()) {
+                            if (this.appConfigManager.getConfig().isWine()) {
                                 if (!Defaults.hasWine()) {
                                     this.logger.critical("^#cNIE POSIADASZ ^#1WINE^#C!");
                                     System.exit(0);
@@ -123,7 +123,7 @@ public class ServerProcess {
                             } else {
                                 this.processBuilder = new ProcessBuilder("./" + this.fileName);
                                 this.processBuilder.environment().put("LD_LIBRARY_PATH", ".");
-                                this.processBuilder.directory(new File(this.config.getFilesPath()));
+                                this.processBuilder.directory(new File(this.appConfigManager.getConfig().getFilesPath()));
                             }
                         }
                         case WINDOWS -> this.processBuilder = new ProcessBuilder(this.finalFilePath);
@@ -250,8 +250,8 @@ public class ServerProcess {
 
         this.logger.info("Zapisywanie configu...");
         try {
-            this.config.load();
-            this.config.save();
+            this.appConfigManager.load();
+            this.appConfigManager.save();
             this.logger.info("Zapisano config");
         } catch (final Exception exception) {
             this.logger.critical("Nie można zapisać configu", exception);
@@ -396,7 +396,7 @@ public class ServerProcess {
                 return false;
             }
             case "version" -> {
-                this.tellrawToAllAndLogger(this.prefix, "&aWersja minecraft:&b " + this.config.getVersionManagerConfig().getVersion(), LogState.INFO);
+                this.tellrawToAllAndLogger(this.prefix, "&aWersja minecraft:&b " + this.appConfigManager.getVersionManagerConfig().getVersion(), LogState.INFO);
                 this.tellrawToAllAndLogger(this.prefix, "&aWersja BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
                 return true;
             }
@@ -449,7 +449,7 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {
-        for (final String s : this.config.getLogConfig().getNoFile()) {
+        for (final String s : this.appConfigManager.getLogConfig().getNoFile()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
             }
@@ -458,7 +458,7 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToConsoleLog(final String msg) {
-        for (final String s : this.config.getLogConfig().getNoConsole()) {
+        for (final String s : this.appConfigManager.getLogConfig().getNoConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
             }
@@ -467,7 +467,7 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToDiscordConsoleLog(final String msg) {
-        for (final String s : this.config.getLogConfig().getNoDiscordConsole()) {
+        for (final String s : this.appConfigManager.getLogConfig().getNoDiscordConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
             }

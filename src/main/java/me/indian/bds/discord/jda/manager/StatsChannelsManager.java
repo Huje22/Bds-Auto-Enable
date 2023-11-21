@@ -27,7 +27,7 @@ public class StatsChannelsManager {
         this.bdsAutoEnable = bdsAutoEnable;
         this.discordJda = discordJda;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.statsChannelsConfig = this.bdsAutoEnable.getConfig().getDiscordConfig()
+        this.statsChannelsConfig = this.bdsAutoEnable.getAppConfigManager().getDiscordConfig()
                 .getDiscordBotConfig().getStatsChannelsConfig();
         this.timer = new Timer("Discord Channel Manager Timer", true);
         this.onlinePlayersID = this.statsChannelsConfig.getOnlinePlayersID();

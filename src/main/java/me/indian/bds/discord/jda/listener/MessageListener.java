@@ -33,7 +33,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     public MessageListener(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
         this.discordJda = discordJda;
         this.logger = bdsAutoEnable.getLogger();
-        this.discordConfig = bdsAutoEnable.getConfig().getDiscordConfig();
+        this.discordConfig = bdsAutoEnable.getAppConfigManager().getDiscordConfig();
     }
 
     @Override

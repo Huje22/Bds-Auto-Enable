@@ -25,7 +25,7 @@ public class VersionUpdater {
         this.versionManager = versionManager;
         this.logger = this.bdsAutoEnable.getLogger();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
-        this.versionManagerConfig = this.bdsAutoEnable.getConfig().getVersionManagerConfig();
+        this.versionManagerConfig = this.bdsAutoEnable.getAppConfigManager().getVersionManagerConfig();
         this.prefix = "&b[&3VersionUpdater&b]";
         this.running = false;
     }

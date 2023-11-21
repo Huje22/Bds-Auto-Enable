@@ -29,7 +29,7 @@ public class WatchDog {
         this.packModule = new PackModule(bdsAutoEnable, this);
         this.autoRestartModule = new AutoRestartModule(bdsAutoEnable, this);
         this.ramMonitor = new RamMonitor(bdsAutoEnable, this);
-        this.watchDogConfig = bdsAutoEnable.getConfig().getWatchDogConfig();
+        this.watchDogConfig = bdsAutoEnable.getAppConfigManager().getWatchDogConfig();
     }
 
     public BackupModule getBackupModule() {

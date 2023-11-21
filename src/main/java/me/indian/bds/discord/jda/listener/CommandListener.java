@@ -7,8 +7,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
+import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.BotConfig;
+import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordLogChannelType;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.logger.LogState;
@@ -38,7 +39,9 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private final DiscordJda discordJda;
     private final BDSAutoEnable bdsAutoEnable;
-    private final Config config;
+
+    private final AppConfigManager appConfigManager;
+    private final DiscordConfig discordConfig;
     private final BotConfig botConfig;
     private final List<Button> backupButtons, difficultyButtons, statsButtons;
     private JDA jda;
@@ -48,8 +51,9 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     public CommandListener(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
         this.discordJda = discordJda;
         this.bdsAutoEnable = bdsAutoEnable;
-        this.config = this.bdsAutoEnable.getConfig();
-        this.botConfig = this.config.getDiscordConfig().getDiscordBotConfig();
+        this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
+        this.discordConfig = this.appConfigManager.getDiscordConfig();
+        this.botConfig = this.discordConfig.getDiscordBotConfig();
         this.backupButtons = new ArrayList<>();
         this.difficultyButtons = new ArrayList<>();
         this.statsButtons = new ArrayList<>();
@@ -114,7 +118,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             case "ip" -> {
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Nasze ip!")
-                        .setDescription(MessageUtil.listToSpacedString(this.config.getDiscordConfig().getDiscordBotConfig().getIpMessage()))
+                        .setDescription(MessageUtil.listToSpacedString(this.botConfig.getIpMessage()))
                         .setColor(Color.BLUE)
                         .build();
 
@@ -142,7 +146,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
             case "backup" -> {
-                if (!this.config.getWatchDogConfig().getBackupConfig().isBackup()) {
+                if (!this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getBackupConfig().isBackup()) {
                     event.reply("Backupy są wyłączone")
                             .setEphemeral(true).queue();
                     return;
@@ -151,7 +155,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 final OptionMapping command = event.getOption("load");
                 if (command != null && !command.getAsString().isEmpty()) {
                     if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                        if (!this.config.isDebug()) {
+                        if (!this.appConfigManager.getConfig().isDebug()) {
                             event.reply("Ta funkcja jest nie stabilna , wymaga włączeniu Debugu").setEphemeral(true).queue();
                             return;
                         }
@@ -217,7 +221,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 }
             }
             case "version" -> {
-                final String current = this.config.getVersionManagerConfig().getVersion();
+                final String current = this.appConfigManager.getVersionManagerConfig().getVersion();
                 String latest = this.bdsAutoEnable.getVersionManager().getLatestVersion();
                 if (latest.equals("")) {
                     latest = current;
@@ -329,7 +333,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             event.deferReply().setEphemeral(true).queue();
             this.backupModule.backup();
 
-            ThreadUtil.sleep((int) this.config.getWatchDogConfig().getBackupConfig().getLastBackupTime() + 3);
+            ThreadUtil.sleep((int) this.appConfigManager.getWatchDogConfig().getBackupConfig().getLastBackupTime() + 3);
             event.getHook().editOriginalEmbeds(this.getBackupEmbed())
                     .setActionRow(this.backupButtons).queue();
 

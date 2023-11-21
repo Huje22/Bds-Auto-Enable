@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.Defaults;
-import me.indian.bds.config.Config;
+import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
@@ -37,7 +37,7 @@ public class BackupModule {
     private final Logger logger;
     private final ExecutorService service;
     private final Timer timer;
-    private final Config config;
+    private final AppConfig appConfig;
     private final WatchDogConfig watchDogConfig;
     private final List<Path> backups;
     private final String worldPath, worldName;
@@ -54,8 +54,8 @@ public class BackupModule {
     public BackupModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.config = this.bdsAutoEnable.getConfig();
-        this.watchDogConfig = this.config.getWatchDogConfig();
+        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getConfig();
+        this.watchDogConfig = this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig();
         this.watchDog = watchDog;
         this.backups = new ArrayList<>();
         this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Watchdog-BackupModule"));
@@ -158,13 +158,13 @@ public class BackupModule {
             } finally {
                 this.backuping = false;
                 this.watchDog.saveResume();
-                this.config.save();
+                this.appConfig.save();
             }
         });
     }
 
     public synchronized void loadBackup(final String backupName) {
-        if (!this.config.isDebug()) {
+        if (!this.appConfig.isDebug()) {
             this.logger.info("Ta funkcja jest nie stabilna , wymaga włączeniu Debugu");
             return;
         }

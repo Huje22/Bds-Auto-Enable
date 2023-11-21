@@ -4,12 +4,6 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
-import me.indian.bds.config.sub.AutoMessagesConfig;
-import me.indian.bds.config.sub.discord.DiscordConfig;
-import me.indian.bds.config.sub.log.LogConfig;
-import me.indian.bds.config.sub.rest.RestApiConfig;
-import me.indian.bds.config.sub.version.VersionManagerConfig;
-import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 
 
 @Header("################################################################")
@@ -20,7 +14,7 @@ import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 @Header("#                                                              #")
 @Header("################################################################")
 
-public class Config extends OkaeriConfig {
+public class AppConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Pierwsze uruchomienie"})
     @CustomKey("FirstRun")
@@ -52,5 +46,47 @@ public class Config extends OkaeriConfig {
     @CustomKey("Debug")
     private boolean debug = false;
 
-   //TODO: Oddać gettery i settery
+    public boolean isFirstRun() {
+        return this.firstRun;
+    }
+
+    public void setFirstRun(final boolean firstRun) {
+        this.firstRun = firstRun;
+    }
+
+    public boolean isQuestions() {
+        return this.questions;
+    }
+
+    public void setQuestions(final boolean questions) {
+        this.questions = questions;
+    }
+
+    public boolean isWine() {
+        return this.wine;
+    }
+
+    public void setWine(final boolean wine) {
+        this.wine = wine;
+    }
+
+    public String getFilesPath() {
+        return this.filesPath;
+    }
+
+    public void setFilesPath(final String filesPath) {
+        this.filesPath = filesPath;
+    }
+
+    public String getUuid() {
+        return this.uuid;
+    }
+
+    public void setUuid(final String uuid) {
+        this.uuid = uuid;
+    }
+
+    public boolean isDebug() {
+        return this.debug;
+    }
 }

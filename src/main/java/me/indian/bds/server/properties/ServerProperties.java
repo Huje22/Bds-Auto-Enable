@@ -1,31 +1,31 @@
 package me.indian.bds.server.properties;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.MathUtil;
-
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Properties;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfig;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.MathUtil;
 
 public class ServerProperties {
 
     private final Properties properties;
     private final Logger logger;
-    private final Config config;
+    private final AppConfig appConfig;
 
     public ServerProperties(final BDSAutoEnable bdsAutoEnable) {
         this.properties = new Properties();
-        this.config = bdsAutoEnable.getConfig();
+        this.appConfig = bdsAutoEnable.getAppConfigManager().getConfig();
         this.logger = bdsAutoEnable.getLogger();
     }
 
     public void loadProperties() {
         try {
             this.properties.clear();
-            this.properties.load(Files.newInputStream(Paths.get(this.config.getFilesPath() + "/server.properties")));
+            this.properties.load(Files.newInputStream(Paths.get(this.appConfig.getFilesPath() + File.separator + "server.properties")));
         } catch (final IOException exception) {
             this.logger.debug("", exception);
             this.logger.critical("&cWystąpił krytyczny błąd podczas ładowania &aserver.properties", exception);
@@ -35,7 +35,7 @@ public class ServerProperties {
 
     private void saveProperties() {
         try {
-            this.properties.store(Files.newOutputStream(Paths.get(this.config.getFilesPath() + "/server.properties")), null);
+            this.properties.store(Files.newOutputStream(Paths.get(this.appConfig.getFilesPath() + File.separator + "server.properties")), null);
         } catch (final IOException exception) {
             this.logger.debug("", exception);
             this.logger.critical("&cWystąpił krytyczny błąd podczas zapisywania&a server.properties", exception);

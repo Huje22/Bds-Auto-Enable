@@ -6,6 +6,13 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.util.RateLimiter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.rest.RestApiConfig;
 import me.indian.bds.discord.DiscordIntegration;
@@ -15,17 +22,8 @@ import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.watchdog.module.BackupModule;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 public class RestWebsite {
 
-    private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final DiscordIntegration discordIntegration;
     private final RestApiConfig restApiConfig;
@@ -33,12 +31,11 @@ public class RestWebsite {
     private final BackupModule backupModule;
 
     public RestWebsite(final BDSAutoEnable bdsAutoEnable) {
-        this.bdsAutoEnable = bdsAutoEnable;
-        this.logger = this.bdsAutoEnable.getLogger();
-        this.discordIntegration = this.bdsAutoEnable.getDiscord();
-        this.restApiConfig = this.bdsAutoEnable.getConfig().getRestApiConfig();
-        this.serverManager = this.bdsAutoEnable.getServerManager();
-        this.backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
+        this.logger = bdsAutoEnable.getLogger();
+        this.discordIntegration = bdsAutoEnable.getDiscord();
+        this.restApiConfig = bdsAutoEnable.getAppConfigManager().getRestApiConfig();
+        this.serverManager = bdsAutoEnable.getServerManager();
+        this.backupModule = bdsAutoEnable.getWatchDog().getBackupModule();
     }
 
     public void init() {

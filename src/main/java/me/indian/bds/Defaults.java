@@ -5,18 +5,18 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
-import me.indian.bds.config.Config;
+import me.indian.bds.config.AppConfig;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.SystemOs;
 
 public final class Defaults {
 
-    private static Config config;
+    private static AppConfig appConfig;
     private static Logger logger;
     private static boolean wine;
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
-        config = bdsAutoEnable.getConfig();
+        appConfig = bdsAutoEnable.getAppConfigManager().getConfig();
         logger = bdsAutoEnable.getLogger();
         wine = wineCheck();
     }
@@ -60,7 +60,7 @@ public final class Defaults {
     }
 
     public static String getWorldsPath() {
-        return config.getFilesPath() + File.separator + "worlds" + File.separator;
+        return appConfig.getFilesPath() + File.separator + "worlds" + File.separator;
     }
 
     public static boolean hasWine() {

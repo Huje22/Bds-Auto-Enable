@@ -8,7 +8,7 @@ import java.net.URL;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.Config;
+import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.Logger;
@@ -19,15 +19,15 @@ import me.indian.bds.util.ThreadUtil;
 public class WebHook implements DiscordIntegration {
 
     private final Logger logger;
-    private final Config config;
+    private final AppConfigManager appConfigManager;
     private final DiscordConfig discordConfig;
     private final String name, webhookURL, avatarUrl;
     private final ExecutorService service;
 
     public WebHook(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
-        this.config = bdsAutoEnable.getConfig();
-        this.discordConfig = this.config.getDiscordConfig();
+        this.appConfigManager = bdsAutoEnable.getAppConfigManager();
+        this.discordConfig = this.appConfigManager.getDiscordConfig();
         this.name = this.discordConfig.getWebHookConfig().getName();
         this.webhookURL = this.discordConfig.getWebHookConfig().getUrl();
         this.avatarUrl = this.discordConfig.getWebHookConfig().getAvatarUrl();
@@ -216,14 +216,14 @@ public class WebHook implements DiscordIntegration {
 
     @Override
     public void sendAppRamAlert() {
-        if (this.config.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
+        if (this.appConfigManager.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getAppRamAlter());
         }
     }
 
     @Override
     public void sendMachineRamAlert() {
-        if (this.config.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
+        if (this.appConfigManager.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getMachineRamAlter());
         }
     }
@@ -233,7 +233,7 @@ public class WebHook implements DiscordIntegration {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendServerUpdateMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getServerUpdate()
                     .replaceAll("<version>", version)
-                    .replaceAll("<current>", this.config.getVersionManagerConfig().getVersion())
+                    .replaceAll("<current>", this.appConfigManager.getVersionManagerConfig().getVersion())
 
             );
         }

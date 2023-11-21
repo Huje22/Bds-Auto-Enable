@@ -1,5 +1,9 @@
 package me.indian.bds.watchdog.monitor;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
+import java.util.Timer;
+import java.util.TimerTask;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.RamMonitorConfig;
 import me.indian.bds.discord.DiscordIntegration;
@@ -9,11 +13,6 @@ import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.WatchDog;
-
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryUsage;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class RamMonitor {
 
@@ -31,7 +30,7 @@ public class RamMonitor {
         this.ramMonitorTimer = new Timer("RamMonitorTimer", true);
         this.logger = this.bdsAutoEnable.getLogger();
         this.prefix = watchDog.getWatchDogPrefix();
-        this.ramMonitorConfig = this.bdsAutoEnable.getConfig().getWatchDogConfig().getRamMonitorConfig();
+        this.ramMonitorConfig = this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getRamMonitorConfig();
         this.running = false;
 
     }

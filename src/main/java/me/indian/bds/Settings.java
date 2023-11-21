@@ -2,7 +2,9 @@ package me.indian.bds;
 
 import java.util.List;
 import java.util.Scanner;
-import me.indian.bds.config.Config;
+import me.indian.bds.config.AppConfig;
+import me.indian.bds.config.sub.version.VersionManagerConfig;
+import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.properties.PlayerPermissionLevel;
 import me.indian.bds.server.properties.ServerMovementAuth;
@@ -15,21 +17,25 @@ public class Settings {
     private final BDSAutoEnable bdsAutoEnable;
     private final ServerProperties serverProperties;
     private final Logger logger;
-    private final Config config;
+    private final AppConfig appConfig;
+    private final WatchDogConfig watchDogConfig;
+    private final VersionManagerConfig versionManagerConfig;
     private final String enter;
 
     public Settings(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.serverProperties = this.bdsAutoEnable.getServerProperties();
         this.logger = this.bdsAutoEnable.getLogger();
-        this.config = this.bdsAutoEnable.getConfig();
+        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getConfig();
+        this.watchDogConfig = this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig();
+        this.versionManagerConfig = this.bdsAutoEnable.getAppConfigManager().getVersionManagerConfig();
         this.enter = " [Enter = Domyślnie]";
     }
 
     public void loadSettings(final Scanner scanner) {
         final ScannerUtil scannerUtil = new ScannerUtil(scanner);
-        if (!this.config.isFirstRun()) {
-            if (!this.config.isQuestions()) {
+        if (!this.appConfig.isFirstRun()) {
+            if (!this.appConfig.isQuestions()) {
                 this.serverProperties.loadProperties();
                 this.logger.info("Ominięto pytania");
                 return;
@@ -39,7 +45,7 @@ public class Settings {
                     (settings) -> {
                         if (settings) {
                             this.serverProperties.loadProperties();
-                            if (this.config.getVersionManagerConfig().isLoaded()) {
+                            if (this.versionManagerConfig.isLoaded()) {
                                 this.anotherVersionQuestion(scannerUtil);
                             }
                             this.againSetupServer(scannerUtil);
@@ -61,7 +67,7 @@ public class Settings {
         this.logger.print("");
 
         if (Defaults.hasWine()) {
-            this.config.setWine(scannerUtil.addBooleanQuestion(
+            this.appConfig.setWine(scannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
                         this.logger.info("&n&lWykryliśmy &r&bWINE&r&n&l czy użyć go?&r (Domyślnie: " + defaultValue + ")" + this.enter);
                         this.logger.alert("Jeśli chcesz użyć&b WINE&r plik musi kończyć się na&1 .exe");
@@ -72,27 +78,27 @@ public class Settings {
             this.logger.print("");
         }
 
-        this.config.setFilesPath(scannerUtil.addStringQuestion(
+        this.appConfig.setFilesPath(scannerUtil.addStringQuestion(
                 (defaultValue) -> this.logger.info("&n&lPodaj ścieżkę do plików servera&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 Defaults.getJarDir(),
                 (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)
         ));
-        this.config.save();
+        this.appConfig.save();
         this.logger.print("");
 
-        if (!this.config.getVersionManagerConfig().isLoaded()) this.versionQuestion(scannerUtil);
+        if (!this.versionManagerConfig.isLoaded()) this.versionQuestion(scannerUtil);
         this.serverProperties.loadProperties();
 
         final boolean backup = scannerUtil.addBooleanQuestion(
                 (defaultValue) -> this.logger.info("&n&lWłączyć Backupy&r (Domyślnie: " + defaultValue + ")? " + this.enter),
                 true,
                 (input) -> this.logger.info("Backupy ustawione na:&1 " + input));
-        this.config.getWatchDogConfig().getBackupConfig().setBackup(backup);
+        this.watchDogConfig.getBackupConfig().setBackup(backup);
         if (backup) {
             final int backupFrequency = scannerUtil.addIntQuestion((defaultValue) -> this.logger.info("&n&lCo ile minut robić backup?&r (Domyślnie: " + defaultValue + ")? " + this.enter),
                     60,
                     (input) -> this.logger.info("Backup bedzie robiony co:&1 " + (input == 0 ? 60 : input + "&a minut")));
-            this.config.getWatchDogConfig().getBackupConfig().setBackupFrequency(backupFrequency == 0 ? 60 : backupFrequency);
+            this.watchDogConfig.getBackupConfig().setBackupFrequency(backupFrequency == 0 ? 60 : backupFrequency);
         }
         this.logger.print("");
 
@@ -102,10 +108,10 @@ public class Settings {
                 (input) -> this.logger.info("AutoRestart Servera ustawione na:&1 " + input));
         this.logger.print("");
 
-        this.config.getWatchDogConfig().getAutoRestartConfig().setEnabled(autoRestart);
+        this.watchDogConfig.getAutoRestartConfig().setEnabled(autoRestart);
 
         if (autoRestart) {
-            this.config.getWatchDogConfig().getAutoRestartConfig().setRestartTime(scannerUtil.addIntQuestion(
+            this.watchDogConfig.getAutoRestartConfig().setRestartTime(scannerUtil.addIntQuestion(
                     (defaultValue) -> this.logger.info("&n&lCo ile godzin restartować server?&r (Polecane: " + defaultValue + ")? " + this.enter),
                     4,
                     (input) -> this.logger.info("Server będzie restartowany co&1 " + input + "&a godziny")));
@@ -123,7 +129,7 @@ public class Settings {
 
         this.questionsSetting(scannerUtil);
         this.logger.info("Ukończono odpowiedzi w&a " + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
-        this.config.save();
+        this.appConfig.save();
         this.currentSettings(scannerUtil.getScanner());
     }
 
@@ -272,7 +278,7 @@ public class Settings {
     }
 
     private void questionsSetting(final ScannerUtil scannerUtil) {
-        this.config.setQuestions(scannerUtil.addBooleanQuestion(
+        this.appConfig.setQuestions(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lCzy powtórzyć następnym razem pytania?&r (Domyślnie: " + defaultValue + ")" + this.enter);
                     this.logger.info("&aJeśli ustawisz na&b false&a następnym razem aplikacja uruchomi się bez zadawania żadnych pytań!");
@@ -289,15 +295,15 @@ public class Settings {
         this.logger.print("");
         this.logger.info("&e----------&bAplikacja&e----------");
         this.logger.info("System:&1 " + Defaults.getSystem());
-        this.logger.info("Wine:&1 " + this.config.isWine() + (Defaults.hasWine() ? " &d(&bPosiadasz&d)" : ""));
-        this.logger.info("Ścieżka plików:&1 " + this.config.getFilesPath());
-        this.logger.info("Wersja:&1 " + this.config.getVersionManagerConfig().getVersion());
+        this.logger.info("Wine:&1 " + this.appConfig.isWine() + (Defaults.hasWine() ? " &d(&bPosiadasz&d)" : ""));
+        this.logger.info("Ścieżka plików:&1 " + this.appConfig.getFilesPath());
+        this.logger.info("Wersja:&1 " + this.versionManagerConfig.getVersion());
 
-        final boolean backup = this.config.getWatchDogConfig().getBackupConfig().isBackup();
+        final boolean backup = this.watchDogConfig.getBackupConfig().isBackup();
         this.logger.info("Backup:&1 " + backup);
 
         if (backup) {
-            this.logger.info("Częstotliwość robienia backup:&1 " + this.config.getWatchDogConfig().getBackupConfig().getBackupFrequency() + "&a minut");
+            this.logger.info("Częstotliwość robienia backup:&1 " + this.watchDogConfig.getBackupConfig().getBackupFrequency() + "&a minut");
             this.logger.info("Nazwa świata:&1 " + this.serverProperties.getWorldName());
         }
 
@@ -331,16 +337,16 @@ public class Settings {
         this.logger.info("Kliknij enter aby kontynuować");
         scanner.nextLine();
 
-        if (this.config.isFirstRun()) {
-            this.config.setFirstRun(false);
+        if (this.appConfig.isFirstRun()) {
+            this.appConfig.setFirstRun(false);
         }
-        this.config.save();
+        this.appConfig.save();
     }
 
     private void versionQuestion(final ScannerUtil scannerUtil) {
         final String latest = this.bdsAutoEnable.getVersionManager().getLatestVersion();
         final String check = (latest.equals("") ? "Nie udało odnaleźć się najnowszej wersji" : latest);
-        this.config.getVersionManagerConfig().setVersion(scannerUtil.addStringQuestion(
+        this.versionManagerConfig.setVersion(scannerUtil.addStringQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lJaką versie załadować?&r (Najnowsza: " + check + ")");
                     if (this.bdsAutoEnable.getVersionManager().getAvailableVersions().isEmpty()) {
@@ -350,7 +356,7 @@ public class Settings {
                     }
                     this.logger.info("Aby pobrać jakąś versie wpisz jej numer (niektóre mogą mieć .01 / .02 na końcu)");
                 },
-                this.config.getVersionManagerConfig().getVersion(), (input) -> this.logger.info("Wersja do załadowania ustawiona na:&1 " + input)
+                this.versionManagerConfig.getVersion(), (input) -> this.logger.info("Wersja do załadowania ustawiona na:&1 " + input)
         ));
         this.bdsAutoEnable.getVersionManager().loadVersion();
         this.logger.print("");
@@ -362,8 +368,8 @@ public class Settings {
                 false,
                 (input) -> {
                     if (input) {
-                        this.config.getVersionManagerConfig().setLoaded(false);
-                        this.config.save();
+                        this.versionManagerConfig.setLoaded(false);
+                        this.appConfig.save();
                         this.versionQuestion(scannerUtil);
                     }
                 });

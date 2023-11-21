@@ -1,14 +1,13 @@
 package me.indian.bds;
 
-import eu.okaeri.configs.ConfigManager;
-import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
-import me.indian.bds.config.Config;
+import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.config.AppConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.DiscordType;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -35,7 +34,8 @@ public class BDSAutoEnable {
     private final Scanner scanner;
     private final Logger logger;
     private final ServerProperties serverProperties;
-    private final Config config;
+    private final AppConfigManager appConfigManager;
+    private final AppConfig appConfig;
     private final Settings settings;
     private final ServerProcess serverProcess;
     private final ServerManager serverManager;
@@ -48,13 +48,8 @@ public class BDSAutoEnable {
         this.runDate = DateUtil.getFixedDate();
         this.projectVersion = "0.0.1-Dev";
         this.scanner = new Scanner(System.in);
-        this.config = ConfigManager.create(Config.class, (it) -> {
-            it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(Defaults.getAppDir() + "config.yml");
-            it.withRemoveOrphans(true);
-            it.saveDefaults();
-            it.load(true);
-        });
+        this.appConfigManager = new AppConfigManager();
+        this.appConfig = this.appConfigManager.getConfig();
         this.appUUID = this.getAppUUID();
         this.logger = new Logger(this);
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
@@ -105,7 +100,7 @@ public class BDSAutoEnable {
         final String javaVersion = System.getProperty("java.version");
 
         if (Defaults.isJavaLoverThan17()) {
-            if (this.getConfig().isDebug()) {
+            if (this.appConfig.isDebug()) {
                 this.logger.warning("&aDebug włączony, twoja wersja java &d(&1" + javaVersion
                         + "&d)&a nie jest wspierana, robisz to na własne&c ryzyko&c!");
                 return;
@@ -140,7 +135,7 @@ public class BDSAutoEnable {
     private void checkEncoding() {
         final String encoding = System.getProperty("file.encoding");
         if (!encoding.equalsIgnoreCase("UTF-8")) {
-            if (!this.config.isDebug()) {
+            if (!this.appConfig.isDebug()) {
                 this.logger.critical("&cTwoje kodowanie to:&b " + encoding + ", &cmy wspieramy tylko&b: UTF-8");
                 this.logger.critical("&cProsimy ustawić swoje kodowanie na&b UTF-8&c abyśmy mogli dalej kontynuować!");
                 System.exit(-2137);
@@ -159,7 +154,7 @@ public class BDSAutoEnable {
     }
 
     private void checkExecutable() {
-        final String serverPath = this.config.getFilesPath() + File.separator + Defaults.getDefaultFileName();
+        final String serverPath = this.appConfig.getFilesPath() + File.separator + Defaults.getDefaultFileName();
         if (!FileUtil.canExecute(serverPath)) {
             if (!FileUtil.addExecutePerm(serverPath)) {
                 this.logger.critical("&cBrak odpowiednich uprawnień!");
@@ -175,7 +170,7 @@ public class BDSAutoEnable {
     }
 
     private DiscordIntegration determinateDiscordIntegration() {
-        final DiscordType integration = this.config.getDiscordConfig().getIntegrationType();
+        final DiscordType integration = this.appConfigManager.getDiscordConfig().getIntegrationType();
         if (integration == null) throw new RuntimeException("Integracja z discord nie może być nullem!");
 
         switch (integration) {
@@ -215,15 +210,15 @@ public class BDSAutoEnable {
     }
 
     public String getAppUUID() {
-        if (this.config.getUuid().isEmpty()) {
-            this.config.setUuid(UUID.randomUUID().toString());
-            this.config.save();
+        if (this.appConfig.getUuid().isEmpty()) {
+            this.appConfig.setUuid(UUID.randomUUID().toString());
+            this.appConfig.save();
         }
-        return this.config.getUuid();
+        return this.appConfig.getUuid();
     }
 
-    public Config getConfig() {
-        return this.config;
+    public AppConfigManager getAppConfigManager() {
+        return this.appConfigManager;
     }
 
     public Logger getLogger() {
