@@ -9,6 +9,7 @@ import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
@@ -221,6 +222,28 @@ public class ServerManager {
                 serverProcess.tellrawToPlayer(playerCommand, s);
             }
             serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
+        } else if (args[0].contains("link")) {
+            if (this.discord instanceof final DiscordJda jda) {
+                final LinkingManager linkingManager = jda.getLinkingManager();
+                if (linkingManager == null) {
+                    serverProcess.tellrawToPlayer(playerCommand, "&cCoś poszło nie tak , &bLinkingManager&c jest&4 nullem");
+                    return;
+                }
+                if (linkingManager.isLinked(playerCommand)) {
+                    serverProcess.tellrawToPlayer(playerCommand,
+                            "&aTwoje konto jest już połączone z ID:&b " + linkingManager.getIdByName(playerCommand));
+                    return;
+                }
+
+                final String code = MessageUtil.generateCode(6);
+                linkingManager.addAccountToLink(playerCommand, code);
+                serverProcess.tellrawToPlayer(playerCommand, "&aTwój kod do połączenia kąt to:&b " + code);
+                serverProcess.tellrawToPlayer(playerCommand, "&aUżyj na naszym discord&b /link&a aby go użyć");
+
+            } else {
+                serverProcess.tellrawToPlayer(playerCommand, "&cTen server nie używa integracji z JDA");
+            }
+
         } else {
             serverProcess.tellrawToPlayer(playerCommand, "&cNie znaleziono takiego polecenia");
         }

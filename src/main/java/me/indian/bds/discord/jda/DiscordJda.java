@@ -16,6 +16,7 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.listener.CommandListener;
 import me.indian.bds.discord.jda.listener.JDAListener;
 import me.indian.bds.discord.jda.listener.MessageListener;
+import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.discord.jda.manager.StatsChannelsManager;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MathUtil;
@@ -51,6 +52,7 @@ public class DiscordJda implements DiscordIntegration {
     private Guild guild;
     private TextChannel textChannel, consoleChannel;
     private StatsChannelsManager statsChannelsManager;
+    private LinkingManager linkingManager;
 
     public DiscordJda(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -117,6 +119,7 @@ public class DiscordJda implements DiscordIntegration {
             this.logger.debug("(konsola) Nie można odnaleźć kanału z ID &b " + this.consoleID);
         }
 
+        this.linkingManager = new LinkingManager(this.bdsAutoEnable, this);
         this.statsChannelsManager = new StatsChannelsManager(this.bdsAutoEnable, this);
         this.statsChannelsManager.init();
 
@@ -143,6 +146,10 @@ public class DiscordJda implements DiscordIntegration {
                 Commands.slash("stats", "Statystyki Servera i aplikacji."),
                 Commands.slash("cmd", "Wykonuje polecenie w konsoli.")
                         .addOption(OptionType.STRING, "command", "Polecenie które zostanie wysłane do konsoli.", true),
+
+                Commands.slash("link", "Łączy konto discord z kontem nickiem Minecraft.")
+                        .addOption(OptionType.STRING, "code", "Kod aby połączyć konta", true),
+
                 Commands.slash("ip", "Informacje o ip ustawione w config"),
                 Commands.slash("playtime", "Top 100 graczy z największą ilością przegranego czasu"),
                 Commands.slash("deaths", "Top 100 graczy z największą ilością śmierci")
@@ -425,6 +432,7 @@ public class DiscordJda implements DiscordIntegration {
 
     @Override
     public void startShutdown(){
+        if (this.linkingManager != null) this.linkingManager.saveLinedAccounts();
         if (this.statsChannelsManager != null) this.statsChannelsManager.onShutdown();
     }
 
@@ -474,5 +482,9 @@ public class DiscordJda implements DiscordIntegration {
 
     public StatsChannelsManager getStatsChannelsManager() {
         return this.statsChannelsManager;
+    }
+
+    public LinkingManager getLinkingManager() {
+        return this.linkingManager;
     }
 }

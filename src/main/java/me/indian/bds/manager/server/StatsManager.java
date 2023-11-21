@@ -134,7 +134,7 @@ public class StatsManager {
             writer.write(GsonUtil.getGson().toJson(this.serverStats));
             this.logger.info("Pomyślnie zapisano&b statystyki servera");
         } catch (final Exception exception) {
-            this.logger.critical("Nie udało się zapisać liczby&b śmierci&r graczy", exception);
+            this.logger.critical("Nie udało się zapisać liczby&b statystyk servera", exception);
         }
     }
 

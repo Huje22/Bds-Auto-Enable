@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Properties;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfig;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.version.VersionManager;
 import me.indian.bds.util.MathUtil;
@@ -15,21 +14,20 @@ public class ServerProperties {
     private final BDSAutoEnable bdsAutoEnable;
     private final Properties properties;
     private final Logger logger;
-    private final AppConfig appConfig;
     private final File propertiesFile;
 
     public ServerProperties(final BDSAutoEnable bdsAutoEnable) {
+        this.bdsAutoEnable = bdsAutoEnable;
         this.properties = new Properties();
-        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getAppConfig();
         this.logger = this.bdsAutoEnable.getLogger();
-        this.propertiesFile = new File(this.appConfig.getFilesPath() + File.separator + "server.properties");
+        this.propertiesFile = new File(this.bdsAutoEnable.getAppConfigManager().getAppConfig().getFilesPath() + File.separator + "server.properties");
     }
 
     public void loadProperties() {
        this.checkForProperties();
         try {
             this.properties.clear();
-            this.properties.load(Files.newInputStream(propertiesFile.toPath()));
+            this.properties.load(Files.newInputStream(this.propertiesFile.toPath()));
         } catch (final IOException exception) {
             this.logger.critical("&cWystąpił krytyczny błąd podczas ładowania &aserver.properties", exception);
             System.exit(0);
@@ -39,7 +37,7 @@ public class ServerProperties {
     private void saveProperties() {
         this.checkForProperties();
         try {
-            this.properties.store(Files.newOutputStream(propertiesFile.toPath()), null);
+            this.properties.store(Files.newOutputStream(this.propertiesFile.toPath()), null);
         } catch (final IOException exception) {
             this.logger.critical("&cWystąpił krytyczny błąd podczas zapisywania&a server.properties", exception);
             System.exit(0);
@@ -47,15 +45,15 @@ public class ServerProperties {
     }
 
     private void checkForProperties(){
-     if(!propertiesFile.exists()){
-        final VersionManager manager = this.bdsAutoEnable.getVersionManager();
-        if(manager != null){
-          manager.loadVersion();
-        } else{
-           this.logger.critical("&cNie można odnaleźć pliku&a server.properties");
-            System.exit(0);
+        if (!this.propertiesFile.exists()) {
+            final VersionManager manager = this.bdsAutoEnable.getVersionManager();
+            if (manager != null) {
+                manager.loadVersion();
+            } else {
+                this.logger.critical("&cNie można odnaleźć pliku&a server.properties");
+                System.exit(0);
+            }
         }
-     }
     }
 
     public void reloadServerProperties() {

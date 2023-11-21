@@ -21,6 +21,9 @@ public class BotConfig extends OkaeriConfig {
     @Comment({"Kanał na który zostaną wysyłane wiadomości z konsoli minecraft , Zostaw puste aby nie uruchamiać "})
     private long consoleID = 1L;
     @Comment({""})
+    @Comment({"ID roli którą bedzie otrzymywał użytkownik po połączeniu kont"})
+    private long linkedRoleID = 1L;
+    @Comment({""})
     @Comment({"Ustawienia kanałów statystyk"})
     @CustomKey("statsChannels")
     private StatsChannelsConfig statsChannelsConfig = new StatsChannelsConfig();
@@ -70,6 +73,10 @@ public class BotConfig extends OkaeriConfig {
 
     public long getConsoleID() {
         return this.consoleID;
+    }
+
+    public long getLinkedRoleID() {
+        return this.linkedRoleID;
     }
 
     public StatsChannelsConfig getStatsChannelsConfig() {

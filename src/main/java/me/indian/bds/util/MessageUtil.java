@@ -3,8 +3,22 @@ package me.indian.bds.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 public final class MessageUtil {
+
+    private static final Random random = new Random();
+
+    public static String generateCode(final int length) {
+        final char[] chars = {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@', '#', '*'};
+
+        String code = "";
+        for (int i = 0; i < length; i++) {
+            code += chars[random.nextInt(chars.length)];
+        }
+
+        return code;
+    }
 
     public static String colorize(final String msg) {
         return msg.replaceAll("&", "§");

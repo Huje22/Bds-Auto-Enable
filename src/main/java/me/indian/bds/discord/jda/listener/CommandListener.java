@@ -12,6 +12,7 @@ import me.indian.bds.config.sub.discord.BotConfig;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordLogChannelType;
 import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerStats;
@@ -106,6 +107,29 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     event.reply("Nie posiadasz permisji!!").setEphemeral(true).queue();
                 }
             }
+            case "link" -> {
+                final String code = event.getOption("code").getAsString();
+                if (code.isEmpty()) {
+                    event.reply("Kod nie może być pusty!").setEphemeral(true).queue();
+                    return;
+                }
+                final LinkingManager linkingManager = this.discordJda.getLinkingManager();
+                final long id = member.getIdLong();
+
+                if (linkingManager.isLinked(id)) {
+                    event.reply("Twoje konto jest już połączone z: **" + linkingManager.getNameByID(id) + "**").setEphemeral(true).queue();
+                    return;
+                }
+
+                if (linkingManager.linkAccount(code, id)) {
+                    event.reply("Połączono konto z nickiem: **" + linkingManager.getNameByID(id) + "**").setEphemeral(true).queue();
+                    this.serverProcess.tellrawToPlayer(linkingManager.getNameByID(id),
+                            "&aPołączono konto z ID:&b " + id);
+                } else {
+                    event.reply("Kod nie jest poprawny").setEphemeral(true).queue();
+                }
+            }
+
             case "ping" -> {
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Ping Bot <-> Discord")

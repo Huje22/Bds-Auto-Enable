@@ -67,6 +67,7 @@ online i timer działający co 1s dodaje mu wtedy 1s czasu gry
 * `!tps` - Ticki na sekunde servera
 * `!playtime` - Top 10 graczy z największym czasem gry
 * `!deaths` - Top 10 graczy z największą ilością śmierci
+* `!link` - Łączy nick z mc z kontem discord
  
 # Użyte biblioteki
 
