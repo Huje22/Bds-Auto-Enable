@@ -146,10 +146,8 @@ public class DiscordJda implements DiscordIntegration {
                 Commands.slash("stats", "Statystyki Servera i aplikacji."),
                 Commands.slash("cmd", "Wykonuje polecenie w konsoli.")
                         .addOption(OptionType.STRING, "command", "Polecenie które zostanie wysłane do konsoli.", true),
-
                 Commands.slash("link", "Łączy konto discord z kontem nickiem Minecraft.")
-                        .addOption(OptionType.STRING, "code", "Kod aby połączyć konta", true),
-
+                        .addOption(OptionType.STRING, "code", "Kod aby połączyć konta", false),
                 Commands.slash("ip", "Informacje o ip ustawione w config"),
                 Commands.slash("playtime", "Top 100 graczy z największą ilością przegranego czasu"),
                 Commands.slash("deaths", "Top 100 graczy z największą ilością śmierci")

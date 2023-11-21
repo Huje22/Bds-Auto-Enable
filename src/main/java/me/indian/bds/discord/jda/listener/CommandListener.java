@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.BotConfig;
@@ -108,33 +110,50 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 }
             }
             case "link" -> {
-                final String code = event.getOption("code").getAsString();
-                if (code.isEmpty()) {
-                    event.reply("Kod nie może być pusty!").setEphemeral(true).queue();
-                    return;
-                }
-                final LinkingManager linkingManager = this.discordJda.getLinkingManager();
-                final long id = member.getIdLong();
+                final OptionMapping codeMapping = event.getOption("code");
+                if (codeMapping != null && !codeMapping.getAsString().isEmpty()) {
+                    final String code = codeMapping.getAsString();
+                    final LinkingManager linkingManager = this.discordJda.getLinkingManager();
+                    final long id = member.getIdLong();
+                    final long roleID = this.discordConfig.getDiscordBotConfig().getLinkedRoleID();
+                    final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
+                            .getPlayTimeByName(linkingManager.getNameByID(id)), TimeUnit.MILLISECONDS);
+                    final EmbedBuilder linkingEmbed = new EmbedBuilder().setTitle("Łączenie kont").setColor(Color.BLUE)
+                            /* .setFooter("Aby rozłączyć konto wpisz /unlink") */;
 
+                    String hoursMessage = "";
 
-//TODO: dodać info o tym że po 5h gry dostaję się role
+                    if (hours < 5) {
+                        if (this.jda.getRoleById(roleID) != null) {
+                            hoursMessage = "\nMasz za mało godzin gry aby otrzymać <@&" + roleID + "**" + hours + "** godzin gry)" +
+                                    "\nDostaniesz role gdy wbijesz **5** godzin gry";
+                        }
+                    }
 
-                final long played hours = MathUtil.hoursFrom(bdsAutoEnable.getServerManager().getStatsManager().getPlayTimeByName(name) ,TimeUnit.MILLISECONDS);
+                    if (linkingManager.isLinked(id)) {
+                        linkingEmbed.setDescription("Twoje konto jest już połączone z: **" + linkingManager.getNameByID(id) + "**" + hoursMessage);
+                        event.replyEmbeds(linkingEmbed.build()).setEphemeral(true).queue();
+                        return;
+                    }
 
-            if(hours < 5) {}
-            
-                
-                if (linkingManager.isLinked(id)) {
-                    event.reply("Twoje konto jest już połączone z: **" + linkingManager.getNameByID(id) + "**").setEphemeral(true).queue();
-                    return;
-                }
-
-                if (linkingManager.linkAccount(code, id)) {
-                    event.reply("Połączono konto z nickiem: **" + linkingManager.getNameByID(id) + "**").setEphemeral(true).queue();
-                    this.serverProcess.tellrawToPlayer(linkingManager.getNameByID(id),
-                            "&aPołączono konto z ID:&b " + id);
+                    if (linkingManager.linkAccount(code, id)) {
+                        linkingEmbed.setDescription("Połączono konto z nickiem: **" + linkingManager.getNameByID(id) + "**" + hoursMessage);
+                        event.replyEmbeds(linkingEmbed.build()).setEphemeral(true).queue();
+                        this.serverProcess.tellrawToPlayer(linkingManager.getNameByID(id),
+                                "&aPołączono konto z ID:&b " + id);
+                    } else {
+                        event.reply("Kod nie jest poprawny").setEphemeral(true).queue();
+                    }
                 } else {
-                    event.reply("Kod nie jest poprawny").setEphemeral(true).queue();
+                    final List<String> linkedAccounts = this.getLinkedAccounts();
+                    final MessageEmbed messageEmbed = new EmbedBuilder()
+                            .setTitle("Osoby z połączonym kontami")
+                            .setDescription((linkedAccounts.isEmpty() ? "**Brak połączonych kont**" : MessageUtil.listToSpacedString(linkedAccounts)))
+                            .setColor(Color.BLUE)
+                            .setFooter("Aby połączyć konto wpisz /link KOD")
+                            .build();
+
+                    event.replyEmbeds(messageEmbed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
                 }
             }
 
@@ -147,6 +166,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                 event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
+
             case "ip" -> {
                 final MessageEmbed embed = new EmbedBuilder()
                         .setTitle("Nasze ip!")
@@ -156,6 +176,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                 event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
+
             case "stats" -> {
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
                     event.replyEmbeds(this.getStatsEmbed()).setEphemeral(true)
@@ -165,6 +186,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     event.replyEmbeds(this.getStatsEmbed()).setEphemeral(this.botConfig.isSetEphemeral()).queue();
                 }
             }
+
             case "list" -> {
                 final List<String> players = this.bdsAutoEnable.getServerManager().getOnlinePlayers();
                 final String list = "`" + MessageUtil.stringListToString(players, "`, `") + "`";
@@ -177,6 +199,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                 event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
             }
+
             case "backup" -> {
                 if (!this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getBackupConfig().isBackup()) {
                     event.reply("Backupy są wyłączone")
@@ -299,6 +322,27 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.serveDeleteBackupButton(event);
         this.serveUpdateButton(event);
         this.serveStatsButtons(event);
+    }
+
+    private List<String> getLinkedAccounts() {
+        final Map<String, Long> linkedAccounts = this.discordJda.getLinkingManager().getLinkedAccounts();
+        final List<String> linked = new ArrayList<>();
+
+        final List<Map.Entry<String, Long>> sortedEntries = linkedAccounts.entrySet().stream()
+                .limit(Integer.MAX_VALUE)
+                .toList();
+
+        int place = 1;
+
+        for (final Map.Entry<String, Long> entry : sortedEntries) {
+            final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
+                    .getPlayTimeByName(entry.getKey()), TimeUnit.MILLISECONDS);
+
+            linked.add(place + ". **" + entry.getKey() + "**: <@" + entry.getValue() + "> " + (hours < 5 ? "❌" : "✅"));
+            place++;
+        }
+
+        return linked;
     }
 
     private void serveDifficultyButton(final ButtonInteractionEvent event) {

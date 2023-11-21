@@ -30,7 +30,7 @@ public class AutoMessagesConfig extends OkaeriConfig {
     @CustomKey("Prefix")
     private String prefix = "&7[&aAuto&eMessages&7] ";
     @Comment({""})
-    @Comment({"Lista wiadomości , możesz użyć & do kolorów , /n to druga linia"})
+    @Comment({"Lista wiadomości , możesz użyć & do kolorów"})
     @CustomKey("Messages")
     private List<String> messages = Arrays.asList("&bTen server używa &aBDS-Auto-Enable&3 https://github.com/Huje22/Bds-Auto-Enable",
             "&aWpadnij na nasz discord&e https://discord.com/invite/&b56h83WPKdK",

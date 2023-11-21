@@ -351,7 +351,7 @@ public class ServerProcess {
             return;
         }
 
-        final String msg2 = MessageUtil.fixMessage(msg, true).replace("\"", "\\\"");
+        final String msg2 = MessageUtil.fixMessage(msg, false).replace("\"", "\\\"");
 
         this.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + msg2 + "\"}]}"));
     }

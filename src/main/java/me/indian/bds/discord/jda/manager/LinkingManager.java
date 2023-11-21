@@ -24,6 +24,7 @@ import net.dv8tion.jda.api.entities.Role;
 
 public class LinkingManager {
 
+    private final BDSAutoEnable bdsAutoEnable;
     private final AppConfigManager appConfigManager;
     private final DiscordJda discordJda;
     private final Logger logger;
@@ -32,9 +33,10 @@ public class LinkingManager {
     private final HashMap<String, String> accountsToLink;
 
     public LinkingManager(final BDSAutoEnable bdsAutoEnable, final DiscordJda discordJda) {
-        this.appConfigManager = bdsAutoEnable.getAppConfigManager();
+        this.bdsAutoEnable = bdsAutoEnable;
+        this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.discordJda = discordJda;
-        this.logger = bdsAutoEnable.getLogger();
+        this.logger = this.bdsAutoEnable.getLogger();
         this.linkedAccountsJson = new File(Defaults.getAppDir() + "linkedAccounts.json");
         this.createJson();
         this.linkedAccounts = this.loadLinkedAccounts();
@@ -101,27 +103,8 @@ public class LinkingManager {
         return this.linkedAccounts.get(name);
     }
 
-    private void startTasks() {
-        final long saveTime = MathUtil.minutesTo(30, TimeUnit.MILLISECONDS);
-        final long forLinkedTime = MathUtil.minutesTo(1, TimeUnit.MILLISECONDS);
-        final Timer timer = new Timer("LinkedAccountsTimer", true);
-
-        final TimerTask saveAccountsTimer = new TimerTask() {
-            @Override
-            public void run() {
-                LinkingManager.this.saveLinedAccounts();
-            }
-        };
-
-        final TimerTask doForLinkedTask = new TimerTask() {
-            @Override
-            public void run() {
-                LinkingManager.this.doForLinked();
-            }
-        };
-
-        timer.scheduleAtFixedRate(saveAccountsTimer, saveTime, saveTime);
-        timer.scheduleAtFixedRate(doForLinkedTask, forLinkedTime, forLinkedTime);
+    public HashMap<String, Long> getLinkedAccounts() {
+        return this.linkedAccounts;
     }
 
     public void saveLinedAccounts() {
@@ -145,6 +128,29 @@ public class LinkingManager {
         return new HashMap<>();
     }
 
+    private void startTasks() {
+        final long saveTime = MathUtil.minutesTo(30, TimeUnit.MILLISECONDS);
+        final long forLinkedTime = MathUtil.minutesTo(1, TimeUnit.MILLISECONDS);
+        final Timer timer = new Timer("LinkedAccountsTimer", true);
+
+        final TimerTask saveAccountsTimer = new TimerTask() {
+            @Override
+            public void run() {
+                LinkingManager.this.saveLinedAccounts();
+            }
+        };
+
+        final TimerTask doForLinkedTask = new TimerTask() {
+            @Override
+            public void run() {
+                LinkingManager.this.doForLinked();
+            }
+        };
+
+        timer.scheduleAtFixedRate(saveAccountsTimer, saveTime, saveTime);
+        timer.scheduleAtFixedRate(doForLinkedTask, forLinkedTime, forLinkedTime);
+    }
+
     private void doForLinked() {
         for (final Map.Entry<String, Long> map : this.linkedAccounts.entrySet()) {
             final String name = map.getKey();
@@ -155,7 +161,7 @@ public class LinkingManager {
             if (member == null) continue;
             if (guild.getSelfMember().canInteract(member)) member.modifyNickname(this.getNameByID(id)).queue();
 
-            final long played hours = MathUtil.hoursFrom(bdsAutoEnable.getServerManager().getStatsManager().getPlayTimeByName(name) ,TimeUnit.MILLISECONDS);
+            final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager().getPlayTimeByName(name), TimeUnit.MILLISECONDS);
 
             if(hours < 5) continue; 
             

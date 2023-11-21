@@ -21,7 +21,7 @@ public class BotConfig extends OkaeriConfig {
     @Comment({"Kanał na który zostaną wysyłane wiadomości z konsoli minecraft , Zostaw puste aby nie uruchamiać "})
     private long consoleID = 1L;
     @Comment({""})
-    @Comment({"ID roli którą bedzie otrzymywał użytkownik po połączeniu kont"})
+    @Comment({"ID roli którą bedzie otrzymywał użytkownik po połączeniu kont, dostaje się ją jeśli ma sie 5h czasu gry na serwerze"})
     private long linkedRoleID = 1L;
     @Comment({""})
     @Comment({"Ustawienia kanałów statystyk"})
