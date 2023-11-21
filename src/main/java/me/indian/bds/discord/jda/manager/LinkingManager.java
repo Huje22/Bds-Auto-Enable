@@ -1,6 +1,5 @@
 package me.indian.bds.discord.jda.manager;
 
-
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileReader;
@@ -148,6 +147,7 @@ public class LinkingManager {
 
     private void doForLinked() {
         for (final Map.Entry<String, Long> map : this.linkedAccounts.entrySet()) {
+            final String name = map.getKey();
             final long id = map.getValue();
             final Guild guild = this.discordJda.getGuild();
             final Member member = guild.getMemberById(id);
@@ -155,12 +155,16 @@ public class LinkingManager {
             if (member == null) continue;
             if (guild.getSelfMember().canInteract(member)) member.modifyNickname(this.getNameByID(id)).queue();
 
+            final long played hours = MathUtil.hoursFrom(bdsAutoEnable.getServerManager().getStatsManager().getPlayTimeByName(name) ,TimeUnit.MILLISECONDS);
+
+            if(hours < 5) continue; 
+            
             final Role role = guild.getRoleById(this.appConfigManager.getDiscordConfig()
                     .getDiscordBotConfig().getLinkedRoleID());
 
             if (role == null) continue;
+            if (member.getRoles().contains(role)) continue;
             if (guild.getSelfMember().canInteract(role)) guild.addRoleToMember(member, role).queue();
-
         }
     }
 
