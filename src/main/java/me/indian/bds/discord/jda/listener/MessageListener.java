@@ -69,6 +69,15 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
 
+if(!discordConfig.getLinkingConfig().getBotConfig().isCanType()){
+final LinkingManager linkingManager = this.discordJda.getLinkingManager();
+        (!linkingManager.isLinked(member.getIdLong())){
+            message.delete().queue();
+         this.discordJda.sendPrivateMessage(author, discordConfig.getLinkingConfig().getBotConfig().getCantTypeMessage());
+  return;
+        }
+}
+        
         if (event.getChannel().asTextChannel() == this.consoleChannel) {
             if (member == null) return;
             if (member.hasPermission(Permission.ADMINISTRATOR)) {
