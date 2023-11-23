@@ -90,9 +90,9 @@ Większość takich akcji odbywa się w klasie [ServerManager.java](https://gith
   
 <div align="center">
 
-  ![Bstats](https://bstats.org/signatures/bukkit/BDS-Auto-Enable.svg)
+[![Bstats](https://bstats.org/signatures/bukkit/BDS-Auto-Enable.svg)](https://bstats.org/plugin/bukkit/BDS-Auto-Enable/19727)
 
-![bStats Servers](https://img.shields.io/bstats/servers/19727?style=for-the-badge)
-![bStats Players](https://img.shields.io/bstats/players/19727?style=for-the-badge) <br>
+[![bStats Servers](https://img.shields.io/bstats/servers/19727?style=for-the-badge)](https://bstats.org/plugin/bukkit/BDS-Auto-Enable/19727)
+[![bStats Players](https://img.shields.io/bstats/players/19727?style=for-the-badge)](https://bstats.org/plugin/bukkit/BDS-Auto-Enable/19727) <br>
 ![Latest Tag](https://img.shields.io/github/v/tag/Huje22/Bds-Auto-Enable?label=LATEST%20TAG&style=for-the-badge)
 ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/m/Huje22/BDS-Auto-Enable?style=for-the-badge)
