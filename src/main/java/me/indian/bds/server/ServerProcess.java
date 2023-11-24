@@ -250,7 +250,6 @@ public class ServerProcess {
 
         this.logger.info("Zapisywanie configu...");
         try {
-            this.appConfigManager.load();
             this.appConfigManager.save();
             this.logger.info("Zapisano config");
         } catch (final Exception exception) {
