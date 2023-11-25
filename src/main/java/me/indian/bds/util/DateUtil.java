@@ -7,28 +7,28 @@ import java.time.format.DateTimeFormatter;
 
 public final class DateUtil {
 
-    private static final ZoneId polishZone = ZoneId.of("Europe/Warsaw");
+    public static final ZoneId POLISH_ZONE = ZoneId.of("Europe/Warsaw");
 
     public static String getFixedDate() {
-        final LocalDateTime now = LocalDateTime.now(polishZone);
+        final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return now.format(formatter).replace(":", "-");
     }
 
     public static String getDate() {
-        final LocalDateTime now = LocalDateTime.now(polishZone);
+        final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return now.format(formatter);
     }
 
     public static String getTimeHM() {
-        final LocalDateTime now = LocalDateTime.now(polishZone);
+        final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         return now.format(formatter);
     }
 
     public static String getTimeHMS() {
-        final LocalDateTime now = LocalDateTime.now(polishZone);
+        final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
         return now.format(formatter);
     }

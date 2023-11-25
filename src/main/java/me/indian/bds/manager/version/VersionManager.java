@@ -19,12 +19,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.SystemOs;
+import me.indian.bds.SystemOS;
 import me.indian.bds.util.ZipUtil;
 
 public class VersionManager {
@@ -38,7 +38,7 @@ public class VersionManager {
     private final List<String> availableVersions;
     private final ServerProcess serverProcess;
     private final VersionUpdater versionUpdater;
-    private final SystemOs system;
+    private final SystemOS system;
     
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -46,11 +46,11 @@ public class VersionManager {
         this.appConfig = this.bdsAutoEnable.getAppConfigManager().getAppConfig();
         this.versionManagerConfig = this.bdsAutoEnable.getAppConfigManager().getVersionManagerConfig();
         this.importantFiles = new ArrayList<>();
-        this.versionFolder = new File(Defaults.getAppDir() + "versions");
+        this.versionFolder = new File(DefaultsVariables.getAppDir() + "versions");
         this.availableVersions = new ArrayList<>();
         this.serverProcess = bdsAutoEnable.getServerProcess();
         this.versionUpdater = new VersionUpdater(bdsAutoEnable, this);
-        this.system = Defaults.getSystem();
+        this.system = DefaultsVariables.getSystem();
 
         if (!this.versionFolder.exists()) {
             if (this.versionFolder.mkdirs()) {
@@ -115,7 +115,7 @@ public class VersionManager {
     }
 
     public void loadVersion() {
-        final File serverFile = new File(this.appConfig.getFilesPath() + File.separator + Defaults.getDefaultFileName());
+        final File serverFile = new File(this.appConfig.getFilesPath() + File.separator + DefaultsVariables.getDefaultFileName());
         if (!serverFile.exists()) {
             this.versionManagerConfig.setLoaded(false);
             this.versionManagerConfig.save();

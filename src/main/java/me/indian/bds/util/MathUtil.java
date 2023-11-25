@@ -8,11 +8,11 @@ import java.util.concurrent.TimeUnit;
 
 public final class MathUtil {
 
-    private static final DecimalFormat df = new DecimalFormat();
+    private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat();
 
     static {
         final DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
-        df.setDecimalFormatSymbols(decimalFormatSymbols);
+        DECIMAL_FORMAT.setDecimalFormatSymbols(decimalFormatSymbols);
     }
 
     public static int getCorrectNumber(final int number, final int mini, final int max) {
@@ -60,8 +60,8 @@ public final class MathUtil {
     }
 
     public static double format(final double decimal, final int format) {
-        df.setMaximumFractionDigits(format);
-        return Double.parseDouble(df.format(decimal));
+        DECIMAL_FORMAT.setMaximumFractionDigits(format);
+        return Double.parseDouble(DECIMAL_FORMAT.format(decimal));
     }
 
     public static long kilobytesToMb(final long kilobytes) {

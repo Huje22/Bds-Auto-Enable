@@ -3,7 +3,7 @@ package me.indian.bds.config;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import java.io.File;
-import me.indian.bds.Defaults;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.config.sub.AutoMessagesConfig;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.config.sub.log.LogConfig;
@@ -22,7 +22,7 @@ public class AppConfigManager {
     private final AutoMessagesConfig autoMessagesConfig;
 
     public AppConfigManager() {
-        final String appDir = Defaults.getAppDir() + File.separator + "config" + File.separator;
+        final String appDir = DefaultsVariables.getAppDir() + File.separator + "config" + File.separator;
 
         this.appConfig = ConfigManager.create(AppConfig.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());

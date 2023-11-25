@@ -13,7 +13,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerStats;
@@ -32,7 +32,7 @@ public class StatsManager {
     public StatsManager(final BDSAutoEnable bdsAutoEnable, final ServerManager serverManager) {
         this.logger = bdsAutoEnable.getLogger();
         this.playerStatsManagerTimer = new Timer("PlayerStatsMonitorTimer", true);
-        this.statsFolder = new File(Defaults.getAppDir() + "stats");
+        this.statsFolder = new File(DefaultsVariables.getAppDir() + "stats");
         this.playTimeJson = new File(this.statsFolder.getPath() + File.separator + "playtime.json");
         this.deathsJson = new File(this.statsFolder.getPath() + File.separator + "deaths.json");
         this.serverStatsJson = new File(this.statsFolder.getPath() + File.separator + "server.json");

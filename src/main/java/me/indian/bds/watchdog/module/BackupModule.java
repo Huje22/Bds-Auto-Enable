@@ -14,9 +14,8 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.discord.DiscordIntegration;
@@ -61,12 +60,12 @@ public class BackupModule {
         this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Watchdog-BackupModule"));
         this.timer = new Timer("Backup-Timer", true);
         this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
-        this.worldPath = Defaults.getWorldsPath() + this.worldName;
+        this.worldPath = DefaultsVariables.getWorldsPath() + this.worldName;
         this.worldFile = new File(this.worldPath);
         this.prefix = this.watchDog.getWatchDogPrefix();
         this.discord = bdsAutoEnable.getDiscord();
         if (this.watchDogConfig.getBackupConfig().isBackup()) {
-            this.backupFolder = new File(Defaults.getAppDir() + "backup");
+            this.backupFolder = new File(DefaultsVariables.getAppDir() + "backup");
             if (!this.backupFolder.exists()) {
                 if (!this.backupFolder.mkdirs()) {
                     this.logger.error("Nie można utworzyć folderu backupów");
@@ -86,7 +85,7 @@ public class BackupModule {
         this.run();
     }
 
-    public void initBackupModule() {
+    public void init() {
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.loadAvailableBackups();
     }
@@ -187,9 +186,9 @@ public class BackupModule {
                             this.serverProcess.sendToConsole("stop");
                             try {
                                 this.serverProcess.getProcess().waitFor();
-                                FileUtil.renameFolder(Path.of(this.worldPath), Path.of(Defaults.getWorldsPath() + "OLD_" + this.worldName));
+                                FileUtil.renameFolder(Path.of(this.worldPath), Path.of(DefaultsVariables.getWorldsPath() + "OLD_" + this.worldName));
                                 ThreadUtil.sleep(10); //Usypiam ten wątek aby nie doprowadzić do awarii chunk bo juz tak mi sie wydarzyło
-                                ZipUtil.unzipFile(path.toString(), Defaults.getWorldsPath(), false);
+                                ZipUtil.unzipFile(path.toString(), DefaultsVariables.getWorldsPath(), false);
                             } catch (final Exception exception) {
                                 this.bdsAutoEnable.getDiscord().sendEmbedMessage("Ładowanie Backup",
                                         "Świat prawdopodobnie uległ awarii podczas próby załadowania backup",
@@ -272,7 +271,7 @@ public class BackupModule {
         return this.backups.stream()
                 .map(Path::getFileName)
                 .map(Path::toString)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public List<Path> getBackups() {

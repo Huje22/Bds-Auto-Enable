@@ -1,39 +1,40 @@
-package me.indian.bds;
+package me.indian.bds.util;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.SystemOS;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.SystemOs;
 
-public final class Defaults {
+public final class DefaultsVariables {
 
-    private static AppConfig appConfig;
-    private static Logger logger;
-    private static boolean wine;
+    private static AppConfig APPCONFIG;
+    private static Logger LOGGER;
+    private static boolean WINE;
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
-        appConfig = bdsAutoEnable.getAppConfigManager().getAppConfig();
-        logger = bdsAutoEnable.getLogger();
-        wine = wineCheck();
+        APPCONFIG = bdsAutoEnable.getAppConfigManager().getAppConfig();
+        LOGGER = bdsAutoEnable.getLogger();
+        WINE = wineCheck();
     }
 
-    public static SystemOs getSystem() {
+    public static SystemOS getSystem() {
         final String os = System.getProperty("os.name").toLowerCase();
 
         if (os.contains("win")) {
-            return SystemOs.WINDOWS;
+            return SystemOS.WINDOWS;
         } else if (os.contains("nix") || os.contains("nux")) {
-            return SystemOs.LINUX;
+            return SystemOS.LINUX;
         }
 //        else if (os.contains("mac")) {
 //            return "Mac";
 //        }
         else {
-            return SystemOs.UNSUPPORTED;
+            return SystemOS.UNSUPPORTED;
         }
     }
 
@@ -60,15 +61,15 @@ public final class Defaults {
     }
 
     public static String getWorldsPath() {
-        return appConfig.getFilesPath() + File.separator + "worlds" + File.separator;
+        return APPCONFIG.getFilesPath() + File.separator + "worlds" + File.separator;
     }
 
     public static boolean hasWine() {
-        return wine;
+        return WINE;
     }
 
     public static boolean isPolisTimeZone() {
-        return ZoneId.systemDefault().equals(ZoneId.of("Europe/Warsaw"));
+        return ZoneId.systemDefault().equals(DateUtil.POLISH_ZONE);
     }
 
     public static boolean isJavaLoverThan17() {
@@ -88,7 +89,7 @@ public final class Defaults {
             }
             if (!process.waitFor(30, TimeUnit.MILLISECONDS)) process.destroy();
         } catch (final Exception exception) {
-            logger.debug("Nie znaleziono&1 WINE&r (Nie potrzebujesz go)");
+            LOGGER.debug("Nie znaleziono&1 WINE&r (Nie potrzebujesz go)");
         }
         return false;
     }

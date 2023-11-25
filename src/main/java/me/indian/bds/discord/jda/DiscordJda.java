@@ -59,9 +59,9 @@ public class DiscordJda implements DiscordIntegration {
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfigManager = bdsAutoEnable.getAppConfigManager();
         this.discordConfig = this.appConfigManager.getDiscordConfig();
-        this.serverID = this.discordConfig.getDiscordBotConfig().getServerID();
-        this.channelID = this.discordConfig.getDiscordBotConfig().getChannelID();
-        this.consoleID = this.discordConfig.getDiscordBotConfig().getConsoleID();
+        this.serverID = this.discordConfig.getBotConfig().getServerID();
+        this.channelID = this.discordConfig.getBotConfig().getChannelID();
+        this.consoleID = this.discordConfig.getBotConfig().getConsoleID();
         this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
 
         this.listeners = new ArrayList<>();
@@ -74,7 +74,7 @@ public class DiscordJda implements DiscordIntegration {
     public void init() {
         final PackModule packModule = this.bdsAutoEnable.getWatchDog().getPackModule();
         this.logger.info("&aŁadowanie bota....");
-        if (this.discordConfig.getDiscordBotConfig().getToken().isEmpty()) {
+        if (this.discordConfig.getBotConfig().getToken().isEmpty()) {
             this.logger.alert("&aNie znaleziono tokenu , pomijanie ładowania.");
             return;
         }
@@ -85,7 +85,7 @@ public class DiscordJda implements DiscordIntegration {
         }
 
         try {
-            this.jda = JDABuilder.create(this.discordConfig.getDiscordBotConfig().getToken(), GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.MESSAGE_CONTENT)
+            this.jda = JDABuilder.create(this.discordConfig.getBotConfig().getToken(), GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.MESSAGE_CONTENT)
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS, CacheFlag.ONLINE_STATUS)
                     .enableCache(CacheFlag.EMOJI)
                     .setEnableShutdownHook(false)
@@ -171,17 +171,11 @@ public class DiscordJda implements DiscordIntegration {
     }
 
     public void sendPrivateMessage(final User user, final String message) {
-        if (!user.hasPrivateChannel()) return;
-        user.openPrivateChannel()
-                .queue(privateChannel -> privateChannel.sendMessage(message)
-                        .queue());
+        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
     }
 
     public void sendPrivateMessage(final User user, final MessageEmbed embed) {
-        if (!user.hasPrivateChannel()) return;
-        user.openPrivateChannel()
-                .queue(privateChannel -> privateChannel.sendMessageEmbeds(embed)
-                        .queue());
+        user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessageEmbeds(embed).queue());
     }
 
     public Role getHighestRole(final long memberID) {
@@ -223,9 +217,9 @@ public class DiscordJda implements DiscordIntegration {
 
     private Activity getCustomActivity() {
         final String replacement = String.valueOf(MathUtil.millisTo((System.currentTimeMillis() - this.bdsAutoEnable.getServerProcess().getStartTime()), TimeUnit.MINUTES));
-        final String activityMessage = this.discordConfig.getDiscordBotConfig().getActivityMessage().replaceAll("<time>", replacement);
+        final String activityMessage = this.discordConfig.getBotConfig().getActivityMessage().replaceAll("<time>", replacement);
 
-        switch (Activity.ActivityType.valueOf(this.discordConfig.getDiscordBotConfig().getActivity().toUpperCase())) {
+        switch (Activity.ActivityType.valueOf(this.discordConfig.getBotConfig().getActivity().toUpperCase())) {
             case PLAYING -> {
                 return Activity.playing(activityMessage.replaceAll("<time>", replacement));
             }
@@ -239,7 +233,7 @@ public class DiscordJda implements DiscordIntegration {
                 return Activity.listening(activityMessage.replaceAll("<time>", replacement));
             }
             case STREAMING -> {
-                return Activity.streaming(activityMessage.replaceAll("<time>", replacement), this.discordConfig.getDiscordBotConfig().getStreamUrl());
+                return Activity.streaming(activityMessage.replaceAll("<time>", replacement), this.discordConfig.getBotConfig().getStreamUrl());
             }
             default -> {
                 this.logger.error("Wykryto nie wspierany status! ");
@@ -249,7 +243,7 @@ public class DiscordJda implements DiscordIntegration {
     }
 
     private void leaveGuilds() {
-        if (!this.discordConfig.getDiscordBotConfig().isLeaveServers()) return;
+        if (!this.discordConfig.getBotConfig().isLeaveServers()) return;
         for (final Guild guild1 : this.jda.getGuilds()) {
             if (guild1 != this.guild) {
                 final String inviteLink = guild1.getDefaultChannel().createInvite().complete().getUrl();

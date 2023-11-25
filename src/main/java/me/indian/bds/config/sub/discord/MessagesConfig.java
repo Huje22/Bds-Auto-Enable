@@ -68,7 +68,7 @@ public class MessagesConfig extends OkaeriConfig {
 
 
     public String getReplyStatement() {
-        return this.botReplyStatement;
+        return this.replyStatement;
     }
 
     public String getBotReplyStatement() {

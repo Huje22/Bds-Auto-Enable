@@ -4,7 +4,9 @@ import java.awt.Color;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.DiscordConfig;
+import me.indian.bds.config.sub.discord.LinkingConfig;
 import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -68,18 +70,19 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final User author = event.getAuthor();
         final Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
+        final LinkingConfig linkingConfig = this.discordConfig.getBotConfig().getLinkingConfig();
 
-if(!discordConfig.getLinkingConfig().getBotConfig().isCanType()){
-final LinkingManager linkingManager = this.discordJda.getLinkingManager();
-        (!linkingManager.isLinked(member.getIdLong())){
-            message.delete().queue();
-         this.discordJda.sendPrivateMessage(author, discordConfig.getLinkingConfig().getBotConfig().getCantTypeMessage());
-  return;
+        if (member == null) return;
+        if (!linkingConfig.isCanType()) {
+            final LinkingManager linkingManager = this.discordJda.getLinkingManager();
+            if (!linkingManager.isLinked(member.getIdLong()) && !author.isBot()) {
+                this.discordJda.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
+                message.delete().queue();
+                return;
+            }
         }
-}
-        
+
         if (event.getChannel().asTextChannel() == this.consoleChannel) {
-            if (member == null) return;
             if (member.hasPermission(Permission.ADMINISTRATOR)) {
                 this.serverProcess.sendToConsole(rawMessage);
                 this.logger.print("[" + DateUtil.getDate() + " DISCORD] " +
@@ -131,10 +134,10 @@ final LinkingManager linkingManager = this.discordJda.getLinkingManager();
     }
 
     private boolean isMaxLength(final Message message) {
-        if (!this.discordConfig.getDiscordBotConfig().isDeleteOnReachLimit()) return false;
+        if (!this.discordConfig.getBotConfig().isDeleteOnReachLimit()) return false;
 
-        if (message.getContentRaw().length() >= this.discordConfig.getDiscordBotConfig().getAllowedLength()) {
-            this.discordJda.sendPrivateMessage(message.getAuthor(), this.discordConfig.getDiscordBotConfig().getReachedMessage());
+        if (message.getContentRaw().length() >= this.discordConfig.getBotConfig().getAllowedLength()) {
+            this.discordJda.sendPrivateMessage(message.getAuthor(), this.discordConfig.getBotConfig().getReachedMessage());
             message.delete().queue();
             this.discordJda.sendPrivateMessage(message.getAuthor(), "`" + message.getContentRaw() + "`");
             return true;

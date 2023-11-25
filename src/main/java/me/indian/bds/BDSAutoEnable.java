@@ -6,8 +6,8 @@ import java.time.ZoneId;
 import java.util.List;
 import java.util.Scanner;
 import java.util.UUID;
-import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.AppConfig;
+import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.DiscordType;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -19,18 +19,17 @@ import me.indian.bds.rest.RestWebsite;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
-import me.indian.bds.util.SystemOs;
 import me.indian.bds.watchdog.WatchDog;
-
 
 public class BDSAutoEnable {
 
     private final long startTime;
-    private final String projectVersion, runDate, appUUID;
+    private final String projectVersion, runDate;
     private final Scanner scanner;
     private final Logger logger;
     private final ServerProperties serverProperties;
@@ -50,11 +49,10 @@ public class BDSAutoEnable {
         this.scanner = new Scanner(System.in);
         this.appConfigManager = new AppConfigManager();
         this.appConfig = this.appConfigManager.getAppConfig();
-        this.appUUID = this.getAppUUID();
         this.logger = new Logger(this);
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
-        this.logger.debug("&aUUID&r aplikacji:&b " + this.appUUID);
-        Defaults.init(this);
+        this.logger.debug("&aUUID&r aplikacji:&b " + this.getAppUUID());
+        DefaultsVariables.init(this);
         this.discord = this.determinateDiscordIntegration();
         this.isJavaVersionLessThan17();
         this.checkSystemSupport();
@@ -99,7 +97,7 @@ public class BDSAutoEnable {
     public void isJavaVersionLessThan17() {
         final String javaVersion = System.getProperty("java.version");
 
-        if (Defaults.isJavaLoverThan17()) {
+        if (DefaultsVariables.isJavaLoverThan17()) {
             if (this.appConfig.isDebug()) {
                 this.logger.warning("&aDebug włączony, twoja wersja java &d(&1" + javaVersion
                         + "&d)&a nie jest wspierana, robisz to na własne&c ryzyko&c!");
@@ -113,7 +111,7 @@ public class BDSAutoEnable {
     }
 
     private void checkSystemSupport() {
-        if (Defaults.getSystem() == SystemOs.UNSUPPORTED) {
+        if (DefaultsVariables.getSystem() == SystemOS.UNSUPPORTED) {
             /*
             if (this.config.isDebug()) {
                 this.logger.warning("&aTwój system nie jest wspierany lecz masz włączony&1 Debug&a robisz to na własne&c ryzyko&c!");
@@ -154,7 +152,7 @@ public class BDSAutoEnable {
     }
 
     private void checkExecutable() {
-        final String serverPath = this.appConfig.getFilesPath() + File.separator + Defaults.getDefaultFileName();
+        final String serverPath = this.appConfig.getFilesPath() + File.separator + DefaultsVariables.getDefaultFileName();
         if (!FileUtil.canExecute(serverPath)) {
             if (!FileUtil.addExecutePerm(serverPath)) {
                 this.logger.critical("&cBrak odpowiednich uprawnień!");
@@ -164,7 +162,7 @@ public class BDSAutoEnable {
     }
 
     private void checkTimeZone() {
-        if (!Defaults.isPolisTimeZone()) {
+        if (!DefaultsVariables.isPolisTimeZone()) {
             this.logger.warning("Twoja strefa czasowa to:&1 " + ZoneId.systemDefault() + "&r czas logów aplikacji bedzie polski a servera inny ");
         }
     }

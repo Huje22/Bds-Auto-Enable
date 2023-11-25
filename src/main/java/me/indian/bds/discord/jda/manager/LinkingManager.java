@@ -12,7 +12,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.logger.Logger;
@@ -37,7 +37,7 @@ public class LinkingManager {
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.discordJda = discordJda;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.linkedAccountsJson = new File(Defaults.getAppDir() + "linkedAccounts.json");
+        this.linkedAccountsJson = new File(DefaultsVariables.getAppDir() + "linkedAccounts.json");
         this.createJson();
         this.linkedAccounts = this.loadLinkedAccounts();
         this.accountsToLink = new HashMap<>();
@@ -166,7 +166,7 @@ public class LinkingManager {
             if(hours < 5) continue; 
             
             final Role role = guild.getRoleById(this.appConfigManager.getDiscordConfig()
-                    .getDiscordBotConfig().getLinkedRoleID());
+                    .getBotConfig().getLinkingConfig().getLinkedRoleID());
 
             if (role == null) continue;
             if (member.getRoles().contains(role)) continue;

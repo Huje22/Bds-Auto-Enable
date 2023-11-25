@@ -56,7 +56,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.bdsAutoEnable = bdsAutoEnable;
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.discordConfig = this.appConfigManager.getDiscordConfig();
-        this.botConfig = this.discordConfig.getDiscordBotConfig();
+        this.botConfig = this.discordConfig.getBotConfig();
         this.backupButtons = new ArrayList<>();
         this.difficultyButtons = new ArrayList<>();
         this.statsButtons = new ArrayList<>();
@@ -115,7 +115,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     final String code = codeMapping.getAsString();
                     final LinkingManager linkingManager = this.discordJda.getLinkingManager();
                     final long id = member.getIdLong();
-                    final long roleID = this.discordConfig.getDiscordBotConfig().getLinkedRoleID();
+                    final long roleID = this.discordConfig.getBotConfig().getLinkingConfig().getLinkedRoleID();
                     final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
                             .getPlayTimeByName(linkingManager.getNameByID(id)), TimeUnit.MILLISECONDS);
                     final EmbedBuilder linkingEmbed = new EmbedBuilder().setTitle("Łączenie kont").setColor(Color.BLUE)

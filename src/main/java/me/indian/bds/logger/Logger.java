@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.DiscordLogChannelType;
@@ -35,7 +35,7 @@ public class Logger {
     }
 
     private void initializeLogFile() {
-        final File logsDir = new File(Defaults.getAppDir() + "logs");
+        final File logsDir = new File(DefaultsVariables.getAppDir() + "logs");
         if (!logsDir.exists()) {
             if (!logsDir.mkdir()) {
                 if (logsDir.mkdirs()) {

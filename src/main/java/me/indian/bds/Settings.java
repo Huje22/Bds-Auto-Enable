@@ -9,6 +9,7 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.server.properties.PlayerPermissionLevel;
 import me.indian.bds.server.properties.ServerMovementAuth;
 import me.indian.bds.server.properties.ServerProperties;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ScannerUtil;
 
@@ -66,7 +67,7 @@ public class Settings {
 
         this.logger.print("");
 
-        if (Defaults.hasWine()) {
+        if (DefaultsVariables.hasWine()) {
             this.appConfig.setWine(scannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
                         this.logger.info("&n&lWykryliśmy &r&bWINE&r&n&l czy użyć go?&r (Domyślnie: " + defaultValue + ")" + this.enter);
@@ -80,7 +81,7 @@ public class Settings {
 
         this.appConfig.setFilesPath(scannerUtil.addStringQuestion(
                 (defaultValue) -> this.logger.info("&n&lPodaj ścieżkę do plików servera&r (Domyślnie: " + defaultValue + ")" + this.enter),
-                Defaults.getJarDir(),
+                DefaultsVariables.getJarDir(),
                 (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)
         ));
         this.appConfig.save();
@@ -294,8 +295,8 @@ public class Settings {
         this.logger.info("&n&lAktualne Dane");
         this.logger.print("");
         this.logger.info("&e----------&bAplikacja&e----------");
-        this.logger.info("System:&1 " + Defaults.getSystem());
-        this.logger.info("Wine:&1 " + this.appConfig.isWine() + (Defaults.hasWine() ? " &d(&bPosiadasz&d)" : ""));
+        this.logger.info("System:&1 " + DefaultsVariables.getSystem());
+        this.logger.info("Wine:&1 " + this.appConfig.isWine() + (DefaultsVariables.hasWine() ? " &d(&bPosiadasz&d)" : ""));
         this.logger.info("Ścieżka plików:&1 " + this.appConfig.getFilesPath());
         this.logger.info("Wersja:&1 " + this.versionManagerConfig.getVersion());
 

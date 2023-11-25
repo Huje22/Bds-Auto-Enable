@@ -44,7 +44,7 @@ public class DiscordConfig extends OkaeriConfig {
         return this.webHookConfig;
     }
 
-    public BotConfig getDiscordBotConfig() {
+    public BotConfig getBotConfig() {
         return this.botConfig;
     }
 

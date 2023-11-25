@@ -13,16 +13,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.server.ServerManager;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
-import me.indian.bds.util.SystemOs;
+import me.indian.bds.SystemOS;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
 
@@ -36,7 +36,7 @@ public class ServerProcess {
     private final ExecutorService processService;
     private final Lock cmdLock, cmdResponseLock;
     private final String prefix;
-    private final SystemOs system;
+    private final SystemOS system;
     private String finalFilePath, fileName;
     private ProcessBuilder processBuilder;
     private Process process;
@@ -55,13 +55,13 @@ public class ServerProcess {
         this.cmdLock = new ReentrantLock();
         this.cmdResponseLock = new ReentrantLock();
         this.prefix = "&b[&3ServerProcess&b] ";
-        this.system = Defaults.getSystem();
+        this.system = DefaultsVariables.getSystem();
         this.canRun = true;
     }
 
     public void init() {
         this.watchDog = this.bdsAutoEnable.getWatchDog();
-        this.fileName = Defaults.getDefaultFileName();
+        this.fileName = DefaultsVariables.getDefaultFileName();
     }
 
     public boolean isProcessRunning() {
@@ -113,7 +113,7 @@ public class ServerProcess {
                     switch (this.system) {
                         case LINUX -> {
                             if (this.appConfigManager.getAppConfig().isWine()) {
-                                if (!Defaults.hasWine()) {
+                                if (!DefaultsVariables.hasWine()) {
                                     this.logger.critical("^#cNIE POSIADASZ ^#1WINE^#C!");
                                     System.exit(0);
                                     return;

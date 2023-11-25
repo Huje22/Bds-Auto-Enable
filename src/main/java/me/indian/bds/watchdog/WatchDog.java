@@ -49,9 +49,9 @@ public class WatchDog {
     }
 
     public void init(final DiscordIntegration discord) {
-        this.backupModule.initBackupModule();
+        this.backupModule.init();
         this.autoRestartModule.init();
-        this.ramMonitor.initRamMonitor(discord);
+        this.ramMonitor.init(discord);
     }
 
     public void saveWorld() {

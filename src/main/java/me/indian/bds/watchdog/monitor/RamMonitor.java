@@ -35,7 +35,7 @@ public class RamMonitor {
 
     }
 
-    public void initRamMonitor(final DiscordIntegration discord) {
+    public void init(final DiscordIntegration discord) {
         this.discord = discord;
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
     }

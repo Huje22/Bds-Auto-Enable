@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.Defaults;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.manager.server.StatsManager;
@@ -22,28 +22,28 @@ import me.indian.bds.watchdog.WatchDog;
 
 public final class StatusUtil {
 
-    private static final List<String> status = new ArrayList<>();
-    private static final File file = new File(File.separator);
-    private static BDSAutoEnable bdsAutoEnable;
-    private static Logger logger;
-    private static ServerProcess serverProcess;
-    private static StatsManager statsManager;
-    private static AppConfigManager appConfigManager;
+    private static final List<String> STATUS = new ArrayList<>();
+    private static final File FILE = new File(File.separator);
+    private static BDSAutoEnable BDSAUTOENABLE;
+    private static Logger LOGGER;
+    private static ServerProcess SERVERPROCESS;
+    private static StatsManager STATSMANAGER;
+    private static AppConfigManager APPCONFIGMANAGER;
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
-        StatusUtil.bdsAutoEnable = bdsAutoEnable;
-        StatusUtil.logger = bdsAutoEnable.getLogger();
-        StatusUtil.serverProcess = bdsAutoEnable.getServerProcess();
-        StatusUtil.statsManager = bdsAutoEnable.getServerManager().getStatsManager();
-        StatusUtil.appConfigManager = bdsAutoEnable.getAppConfigManager();
+        StatusUtil.BDSAUTOENABLE = bdsAutoEnable;
+        StatusUtil.LOGGER = bdsAutoEnable.getLogger();
+        StatusUtil.SERVERPROCESS = bdsAutoEnable.getServerProcess();
+        StatusUtil.STATSMANAGER = bdsAutoEnable.getServerManager().getStatsManager();
+        StatusUtil.APPCONFIGMANAGER = bdsAutoEnable.getAppConfigManager();
 
     }
 
     public static List<String> getStatus(final boolean forDiscord) {
-        status.clear();
+        STATUS.clear();
 
-        final WatchDog watchDog = bdsAutoEnable.getWatchDog();
-        final ServerStats serverStats = statsManager.getServerStats();
+        final WatchDog watchDog = BDSAUTOENABLE.getWatchDog();
+        final ServerStats serverStats = STATSMANAGER.getServerStats();
 
         final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         final OperatingSystemMXBean operatingSystemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
@@ -65,37 +65,37 @@ public final class StatusUtil {
         final String rom = "Dostępny: " + MathUtil.bytesToGB(availableDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(availableDiskSpace()) + " MB";
 //        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(maxDiskSpace()) + " MB";
 
-        status.add("> **Statystyki maszyny**");
-        status.add("Pamięć RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
-        status.add("Pamięć ROM: `" + usedRom + " / " + rom + "`");
+        STATUS.add("> **Statystyki maszyny**");
+        STATUS.add("Pamięć RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
+        STATUS.add("Pamięć ROM: `" + usedRom + " / " + rom + "`");
 
-        status.add("");
-        status.add("> **Statystyki servera**");
-        status.add("Ostatnie TPS: `" + bdsAutoEnable.getServerManager().getLastTPS() + "`");
-        status.add("Pamięć RAM: `" + usedServerMemory + "`");
-        if (appConfigManager.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
-            status.add("Następny restart za za: `" + DateUtil.formatTime(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart(), "days hours minutes seconds millis ") + "`");
+        STATUS.add("");
+        STATUS.add("> **Statystyki servera**");
+        STATUS.add("Ostatnie TPS: `" + BDSAUTOENABLE.getServerManager().getLastTPS() + "`");
+        STATUS.add("Pamięć RAM: `" + usedServerMemory + "`");
+        if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
+            STATUS.add("Następny restart za za: `" + DateUtil.formatTime(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart(), "days hours minutes seconds millis ") + "`");
         }
-        if (appConfigManager.getWatchDogConfig().getBackupConfig().isBackup()) {
-            status.add("Następny backup za: `" + DateUtil.formatTime(watchDog.getBackupModule().calculateMillisUntilNextBackup(), "days hours minutes seconds millis ") + "`");
+        if (APPCONFIGMANAGER.getWatchDogConfig().getBackupConfig().isBackup()) {
+            STATUS.add("Następny backup za: `" + DateUtil.formatTime(watchDog.getBackupModule().calculateMillisUntilNextBackup(), "days hours minutes seconds millis ") + "`");
         }
-        status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - serverProcess.getStartTime(), "days hours minutes seconds millis ") + "`");
-        status.add("Łączny czas działania servera: `" + DateUtil.formatTime(serverStats.getTotalUpTime(), "days hours minutes seconds ") + "`");
-      
-        status.add("");
-        status.add("> **Statystyki aplikacji**");
-        status.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - bdsAutoEnable.getStartTime(), "days hours minutes seconds millis ") + "`");
-        status.add("Pamięć RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
-        status.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
-        status.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
+        STATUS.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - SERVERPROCESS.getStartTime(), "days hours minutes seconds millis ") + "`");
+        STATUS.add("Łączny czas działania servera: `" + DateUtil.formatTime(serverStats.getTotalUpTime(), "days hours minutes seconds ") + "`");
 
-        if (!forDiscord) status.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+        STATUS.add("");
+        STATUS.add("> **Statystyki aplikacji**");
+        STATUS.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - BDSAUTOENABLE.getStartTime(), "days hours minutes seconds millis ") + "`");
+        STATUS.add("Pamięć RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
+        STATUS.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
+        STATUS.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
 
-        return status;
+        if (!forDiscord) STATUS.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+
+        return STATUS;
     }
 
     public static List<String> getTopPlayTime(final boolean forDiscord, final int top) {
-        final Map<String, Long> playTimeMap = statsManager.getPlayTime();
+        final Map<String, Long> playTimeMap = STATSMANAGER.getPlayTime();
         final List<String> topPlayTime = new ArrayList<>();
 
         final List<Map.Entry<String, Long>> sortedEntries = playTimeMap.entrySet().stream()
@@ -115,7 +115,7 @@ public final class StatusUtil {
     }
 
     public static List<String> getTopDeaths(final boolean forDiscord, final int top) {
-        final Map<String, Long> deathsMap = statsManager.getDeaths();
+        final Map<String, Long> deathsMap = STATSMANAGER.getDeaths();
         final List<String> topDeaths = new ArrayList<>();
 
         final List<Map.Entry<String, Long>> sortedEntries = deathsMap.entrySet().stream()
@@ -135,11 +135,11 @@ public final class StatusUtil {
     }
 
     public static long availableDiskSpace() {
-        return (file.exists() ? file.getUsableSpace() : 0);
+        return (FILE.exists() ? FILE.getUsableSpace() : 0);
     }
 
     public static long maxDiskSpace() {
-        return (file.exists() ? file.getTotalSpace() : 0);
+        return (FILE.exists() ? FILE.getTotalSpace() : 0);
     }
 
     public static long usedDiskSpace() {
@@ -147,18 +147,18 @@ public final class StatusUtil {
     }
 
     public static long getServerRamUsage() {
-        if (!serverProcess.isEnabled()) return 0;
+        if (!SERVERPROCESS.isEnabled()) return 0;
         try {
-            switch (Defaults.getSystem()) {
+            switch (DefaultsVariables.getSystem()) {
                 case WINDOWS -> {
-                    return getMemoryUsageWindows(serverProcess.getProcess().pid());
+                    return getMemoryUsageWindows(SERVERPROCESS.getProcess().pid());
                 }
                 case LINUX -> {
-                    return getMemoryUsageLinux(serverProcess.getProcess().pid());
+                    return getMemoryUsageLinux(SERVERPROCESS.getProcess().pid());
                 }
             }
         } catch (final Exception exception) {
-            logger.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + Defaults.getSystem(), exception);
+            LOGGER.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + DefaultsVariables.getSystem(), exception);
         }
         return -1;
     }

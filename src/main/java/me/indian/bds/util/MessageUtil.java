@@ -8,13 +8,12 @@ import java.util.Random;
 public final class MessageUtil {
 
     private static final Random random = new Random();
+    private static final char[] CHARS = {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@', '#', '*'};
 
     public static String generateCode(final int length) {
-        final char[] chars = {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@', '#', '*'};
-
         String code = "";
         for (int i = 0; i < length; i++) {
-            code += chars[random.nextInt(chars.length)];
+            code += CHARS[random.nextInt(CHARS.length)];
         }
 
         return code;
@@ -24,12 +23,12 @@ public final class MessageUtil {
         return msg.replaceAll("&", "§");
     }
 
-    public static String fixMessage(final String msg) {
-        return fixMessage(msg, false);
+    public static String fixMessage(final String message) {
+        return fixMessage(message, false);
     }
 
-    public static String fixMessage(final String msg, final boolean newLines) {
-        String msg2 = msg.replaceAll("\\\\", "")
+    public static String fixMessage(final String message, final boolean newLines) {
+        String msg2 = message.replaceAll("\\\\", "")
                 .replaceAll("[\\uE000-\\uE0EA]", "?")
                 .replaceAll("\\$", "?")
                 .replaceAll("ঋ", "?")
@@ -73,28 +72,28 @@ public final class MessageUtil {
         return String.join("\n", lista);
     }
 
-    public static String stringListToString(final List<String> lista, String split) {
+    public static String stringListToString(final List<String> list, String split) {
         if (split == null) {
             split = " ";
         }
 
-        if (lista == null) {
+        if (list == null) {
             return "";
         }
-        return String.join(split, lista);
+        return String.join(split, list);
     }
 
-    public static String objectListToString(final List<Object> lista, String split) {
+    public static String objectListToString(final List<Object> list, String split) {
         String string = "";
         if (split == null) {
             split = " ";
         }
 
-        if (lista == null) {
+        if (list == null) {
             return "";
         }
 
-        for (final Object object : lista) {
+        for (final Object object : list) {
             string += object.toString() + split;
         }
 

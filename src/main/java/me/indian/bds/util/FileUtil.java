@@ -12,9 +12,7 @@ public final class FileUtil {
 
     public static boolean canExecute(final String filePath) {
         try {
-            if (Files.isExecutable(Path.of(URLDecoder.decode(filePath.replace("/C", "C"), StandardCharsets.UTF_8)))) {
-                return true;
-            }
+          return Files.isExecutable(Path.of(URLDecoder.decode(filePath.replace("/C", "C"), StandardCharsets.UTF_8)));
         } catch (final Exception exception) {
             exception.printStackTrace();
         }
@@ -24,9 +22,7 @@ public final class FileUtil {
     public static boolean addExecutePerm(final String filePath) {
         try {
             final File file = new File(filePath);
-            if (!file.exists()) {
-                throw new NoSuchFileException(file.toString());
-            }
+            if (!file.exists()) throw new NoSuchFileException(file.toString());
             return file.setExecutable(true, false);
         } catch (final Exception exception) {
             exception.printStackTrace();

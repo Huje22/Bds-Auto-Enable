@@ -24,6 +24,7 @@ import java.util.zip.GZIPOutputStream;
 import javax.net.ssl.HttpsURLConnection;
 import me.indian.bds.config.MetricsConfig;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ThreadUtil;
@@ -312,7 +313,7 @@ public class Metrics {
      * @throws IOException If something did not work :(
      */
     private void loadConfig() throws IOException {
-        final File configFile = new File(Defaults.getAppDir() + "bstats.json");
+        final File configFile = new File(DefaultsVariables.getAppDir() + "bstats.json");
         final Gson gson = GsonUtil.getGson();
 
         serverUUID = bdsAutoEnable.getAppUUID();
