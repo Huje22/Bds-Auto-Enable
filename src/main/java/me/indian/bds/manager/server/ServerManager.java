@@ -54,20 +54,6 @@ public class ServerManager {
         });
     }
 
-    /*
-    TODO:
-            Dodać do paczki generowanie kodu 5 znakowanego
-            po wpisaniu na czacie !link
-            i będzie to wypisywało do konsoli `PlayerLink:NAZWA Code:KOD`
-            i będzie zapisywanie pierw do mapki,
-            i potem gdy użytkownik wpiszę na Discord /link KOD
-            wyszuka kod w mapce i jeśli kod będzie poprawny połączy
-            weźmie jego discord id i przypisze w json NICKMC:IDDISCORD,
-            pozwoli to na ustawianie nazwy z mc na discord i w dalszej przyszłości na
-            Proximity Voice chat
-
-*/
-
     private void playerQuit(final String logEntry) {
         final String patternString = "Player disconnected: ([^,]+)";
         final Pattern pattern = Pattern.compile(patternString);
@@ -107,14 +93,15 @@ public class ServerManager {
     }
 
     private void customCommand(final String logEntry) {
-        final String patternString = "PlayerCommand:([^,]+) Command:(.+)";
+        final String patternString = "PlayerCommand:([^,]+) Command:(.+) Op:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerCommand = MessageUtil.fixMessage(matcher.group(1));
             final String command = MessageUtil.fixMessage(matcher.group(2));
-            this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command));
+            final boolean isOp = Boolean.parse(matcher.group(3));
+            this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command), isOp);
         }
     }
 
@@ -190,8 +177,7 @@ public class ServerManager {
         }
     }
 
-    private void handleCustomCommand(final String playerCommand, final String[] args) {
-        //TODO: Dodać obsługę argumentów
+    private void handleCustomCommand(final String playerCommand, final String[] args, final boolean isOp) {
 
         final ServerProcess serverProcess = this.bdsAutoEnable.getServerProcess();
         if (serverProcess == null) {
@@ -209,7 +195,11 @@ public class ServerManager {
             serverProcess.tellrawToPlayer(playerCommand, "&a!deaths&4 -&b Top 10 graczy z największą ilością śmierci");
             serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
 
-        } else if (args[0].contains("playtime")) {
+        } else if (args[0].contains("backup"){
+            //TODO: Poprawić tą metodę i dodać info o backup 
+        
+        
+        }else if (args[0].contains("playtime")) {
             serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
             for (final String s : StatusUtil.getTopPlayTime(false, 10)) {
                 serverProcess.tellrawToPlayer(playerCommand, s);
