@@ -114,24 +114,11 @@ public class AutoRestartModule {
     }
 
     private void restartAlert() {
-        AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                "&aZa&1 10&a sekund zostanie zrestartowany server!", LogState.INFO);
-        ThreadUtil.sleep(10);
-        AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                "&aZa&1 5&a sekund zostanie zrestartowany server!", LogState.INFO);
-        ThreadUtil.sleep(5);
-        AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                "&aZa&1 4&a sekund zostanie zrestartowany server!", LogState.INFO);
-        ThreadUtil.sleep(4);
-        AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                "&aZa&1 3&a sekund zostanie zrestartowany server!", LogState.INFO);
-        ThreadUtil.sleep(3);
-        AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                "&aZa&1 2&a sekund zostanie zrestartowany server!", LogState.INFO);
-        ThreadUtil.sleep(2);
-        AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                "&aZa&1 1&a sekund zostanie zrestartowany server!", LogState.INFO);
+        for(int i = 10; i >= 0; i--){
+          AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
+                "&aZa&1 "+ i +"&a sekund zostanie zrestartowany server!", LogState.INFO);
         ThreadUtil.sleep(1);
+        }
     }
 
     public long calculateMillisUntilNextRestart() {
