@@ -227,7 +227,7 @@ public class ServerManager {
 
                 final String code = MessageUtil.generateCode(6);
                 linkingManager.addAccountToLink(playerCommand, code);
-                serverProcess.tellrawToPlayer(playerCommand, "&aTwój kod do połączenia kąt to:&b " + code);
+                serverProcess.tellrawToPlayer(playerCommand, "&aTwój kod do połączenia konto to:&b " + code);
                 serverProcess.tellrawToPlayer(playerCommand, "&aUżyj na naszym discord&b /link&a aby go użyć");
 
             } else {
