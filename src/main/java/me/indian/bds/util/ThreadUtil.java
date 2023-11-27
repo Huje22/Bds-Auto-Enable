@@ -12,9 +12,7 @@ public final class ThreadUtil implements ThreadFactory {
     private int threadCount;
 
     public ThreadUtil(final String threadName) {
-        this.threadName = threadName + "-%b";
-        this.runnable = null;
-        this.threadCount = 0;
+       this(threadName , null);
     }
 
     public ThreadUtil(final String threadName, final Runnable runnable) {
