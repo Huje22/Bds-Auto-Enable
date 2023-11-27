@@ -17,7 +17,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.rest.RestApiConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.server.ServerManager;
+import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.watchdog.module.BackupModule;

@@ -1,4 +1,4 @@
-package me.indian.bds.manager.server;
+package me.indian.bds.server.manager;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.discord.DiscordIntegration;

@@ -6,7 +6,7 @@ import java.nio.file.Files;
 import java.util.Properties;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.version.VersionManager;
+import me.indian.bds.version.VersionManager;
 import me.indian.bds.util.MathUtil;
 
 public class ServerProperties {

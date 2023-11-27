@@ -4,7 +4,7 @@ import com.sun.management.OperatingSystemMXBean;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.server.StatsManager;
+import me.indian.bds.server.manager.StatsManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerStats;
 import me.indian.bds.watchdog.WatchDog;

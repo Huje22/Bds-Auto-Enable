@@ -18,7 +18,7 @@ import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.server.ServerManager;
+import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;

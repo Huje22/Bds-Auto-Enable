@@ -1,4 +1,4 @@
-package me.indian.bds.manager.version;
+package me.indian.bds.version;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

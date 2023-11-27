@@ -1,4 +1,4 @@
-package me.indian.bds.manager.version;
+package me.indian.bds.version;
 
 import java.util.Timer;
 import java.util.TimerTask;

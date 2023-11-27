@@ -1,4 +1,4 @@
-package me.indian.bds.manager.server;
+package me.indian.bds.server.manager;
 
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
