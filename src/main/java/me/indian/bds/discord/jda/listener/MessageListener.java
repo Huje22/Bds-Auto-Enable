@@ -75,7 +75,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         if (member == null) return;
         if (!linkingConfig.isCanType()) {
             final LinkingManager linkingManager = this.discordJda.getLinkingManager();
-            if (!linkingManager.isLinked(member.getIdLong()) && !author.isBot()) {
+            if (event.getChannel().asTextChannel() == this.textChannel && !linkingManager.isLinked(member.getIdLong()) && !author.isBot()) {
                 this.discordJda.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
                 message.delete().queue();
                 return;
