@@ -167,6 +167,7 @@ public class BackupModule {
             this.logger.info("Ta funkcja jest nie stabilna , wymaga włączeniu Debugu");
             return;
         }
+        //TODO: Usunąć tą opcje, ewentualnie dodać opcję przenoszenia backup 
 
         if (this.loading) {
             this.logger.error("&cNie można załadować backup gdy jeden jest już ładowany ");
