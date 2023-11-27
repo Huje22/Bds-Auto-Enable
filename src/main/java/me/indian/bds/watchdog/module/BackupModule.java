@@ -1,5 +1,20 @@
 package me.indian.bds.watchdog.module;
 
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfig;
+import me.indian.bds.config.sub.watchdog.WatchDogConfig;
+import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.logger.LogState;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.ZipUtil;
+import me.indian.bds.watchdog.WatchDog;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -14,21 +29,6 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.config.AppConfig;
-import me.indian.bds.config.sub.watchdog.WatchDogConfig;
-import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.FileUtil;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.StatusUtil;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.util.ZipUtil;
-import me.indian.bds.watchdog.WatchDog;
 
 public class BackupModule {
 
@@ -44,6 +44,7 @@ public class BackupModule {
     private final DiscordIntegration discord;
     private final WatchDog watchDog;
     private final String prefix;
+    private final boolean enabled;
     private ServerProcess serverProcess;
     private File backupFolder;
     private String status;
@@ -64,7 +65,8 @@ public class BackupModule {
         this.worldFile = new File(this.worldPath);
         this.prefix = this.watchDog.getWatchDogPrefix();
         this.discord = bdsAutoEnable.getDiscord();
-        if (this.watchDogConfig.getBackupConfig().isBackup()) {
+        this.enabled = this.watchDogConfig.getBackupConfig().isEnabled();
+        if (this.watchDogConfig.getBackupConfig().isEnabled()) {
             this.backupFolder = new File(DefaultsVariables.getAppDir() + "backup");
             if (!this.backupFolder.exists()) {
                 if (!this.backupFolder.mkdirs()) {
@@ -91,7 +93,7 @@ public class BackupModule {
     }
 
     private void run() {
-        if (this.watchDogConfig.getBackupConfig().isBackup()) {
+        if (this.watchDogConfig.getBackupConfig().isEnabled()) {
             final long time = MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS);
             final TimerTask backupTask = new TimerTask() {
                 @Override
@@ -105,7 +107,7 @@ public class BackupModule {
     }
 
     public void backup() {
-        if (!this.watchDogConfig.getBackupConfig().isBackup()) {
+        if (!this.watchDogConfig.getBackupConfig().isEnabled()) {
             this.logger.info("Backupy są&4 wyłączone");
             return;
         }
@@ -162,61 +164,8 @@ public class BackupModule {
         });
     }
 
-    public synchronized void loadBackup(final String backupName) {
-        if (!this.appConfig.isDebug()) {
-            this.logger.info("Ta funkcja jest nie stabilna , wymaga włączeniu Debugu");
-            return;
-        }
-        //TODO: Usunąć tą opcje, ewentualnie dodać opcję przenoszenia backup 
-
-        if (this.loading) {
-            this.logger.error("&cNie można załadować backup gdy jeden jest już ładowany ");
-            return;
-        }
-
-        this.service.execute(() -> {
-            this.loading = true;
-            for (final Path path : this.backups) {
-                final String fileName = path.getFileName().toString().replaceAll(".zip", "");
-                if (backupName.equalsIgnoreCase(fileName)) {
-                    this.logger.info("&aOdnaleziono backup: &b" + backupName);
-                    if (this.serverProcess.getProcess() != null) {
-                        if (this.serverProcess.isEnabled()) {
-                            this.serverProcess.kickAllPlayers(this.prefix + " &aBackup&b " + backupName + " &a jest ładowany!");
-                            this.serverProcess.setCanRun(false);
-                            this.serverProcess.sendToConsole("stop");
-                            try {
-                                this.serverProcess.getProcess().waitFor();
-                                FileUtil.renameFolder(Path.of(this.worldPath), Path.of(DefaultsVariables.getWorldsPath() + "OLD_" + this.worldName));
-                                ThreadUtil.sleep(10); //Usypiam ten wątek aby nie doprowadzić do awarii chunk bo juz tak mi sie wydarzyło
-                                ZipUtil.unzipFile(path.toString(), DefaultsVariables.getWorldsPath(), false);
-                            } catch (final Exception exception) {
-                                this.bdsAutoEnable.getDiscord().sendEmbedMessage("Ładowanie Backup",
-                                        "Świat prawdopodobnie uległ awarii podczas próby załadowania backup",
-                                        exception,
-                                        exception.getLocalizedMessage());
-
-                                this.logger.info("Świat prawdopodobnie uległ awarii podczas próby załadowania backup", exception);
-                                System.exit(1);
-                                return;
-                            } finally {
-                                this.loading = false;
-                            }
-                            this.logger.info("&aZaładowano backup: &b" + backupName);
-                            this.serverProcess.setCanRun(true);
-                            this.serverProcess.startProcess();
-                        }
-                    }
-                    return;
-                }
-            }
-            this.loading = false;
-            this.logger.info("&cNie można odnaleźć backupa: &b" + backupName);
-        });
-    }
-
     private void loadAvailableBackups() {
-        if (!this.watchDogConfig.getBackupConfig().isBackup()) return;
+        if (!this.watchDogConfig.getBackupConfig().isEnabled()) return;
         this.backups.clear();
         try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(this.backupFolder.getPath()))) {
             for (final Path path : directoryStream) {
@@ -243,7 +192,7 @@ public class BackupModule {
         }
     }
 
-    private String getBackupSize(final File backup) {
+    public String getBackupSize(final File backup) {
         long fileSizeBytes;
         try {
             fileSizeBytes = Files.size(backup.toPath());
@@ -277,6 +226,14 @@ public class BackupModule {
 
     public List<Path> getBackups() {
         return this.backups;
+    }
+
+    public boolean isEnabled() {
+        return this.enabled;
+    }
+
+    public long getLastBackupMillis() {
+        return this.lastBackupMillis;
     }
 
     public boolean isBackuping() {

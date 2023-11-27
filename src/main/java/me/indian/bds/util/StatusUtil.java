@@ -1,6 +1,14 @@
 package me.indian.bds.util;
 
 import com.sun.management.OperatingSystemMXBean;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.manager.server.StatsManager;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.ServerStats;
+import me.indian.bds.watchdog.WatchDog;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -11,14 +19,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.manager.server.StatsManager;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.ServerStats;
-import me.indian.bds.watchdog.WatchDog;
 
 public final class StatusUtil {
 
@@ -76,7 +76,7 @@ public final class StatusUtil {
         if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
             STATUS.add("Następny restart za za: `" + DateUtil.formatTime(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart(), "days hours minutes seconds millis ") + "`");
         }
-        if (APPCONFIGMANAGER.getWatchDogConfig().getBackupConfig().isBackup()) {
+        if (APPCONFIGMANAGER.getWatchDogConfig().getBackupConfig().isEnabled()) {
             STATUS.add("Następny backup za: `" + DateUtil.formatTime(watchDog.getBackupModule().calculateMillisUntilNextBackup(), "days hours minutes seconds millis ") + "`");
         }
         STATUS.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - SERVERPROCESS.getStartTime(), "days hours minutes seconds millis ") + "`");

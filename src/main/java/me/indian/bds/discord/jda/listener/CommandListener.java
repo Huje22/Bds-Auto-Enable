@@ -1,13 +1,5 @@
 package me.indian.bds.discord.jda.listener;
 
-import java.awt.Color;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.BotConfig;
@@ -37,6 +29,15 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+
+import java.awt.Color;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public class CommandListener extends ListenerAdapter implements JDAListener {
 
@@ -201,36 +202,11 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             }
 
             case "backup" -> {
-                if (!this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getBackupConfig().isBackup()) {
+                if (!this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getBackupConfig().isEnabled()) {
                     event.reply("Backupy są wyłączone")
                             .setEphemeral(true).queue();
                     return;
                 }
-
-                final OptionMapping command = event.getOption("load");
-                if (command != null && !command.getAsString().isEmpty()) {
-                    if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                        if (!this.appConfigManager.getAppConfig().isDebug()) {
-                            event.reply("Ta funkcja jest nie stabilna , wymaga włączeniu Debugu").setEphemeral(true).queue();
-                            return;
-                        }
-                        final String backupName = command.getAsString();
-
-                        for (final Path path : this.backupModule.getBackups()) {
-                            final String fileName = path.getFileName().toString().replaceAll(".zip", "");
-                            if (backupName.equalsIgnoreCase(fileName)) {
-                                event.reply("Znaleziono: `" + backupName + "`").setEphemeral(true).queue();
-                                this.backupModule.loadBackup(backupName);
-                                return;
-                            }
-                        }
-                        event.reply("Nie można znaleźć: `" + backupName + "`").setEphemeral(true).queue();
-                    } else {
-                        event.reply("Nie posiadasz permisji").setEphemeral(true).queue();
-                    }
-                    return;
-                }
-
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
                     event.replyEmbeds(this.getBackupEmbed())
                             .addActionRow(ActionRow.of(this.backupButtons).getComponents())
@@ -529,10 +505,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 fileSizeBytes = -1;
             }
 
-            final long gb = MathUtil.bytesToGB(fileSizeBytes);
-            final long mb = MathUtil.getMbFromBytesGb(fileSizeBytes);
-            final long kb = MathUtil.getKbFromBytesGb(fileSizeBytes);
-            description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + gb + "` GB `" + mb + "` MB `" + kb + "` KB");
+
+            description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + this.backupModule.getBackupSize(path.toFile()) + "`");
         }
 
         return new EmbedBuilder()

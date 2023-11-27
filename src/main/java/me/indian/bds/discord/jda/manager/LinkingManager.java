@@ -1,6 +1,18 @@
 package me.indian.bds.discord.jda.manager;
 
 import com.google.gson.reflect.TypeToken;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.MathUtil;
+import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -11,16 +23,6 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.discord.jda.DiscordJda;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MathUtil;
-import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.Role;
 
 public class LinkingManager {
 
@@ -101,6 +103,11 @@ public class LinkingManager {
 
     public long getIdByName(final String name) {
         return this.linkedAccounts.get(name);
+    }
+
+    public boolean hasPermissions(final String name, final Permission permission) {
+        final Member member = this.discordJda.getGuild().getMemberById(this.getIdByName(name));
+        return (member != null && member.hasPermission(permission));
     }
 
     public HashMap<String, Long> getLinkedAccounts() {

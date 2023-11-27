@@ -1,7 +1,5 @@
 package me.indian.bds.discord.jda.listener;
 
-import java.awt.Color;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.config.sub.discord.LinkingConfig;
@@ -22,6 +20,9 @@ import net.dv8tion.jda.api.entities.channel.middleman.GuildChannel;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+import java.awt.Color;
+import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter implements JDAListener {
 
@@ -73,14 +74,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final LinkingConfig linkingConfig = this.discordConfig.getBotConfig().getLinkingConfig();
 
         if (member == null) return;
-        if (!linkingConfig.isCanType()) {
-            final LinkingManager linkingManager = this.discordJda.getLinkingManager();
-            if (event.getChannel().asTextChannel() == this.textChannel && !linkingManager.isLinked(member.getIdLong()) && !author.isBot()) {
-                this.discordJda.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
-                message.delete().queue();
-                return;
-            }
-        }
 
         if (event.getChannel().asTextChannel() == this.consoleChannel) {
             if (member.hasPermission(Permission.ADMINISTRATOR)) {
@@ -97,7 +90,17 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             }
             return;
         }
+
         if (event.getChannel().asTextChannel() == this.textChannel) {
+            if (!linkingConfig.isCanType()) {
+                final LinkingManager linkingManager = this.discordJda.getLinkingManager();
+                if (!linkingManager.isLinked(member.getIdLong()) && !author.isBot()) {
+                    this.discordJda.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
+                    message.delete().queue();
+                    return;
+                }
+            }
+
             this.sendMessage(member, author, message, false);
         }
     }

@@ -7,7 +7,7 @@ public class BackupConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Czy robić backupy?"})
-    private boolean backup = false;
+    private boolean enabled = false;
     @Comment({""})
     @Comment({"Co ile min robić backup?"})
     private int backupFrequency = 60;
@@ -15,12 +15,12 @@ public class BackupConfig extends OkaeriConfig {
     @Comment({"Nie zmieniaj tego!"})
     private double lastBackupTime = 20;
 
-    public boolean isBackup() {
-        return this.backup;
+    public boolean isEnabled() {
+        return this.enabled;
     }
 
-    public void setBackup(final boolean backup) {
-        this.backup = backup;
+    public void setEnabled(final boolean enabled) {
+        this.enabled = enabled;
     }
 
     public int getBackupFrequency() {

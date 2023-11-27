@@ -1,7 +1,5 @@
 package me.indian.bds;
 
-import java.util.List;
-import java.util.Scanner;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
@@ -12,6 +10,9 @@ import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ScannerUtil;
+
+import java.util.List;
+import java.util.Scanner;
 
 public class Settings {
 
@@ -94,7 +95,7 @@ public class Settings {
                 (defaultValue) -> this.logger.info("&n&lWłączyć Backupy&r (Domyślnie: " + defaultValue + ")? " + this.enter),
                 true,
                 (input) -> this.logger.info("Backupy ustawione na:&1 " + input));
-        this.watchDogConfig.getBackupConfig().setBackup(backup);
+        this.watchDogConfig.getBackupConfig().setEnabled(backup);
         if (backup) {
             final int backupFrequency = scannerUtil.addIntQuestion((defaultValue) -> this.logger.info("&n&lCo ile minut robić backup?&r (Domyślnie: " + defaultValue + ")? " + this.enter),
                     60,
@@ -300,7 +301,7 @@ public class Settings {
         this.logger.info("Ścieżka plików:&1 " + this.appConfig.getFilesPath());
         this.logger.info("Wersja:&1 " + this.versionManagerConfig.getVersion());
 
-        final boolean backup = this.watchDogConfig.getBackupConfig().isBackup();
+        final boolean backup = this.watchDogConfig.getBackupConfig().isEnabled();
         this.logger.info("Backup:&1 " + backup);
 
         if (backup) {

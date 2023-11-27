@@ -1,14 +1,5 @@
 package me.indian.bds.discord.jda;
 
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.DiscordConfig;
@@ -38,6 +29,16 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class DiscordJda implements DiscordIntegration {
 
@@ -138,8 +139,7 @@ public class DiscordJda implements DiscordIntegration {
 
         this.guild.updateCommands().addCommands(
                 Commands.slash("list", "lista graczy online."),
-                Commands.slash("backup", "Tworzenie bądź ostatni czas backupa")
-                        .addOption(OptionType.STRING, "load", "Załaduj backup po jego pełnej nazwie", false),
+                Commands.slash("backup", "Tworzenie bądź ostatni czas backupa"),
                 Commands.slash("difficulty", "Zmienia poziom trudności"),
                 Commands.slash("version", "Wersja BDS-Auto-Enable i severa, umożliwia update servera"),
                 Commands.slash("ping", "aktualny ping bot z serwerami discord"),
