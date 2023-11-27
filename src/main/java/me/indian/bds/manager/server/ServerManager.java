@@ -1,20 +1,18 @@
 package me.indian.bds.manager.server;
 
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ThreadUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.jda.DiscordJda;
-import me.indian.bds.discord.jda.manager.LinkingManager;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.StatusUtil;
-import me.indian.bds.util.ThreadUtil;
 
 
 public class ServerManager {
@@ -100,7 +98,7 @@ public class ServerManager {
         if (matcher.find()) {
             final String playerCommand = MessageUtil.fixMessage(matcher.group(1));
             final String command = MessageUtil.fixMessage(matcher.group(2));
-            final boolean isOp = Boolean.parse(matcher.group(3));
+            final boolean isOp = Boolean.parseBoolean(matcher.group(3));
             this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command), isOp);
         }
     }
@@ -178,65 +176,13 @@ public class ServerManager {
     }
 
     private void handleCustomCommand(final String playerCommand, final String[] args, final boolean isOp) {
-
-        final ServerProcess serverProcess = this.bdsAutoEnable.getServerProcess();
-        if (serverProcess == null) {
-            this.logger.debug("&bServerProcess&r jest&c null");
-            return;
-        }
-
         // !tps jest handlowane w https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack
+        // boolean isOp narazie nie działa bo Mojang rozjebało BDS i zawsze zwraca on false wiec uzywam linking managera
 
-        if (args[0].contains("help")) {
-            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
-            serverProcess.tellrawToPlayer(playerCommand, "&a!help&4 -&b pomocna lista komend");
-            serverProcess.tellrawToPlayer(playerCommand, "&a!tps&4 -&b Ticki na sekunde servera");
-            serverProcess.tellrawToPlayer(playerCommand, "&a!playtime&4 -&b Top 10 graczy z największym czasem gry");
-            serverProcess.tellrawToPlayer(playerCommand, "&a!deaths&4 -&b Top 10 graczy z największą ilością śmierci");
-            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
+        final String[] newArgs = new String[args.length - 1];
+        System.arraycopy(args, 1, newArgs, 0, newArgs.length);
 
-        } else if (args[0].contains("backup"){
-            //TODO: Poprawić tą metodę i dodać info o backup 
-        
-        
-        }else if (args[0].contains("playtime")) {
-            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
-            for (final String s : StatusUtil.getTopPlayTime(false, 10)) {
-                serverProcess.tellrawToPlayer(playerCommand, s);
-            }
-            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
-
-        } else if (args[0].contains("deaths")) {
-            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
-            for (final String s : StatusUtil.getTopDeaths(false, 10)) {
-                serverProcess.tellrawToPlayer(playerCommand, s);
-            }
-            serverProcess.tellrawToPlayer(playerCommand, "&a---------------------");
-        } else if (args[0].contains("link")) {
-            if (this.discord instanceof final DiscordJda jda) {
-                final LinkingManager linkingManager = jda.getLinkingManager();
-                if (linkingManager == null) {
-                    serverProcess.tellrawToPlayer(playerCommand, "&cCoś poszło nie tak , &bLinkingManager&c jest&4 nullem");
-                    return;
-                }
-                if (linkingManager.isLinked(playerCommand)) {
-                    serverProcess.tellrawToPlayer(playerCommand,
-                            "&aTwoje konto jest już połączone z ID:&b " + linkingManager.getIdByName(playerCommand));
-                    return;
-                }
-
-                final String code = MessageUtil.generateCode(6);
-                linkingManager.addAccountToLink(playerCommand, code);
-                serverProcess.tellrawToPlayer(playerCommand, "&aTwój kod do połączenia konto to:&b " + code);
-                serverProcess.tellrawToPlayer(playerCommand, "&aUżyj na naszym discord&b /link&a aby go użyć");
-
-            } else {
-                serverProcess.tellrawToPlayer(playerCommand, "&cTen server nie używa integracji z JDA");
-            }
-
-        } else {
-            serverProcess.tellrawToPlayer(playerCommand, "&cNie znaleziono takiego polecenia");
-        }
+        this.bdsAutoEnable.getCommandManager().runCommands(playerCommand, args[0], newArgs);
     }
 
     public StatsManager getStatsManager() {

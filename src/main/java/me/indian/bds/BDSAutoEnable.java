@@ -1,11 +1,6 @@
 package me.indian.bds;
 
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
+import me.indian.bds.command.CommandManager;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.DiscordIntegration;
@@ -26,6 +21,13 @@ import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.WatchDog;
 
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Scanner;
+import java.util.UUID;
+
 public class BDSAutoEnable {
 
     private final long startTime;
@@ -40,6 +42,7 @@ public class BDSAutoEnable {
     private final ServerManager serverManager;
     private final VersionManager versionManager;
     private final DiscordIntegration discord;
+    private final CommandManager commandManager;
     private WatchDog watchDog;
 
     public BDSAutoEnable() {
@@ -65,6 +68,7 @@ public class BDSAutoEnable {
         this.serverManager = new ServerManager(this);
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
+        this.commandManager = new CommandManager(this);
         StatusUtil.init(this);
 
         this.init();
@@ -237,6 +241,10 @@ public class BDSAutoEnable {
 
     public DiscordIntegration getDiscord() {
         return this.discord;
+    }
+
+    public CommandManager getCommandManager() {
+        return this.commandManager;
     }
 
     public ServerProperties getServerProperties() {

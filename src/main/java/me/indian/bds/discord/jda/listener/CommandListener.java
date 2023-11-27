@@ -31,7 +31,6 @@ import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 import java.awt.Color;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -498,13 +497,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 this.backupButtons.add(Button.danger("delete_backup:" + fileName, "Usuń " + fileName)
                         .withEmoji(Emoji.fromUnicode("🗑️")));
             }
-            long fileSizeBytes;
-            try {
-                fileSizeBytes = Files.size(path);
-            } catch (final IOException exception) {
-                fileSizeBytes = -1;
-            }
-
 
             description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + this.backupModule.getBackupSize(path.toFile()) + "`");
         }
