@@ -441,7 +441,7 @@ public class ServerProcess {
             }
             case "end" -> {
                 this.setCanRun(false);
-                System.exit(0);
+                this.instantShutdown();
             }
         }
         return false;
