@@ -159,7 +159,7 @@ public class BackupModule {
             } finally {
                 this.backuping = false;
                 this.watchDog.saveResume();
-                this.appConfig.save();
+                this.appConfig.getWatchdogConfif().save();
             }
         });
     }
