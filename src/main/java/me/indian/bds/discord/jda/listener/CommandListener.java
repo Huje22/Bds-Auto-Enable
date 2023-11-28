@@ -313,7 +313,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
                     .getPlayTimeByName(entry.getKey()), TimeUnit.MILLISECONDS);
 
-            linked.add(place + ". **" + entry.getKey() + "**: <@" + entry.getValue() + "> " + (hours < 5 ? "❌" : "✅"));
+            linked.add(place + ". **" + entry.getKey() + "**: " + entry.getValue() + " " + (hours < 5 ? "❌" : "✅"));
             place++;
         }
 
