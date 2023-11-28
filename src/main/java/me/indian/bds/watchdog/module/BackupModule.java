@@ -192,7 +192,7 @@ public class BackupModule {
         }
     }
 
-    public String getBackupSize(final File backup) {
+    public String getBackupSize(final File backup , final boolean forDiscord){
         long fileSizeBytes;
         try {
             fileSizeBytes = Files.size(backup.toPath());
@@ -202,8 +202,14 @@ public class BackupModule {
         final long gb = MathUtil.bytesToGB(fileSizeBytes);
         final long mb = MathUtil.getMbFromBytesGb(fileSizeBytes);
         final long kb = MathUtil.getKbFromBytesGb(fileSizeBytes);
+
+        if(forDiscord){
+
+        } else{
+        
         return "&b" + gb + "&e GB &b" + mb + "&e MB &b" + kb + "&e KB";
-    }
+        }
+        }
 
     public long calculateMillisUntilNextBackup() {
         return Math.max(0, MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS) - (System.currentTimeMillis() - this.lastBackupMillis));
