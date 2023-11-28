@@ -182,6 +182,7 @@ public class ServerManager {
         final String[] newArgs = new String[args.length - 1];
         System.arraycopy(args, 1, newArgs, 0, newArgs.length);
 
+        //TODO: Użyć apache lang3
         this.bdsAutoEnable.getCommandManager().runCommands(playerCommand, args[0], newArgs);
     }
 
