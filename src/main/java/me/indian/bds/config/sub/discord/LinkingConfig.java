@@ -11,6 +11,10 @@ public class LinkingConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Czy użytkownik może pisać na kanale bez połączonych kont?"})
     private boolean canType = false;
+
+    //TODO: Dodać role za czas gry i role za granie
+
+    
     @Comment({""})
     @Comment({""})
     private String cantTypeMessage = "Aby wysyłać wiadomości na tym kanale musisz mieć połączone konta discord i Minecraft ";
