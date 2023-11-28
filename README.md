@@ -28,7 +28,7 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
   (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) do obsługi
   większej
   ilości funkcji)
-* **Rest API** z czasem gry , liczbą śmierci i graczami online/offline
+* **Rest API** z czasem gry , liczbą śmierci i graczami online/offline (Również wymaga paczki)
 
 # Jak to działa
 
