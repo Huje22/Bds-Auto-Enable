@@ -29,4 +29,11 @@ public abstract class Command {
     public boolean isOp() {
         return this.isOp;
     }
+
+    @Override
+    public String toString() {
+        return "Command(name=" + this.name +
+            " description=" + this.description + 
+            ")";
+    }
 }
