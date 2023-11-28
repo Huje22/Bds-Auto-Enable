@@ -69,7 +69,7 @@ Większość takich akcji odbywa się w klasie [ServerManager.java](https://gith
 * `!playtime` - Top 10 graczy z największym czasem gry
 * `!deaths` - Top 10 graczy z największą ilością śmierci
 * `!link` - Łączy nick z mc z kontem discord
- 
+
 # Użyte biblioteki
 
 [Okaeri Configs - do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
