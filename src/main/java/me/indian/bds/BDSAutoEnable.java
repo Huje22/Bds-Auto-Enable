@@ -103,12 +103,12 @@ public class BDSAutoEnable {
 
         if (DefaultsVariables.isJavaLoverThan17()) {
             if (this.appConfig.isDebug()) {
-                this.logger.warning("&aDebug włączony, twoja wersja java &d(&1" + javaVersion
+                this.logger.warning("&aDebug włączony, twoja wersja javy &d(&1" + javaVersion
                         + "&d)&a nie jest wspierana, robisz to na własne&c ryzyko&c!");
                 return;
             }
 
-            this.logger.critical("Twoja wersja java (&1" + javaVersion
+            this.logger.critical("Twoja wersja javy (&1" + javaVersion
                     + "&r) jest zbyt niska! Potrzebujesz javy &117+ ");
             System.exit(0);
         }
@@ -196,7 +196,7 @@ public class BDSAutoEnable {
                 if (this.scanner != null) this.scanner.close();
                 this.serverProcess.instantShutdown();
             } catch (final Exception exception) {
-                this.logger.error("Wystąpił błąd podczas próby uruchomienia shutdown hooku ", exception);
+                this.logger.critical("Wystąpił błąd podczas próby uruchomienia shutdown hooku ", exception);
             }
         });
         shutdown.setName("Shutdown");
