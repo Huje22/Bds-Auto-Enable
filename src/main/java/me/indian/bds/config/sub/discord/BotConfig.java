@@ -3,6 +3,7 @@ package me.indian.bds.config.sub.discord;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class BotConfig extends OkaeriConfig {
     private boolean leaveServers = false;
     @Comment({""})
     @Comment({"Czy tylko osoba wykonująca polecenie ma widzieć jego rezultat "})
-    @Comment({"Polecenia typu /backup load , nadal bedzie widzieć tylko wykonawca"})
+    @Comment({"Polecenia typu /cmd , nadal bedzie widzieć tylko wykonawca"})
     private boolean setEphemeral = false;
     @Comment({""})
     @Comment({"Info po wpisaniu /ip"})
@@ -45,7 +46,7 @@ public class BotConfig extends OkaeriConfig {
     private boolean deleteOnReachLimit = false;
     @Comment({""})
     @Comment({"Informacja o przekroczeniu liczby znaków (na pv)"})
-    private String reachedMessage = "Osiągnięto dozwoloną ilosc znaków!";
+    private String reachedMessage = "Osiągnięto dozwoloną ilość znaków!";
     @Comment({""})
     @Comment({"Aktywność , aktualizowana co 10min"})
     @Comment({"Dostępne aktywności:  PLAYING, STREAMING, LISTENING, WATCHING, COMPETING"})

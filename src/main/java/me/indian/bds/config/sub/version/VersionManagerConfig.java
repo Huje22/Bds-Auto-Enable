@@ -57,23 +57,11 @@ public class VersionManagerConfig extends OkaeriConfig {
         return this.checkVersion;
     }
 
-    public void setCheckVersion(final boolean checkVersion) {
-        this.checkVersion = checkVersion;
-    }
-
     public boolean isAutoUpdate() {
         return this.autoUpdate;
     }
 
-    public void setAutoUpdate(final boolean autoUpdate) {
-        this.autoUpdate = autoUpdate;
-    }
-
     public int getVersionCheckFrequency() {
         return this.versionCheckFrequency;
-    }
-
-    public void setVersionCheckFrequency(final int versionCheckFrequency) {
-        this.versionCheckFrequency = versionCheckFrequency;
     }
 }
