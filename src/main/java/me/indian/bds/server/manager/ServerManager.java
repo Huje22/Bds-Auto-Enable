@@ -179,11 +179,7 @@ public class ServerManager {
         // !tps jest handlowane w https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack
         // boolean isOp narazie nie działa bo Mojang rozjebało BDS i zawsze zwraca on false wiec uzywam linking managera
 
-        final String[] newArgs = new String[args.length - 1];
-        System.arraycopy(args, 1, newArgs, 0, newArgs.length);
-
-        //TODO: Użyć apache lang3
-        this.bdsAutoEnable.getCommandManager().runCommands(playerCommand, args[0], newArgs);
+//        this.bdsAutoEnable.getCommandManager().runCommands(playerCommand, args[0], newArgs);
     }
 
     public StatsManager getStatsManager() {

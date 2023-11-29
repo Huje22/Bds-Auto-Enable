@@ -170,14 +170,21 @@ public class LinkingManager {
 
             final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager().getPlayTimeByName(name), TimeUnit.MILLISECONDS);
 
-            if(hours < 5) continue; 
-            
-            final Role role = guild.getRoleById(this.appConfigManager.getDiscordConfig()
+            if (hours < 5) continue;
+
+            final Role playtimeRole = guild.getRoleById(this.appConfigManager.getDiscordConfig()
+                    .getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID());
+
+            final Role linkingRole = guild.getRoleById(this.appConfigManager.getDiscordConfig()
                     .getBotConfig().getLinkingConfig().getLinkedRoleID());
 
-            if (role == null) continue;
-            if (member.getRoles().contains(role)) continue;
-            if (guild.getSelfMember().canInteract(role)) guild.addRoleToMember(member, role).queue();
+            if (playtimeRole != null && !member.getRoles().contains(playtimeRole) && guild.getSelfMember().canInteract(playtimeRole)) {
+                guild.addRoleToMember(member, playtimeRole).queue();
+            }
+
+            if (linkingRole != null && !member.getRoles().contains(linkingRole) && guild.getSelfMember().canInteract(linkingRole)) {
+                guild.addRoleToMember(member, linkingRole).queue();
+            }
         }
     }
 

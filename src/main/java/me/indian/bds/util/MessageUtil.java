@@ -43,55 +43,51 @@ public final class MessageUtil {
     }
 
     public static String buildMessageFromArgs(final String[] args) {
-        String message = "";
-        for (final String arg : args) {
-            message = message.concat(arg + " ");
-        }
-        message = message.trim();
-        return message;
+       return buildMessageFromArgs(args, null);
     }
 
-    public static String buildMessageFromArgs(final String[] args, final String includeArg) {
+    public static String buildMessageFromArgs(final String[] args, final String[] includeArgs) {
         String message = "";
         for (final String arg : args) {
-            if (arg.equals(includeArg)) continue;
+            if (includeArgs != null && Arrays.stream(includeArgs).anyMatch(s -> s.equals(arg))) continue;
             message = message.concat(arg + " ");
         }
-        message = message.trim();
-        return message;
+        return message.trim();
     }
 
     public static String[] stringToArgs(final String input) {
         return input.split("\\s+");
     }
 
+    public static String[] removeArgs(final String[] args) {
+        final String[] newArgs = new String[args.length - 1];
+        System.arraycopy(args, 1, newArgs, 0, newArgs.length);
+
+        return newArgs;
+    }
+
+    public static String[] removeArgs(final String[] args, final int startFrom) {
+        final String[] newArgs = new String[args.length - startFrom];
+        System.arraycopy(args, startFrom, newArgs, 0, newArgs.length);
+
+        return newArgs;
+    }
+
     public static String listToSpacedString(final List<String> lista) {
-        if (lista == null) {
-            return "";
-        }
-        return String.join("\n", lista);
+        return stringListToString(lista, "\n");
     }
 
     public static String stringListToString(final List<String> list, String split) {
-        if (split == null) {
-            split = " ";
-        }
+        if (split == null) split = " ";
+        if (list == null) return "";
 
-        if (list == null) {
-            return "";
-        }
         return String.join(split, list);
     }
 
     public static String objectListToString(final List<Object> list, String split) {
         String string = "";
-        if (split == null) {
-            split = " ";
-        }
-
-        if (list == null) {
-            return "";
-        }
+        if (split == null) split = " ";
+        if (list == null) return "";
 
         for (final Object object : list) {
             string += object.toString() + split;
@@ -101,13 +97,9 @@ public final class MessageUtil {
     }
 
     public static List<String> stringToStringList(final String text, String split) {
-        if (split == null) {
-            split = " ";
-        }
+        if (split == null) split = " ";
+        if (text == null || text.isEmpty()) return new ArrayList<>();
 
-        if (text == null || text.isEmpty()) {
-            return new ArrayList<>();
-        }
         return Arrays.asList(text.split(split));
     }
 

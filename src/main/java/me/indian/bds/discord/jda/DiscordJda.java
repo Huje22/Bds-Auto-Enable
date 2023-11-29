@@ -6,6 +6,7 @@ import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.listener.CommandListener;
 import me.indian.bds.discord.jda.listener.JDAListener;
+import me.indian.bds.discord.jda.listener.MentionPatternCacheListener;
 import me.indian.bds.discord.jda.listener.MessageListener;
 import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.discord.jda.manager.StatsChannelsManager;
@@ -33,12 +34,15 @@ import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 
 public class DiscordJda implements DiscordIntegration {
 
@@ -49,6 +53,7 @@ public class DiscordJda implements DiscordIntegration {
     private final long serverID, channelID, consoleID;
     private final ExecutorService consoleService;
     private final List<JDAListener> listeners;
+    private final Map<String, Pattern> mentionPatternCache;
     private JDA jda;
     private Guild guild;
     private TextChannel textChannel, consoleChannel;
@@ -64,10 +69,12 @@ public class DiscordJda implements DiscordIntegration {
         this.channelID = this.discordConfig.getBotConfig().getChannelID();
         this.consoleID = this.discordConfig.getBotConfig().getConsoleID();
         this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
-
         this.listeners = new ArrayList<>();
+        this.mentionPatternCache = new HashMap<>();
+
         this.listeners.add(new CommandListener(this, this.bdsAutoEnable));
         this.listeners.add(new MessageListener(this, this.bdsAutoEnable));
+        this.listeners.add(new MentionPatternCacheListener(this.mentionPatternCache));
 
     }
 
@@ -135,6 +142,7 @@ public class DiscordJda implements DiscordIntegration {
                 System.exit(0);
             }
         }
+
         this.checkBotPermissions();
 
         this.guild.updateCommands().addCommands(
@@ -263,11 +271,60 @@ public class DiscordJda implements DiscordIntegration {
                 .filter(member -> !member.getUser().isBot()).sorted(Comparator.comparing(Member::getTimeJoined)).toList();
     }
 
+    //Kod lekko przerobiony z https://github.com/DiscordSRV/DiscordSRV/blob/master/src/main/java/github/scarsz/discordsrv/util/DiscordUtil.java#L135
+    private String convertMentionsFromNames(String message) {
+        if (!message.contains("@")) return message;
+
+        final Map<Pattern, String> patterns = new HashMap<>();
+        for (final Role role : this.guild.getRoles()) {
+            final Pattern pattern = this.mentionPatternCache.computeIfAbsent(
+                    role.getId(),
+                    mentionable -> Pattern.compile(
+                            "(?<!<)" +
+                                    Pattern.quote("@" + role.getName()),
+                            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
+                    )
+            );
+            if (!role.isMentionable()) continue;
+            patterns.put(pattern, role.getAsMention());
+        }
+
+        for (final Member member : this.guild.getMembers()) {
+            final Pattern pattern = this.mentionPatternCache.computeIfAbsent(
+                    member.getId(),
+                    mentionable -> Pattern.compile(
+                            "(?<!<)" +
+                                    Pattern.quote("@" + member.getEffectiveName()),
+                            Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
+                    )
+            );
+            patterns.put(pattern, member.getAsMention());
+        }
+
+        for (final Map.Entry<Pattern, String> entry : patterns.entrySet()) {
+            message = entry.getKey().matcher(message).replaceAll(entry.getValue());
+        }
+
+        return this.removeRoleMention(message);
+    }
+
+    private String removeRoleMention(String message) {
+        for (final Role role : this.guild.getRoles()) {
+            final String rolePattern = "<@&" + role.getId() + ">";
+            if (message.contains(rolePattern) && !role.isMentionable()) {
+                message = message.replaceAll(rolePattern, role.getName());
+            }
+        }
+        return message;
+    }
+
     @Override
     public void sendMessage(final String message) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
             if (message.isEmpty()) return;
-            this.textChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue();
+            this.textChannel.sendMessage(
+                    this.convertMentionsFromNames(message).replaceAll("<owner>", this.getOwnerMention())
+            ).queue();
         }
     }
 
@@ -331,7 +388,6 @@ public class DiscordJda implements DiscordIntegration {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getMinecraftToDiscordMessage()
                     .replaceAll("<name>", playerName)
                     .replaceAll("<msg>", playerMessage)
-                    .replaceAll("@", "\\@")
                     .replaceAll("@everyone", "/everyone/")
                     .replaceAll("@here", "/here/")
             );

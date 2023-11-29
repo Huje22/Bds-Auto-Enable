@@ -1,7 +1,7 @@
 package me.indian.bds.watchdog.module;
 
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfig;
+import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.logger.LogState;
@@ -36,7 +36,7 @@ public class BackupModule {
     private final Logger logger;
     private final ExecutorService service;
     private final Timer timer;
-    private final AppConfig appConfig;
+    private final AppConfigManager appConfigManager;
     private final WatchDogConfig watchDogConfig;
     private final List<Path> backups;
     private final String worldPath, worldName;
@@ -54,7 +54,7 @@ public class BackupModule {
     public BackupModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getAppConfig();
+        this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.watchDogConfig = this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig();
         this.watchDog = watchDog;
         this.backups = new ArrayList<>();
@@ -140,7 +140,7 @@ public class BackupModule {
                 this.watchDogConfig.getBackupConfig().setLastBackupTime(backUpTime);
                 this.loadAvailableBackups();
                 this.serverProcess.tellrawToAllAndLogger(this.prefix,
-                        "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona " + this.getBackupSize(backup),
+                        "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona " + this.getBackupSize(backup, false),
                         LogState.INFO);
                 this.serverProcess.tellrawToAllAndLogger(this.prefix,
                         "&aDostępne jest&d " + this.backups.size() + "&a kopi zapasowych",
@@ -159,7 +159,7 @@ public class BackupModule {
             } finally {
                 this.backuping = false;
                 this.watchDog.saveResume();
-                this.appConfig.getWatchdogConfif().save();
+                this.appConfigManager.getWatchDogConfig().save();
             }
         });
     }
@@ -192,7 +192,7 @@ public class BackupModule {
         }
     }
 
-    public String getBackupSize(final File backup , final boolean forDiscord){
+    public String getBackupSize(final File backup, final boolean forDiscord) {
         long fileSizeBytes;
         try {
             fileSizeBytes = Files.size(backup.toPath());
@@ -203,13 +203,12 @@ public class BackupModule {
         final long mb = MathUtil.getMbFromBytesGb(fileSizeBytes);
         final long kb = MathUtil.getKbFromBytesGb(fileSizeBytes);
 
-        if(forDiscord){
-
-        } else{
-        
-        return "&b" + gb + "&e GB &b" + mb + "&e MB &b" + kb + "&e KB";
+        if (forDiscord) {
+            return " " + gb + " GB " + mb + " MB " + kb + " KB";
+        } else {
+            return "&b" + gb + "&e GB &b" + mb + "&e MB &b" + kb + "&e KB";
         }
-        }
+    }
 
     public long calculateMillisUntilNextBackup() {
         return Math.max(0, MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS) - (System.currentTimeMillis() - this.lastBackupMillis));

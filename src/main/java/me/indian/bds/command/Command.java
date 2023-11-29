@@ -33,7 +33,7 @@ public abstract class Command {
     @Override
     public String toString() {
         return "Command(name=" + this.name +
-            " description=" + this.description + 
-            ")";
+                " description=" + this.description +
+                ")";
     }
 }

@@ -38,7 +38,7 @@ public class BackupCommand extends Command {
             }
 
             for (final Path path : backupModule.getBackups()) {
-                this.serverProcess.tellrawToPlayer(player, "&a" + path.getFileName() + " Rozmiar: ` " + backupModule.getBackupSize(path.toFile()) + "`");
+                this.serverProcess.tellrawToPlayer(player, "&a" + path.getFileName() + " Rozmiar: ` " + backupModule.getBackupSize(path.toFile(), false) + "`");
             }
         } else if (args[0].equals("do")) {
             this.serverProcess.tellrawToPlayer(player, "&aCoś kiedyś tu będzies");

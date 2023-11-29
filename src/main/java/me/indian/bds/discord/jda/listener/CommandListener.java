@@ -115,7 +115,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     final String code = codeMapping.getAsString();
                     final LinkingManager linkingManager = this.discordJda.getLinkingManager();
                     final long id = member.getIdLong();
-                    final long roleID = this.discordConfig.getBotConfig().getLinkingConfig().getLinkedRoleID();
+                    final long roleID = this.discordConfig.getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID();
                     final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
                             .getPlayTimeByName(linkingManager.getNameByID(id)), TimeUnit.MILLISECONDS);
                     final EmbedBuilder linkingEmbed = new EmbedBuilder().setTitle("Łączenie kont").setColor(Color.BLUE)
@@ -498,7 +498,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         .withEmoji(Emoji.fromUnicode("🗑️")));
             }
 
-            description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + this.backupModule.getBackupSize(path.toFile()) + "`");
+            description.add("Nazwa: `" + fileName.replaceAll(".zip", "") + "` Rozmiar: `" + this.backupModule.getBackupSize(path.toFile(), true) + "`");
         }
 
         return new EmbedBuilder()
