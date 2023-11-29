@@ -174,7 +174,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                     this.getColoredRole(role) + "&r");
         }
 
-        //Daje to ostatnie aby okreslic czy wiadomosc nadal jest pusta
+        //Daje to ostatnie aby określić czy wiadomość nadal jest pusta
         if (rawMessage.isEmpty()) {
             rawMessage += message.getJumpUrl();
         }

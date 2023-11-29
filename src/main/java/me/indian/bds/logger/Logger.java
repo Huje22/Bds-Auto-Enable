@@ -1,14 +1,15 @@
 package me.indian.bds.logger;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.DiscordLogChannelType;
 import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.DefaultsVariables;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
 public class Logger {
 
@@ -37,10 +38,8 @@ public class Logger {
     private void initializeLogFile() {
         final File logsDir = new File(DefaultsVariables.getAppDir() + "logs");
         if (!logsDir.exists()) {
-            if (!logsDir.mkdir()) {
-                if (logsDir.mkdirs()) {
-                    throw new RuntimeException("Nie można utworzyć miejsca na logi");
-                }
+            if (!logsDir.mkdir()) if (logsDir.mkdirs()) {
+                throw new RuntimeException("Nie można utworzyć miejsca na logi");
             }
         }
 
@@ -49,8 +48,12 @@ public class Logger {
             final FileOutputStream fileOutputStream = new FileOutputStream(this.logFile, true);
             this.printStream = new PrintStream(fileOutputStream);
         } catch (final Exception exception) {
-            this.error("Nie można utworzyć&1 PrintStream&r aby zapisywać logi do pliku ", exception);
+            this.error("Nie można utworzyć&1 PrintStreamu&r aby zapisywać logi do pliku ", exception);
         }
+    }
+
+    public void print() {
+        this.print("");
     }
 
     public void print(final Object log) {
@@ -68,21 +71,16 @@ public class Logger {
     }
 
     public void print(final Object log, final DiscordIntegration discord, final DiscordLogChannelType channelType) {
-        this.print(log);
-        if (discord == null) {
-            this.debug("Podana integracja z discord jest&c nullem!");
-            return;
-        }
-
-        switch (channelType) {
-            case CHAT -> discord.sendMessage(log.toString());
-            case CONSOLE -> discord.writeConsole(log.toString());
-            default -> this.debug("Nieznany typ kanału discord&1 " + channelType);
-        }
+        this.print(log, null, discord, channelType);
     }
 
     public void print(final Object log, final Throwable throwable, final DiscordIntegration discord, final DiscordLogChannelType channelType) {
         this.print(log, throwable);
+
+        if (discord == null) {
+            this.debug("Podana integracja z discord jest&c nullem!");
+            return;
+        }
 
         switch (channelType) {
             case CHAT -> discord.sendMessage(log.toString(), throwable);

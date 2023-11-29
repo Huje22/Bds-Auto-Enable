@@ -15,7 +15,7 @@ public class DeathsCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final String player, final String[] args) {
+    public boolean onExecute(final String player, final String[] args, final boolean isOp) {
         this.serverProcess.tellrawToPlayer(player, "&a---------------------");
         for (final String s : StatusUtil.getTopDeaths(false, 10)) {
             this.serverProcess.tellrawToPlayer(player, s);

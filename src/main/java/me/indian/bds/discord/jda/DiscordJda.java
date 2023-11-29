@@ -199,9 +199,7 @@ public class DiscordJda implements DiscordIntegration {
     }
 
     public String getUserName(final Member member, final User author) {
-        if (member != null && member.getNickname() != null) {
-            return member.getNickname();
-        }
+        if (member != null && member.getNickname() != null) return member.getNickname();
         return author.getName();
     }
 
@@ -331,7 +329,7 @@ public class DiscordJda implements DiscordIntegration {
     @Override
     public void sendMessage(final String message, final Throwable throwable) {
         this.sendMessage(message +
-                "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```");
+                (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"));
     }
 
     @Override

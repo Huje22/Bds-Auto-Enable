@@ -34,10 +34,10 @@ public class CommandManager {
         this.commandList.add(command);
     }
 
-    public void runCommands(final String playerName, final String commandName, final String[] args) {
+    public void runCommands(final String playerName, final String commandName, final String[] args, final boolean isOp) {
         for (final Command command : this.commandList) {
             if (command.getName().equals(commandName)) {
-                command.onExecute(playerName, args);
+                command.onExecute(playerName, args, isOp);
                 return;
             }
         }

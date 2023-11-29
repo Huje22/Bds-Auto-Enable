@@ -4,6 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.ZipUtil;
+import me.indian.bds.watchdog.WatchDog;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -13,11 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.ZipUtil;
-import me.indian.bds.watchdog.WatchDog;
 
 public class PackModule {
 
@@ -229,6 +230,18 @@ public class PackModule {
 
     public String getPackName() {
         return this.packName;
+    }
+
+    public int[] getVersion() {
+        return this.version;
+    }
+
+    public String getPackVersion() {
+        String ver = "";
+        for (int i = 0; i < this.version.length; i++) {
+            ver += this.version[i] + (i < this.version.length - 1 ? "." : "");
+        }
+        return ver;
     }
 
     public boolean packExists() {

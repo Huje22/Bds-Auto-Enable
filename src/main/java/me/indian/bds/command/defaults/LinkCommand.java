@@ -19,7 +19,7 @@ public class LinkCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final String player, final String[] args) {
+    public boolean onExecute(final String player, final String[] args, final boolean isOp) {
         if (this.bdsAutoEnable.getDiscord() instanceof final DiscordJda jda) {
             final LinkingManager linkingManager = jda.getLinkingManager();
             if (linkingManager == null) {

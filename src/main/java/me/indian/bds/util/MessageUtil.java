@@ -104,6 +104,7 @@ public final class MessageUtil {
     }
 
     public static String getStackTraceAsString(final Throwable throwable) {
+        if (throwable == null) return "";
         final StringBuilder stackTraceBuilder = new StringBuilder();
         stackTraceBuilder.append(throwable.getMessage()).append("\n");
         for (final StackTraceElement element : throwable.getStackTrace()) {

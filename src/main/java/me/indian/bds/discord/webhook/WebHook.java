@@ -2,11 +2,6 @@ package me.indian.bds.discord.webhook;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.DiscordConfig;
@@ -15,6 +10,12 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
+
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class WebHook implements DiscordIntegration {
 
@@ -82,7 +83,7 @@ public class WebHook implements DiscordIntegration {
     @Override
     public void sendMessage(final String message, final Throwable throwable) {
         this.sendMessage(message +
-                "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```");
+                (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"));
     }
 
     @Override

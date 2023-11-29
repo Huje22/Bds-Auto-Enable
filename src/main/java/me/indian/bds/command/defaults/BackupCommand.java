@@ -19,7 +19,7 @@ public class BackupCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final String player, final String[] args) {
+    public boolean onExecute(final String player, final String[] args, final boolean isOp) {
         final BackupModule backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
         if (backupModule == null) {
             this.serverProcess.tellrawToPlayer(player, "&cNie udało się uzyskać&b Modułu Backupów");

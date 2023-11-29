@@ -18,7 +18,7 @@ public class HelpCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final String player, final String[] args) {
+    public boolean onExecute(final String player, final String[] args, final boolean isOp) {
         this.serverProcess.tellrawToPlayer(player, "&a---------------------");
         for (final Command command : this.commandList) {
             this.serverProcess.tellrawToPlayer(player, "&a" + command.getName() + "&4-&b " + command.getDescription());

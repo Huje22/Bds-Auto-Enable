@@ -6,6 +6,7 @@ import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.watchdog.module.PackModule;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +131,8 @@ public class ServerManager {
             }
 
             if (this.lastTPS <= 8 && tps <= 8) {
-                this.discord.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS" + " (Teraz: **" + tps + "** Ostatnie: **" + this.lastTPS + "**)");
+                this.discord.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS"
+                        + " (Teraz: **" + tps + "** Ostatnie: **" + this.lastTPS + "**)");
                 this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true);
             }
 
@@ -148,38 +150,43 @@ public class ServerManager {
     }
 
     private void checkPackDependency(final String logEntry) {
+        final PackModule packModule = this.bdsAutoEnable.getWatchDog().getPackModule();
+
         if (logEntry.contains("BDS Auto Enable") && logEntry.contains("requesting dependency on beta APIs")) {
-            final List<String> list = List.of("Wykryto że `Beta API's` nie są włączone!",
-                    "Funkcje jak: `licznik czasu gry/śmierci` nie będą działać ",
-                    "Bot też zostaje wyłączony"
-            );
-            this.discord.sendEmbedMessage("Brak wymaganych eksperymentów",
-                    MessageUtil.listToSpacedString(list),
-                    "Włącz Beta API's");
+            final String noExperiments = """                        
+                    Wykryto że `Beta API's` nie są włączone!
+                    Funkcje jak: `licznik czasu gry/śmierci` nie będą działać 
+                    """;
+
+            this.discord.sendEmbedMessage("Brak wymaganych eksperymentów", noExperiments, "Włącz Beta API's");
             this.discord.sendMessage("<owner>");
-            for (final String s : list) {
-                this.logger.alert(s.replaceAll("`", ""));
-            }
-            this.discord.shutdown();
+            this.logger.alert(noExperiments.replaceAll("`", "").replaceAll("\n", ""));
         }
+
         if (logEntry.contains("BDS Auto Enable") && logEntry.contains("requesting invalid module version")) {
+            final String badVersion = """
+                        Posiadasz złą wersje paczki! (<version>)
+                        Usuń a nowa pobierze się sama
+                        Ewentualnie twój server lub paczka wymaga aktualizacji
+                    """;
+
             this.discord.sendEmbedMessage("Zła wersja paczki",
-                    """
-                            Posiadasz złą wersje paczki!
-                             Usuń a nowa pobierze się sama\s
-                             Ewentualnie twój server wymaga aktualizacji
-                            **Bot zostaje przez to wyłączony**""",
+                    badVersion.replaceAll("<version>", packModule.getPackVersion()),
                     "Zła wersja paczki");
+
+            this.logger.alert(badVersion.replaceAll("\n", "")
+                    .replaceAll("<version>", packModule.getPackVersion()));
+
             this.discord.sendMessage("<owner>");
-            this.discord.shutdown();
         }
     }
 
     private void handleCustomCommand(final String playerCommand, final String[] args, final boolean isOp) {
         // !tps jest handlowane w https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack
-        // boolean isOp narazie nie działa bo Mojang rozjebało BDS i zawsze zwraca on false wiec uzywam linking managera
+        // boolean isOp narazie nie działa bo Mojang rozjebało BDS i zawsze zwraca on false
 
-        this.bdsAutoEnable.getCommandManager().runCommands(playerCommand, args[0], MessageUtil.removeArgs(args, 1));
+        final String[] newArgs = MessageUtil.removeArgs(args, 1);
+        this.bdsAutoEnable.getCommandManager().runCommands(playerCommand, args[0], newArgs, isOp);
     }
 
     public StatsManager getStatsManager() {
