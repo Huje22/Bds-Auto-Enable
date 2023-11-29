@@ -36,17 +36,19 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private final DiscordJda discordJda;
     private final BDSAutoEnable bdsAutoEnable;
-
     private final AppConfigManager appConfigManager;
     private final DiscordConfig discordConfig;
     private final BotConfig botConfig;
     private final List<Button> backupButtons, difficultyButtons, statsButtons;
+    private final ExecutorService service;
     private JDA jda;
     private ServerProcess serverProcess;
     private BackupModule backupModule;
@@ -60,6 +62,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.backupButtons = new ArrayList<>();
         this.difficultyButtons = new ArrayList<>();
         this.statsButtons = new ArrayList<>();
+        this.service = Executors.newScheduledThreadPool(5, new ThreadUtil("Discord Command"));
     }
 
     @Override
@@ -79,7 +82,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         if (member == null) return;
 
         switch (event.getName()) {
-            case "cmd" -> {
+            case "cmd" -> this.service.execute(() -> {
+                //Robie to na nowym wątku gdyby jakieś polecenie miało zblokować ten od JDA
                 if (member.hasPermission(Permission.ADMINISTRATOR)) {
                     if (!this.serverProcess.isEnabled()) {
                         event.reply("Server jest wyłączony").setEphemeral(true).queue();
@@ -108,7 +112,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 } else {
                     event.reply("Nie posiadasz permisji!!").setEphemeral(true).queue();
                 }
-            }
+            });
             case "link" -> {
                 final OptionMapping codeMapping = event.getOption("code");
                 if (codeMapping != null && !codeMapping.getAsString().isEmpty()) {
@@ -381,13 +385,22 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private void serveBackupButton(final ButtonInteractionEvent event) {
         if (event.getComponentId().equals("backup")) {
-            event.deferReply().setEphemeral(true).queue();
-            this.backupModule.backup();
+            this.service.execute(() -> {
+                event.deferReply().setEphemeral(true).queue();
+                if (this.backupModule.isBackuping()) {
+                    event.getHook().editOriginal("Backup jest już robiony!").queue();
+                    return;
+                }
+                if (this.serverProcess.isEnabled()) {
+                    event.getHook().editOriginal("Server jest wyłączony!").queue();
+                    return;
+                }
 
-            ThreadUtil.sleep((int) this.appConfigManager.getWatchDogConfig().getBackupConfig().getLastBackupTime() + 3);
-            event.getHook().editOriginalEmbeds(this.getBackupEmbed())
-                    .setActionRow(this.backupButtons).queue();
-
+                this.backupModule.backup();
+                ThreadUtil.sleep((int) this.appConfigManager.getWatchDogConfig().getBackupConfig().getLastBackupTime() + 3);
+                event.getHook().editOriginalEmbeds(this.getBackupEmbed())
+                        .setActionRow(this.backupButtons).queue();
+            });
         }
     }
 
@@ -420,7 +433,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     }
 
     private MessageEmbed getStatsEmbed() {
-
         this.statsButtons.clear();
 
         final Button enable = Button.primary("stats_enable", "Włącz").withEmoji(Emoji.fromUnicode("✅"));
