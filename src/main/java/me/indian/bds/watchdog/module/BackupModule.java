@@ -204,7 +204,7 @@ public class BackupModule {
         final long kb = MathUtil.getKbFromBytesGb(fileSizeBytes);
 
         if (forDiscord) {
-            return " " + gb + " GB " + mb + " MB " + kb + " KB";
+            return gb + " GB " + mb + " MB " + kb + " KB";
         } else {
             return "&b" + gb + "&e GB &b" + mb + "&e MB &b" + kb + "&e KB";
         }
