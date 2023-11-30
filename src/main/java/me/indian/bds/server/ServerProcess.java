@@ -201,7 +201,9 @@ public class ServerProcess {
         }
     }
 
-    private void writeConsoleInput() {
+
+//TODO: zrobić aby było to w klasie głównej / oddzielnej klasie "Console" i działało zawsze 
+    private void writeConsoleInput() { 
         try (final Scanner consoleInput = new Scanner(System.in)) {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
