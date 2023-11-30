@@ -2,12 +2,12 @@ package me.indian.bds.command;
 
 public abstract class Command {
 
-    private final String name;
-    private final String description;
+    private final String name, description, usage;
 
-    public Command(final String name, final String description) {
+    public Command(final String name, final String description, final String usage) {
         this.name = "!" + name;
         this.description = description;
+        this.usage = usage;
     }
 
     public abstract boolean onExecute(String player, String[] args, boolean isOp);
@@ -18,6 +18,10 @@ public abstract class Command {
 
     public String getDescription() {
         return this.description;
+    }
+
+    public String getUsage(){
+        return this.usage;
     }
 
     @Override
