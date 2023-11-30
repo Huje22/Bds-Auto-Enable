@@ -20,6 +20,7 @@ public class HelpCommand extends Command {
     @Override
     public boolean onExecute(final String player, final String[] args, final boolean isOp) {
         this.serverProcess.tellrawToPlayer(player, "&a---------------------");
+        this.serverProcess.tellrawToPlayer(player, "&a!tps&4-&b ilość tików na sekundę servera");
         for (final Command command : this.commandList) {
             this.serverProcess.tellrawToPlayer(player, "&a" + command.getName() + "&4-&b " + command.getDescription());
         }
