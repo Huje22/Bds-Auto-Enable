@@ -24,12 +24,12 @@ public class LinkCommand extends Command {
             final LinkingManager linkingManager = jda.getLinkingManager();
             if (linkingManager == null) {
                 this.serverProcess.tellrawToPlayer(player, "&cCoś poszło nie tak , &bLinkingManager&c jest&4 nullem");
-                return false;
+                return true;
             }
             if (linkingManager.isLinked(player)) {
                 this.serverProcess.tellrawToPlayer(player,
                         "&aTwoje konto jest już połączone z ID:&b " + linkingManager.getIdByName(player));
-                return false;
+                return true;
             }
 
             final String code = MessageUtil.generateCode(6);
@@ -40,6 +40,6 @@ public class LinkCommand extends Command {
         } else {
             this.serverProcess.tellrawToPlayer(player, "&cTen server nie używa integracji z JDA");
         }
-        return false;
+        return true;
     }
 }

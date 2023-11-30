@@ -28,22 +28,19 @@ public class CommandManager {
         this.registerCommand(new LinkCommand(this.bdsAutoEnable));
     }
 
-
-    public void registerCommand(final Command command) {
-        if(this.commandList.stream().anyMatch(command1 -> command1.getName().equals(command.getName()))){
-            throw new RuntimeException("Komenda o nazwie " + command.getName() +" już istnieje!");
+    public <T extends Command> void registerCommand(final T command) {
+        if (this.commandList.stream().anyMatch(command1 -> command1.getName().equals(command.getName()))) {
+            throw new RuntimeException("Komenda o nazwie " + command.getName() + " już istnieje!");
         }
 
         this.commandList.add(command);
     }
 
     public void runCommands(final String playerName, final String commandName, final String[] args, final boolean isOp) {
-        
         for (final Command command : this.commandList) {
             if (command.getName().equals(commandName)) {
-              if (!command.onExecute(playerName, args, isOp)){
-                  //TODO: Gdy zostanie zwrócone false wypisać poprawne użycie komendy 
-                 this.serverProcess.tellrawToPlayer(playerName, command.getUsage());
+                if (!command.onExecute(playerName, args, isOp) && !command.getUsage().isEmpty()) {
+                    this.serverProcess.tellrawToPlayer(playerName, command.getUsage());
                 }
                 return;
             }

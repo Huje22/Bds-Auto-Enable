@@ -23,18 +23,18 @@ public class BackupCommand extends Command {
         final BackupModule backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
         if (backupModule == null) {
             this.serverProcess.tellrawToPlayer(player, "&cNie udało się uzyskać&b Modułu Backupów");
-            return false;
+            return true;
         }
 
         if (!backupModule.isEnabled()) {
             this.serverProcess.tellrawToPlayer(player, "&aBackupy są wyłączone");
-            return false;
+            return true;
         }
 
         if (args.length == 0) {
             if (backupModule.getBackups().size() == 0) {
                 this.serverProcess.tellrawToPlayer(player, "&aBrak backupów");
-                return false;
+                return true;
             }
 
             for (final Path path : backupModule.getBackups()) {
@@ -44,6 +44,6 @@ public class BackupCommand extends Command {
             this.serverProcess.tellrawToPlayer(player, "&aCoś kiedyś tu będzies");
         }
 
-        return false;
+        return true;
     }
 }

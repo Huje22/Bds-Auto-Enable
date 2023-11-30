@@ -10,6 +10,10 @@ public abstract class Command {
         this.usage = usage;
     }
 
+    public Command(final String name, final String description) {
+        this(name, description, "");
+    }
+
     public abstract boolean onExecute(String player, String[] args, boolean isOp);
 
     public String getName() {

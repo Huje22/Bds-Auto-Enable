@@ -21,6 +21,6 @@ public class DeathsCommand extends Command {
             this.serverProcess.tellrawToPlayer(player, s);
         }
         this.serverProcess.tellrawToPlayer(player, "&a---------------------");
-        return false;
+        return true;
     }
 }

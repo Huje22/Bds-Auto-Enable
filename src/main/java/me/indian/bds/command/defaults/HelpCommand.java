@@ -25,6 +25,6 @@ public class HelpCommand extends Command {
             this.serverProcess.tellrawToPlayer(player, "&a" + command.getName() + "&4-&b " + command.getDescription());
         }
         this.serverProcess.tellrawToPlayer(player, "&a---------------------");
-        return false;
+        return true;
     }
 }

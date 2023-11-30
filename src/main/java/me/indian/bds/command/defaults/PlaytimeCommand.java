@@ -28,6 +28,6 @@ public class PlaytimeCommand extends Command {
         this.serverProcess.tellrawToPlayer(player, "&aŁączny czas działania servera: &b"
                 + DateUtil.formatTime(this.serverStats.getTotalUpTime(), "days hours minutes seconds "));
         this.serverProcess.tellrawToPlayer(player, "&a---------------------");
-        return false;
+        return true;
     }
 }
