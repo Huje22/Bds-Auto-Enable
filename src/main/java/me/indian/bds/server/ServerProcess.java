@@ -1,5 +1,19 @@
 package me.indian.bds.server;
 
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.SystemOS;
+import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.exception.BadThreadException;
+import me.indian.bds.logger.LogState;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.manager.ServerManager;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.watchdog.WatchDog;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -12,19 +26,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.exception.BadThreadException;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.manager.ServerManager;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.StatusUtil;
-import me.indian.bds.SystemOS;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.watchdog.WatchDog;
 
 public class ServerProcess {
 
@@ -141,17 +142,14 @@ public class ServerProcess {
                     this.logger.debug("&bPID&r procesu servera to&1 " + this.process.pid());
 
                     final Thread output = new ThreadUtil("Console-Output").newThread(this::readConsoleOutput);
-                    final Thread input = new ThreadUtil("Console-Input").newThread(this::writeConsoleInput);
 
                     output.start();
-                    input.start();
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
                     this.watchDog.getAutoRestartModule().noteRestart();
                     this.serverManager.clearPlayers();
                     this.serverManager.getStatsManager().saveAllData();
                     output.interrupt();
-                    input.interrupt();
                     this.discord.sendDisabledMessage();
                     this.startProcess();
                 } catch (final Exception exception) {
@@ -197,31 +195,6 @@ public class ServerProcess {
                 System.exit(1);
             } finally {
                 consoleOutput.close();
-            }
-        }
-    }
-
-
-//TODO: zrobić aby było to w klasie głównej / oddzielnej klasie "Console" i działało zawsze 
-    private void writeConsoleInput() { 
-        try (final Scanner consoleInput = new Scanner(System.in)) {
-            try {
-                while (!Thread.currentThread().isInterrupted()) {
-                    if (!consoleInput.hasNext()) continue;
-                    final String input = consoleInput.nextLine();
-                    this.sendToConsole(input);
-                    this.logger.instantLogToFile(input);
-                    this.discord.writeConsole(input);
-                }
-            } catch (final Exception exception) {
-                this.logger.critical("Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
-                this.discord.sendEmbedMessage("ServerProcess",
-                        "Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji",
-                        exception,
-                        exception.getLocalizedMessage());
-                this.discord.sendMessage("<owner>");
-
-                System.exit(0);
             }
         }
     }
@@ -277,6 +250,8 @@ public class ServerProcess {
         this.cmdLock.lock();
         this.cmdResponseLock.lock();
         try {
+            if (this.handleCustomCommands(command)) return;
+
             if (!this.isEnabled()) {
                 this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&c nullem&r albo nie jest aktywny");
                 return;
@@ -288,8 +263,6 @@ public class ServerProcess {
                 this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ, OutputStream servera jest&c nullem&r!");
                 return;
             }
-
-            if (this.handleCustomCommands(command)) return;
 
             outputStream.write((command + "\n").getBytes());
             outputStream.flush();

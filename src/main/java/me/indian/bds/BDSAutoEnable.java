@@ -8,10 +8,9 @@ import me.indian.bds.discord.DiscordType;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.webhook.WebHook;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.server.manager.ServerManager;
-import me.indian.bds.version.VersionManager;
 import me.indian.bds.rest.RestWebsite;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
@@ -19,6 +18,7 @@ import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
+import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
 
 import java.io.File;
@@ -93,6 +93,7 @@ public class BDSAutoEnable {
         this.serverManager.getStatsManager().startCountServerTime(this.serverProcess);
         this.serverProcess.startProcess();
         this.versionManager.getVersionUpdater().checkForUpdate();
+        new ConsoleInput(this.scanner, this);
         new AutoMessages(this).start();
         new Metrics(this);
 
@@ -193,7 +194,6 @@ public class BDSAutoEnable {
     private void shutdownHook() {
         final Thread shutdown = new Thread(() -> {
             try {
-                if (this.scanner != null) this.scanner.close();
                 this.serverProcess.instantShutdown();
             } catch (final Exception exception) {
                 this.logger.critical("Wystąpił błąd podczas próby uruchomienia shutdown hooku ", exception);
