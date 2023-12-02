@@ -10,7 +10,6 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
 
@@ -19,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.Map;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -250,8 +248,6 @@ public class ServerProcess {
         this.cmdLock.lock();
         this.cmdResponseLock.lock();
         try {
-            if (this.handleCustomCommands(command)) return;
-
             if (!this.isEnabled()) {
                 this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&c nullem&r albo nie jest aktywny");
                 return;
@@ -358,68 +354,6 @@ public class ServerProcess {
 
     public Process getProcess() {
         return this.process;
-    }
-
-    private boolean handleCustomCommands(final String command) {
-        if (command.startsWith("say")) this.discord.sendPlayerMessage("say", command.substring(3));
-        switch (command.toLowerCase()) {
-            case "stop" -> {
-                this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
-                this.kickAllPlayers(this.prefix + "&cKtoś wykonał &astop &c w konsoli servera , \n co skutkuje  restartem");
-                if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
-                return false;
-            }
-            case "version" -> {
-                this.tellrawToAllAndLogger(this.prefix, "&aWersja minecraft:&b " + this.appConfigManager.getVersionManagerConfig().getVersion(), LogState.INFO);
-                this.tellrawToAllAndLogger(this.prefix, "&aWersja BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion(), LogState.INFO);
-                return true;
-            }
-            case "backup" -> {
-                this.watchDog.getBackupModule().backup();
-                return true;
-            }
-            case "test" -> {
-                for (final Map.Entry<Thread, StackTraceElement[]> entry : Thread.getAllStackTraces().entrySet()) {
-                    final Thread thread = entry.getKey();
-
-                    this.logger.print("Thread ID: " + thread.getId());
-                    this.logger.print("Thread Name: " + thread.getName());
-                    this.logger.print("Thread State: " + thread.getState());
-                    this.logger.print("Thread Is Active: " + thread.isAlive());
-                    this.logger.print("Thread Is Daemon: " + thread.isDaemon());
-                    this.logger.print("Thread Is Interrupted: " + thread.isInterrupted());
-                    this.logger.print("-----------------------------");
-                }
-                return true;
-            }
-            case "stats" -> {
-                for (final String s : StatusUtil.getStatus(false)) {
-                    this.logger.info(s);
-                }
-                return true;
-            }
-            case "playtime" -> {
-                for (final String s : StatusUtil.getTopPlayTime(false, 20)) {
-                    this.logger.info(s);
-                }
-                return true;
-            }
-            case "deaths" -> {
-                for (final String s : StatusUtil.getTopDeaths(false, 20)) {
-                    this.logger.info(s);
-                }
-                return true;
-            }
-            case "update" -> {
-                this.bdsAutoEnable.getVersionManager().getVersionUpdater().updateToLatest();
-                return true;
-            }
-            case "end" -> {
-                this.setCanRun(false);
-                System.exit(0);
-            }
-        }
-        return false;
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {

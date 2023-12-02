@@ -1,8 +1,5 @@
 package me.indian.bds.discord.jda.manager;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.StatsChannelsConfig;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -11,10 +8,13 @@ import me.indian.bds.util.MathUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
 public class StatsChannelsManager {
 
     private final BDSAutoEnable bdsAutoEnable;
-    private final DiscordJda discordJda;
     private final Logger logger;
     private final StatsChannelsConfig statsChannelsConfig;
     private static int latsTPS;
@@ -25,14 +25,13 @@ public class StatsChannelsManager {
 
     public StatsChannelsManager(final BDSAutoEnable bdsAutoEnable, final DiscordJda discordJda) {
         this.bdsAutoEnable = bdsAutoEnable;
-        this.discordJda = discordJda;
         this.logger = this.bdsAutoEnable.getLogger();
         this.statsChannelsConfig = this.bdsAutoEnable.getAppConfigManager().getDiscordConfig()
                 .getBotConfig().getStatsChannelsConfig();
         this.timer = new Timer("Discord Channel Manager Timer", true);
         this.onlinePlayersID = this.statsChannelsConfig.getOnlinePlayersID();
         this.tpsID = this.statsChannelsConfig.getTpsID();
-        this.guild = this.discordJda.getGuild();
+        this.guild = discordJda.getGuild();
 
         latsTPS = 0;
     }
@@ -72,6 +71,7 @@ public class StatsChannelsManager {
 
                 @Override
                 public void run() {
+                    if (!StatsChannelsManager.this.bdsAutoEnable.getServerProcess().isEnabled()) return;
                     final int onlinePlayers = StatsChannelsManager.this.bdsAutoEnable.getServerManager().getOnlinePlayers().size();
                     final int maxPlayers = StatsChannelsManager.this.bdsAutoEnable.getServerProperties().getMaxPlayers();
 

@@ -1,41 +1,55 @@
 package me.indian.bds;
 
+import me.indian.bds.command.CommandManager;
+import me.indian.bds.command.CommandSender;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
 
 import java.util.Scanner;
 
 public class ConsoleInput {
 
+    private final String prefix;
     private final Scanner scanner;
     private final Logger logger;
     private final ServerProcess serverProcess;
     private final DiscordIntegration discord;
+    private final CommandManager commandManager;
 
     public ConsoleInput(final Scanner scanner, final BDSAutoEnable bdsAutoEnable) {
+        this.prefix = "&b[&eConsole&3Input&b] ";
         this.scanner = scanner;
         this.logger = bdsAutoEnable.getLogger();
         this.serverProcess = bdsAutoEnable.getServerProcess();
         this.discord = bdsAutoEnable.getDiscord();
+        this.commandManager = bdsAutoEnable.getCommandManager();
 
         this.handleCommands();
     }
 
     private void handleCommands() {
-
-        //Ulepszyc to , dodac coś jak CommandManager ale dla konsoli
-
         new ThreadUtil("ConsoleInput").newThread(() -> {
             try {
                 while (this.scanner.hasNext()) {
                     final String input = this.scanner.nextLine();
-                    this.serverProcess.sendToConsole(input);
+                    final String[] args = MessageUtil.stringToArgs(input);
+                    final String[] newArgs = MessageUtil.removeArgs(args, 1);
+
+                    final boolean done = this.commandManager.runCommands(CommandSender.CONSOLE,
+                            "CONSOLE", args[0], newArgs, true);
+
                     this.logger.instantLogToFile(input);
                     this.discord.writeConsole(input);
+
+                    if (done) continue;
+
+                    this.someChangesForCommands(args[0]);
+                    this.serverProcess.sendToConsole(input);
                 }
-                System.out.println("Koniec");
             } catch (final Exception exception) {
                 this.logger.critical("Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
                 this.discord.sendEmbedMessage("ServerProcess",
@@ -46,5 +60,15 @@ public class ConsoleInput {
                 System.exit(0);
             }
         }).start();
+    }
+
+    private void someChangesForCommands(final String command) {
+        switch (command.toLowerCase()) {
+            case "stop" -> {
+                this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
+                this.serverProcess.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
+                if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
+            }
+        }
     }
 }

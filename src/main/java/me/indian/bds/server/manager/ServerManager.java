@@ -1,6 +1,7 @@
 package me.indian.bds.server.manager;
 
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.command.CommandSender;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.logger.Logger;
@@ -186,7 +187,7 @@ public class ServerManager {
         // boolean isOp narazie nie działa bo Mojang rozjebało BDS i zawsze zwraca on false
 
         final String[] newArgs = MessageUtil.removeArgs(args, 1);
-        this.bdsAutoEnable.getCommandManager().runCommands(playerCommand, args[0], newArgs, isOp);
+        this.bdsAutoEnable.getCommandManager().runCommands(CommandSender.PLAYER, playerCommand, args[0], newArgs, isOp);
     }
 
     public StatsManager getStatsManager() {
