@@ -65,6 +65,7 @@ public class ConsoleInput {
     private void someChangesForCommands(final String command) {
         switch (command.toLowerCase()) {
             case "stop" -> {
+                if(!this.serverProcess.isEnabled()) return;
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
                 this.serverProcess.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
                 if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
