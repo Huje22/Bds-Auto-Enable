@@ -3,6 +3,7 @@ package me.indian.bds.command.defaults;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.command.CommandSender;
+import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
 
 import java.nio.file.Path;
@@ -38,8 +39,10 @@ public class BackupCommand extends Command {
             for (final Path path : backupModule.getBackups()) {
                 this.sendMessage("&a" + path.getFileName() + " Rozmiar: ` " + backupModule.getBackupSize(path.toFile(), false) + "`");
             }
-        } else if (args[0].equals("do")) {
-            this.sendMessage("&aCoś kiedyś tu będziesz");
+        } else if (args[0].equals("do") && isOp) {
+            backupModule.backup();
+            ThreadUtil.sleep(2);
+            this.sendMessage(backupModule.getStatus());
         }
 
         return true;
