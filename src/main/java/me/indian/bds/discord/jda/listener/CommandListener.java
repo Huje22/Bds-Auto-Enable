@@ -391,7 +391,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                     event.getHook().editOriginal("Backup jest już robiony!").queue();
                     return;
                 }
-                if (this.serverProcess.isEnabled()) {
+                if (!this.serverProcess.isEnabled()) {
                     event.getHook().editOriginal("Server jest wyłączony!").queue();
                     return;
                 }
