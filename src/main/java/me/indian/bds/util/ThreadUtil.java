@@ -9,22 +9,26 @@ public final class ThreadUtil implements ThreadFactory {
 
     private final String threadName;
     private final Runnable runnable;
-    private final boolean deamon;
+    private final boolean daemon;
     private int threadCount;
 
     public ThreadUtil(final String threadName) {
        this(threadName , null, false);
     }
 
+    public ThreadUtil(final String threadName , final boolean daemon){
+        this(threadName, null, daemon);
+    }
+
     public ThreadUtil(final String threadName,final Runnable runnable) {
        this(threadName , runnable, false);
     }
 
-    public ThreadUtil(final String threadName, final Runnable runnable, final boolean deamon) {
+    public ThreadUtil(final String threadName, final Runnable runnable, final boolean daemon) {
         this.threadName = threadName + "-%b";
         this.runnable = runnable;
         this.threadCount = 0;
-        this.deamon = deamon;
+        this.daemon = daemon;
     }
 
     public static void sleep(final int seconds) {
@@ -61,14 +65,14 @@ public final class ThreadUtil implements ThreadFactory {
     public Thread newThread(@NotNull final Runnable runnable) {
         final Thread thread = new Thread(runnable);
         thread.setName(this.generateThreadName());
-        thread.setDaemon(deamon);
+        thread.setDaemon(this.daemon);
         return thread;
     }
 
     public Thread newThread() {
         final Thread thread = new Thread(this.runnable);
         thread.setName(this.generateThreadName());
-        thread.setDaemon(deamon);
+        thread.setDaemon(this.daemon);
         return thread;
     }
 
