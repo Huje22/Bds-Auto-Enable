@@ -95,7 +95,7 @@ public class DiscordJda implements DiscordIntegration {
         try {
             this.jda = JDABuilder.create(this.discordConfig.getBotConfig().getToken(), GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.MESSAGE_CONTENT)
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS, CacheFlag.ONLINE_STATUS)
-                    .enableCache(CacheFlag.EMOJI)
+                    .enableCache(CacheFlag.EMOJI, CacheFlag.CLIENT_STATUS)
                     .setEnableShutdownHook(false)
                     .build();
             this.jda.awaitReady();
@@ -208,6 +208,12 @@ public class DiscordJda implements DiscordIntegration {
         return (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");
     }
 
+public List<Member> getAllServerChannelMembers() {
+    return textChannel.getMembers().stream()
+            .filter(member -> !member.getUser().isBot())
+            .toList();
+}
+    
     private void customStatusUpdate() {
         final Timer timer = new Timer("Discord Status Changer", true);
         final TimerTask statusTask = new TimerTask() {
