@@ -19,6 +19,8 @@ import java.io.FileWriter;
 import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -33,6 +35,7 @@ public class LinkingManager {
     private final File linkedAccountsJson;
     private final HashMap<String, Long> linkedAccounts;
     private final HashMap<String, String> accountsToLink;
+    private final List<Member> linkedMembers;
 
     public LinkingManager(final BDSAutoEnable bdsAutoEnable, final DiscordJda discordJda) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -43,6 +46,7 @@ public class LinkingManager {
         this.createJson();
         this.linkedAccounts = this.loadLinkedAccounts();
         this.accountsToLink = new HashMap<>();
+        this.linkedMembers = new ArrayList<>();
 
         this.startTasks();
     }
@@ -112,6 +116,18 @@ public class LinkingManager {
 
     public HashMap<String, Long> getLinkedAccounts() {
         return this.linkedAccounts;
+    }
+
+    public List<Member> getLinkedMembers(){
+        this.linkedMembers.clear();
+
+        for (final Map.Entry<String, Long> map : this.linkedAccounts.entrySet()) {
+            final Member member = this.discordJda.getGuild().getMemberById(map.getValue());
+            if (member == null) continue;
+            this.linkedMembers.add(member);
+        }
+
+        return this.linkedMembers;
     }
 
     public void saveLinedAccounts() {
