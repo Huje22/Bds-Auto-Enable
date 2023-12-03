@@ -94,7 +94,7 @@ public class DiscordJda implements DiscordIntegration {
 
         try {
             this.jda = JDABuilder.create(this.discordConfig.getBotConfig().getToken(), GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.MESSAGE_CONTENT)
-                    .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS, CacheFlag.ONLINE_STATUS)
+                    .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE)
                     .enableCache(CacheFlag.EMOJI, CacheFlag.CLIENT_STATUS)
                     .setEnableShutdownHook(false)
                     .build();
