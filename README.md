@@ -77,7 +77,10 @@ paczka jest najwyżej)**
 
 # Program nie wspiera
 
-* Wtyczek do Minecraft
+* Wtyczek do Minecraft ani czytania pakietów z Minecraft
+
+# Projekty które powinienem kiedyś uwzględnić
+https://github.com/hesslink111/Minecraft-Telegram-Bot <br>
 
 # Szybkie info
 
