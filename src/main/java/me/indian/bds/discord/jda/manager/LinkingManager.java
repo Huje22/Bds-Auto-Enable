@@ -184,9 +184,9 @@ public class LinkingManager {
             if (member == null) continue;
             if (guild.getSelfMember().canInteract(member)) member.modifyNickname(this.getNameByID(id)).queue();
 
+//TODO: Zmieniać nick tylko wtedy gdy nie równa się nickowi z mc
+            
             final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager().getPlayTimeByName(name), TimeUnit.MILLISECONDS);
-
-            if (hours < 5) continue;
 
             final Role playtimeRole = guild.getRoleById(this.appConfigManager.getDiscordConfig()
                     .getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID());
@@ -194,7 +194,7 @@ public class LinkingManager {
             final Role linkingRole = guild.getRoleById(this.appConfigManager.getDiscordConfig()
                     .getBotConfig().getLinkingConfig().getLinkedRoleID());
 
-            if (playtimeRole != null && !member.getRoles().contains(playtimeRole) && guild.getSelfMember().canInteract(playtimeRole)) {
+            if (hours < 5&& playtimeRole != null && !member.getRoles().contains(playtimeRole) && guild.getSelfMember().canInteract(playtimeRole)) {
                 guild.addRoleToMember(member, playtimeRole).queue();
             }
 
