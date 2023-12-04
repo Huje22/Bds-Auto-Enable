@@ -6,6 +6,7 @@ import me.indian.bds.command.CommandSender;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
 
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class BackupCommand extends Command {
@@ -37,9 +38,15 @@ public class BackupCommand extends Command {
             }
 
             for (final Path path : backupModule.getBackups()) {
-                this.sendMessage("&a" + path.getFileName() + " Rozmiar: ` " + backupModule.getBackupSize(path.toFile(), false) + "`");
+                if (!Files.exists(path)) continue;
+                this.sendMessage("&a" + path.getFileName() + " Rozmiar: " + backupModule.getBackupSize(path.toFile(), false));
             }
-        } else if (args[0].equals("do") && isOp) {
+        }
+        if (args[0].equals("do")) {
+            if (isOp) {
+                this.sendMessage("&cPotrzebujesz wyższych uprawnień");
+                return true;
+            }
             backupModule.backup();
             ThreadUtil.sleep(2);
             this.sendMessage(backupModule.getStatus());

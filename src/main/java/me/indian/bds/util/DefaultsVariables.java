@@ -1,20 +1,21 @@
 package me.indian.bds.util;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
-import java.time.ZoneId;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.SystemOS;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.logger.Logger;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.InputStreamReader;
+import java.time.ZoneId;
+import java.util.concurrent.TimeUnit;
+
 public final class DefaultsVariables {
 
     private static AppConfig APPCONFIG;
     private static Logger LOGGER;
-    private static boolean WINE;
+    public static boolean WINE;
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         APPCONFIG = bdsAutoEnable.getAppConfigManager().getAppConfig();
@@ -62,10 +63,6 @@ public final class DefaultsVariables {
 
     public static String getWorldsPath() {
         return APPCONFIG.getFilesPath() + File.separator + "worlds" + File.separator;
-    }
-
-    public static boolean hasWine() {
-        return WINE;
     }
 
     public static boolean isPolisTimeZone() {

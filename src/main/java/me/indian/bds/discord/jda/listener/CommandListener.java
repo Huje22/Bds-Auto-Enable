@@ -505,6 +505,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
         for (final Path path : this.backupModule.getBackups()) {
             final String fileName = path.getFileName().toString();
+            if (!Files.exists(path)) continue;
             if (!(this.backupButtons.size() == 5)) {
                 this.backupButtons.add(Button.danger("delete_backup:" + fileName, "Usuń " + fileName)
                         .withEmoji(Emoji.fromUnicode("🗑️")));

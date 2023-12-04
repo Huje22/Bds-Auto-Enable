@@ -7,7 +7,9 @@ import me.indian.bds.command.defaults.HelpCommand;
 import me.indian.bds.command.defaults.LinkCommand;
 import me.indian.bds.command.defaults.PlaytimeCommand;
 import me.indian.bds.command.defaults.VersionCommand;
+import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.server.ServerProcess;
+import net.dv8tion.jda.api.Permission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,13 +40,14 @@ public class CommandManager {
         this.commandList.add(command);
     }
 
-    public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, final boolean isOp) {
+    public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, boolean isOp) {
         for (final Command command : this.commandList) {
             if (command.getName().equals(commandName)) {
                 command.setCommandSender(sender);
                 command.setBdsAutoEnable(this.bdsAutoEnable);
                 command.setPlayerName(playerName);
 
+                if (sender == CommandSender.PLAYER) isOp = this.timeOp(playerName);
                 if (!command.onExecute(sender, args, isOp) && !command.getUsage().isEmpty()) {
                     switch (sender) {
                         case CONSOLE -> this.bdsAutoEnable.getLogger().print(command.getUsage());
@@ -59,6 +62,14 @@ public class CommandManager {
             this.serverProcess.tellrawToPlayer(playerName, "&cNie znaleziono takiego polecenia");
         }
 
+        return false;
+    }
+
+    private boolean timeOp(final String name) {
+        //Ta metoda jest do czasu aż mojang nie naprawi w scriptAPI metody `isOp()`
+        if (this.bdsAutoEnable.getDiscord() instanceof final DiscordJda jda) {
+            return jda.getLinkingManager().hasPermissions(name, Permission.ADMINISTRATOR);
+        }
         return false;
     }
 }

@@ -39,11 +39,11 @@ public class ConsoleInput {
                     final String[] args = MessageUtil.stringToArgs(input);
                     final String[] newArgs = MessageUtil.removeArgs(args, 1);
 
-                    final boolean done = this.commandManager.runCommands(CommandSender.CONSOLE,
-                            "CONSOLE", args[0], newArgs, true);
-
                     this.logger.instantLogToFile(input);
                     this.discord.writeConsole(input);
+
+                    final boolean done = this.commandManager.runCommands(CommandSender.CONSOLE,
+                            "CONSOLE", args[0], newArgs, true);
 
                     if (done) continue;
 

@@ -42,7 +42,10 @@ public class PackModule {
         this.pack = new File(this.behaviorsFolder.getPath() + File.separator + "BDS-Auto-Enable-Managment-Pack");
         this.worldBehaviorsJson = new File(backupModule.getWorldFile().getPath() + File.separator + "world_behavior_packs.json");
         if (!this.behaviorsFolder.exists()) {
-            this.behaviorsFolder.mkdirs();
+            if (!this.behaviorsFolder.mkdirs()) {
+                this.logger.critical("Wystąpił poważny błąd przy tworzeniu&b world_behavior_packs.json");
+                System.exit(0);
+            }
         }
 
         if (!this.worldBehaviorsJson.exists()) {
@@ -167,7 +170,8 @@ public class PackModule {
         try (final FileWriter writer = new FileWriter(this.worldBehaviorsJson.getPath())) {
             writer.write("[]");
         } catch (final IOException exception) {
-            exception.printStackTrace();
+            this.logger.critical("Wystąpił krytyczny błąd z&b world_behavior_packs.json", exception);
+            System.exit(0);
         }
     }
 

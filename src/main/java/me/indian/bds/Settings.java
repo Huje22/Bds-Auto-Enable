@@ -68,7 +68,7 @@ public class Settings {
 
         this.logger.print();
 
-        if (DefaultsVariables.hasWine()) {
+        if (DefaultsVariables.WINE) {
             this.appConfig.setWine(scannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
                         this.logger.info("&n&lWykryliśmy &r&bWINE&r&n&l czy użyć go?&r (Domyślnie: " + defaultValue + ")" + this.enter);
@@ -297,7 +297,7 @@ public class Settings {
         this.logger.print();
         this.logger.info("&e----------&bAplikacja&e----------");
         this.logger.info("System:&1 " + DefaultsVariables.getSystem());
-        this.logger.info("Wine:&1 " + this.appConfig.isWine() + (DefaultsVariables.hasWine() ? " &d(&bPosiadasz&d)" : ""));
+        this.logger.info("Wine:&1 " + this.appConfig.isWine() + (DefaultsVariables.WINE ? " &d(&bPosiadasz&d)" : ""));
         this.logger.info("Ścieżka plików:&1 " + this.appConfig.getFilesPath());
         this.logger.info("Wersja:&1 " + this.versionManagerConfig.getVersion());
 
@@ -402,7 +402,7 @@ public class Settings {
                             (input) -> this.logger.info("Default Player Permission Level ustawiono na:&1 " + input)
                     ).toUpperCase());
         } catch (final IllegalArgumentException exception) {
-            this.logger.error("Podano nieznany poziom uprawnień gracza, ustawiliśmy go dla ciebie na:&1 " + PlayerPermissionLevel.MEMBER.getPermissionName());
+            this.logger.error("Podano nieznany poziom uprawnień gracza, ustawiliśmy go dla ciebie na:&1 " + PlayerPermissionLevel.MEMBER.getPermissionName(), exception);
             playerPermissionLevel = PlayerPermissionLevel.MEMBER;
         }
         this.serverProperties.setDefaultPlayerPermissionLevel(playerPermissionLevel);
@@ -424,8 +424,7 @@ public class Settings {
                             (input) -> this.logger.info("Server Authoritative Movement ustawiono na:&1 " + input)
                     ).toUpperCase());
         } catch (final Exception exception) {
-            exception.printStackTrace();
-            this.logger.error("Podano nieznany typ uwierzytelnienia poruszania sie , ustawiliśmy go dla ciebie na:&b " + ServerMovementAuth.SERVER_AUTH.getAuthName());
+            this.logger.error("Podano nieznany typ uwierzytelnienia poruszania sie , ustawiliśmy go dla ciebie na:&b " + ServerMovementAuth.SERVER_AUTH.getAuthName(), exception);
             serverMovementAuth = ServerMovementAuth.SERVER_AUTH;
         }
         this.serverProperties.setServerAuthoritativeMovement(serverMovementAuth);

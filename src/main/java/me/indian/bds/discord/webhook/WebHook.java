@@ -51,15 +51,15 @@ public class WebHook implements DiscordIntegration {
                 connection.setDoOutput(true);
 
                 final String finalMessage = message
-                        .replaceAll("<owner>", "")
-                        .replaceAll("@", "\\@");
-                
+                        .replaceAll("<owner>", "");
+
+
                 final JsonObject jsonPayload = new JsonObject();
                 jsonPayload.addProperty("content", finalMessage);
                 jsonPayload.addProperty("username", this.name);
                 jsonPayload.addProperty("avatar_url", this.avatarUrl);
                 jsonPayload.addProperty("tts", false);
-                
+
                 if (finalMessage.isEmpty()) {
                     this.logger.error("Nie można wysłać pustej wiadomości!");
                     return;

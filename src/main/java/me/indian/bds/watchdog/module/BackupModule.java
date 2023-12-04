@@ -170,7 +170,7 @@ public class BackupModule {
         this.backups.clear();
         try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(this.backupFolder.getPath()))) {
             for (final Path path : directoryStream) {
-                if (Files.isRegularFile(path) && path.toString().endsWith(".zip")) {
+                if (Files.isRegularFile(path) && path.toString().endsWith(".zip") && Files.exists(path)) {
                     this.backups.add(path);
                 }
             }

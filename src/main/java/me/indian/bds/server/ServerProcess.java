@@ -112,7 +112,7 @@ public class ServerProcess {
                     switch (this.system) {
                         case LINUX -> {
                             if (this.appConfigManager.getAppConfig().isWine()) {
-                                if (!DefaultsVariables.hasWine()) {
+                                if (!DefaultsVariables.WINE) {
                                     this.logger.critical("^#cNIE POSIADASZ ^#1WINE^#C!");
                                     System.exit(0);
                                     return;
@@ -280,7 +280,7 @@ public class ServerProcess {
         }
 
         if (thread.isInterrupted()) {
-            return "Ten wątek (" + thread.getName() + ") został przerwany, nie można na nim wykonać tej metody.";
+            throw new RuntimeException("Ten wątek (" + thread.getName() + ") został przerwany, nie można na nim wykonać tej metody.");
         }
 
         this.cmdResponseLock.lock();
