@@ -151,6 +151,7 @@ public class BackupModule {
             } catch (final Exception exception) {
                 this.status = "Nie udało sie utworzyć kopij zapasowej";
                 this.discord.sendMessage(this.status, exception);
+                //TODO: Dodać wiadomości tylko gdy wysyłana jest wiadomości o zrobieniu backup 
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4" + this.status, exception, LogState.CRITICAL);
                 if (backup.delete()) {
                     this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUsunięto błędny backup", LogState.INFO);
