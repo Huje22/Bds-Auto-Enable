@@ -155,6 +155,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             rawMessage += this.discordConfig.getDiscordMessagesConfig().getAttachment();
         }
 
+        //TODO: Robić to po member, a gdy member jest pusty (lista) po user 
         for (final User user : message.getMentions().getUsers()) {
             if (user == null) continue;
             final long id = user.getIdLong();
