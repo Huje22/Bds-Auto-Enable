@@ -17,7 +17,7 @@ public class HelpCommand extends Command {
     @Override
     public boolean onExecute(final CommandSender sender, final String[] args, final boolean isOp) {
         this.sendMessage("&a---------------------");
-        this.sendMessage("&a!tps&4-&b ilość tików na sekundę servera");
+        if (sender == CommandSender.PLAYER) this.sendMessage("&a!tps&4-&b ilość tików na sekundę servera");
         for (final Command command : this.commandList) {
             this.sendMessage("&a" + command.getName() + "&4-&b " + command.getDescription());
         }
