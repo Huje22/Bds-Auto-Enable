@@ -2,7 +2,6 @@ package me.indian.bds.command.defaults;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
-import me.indian.bds.command.CommandSender;
 import me.indian.bds.server.ServerStats;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.StatusUtil;
@@ -17,7 +16,7 @@ public class PlaytimeCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final CommandSender sender, final String[] args, final boolean isOp) {
+    public boolean onExecute(final String[] args, final boolean isOp) {
         this.sendMessage("&a---------------------");
         for (final String s : StatusUtil.getTopPlayTime(false, 10)) {
             this.sendMessage(s);

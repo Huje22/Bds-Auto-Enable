@@ -2,7 +2,7 @@ package me.indian.bds.command.defaults;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
-import me.indian.bds.command.CommandSender;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
 
@@ -19,7 +19,7 @@ public class BackupCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final CommandSender sender, final String[] args, final boolean isOp) {
+    public boolean onExecute(final String[] args, final boolean isOp) {
         final BackupModule backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
         if (backupModule == null) {
             this.sendMessage("&cNie udało się uzyskać&b Modułu Backupów");
@@ -34,9 +34,12 @@ public class BackupCommand extends Command {
         if (args.length == 0) {
             if (backupModule.getBackups().size() == 0) {
                 this.sendMessage("&aBrak backupów");
+                this.sendMessage("&aNastępny backup za:&b " + DateUtil.formatTime(backupModule.calculateMillisUntilNextBackup(), "days hours minutes seconds millis"));
+
                 return true;
             }
 
+            this.sendMessage("&aNastępny backup za:&b " + DateUtil.formatTime(backupModule.calculateMillisUntilNextBackup(), "days hours minutes seconds millis"));
             for (final Path path : backupModule.getBackups()) {
                 if (!Files.exists(path)) continue;
                 this.sendMessage("&a" + path.getFileName() + " Rozmiar: " + backupModule.getBackupSize(path.toFile(), false));

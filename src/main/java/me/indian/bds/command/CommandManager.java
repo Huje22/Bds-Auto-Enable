@@ -28,8 +28,11 @@ public class CommandManager {
         this.registerCommand(new BackupCommand(this.bdsAutoEnable));
         this.registerCommand(new PlaytimeCommand(this.bdsAutoEnable));
         this.registerCommand(new DeathsCommand());
-        this.registerCommand(new LinkCommand(this.bdsAutoEnable));
         this.registerCommand(new VersionCommand(this.bdsAutoEnable));
+
+        if (bdsAutoEnable.getDiscord() instanceof DiscordJda) {
+            this.registerCommand(new LinkCommand(this.bdsAutoEnable));
+        }
     }
 
     public <T extends Command> void registerCommand(final T command) {
@@ -44,11 +47,11 @@ public class CommandManager {
         for (final Command command : this.commandList) {
             if (command.getName().equals(commandName)) {
                 command.setCommandSender(sender);
-                command.setBdsAutoEnable(this.bdsAutoEnable);
+                command.init(this.bdsAutoEnable);
                 command.setPlayerName(playerName);
 
                 if (sender == CommandSender.PLAYER) isOp = this.timeOp(playerName);
-                if (!command.onExecute(sender, args, isOp) && !command.getUsage().isEmpty()) {
+                if (!command.onExecute(args, isOp) && !command.getUsage().isEmpty()) {
                     switch (sender) {
                         case CONSOLE -> this.bdsAutoEnable.getLogger().print(command.getUsage());
                         case PLAYER -> this.serverProcess.tellrawToPlayer(playerName, command.getUsage());
