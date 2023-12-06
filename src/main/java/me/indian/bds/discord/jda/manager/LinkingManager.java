@@ -17,10 +17,10 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -182,10 +182,13 @@ public class LinkingManager {
             final Member member = guild.getMemberById(id);
 
             if (member == null) continue;
-            if (guild.getSelfMember().canInteract(member)) member.modifyNickname(this.getNameByID(id)).queue();
+            if (guild.getSelfMember().canInteract(member)) {
+                final String minecraftName = this.getNameByID(id);
+                if (member.getNickname() == null || !member.getNickname().equals(minecraftName)) {
+                    member.modifyNickname(minecraftName).queue();
+                }
+            }
 
-//TODO: Zmieniać nick tylko wtedy gdy nie równa się nickowi z mc
-            
             final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager().getPlayTimeByName(name), TimeUnit.MILLISECONDS);
 
             final Role playtimeRole = guild.getRoleById(this.appConfigManager.getDiscordConfig()

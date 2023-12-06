@@ -22,6 +22,7 @@ import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import java.awt.Color;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter implements JDAListener {
@@ -149,17 +150,25 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     }
 
     private String generateRawMessage(final Message message) {
+        final List<Member> members = message.getMentions().getMembers();
         String rawMessage = MessageUtil.fixMessage(message.getContentRaw());
 
         if (!message.getAttachments().isEmpty()) {
             rawMessage += this.discordConfig.getDiscordMessagesConfig().getAttachment();
         }
 
-        //TODO: Robić to po member, a gdy member jest pusty (lista) po user 
-        for (final User user : message.getMentions().getUsers()) {
-            if (user == null) continue;
-            final long id = user.getIdLong();
-            rawMessage = rawMessage.replaceAll("<@" + id + ">", "@" + this.discordJda.getUserName(null, user));
+        if (members.isEmpty()) {
+            for (final User user : message.getMentions().getUsers()) {
+                if (user == null) continue;
+                final long id = user.getIdLong();
+                rawMessage = rawMessage.replaceAll("<@" + id + ">", "@" + this.discordJda.getUserName(null, user));
+            }
+        } else {
+            for (final Member member : members) {
+                if (member == null) continue;
+                final long id = member.getIdLong();
+                rawMessage = rawMessage.replaceAll("<@" + id + ">", "@" + this.discordJda.getUserName(member, member.getUser()));
+            }
         }
 
         for (final GuildChannel guildChannel : message.getMentions().getChannels()) {
