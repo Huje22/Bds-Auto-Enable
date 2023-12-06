@@ -150,13 +150,14 @@ public class BackupModule {
                 this.status = "Utworzono backup";
             } catch (final Exception exception) {
                 this.status = "Nie udało sie utworzyć kopij zapasowej";
-                this.discord.sendMessage(this.status, exception);
-                //TODO: Dodać wiadomości tylko gdy wysyłana jest wiadomości o zrobieniu backup 
+                if(this.appConfigManager.getDiscordConfig().getDiscordMessagesOptionsConfig().isSendBackupFailMessage()){
+                    this.discord.sendEmbedMessage("Backup" , this.status , exception , exception.getMessage());
+                }
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4" + this.status, exception, LogState.CRITICAL);
                 if (backup.delete()) {
                     this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUsunięto błędny backup", LogState.INFO);
                 } else {
-                    this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można usunąć błędnego backupa", LogState.INFO);
+                    this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można usunąć błędnego backupa", LogState.ERROR);
                 }
             } finally {
                 this.backuping = false;

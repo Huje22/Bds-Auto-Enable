@@ -9,6 +9,9 @@ public class MessagesOptionsConfig extends OkaeriConfig {
     @Comment({"Wysyłać wiadomość o zrobieniu backup"})
     private boolean sendBackupMessage = false;
     @Comment({""})
+    @Comment({"Wysyłać wiadomość o nie zrobieniu backup"})
+    private boolean sendBackupFailMessage = false;
+    @Comment({""})
     @Comment({"Wysyłać wiadomość o dołączeniu gracza"})
     private boolean sendJoinMessage = true;
     @Comment({""})
@@ -44,6 +47,10 @@ public class MessagesOptionsConfig extends OkaeriConfig {
 
     public boolean isSendBackupMessage() {
         return this.sendBackupMessage;
+    }
+
+    public boolean isSendBackupFailMessage() {
+        return this.sendBackupFailMessage;
     }
 
     public boolean isSendJoinMessage() {
