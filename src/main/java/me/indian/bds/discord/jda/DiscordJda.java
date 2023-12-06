@@ -10,6 +10,7 @@ import me.indian.bds.discord.jda.listener.MentionPatternCacheListener;
 import me.indian.bds.discord.jda.listener.MessageListener;
 import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.discord.jda.manager.StatsChannelsManager;
+import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
@@ -74,7 +75,7 @@ public class DiscordJda implements DiscordIntegration {
 
         this.listeners.add(new CommandListener(this, this.bdsAutoEnable));
         this.listeners.add(new MessageListener(this, this.bdsAutoEnable));
-        this.listeners.add(new MentionPatternCacheListener(this.mentionPatternCache));
+        this.listeners.add(new MentionPatternCacheListener(this, this.mentionPatternCache));
 
     }
 
@@ -93,15 +94,15 @@ public class DiscordJda implements DiscordIntegration {
         }
 
         try {
-            this.jda = JDABuilder.create(this.discordConfig.getBotConfig().getToken(), GatewayIntent.GUILD_MEMBERS, GatewayIntent.GUILD_MESSAGES, GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.MESSAGE_CONTENT)
-                    .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE)
-                    .enableCache(CacheFlag.EMOJI, CacheFlag.CLIENT_STATUS)
+            this.jda = JDABuilder.create(this.discordConfig.getBotConfig().getToken(), this.getGatewayIntents())
+                    .disableCache(this.getDisableCacheFlag())
+                    .enableCache(this.getEnableCacheFlag())
                     .setEnableShutdownHook(false)
                     .build();
             this.jda.awaitReady();
             this.logger.info("&aZaładowano bota");
         } catch (final Exception exception) {
-            this.logger.critical("&aNie można uruchomić bota , sprawdź podany &bTOKEN", exception);
+            this.logger.error("&cNie można uruchomić bota", exception);
             return;
         }
 
@@ -165,6 +166,30 @@ public class DiscordJda implements DiscordIntegration {
         this.leaveGuilds();
     }
 
+    private List<GatewayIntent> getGatewayIntents() {
+        final List<GatewayIntent> gatewayIntents = new ArrayList<>();
+        gatewayIntents.add(GatewayIntent.GUILD_PRESENCES);
+        gatewayIntents.add(GatewayIntent.GUILD_MEMBERS);
+        gatewayIntents.add(GatewayIntent.GUILD_MESSAGES);
+        gatewayIntents.add(GatewayIntent.GUILD_EMOJIS_AND_STICKERS);
+        gatewayIntents.add(GatewayIntent.MESSAGE_CONTENT);
+        return gatewayIntents;
+    }
+
+    private List<CacheFlag> getDisableCacheFlag() {
+        final List<CacheFlag> disable = new ArrayList<>();
+        disable.add(CacheFlag.ACTIVITY);
+        disable.add(CacheFlag.VOICE_STATE);
+        return disable;
+    }
+
+    private List<CacheFlag> getEnableCacheFlag() {
+        final List<CacheFlag> enable = new ArrayList<>();
+        enable.add(CacheFlag.EMOJI);
+        enable.add(CacheFlag.CLIENT_STATUS);
+        return enable;
+    }
+
     private void checkBotPermissions() {
         final Member botMember = this.guild.getMember(this.jda.getSelfUser());
         if (botMember == null) return;
@@ -208,12 +233,27 @@ public class DiscordJda implements DiscordIntegration {
         return (this.guild.getOwner() == null ? " " : "<@" + this.guild.getOwner().getIdLong() + ">");
     }
 
-public List<Member> getAllServerChannelMembers() {
-    return textChannel.getMembers().stream()
-            .filter(member -> !member.getUser().isBot())
-            .toList();
-}
-    
+    public String getRoleColor(final Role role) {
+        if (role == null) return "";
+        final Color col = role.getColor();
+        return ConsoleColors.getMinecraftColorFromRGB(col.getRed(), col.getGreen(), col.getBlue());
+    }
+
+    public String getColoredRole(final Role role) {
+        return role == null ? "" : (this.getRoleColor(role) + "@" + role.getName() + "&r");
+    }
+
+    public List<Member> getAllChannelMembers(final TextChannel textChannel) {
+        return textChannel.getMembers().stream()
+                .filter(member -> !member.getUser().isBot())
+                .toList();
+    }
+
+    private List<Member> getGuildMembers(final Guild guild) {
+        return guild.getMembers().stream()
+                .filter(member -> !member.getUser().isBot()).sorted(Comparator.comparing(Member::getTimeJoined)).toList();
+    }
+
     private void customStatusUpdate() {
         final Timer timer = new Timer("Discord Status Changer", true);
         final TimerTask statusTask = new TimerTask() {
@@ -270,13 +310,8 @@ public List<Member> getAllServerChannelMembers() {
         }
     }
 
-    private List<Member> getMembersOfGuild(final Guild guild) {
-        return guild.getMembers().stream()
-                .filter(member -> !member.getUser().isBot()).sorted(Comparator.comparing(Member::getTimeJoined)).toList();
-    }
-
-    //Kod lekko przerobiony z https://github.com/DiscordSRV/DiscordSRV/blob/master/src/main/java/github/scarsz/discordsrv/util/DiscordUtil.java#L135
     private String convertMentionsFromNames(String message) {
+        //Kod lekko przerobiony z https://github.com/DiscordSRV/DiscordSRV/blob/master/src/main/java/github/scarsz/discordsrv/util/DiscordUtil.java#L135
         if (!message.contains("@")) return message;
 
         final Map<Pattern, String> patterns = new HashMap<>();
@@ -483,7 +518,7 @@ public List<Member> getAllServerChannelMembers() {
     }
 
     @Override
-    public void startShutdown(){
+    public void startShutdown() {
         if (this.linkingManager != null) this.linkingManager.saveLinedAccounts();
         if (this.statsChannelsManager != null) this.statsChannelsManager.onShutdown();
     }
