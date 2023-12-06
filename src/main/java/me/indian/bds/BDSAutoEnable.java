@@ -144,6 +144,7 @@ public class BDSAutoEnable {
                 System.exit(-2137);
             } else {
                 this.logger.warning("&aDebug włączony, omijasz wymóg &bUTF-8&a na własne&c ryzyko&c!");
+                System.setProperty("file.encoding", "UTF-8");
             }
         } else {
             this.logger.debug("Wykryto wspierane kodowanie");
