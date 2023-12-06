@@ -180,6 +180,8 @@ public class DiscordJda implements DiscordIntegration {
         final List<CacheFlag> disable = new ArrayList<>();
         disable.add(CacheFlag.ACTIVITY);
         disable.add(CacheFlag.VOICE_STATE);
+//        disable.add(CacheFlag.CLIENT_STATUS);
+//        disable.add(CacheFlag.ONLINE_STATUS);
         return disable;
     }
 
