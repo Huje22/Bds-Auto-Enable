@@ -1,13 +1,14 @@
 package me.indian.bds.server.properties;
 
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.version.VersionManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Properties;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.version.VersionManager;
-import me.indian.bds.util.MathUtil;
 
 public class ServerProperties {
 
@@ -82,6 +83,21 @@ public class ServerProperties {
 
     public void setWorldName(final String name) {
         this.properties.setProperty("level-name", name);
+        this.reloadServerProperties();
+    }
+
+    public String getMOTD() {
+        try {
+            return this.properties.getProperty("server-name");
+        } catch (final Exception exception) {
+            this.logger.debug("", exception);
+            this.setMOTD("BDS-Auto-Enable Server");
+            return "BDS-Auto-Enable Server";
+        }
+    }
+
+    public void setMOTD(final String name) {
+        this.properties.setProperty("server-name", name);
         this.reloadServerProperties();
     }
 
