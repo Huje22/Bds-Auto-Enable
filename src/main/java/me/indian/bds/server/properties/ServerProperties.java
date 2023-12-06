@@ -118,15 +118,13 @@ public class ServerProperties {
                 return Difficulty.NORMAL;
             } else if (difficulty1.equalsIgnoreCase("hard") || difficulty2 == 3) {
                 return Difficulty.HARD;
-            } else {
-                return Difficulty.EASY;
             }
 
         } catch (final Exception exception) {
             this.logger.debug("", exception);
             this.setDifficulty(Difficulty.NORMAL);
-            return Difficulty.NORMAL;
         }
+        return Difficulty.NORMAL;
     }
 
     public void setDifficulty(final Difficulty difficulty) {
