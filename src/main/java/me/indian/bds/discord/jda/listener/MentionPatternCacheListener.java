@@ -1,5 +1,6 @@
 package me.indian.bds.discord.jda.listener;
 
+import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.server.ServerProcess;
 import net.dv8tion.jda.api.events.guild.member.update.GuildMemberUpdateNicknameEvent;
 import net.dv8tion.jda.api.events.role.update.RoleUpdateNameEvent;
@@ -11,9 +12,11 @@ import java.util.regex.Pattern;
 
 public class MentionPatternCacheListener extends ListenerAdapter implements JDAListener {
 
+    private final DiscordJda discordJda;
     private final Map<String, Pattern> mentionPatternCache;
 
-    public MentionPatternCacheListener(final Map<String, Pattern> mentionPatternCache) {
+    public MentionPatternCacheListener(final DiscordJda discordJda, final Map<String, Pattern> mentionPatternCache) {
+        this.discordJda = discordJda;
         this.mentionPatternCache = mentionPatternCache;
     }
 
@@ -24,11 +27,13 @@ public class MentionPatternCacheListener extends ListenerAdapter implements JDAL
 
     @Override
     public void onGuildMemberUpdateNickname(final GuildMemberUpdateNicknameEvent event) {
+        if (event.getGuild() != this.discordJda.getGuild()) return;
         this.mentionPatternCache.remove(event.getMember().getId());
     }
 
     @Override
     public void onRoleUpdateName(final RoleUpdateNameEvent event) {
+        if (event.getGuild() != this.discordJda.getGuild()) return;
         this.mentionPatternCache.remove(event.getRole().getId());
     }
 
