@@ -124,6 +124,7 @@ public class BackupModule {
             this.logger.error("&cNie można wykonać backup gdy jeden jest już wykonywany");
             return;
         }
+        //TODO: Dodaj info o tym kiedy wyszła ostatnia osoba i patrz czy wyszla ona po backup czy przed , jeśli po a lista graczy jest pusta nie rób następnego 
 
         if (!this.serverProcess.isEnabled()) return;
         this.backuping = true;
