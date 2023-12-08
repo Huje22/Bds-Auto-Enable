@@ -38,4 +38,21 @@ public final class FileUtil {
             return false;
         }
     }
+
+    public static long getFolderSize(final File folder) {
+        long size = 0;
+        final File[] files = folder.listFiles();
+
+        if (files != null) {
+            for (final File file : files) {
+                if (file.isFile()) {
+                    size += file.length();
+                } else {
+                    size += getFolderSize(file);
+                }
+            }
+        }
+
+        return size;
+    }
 }
