@@ -1,20 +1,5 @@
 package me.indian.bds.watchdog.module;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.config.sub.watchdog.WatchDogConfig;
-import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.StatusUtil;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.util.ZipUtil;
-import me.indian.bds.watchdog.WatchDog;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryStream;
@@ -29,6 +14,22 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.config.sub.watchdog.WatchDogConfig;
+import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.logger.LogState;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.manager.ServerManager;
+import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.FileUtil;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.ZipUtil;
+import me.indian.bds.watchdog.WatchDog;
 
 public class BackupModule {
 
@@ -45,11 +46,12 @@ public class BackupModule {
     private final WatchDog watchDog;
     private final String prefix;
     private final boolean enabled;
+    private final ServerManager serverManager;
     private ServerProcess serverProcess;
     private File backupFolder;
     private String status;
     private long lastBackupMillis;
-    private boolean backuping, loading;
+    private boolean backuping;
 
     public BackupModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -66,6 +68,7 @@ public class BackupModule {
         this.prefix = this.watchDog.getWatchDogPrefix();
         this.discord = bdsAutoEnable.getDiscord();
         this.enabled = this.watchDogConfig.getBackupConfig().isEnabled();
+        this.serverManager = this.bdsAutoEnable.getServerManager();
         if (this.watchDogConfig.getBackupConfig().isEnabled()) {
             this.backupFolder = new File(DefaultsVariables.getAppDir() + "backup");
             if (!this.backupFolder.exists()) {
@@ -83,7 +86,6 @@ public class BackupModule {
         this.status = "Brak";
         this.lastBackupMillis = System.currentTimeMillis();
         this.backuping = false;
-        this.loading = false;
         this.run();
     }
 
@@ -94,10 +96,17 @@ public class BackupModule {
 
     private void run() {
         if (this.watchDogConfig.getBackupConfig().isEnabled()) {
+
             final long time = MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS);
+            final boolean[] cachedNonPlayers = {false};
+
             final TimerTask backupTask = new TimerTask() {
                 @Override
                 public void run() {
+                    final boolean nonPlayers = BackupModule.this.serverManager.getOnlinePlayers().isEmpty();
+                    if (cachedNonPlayers[0] && nonPlayers) return;
+                    cachedNonPlayers[0] = nonPlayers;
+
                     BackupModule.this.backup();
                     BackupModule.this.lastBackupMillis = System.currentTimeMillis();
                 }
@@ -114,7 +123,7 @@ public class BackupModule {
 
         if (!this.worldFile.exists()) return;
         final long gb = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
-        if (gb < 2) {
+        if (gb < MathUtil.bytesToGB(FileUtil.getFolderSize(this.worldFile)) + 1) {
             this.serverProcess.tellrawToAllAndLogger(this.prefix,
                     "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!",
                     LogState.WARNING);
@@ -124,7 +133,6 @@ public class BackupModule {
             this.logger.error("&cNie można wykonać backup gdy jeden jest już wykonywany");
             return;
         }
-        //TODO: Dodaj info o tym kiedy wyszła ostatnia osoba i patrz czy wyszla ona po backup czy przed , jeśli po a lista graczy jest pusta nie rób następnego 
 
         if (!this.serverProcess.isEnabled()) return;
         this.backuping = true;
@@ -247,9 +255,5 @@ public class BackupModule {
 
     public boolean isBackuping() {
         return this.backuping;
-    }
-
-    public boolean isLoading() {
-        return this.loading;
     }
 }
