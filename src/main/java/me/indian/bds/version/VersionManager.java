@@ -253,4 +253,8 @@ public class VersionManager {
     public boolean hasVersion(final String version) {
         return this.availableVersions.contains(version);
     }
+
+    public String getLoadedVersion() {
+        return (this.versionManagerConfig.isLoaded() ? this.versionManagerConfig.getVersion() : "");
+    }
 }
