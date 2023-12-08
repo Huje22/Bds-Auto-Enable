@@ -1,5 +1,7 @@
 package me.indian.bds;
 
+import java.util.List;
+import java.util.Scanner;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
@@ -10,9 +12,6 @@ import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ScannerUtil;
-
-import java.util.List;
-import java.util.Scanner;
 
 public class Settings {
 
@@ -65,6 +64,7 @@ public class Settings {
 
     private void init(final ScannerUtil scannerUtil) {
         final long startTime = System.currentTimeMillis();
+        final String appDir = DefaultsVariables.getJarDir();
 
         this.logger.print();
 
@@ -81,10 +81,14 @@ public class Settings {
         }
 
         this.appConfig.setFilesPath(scannerUtil.addStringQuestion(
-                (defaultValue) -> this.logger.info("&n&lPodaj ścieżkę do plików servera&r (Domyślnie: " + defaultValue + ")" + this.enter),
-                DefaultsVariables.getJarDir(),
+                (defaultValue) -> {
+                    this.logger.info("&n&lPodaj ścieżkę do plików servera&r (Domyślnie: " + defaultValue + ")" + this.enter);
+                    this.logger.info("&a./&e =&b " + appDir);
+                },
+                appDir,
                 (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)
-        ));
+        ).replaceAll("./", appDir));
+
         this.appConfig.save();
         this.logger.print();
 
@@ -92,7 +96,7 @@ public class Settings {
         this.serverProperties.loadProperties();
 
         final boolean backup = scannerUtil.addBooleanQuestion(
-                (defaultValue) -> this.logger.info("&n&lWłączyć Backupy&r (Domyślnie: " + defaultValue + ")? " + this.enter),
+                (defaultValue) -> this.logger.info("&n&lWłączyć Backupy&r (Domyślnie: " + defaultValue + ")?" + this.enter),
                 true,
                 (input) -> this.logger.info("Backupy ustawione na:&1 " + input));
         this.watchDogConfig.getBackupConfig().setEnabled(backup);
@@ -348,6 +352,7 @@ public class Settings {
     private void versionQuestion(final ScannerUtil scannerUtil) {
         final String latest = this.bdsAutoEnable.getVersionManager().getLatestVersion();
         final String check = (latest.equals("") ? "Nie udało odnaleźć się najnowszej wersji" : latest);
+
         this.versionManagerConfig.setVersion(scannerUtil.addStringQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lJaką versie załadować?&r (Najnowsza: " + check + ")");
@@ -358,7 +363,8 @@ public class Settings {
                     }
                     this.logger.info("Aby pobrać jakąś versie wpisz jej numer (niektóre mogą mieć .01 / .02 na końcu)");
                 },
-                this.versionManagerConfig.getVersion(), (input) -> this.logger.info("Wersja do załadowania ustawiona na:&1 " + input)
+                (latest.equals("") ? this.bdsAutoEnable.getVersionManager().getLoadedVersion() : latest),
+                (input) -> this.logger.info("Wersja do załadowania ustawiona na:&1 " + input)
         ));
         this.bdsAutoEnable.getVersionManager().loadVersion();
         this.logger.print();
