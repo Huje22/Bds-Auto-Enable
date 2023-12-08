@@ -44,9 +44,10 @@ public class BackupCommand extends Command {
                 if (!Files.exists(path)) continue;
                 this.sendMessage("&a" + path.getFileName() + " Rozmiar: " + backupModule.getBackupSize(path.toFile(), false));
             }
+            return true;
         }
         if (args[0].equals("do")) {
-            if (isOp) {
+            if (!isOp) {
                 this.sendMessage("&cPotrzebujesz wyższych uprawnień");
                 return true;
             }
