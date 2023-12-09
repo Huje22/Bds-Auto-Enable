@@ -29,7 +29,7 @@ public class PackModule {
     private File behaviorsFolder, pack, worldBehaviorsJson;
     private String id;
     private int[] version;
-    private boolean loaded;
+    private boolean loaded, appHandledMessages;
 
     public PackModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.watchDog = watchDog;
@@ -101,6 +101,7 @@ public class PackModule {
                 this.logger.alert("Wykryliśmy paczke ale nie jest ona załadowana!");
                 this.loadPack();
             }
+            this.appHandledMessages = this.getAppHandledMessages();
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się pozyskać informacji o paczce!", exception);
             System.exit(0);
@@ -167,7 +168,7 @@ public class PackModule {
         }
     }
 
-    public boolean getAppHandledMessages() {
+    private boolean getAppHandledMessages() {
         final String filePath = this.pack.getPath() + File.separator + "scripts" + File.separator + "index.js";
 
         try (final BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
@@ -210,6 +211,7 @@ public class PackModule {
         } catch (final IOException exception) {
             this.logger.critical("Wystąpił błąd przy próbie edytowania wartości", exception);
         }
+        this.appHandledMessages = this.getAppHandledMessages();
     }
 
     private void makeItArray() {
@@ -272,6 +274,10 @@ public class PackModule {
         } catch (final Exception ioException) {
             this.logger.error("Nie można pobrać paczki ", ioException);
         }
+    }
+    
+    public boolean isAppHandledMessages(){
+        return this.appHandledMessages;
     }
 
     public boolean isLoaded() {
