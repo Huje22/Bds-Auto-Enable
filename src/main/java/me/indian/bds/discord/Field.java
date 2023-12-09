@@ -1,12 +1,25 @@
-public class Field {
-    private String name;
-    private String value;
-    private boolean inline;
+package me.indian.bds.discord;
 
-    public Field(String name, String value, boolean inline) {
+public class Field {
+    private final String name;
+    private final String value;
+    private final boolean inline;
+
+    public Field(final String name, final String value, final boolean inline) {
         this.name = name;
         this.value = value;
         this.inline = inline;
     }
-//TODO: Add getters
+
+    public String getName() {
+        return name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public boolean isInline() {
+        return inline;
+    }
 }
