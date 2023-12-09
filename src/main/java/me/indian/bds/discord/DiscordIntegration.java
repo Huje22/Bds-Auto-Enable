@@ -10,7 +10,8 @@ public interface DiscordIntegration {
     void sendMessage(final String message, final Throwable throwable);
 
     void sendEmbedMessage(final String title, final String message, final String footer);
-    //TODO: Dodać wsparcie dla "field" 
+
+    void sendEmbedMessage(final String title, final String message, final Field[] fields ,final String footer);
 
     void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer);
 
