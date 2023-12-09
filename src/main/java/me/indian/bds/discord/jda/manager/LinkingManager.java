@@ -110,6 +110,7 @@ public class LinkingManager {
     }
 
     public boolean hasPermissions(final String name, final Permission permission) {
+        if(!this.isLinked(name)) return false;
         final Member member = this.discordJda.getGuild().getMemberById(this.getIdByName(name));
         return (member != null && member.hasPermission(permission));
     }
