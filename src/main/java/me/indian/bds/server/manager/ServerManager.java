@@ -43,12 +43,13 @@ public class ServerManager {
     }
 
     public void initFromLog(final String logEntry) {
+        this.chatMessage(logEntry);
+        
         this.service.execute(() -> {
             //Metody związane z graczem
             this.playerJoin(logEntry);
             this.playerQuit(logEntry);
             this.deathMessage(logEntry);
-            this.chatMessage(logEntry);
             this.customCommand(logEntry);
 
             //Dodatkowe metody
