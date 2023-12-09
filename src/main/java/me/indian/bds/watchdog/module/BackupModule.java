@@ -106,8 +106,8 @@ public class BackupModule {
                 @Override
                 public void run() {
                     final boolean nonPlayers = BackupModule.this.serverManager.getOnlinePlayers().isEmpty();
-                    if (cachedNonPlayers && nonPlayers) return;
-                    cachedNonPlayers = nonPlayers;
+                    if (this.cachedNonPlayers && nonPlayers) return;
+                    this.cachedNonPlayers = nonPlayers;
 
                     BackupModule.this.backup();
                     BackupModule.this.lastBackupMillis = System.currentTimeMillis();
