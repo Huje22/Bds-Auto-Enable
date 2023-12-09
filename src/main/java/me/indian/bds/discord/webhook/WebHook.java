@@ -87,7 +87,7 @@ public class WebHook implements DiscordIntegration {
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message, final String footer) {
+    public void sendEmbedMessage(final String title, final String message, final Field[] fields ,final String footer) {
         this.service.execute(() -> {
             try {
                 final HttpURLConnection connection = (HttpURLConnection) new URL(this.webhookURL).openConnection();
@@ -104,6 +104,21 @@ public class WebHook implements DiscordIntegration {
                 final JsonObject embed = new JsonObject();
                 embed.addProperty("title", title);
                 embed.addProperty("description", message.replaceAll("<owner>", ""));
+
+
+                if(fields != null && !fields.isEmpty()){
+                    final JsonArray fieldsArray = new JsonArray();
+    for (Field field : fields) {
+        JsonObject fieldObject = new JsonObject();
+        fieldObject.addProperty("name", field.getName());
+        fieldObject.addProperty("value", field.getValue());
+        fieldObject.addProperty("inline", field.isInline());
+        fieldsArray.add(fieldObject);
+    }
+
+    embed.add("fields", fieldsArray);
+    
+    }
 
                 final JsonObject footerObject = new JsonObject();
                 footerObject.addProperty("text", footer);
@@ -130,6 +145,11 @@ public class WebHook implements DiscordIntegration {
         });
     }
 
+    @Override
+    public void sendEmbedMessage(final String title, final String message,final String footer) {
+            this.sendEmbedMessage( title,  message,null ,footer);
+        }
+    
     @Override
     public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer) {
         this.sendEmbedMessage(title, message +
