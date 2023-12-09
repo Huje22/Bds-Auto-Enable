@@ -4,13 +4,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.ZipUtil;
-import me.indian.bds.watchdog.WatchDog;
-
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -19,6 +15,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.ZipUtil;
+import me.indian.bds.watchdog.WatchDog;
 
 public class PackModule {
 
@@ -163,6 +164,51 @@ public class PackModule {
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się załadować paczki!", exception);
             System.exit(0);
+        }
+    }
+
+    public boolean getAppHandledMessages() {
+        final String filePath = this.pack.getPath() + File.separator + "scripts" + File.separator + "index.js";
+
+        try (final BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.contains("const appHandledMessages")) {
+                    return Boolean.parseBoolean(line.substring(line.indexOf("=") + 1, line.indexOf(";")).trim());
+                }
+            }
+        } catch (final IOException exception) {
+            this.logger.critical("Wystąpił błąd przy próbie odczytu wartości", exception);
+        }
+        return false;
+    }
+
+    public void setAppHandledMessages(final boolean handled) {
+        if (!this.loaded) return;
+        final String filePath = this.pack.getPath() + File.separator + "scripts" + File.separator + "index.js";
+        if (this.getAppHandledMessages() == handled) return;
+        try {
+            final StringBuilder content = new StringBuilder();
+            try (final BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("const appHandledMessages")) {
+                        line = "const appHandledMessages = " + handled + ";";
+                    }
+                    content.append(line).append("\n");
+                }
+            }
+
+            if(!content.toString().contains("const appHandledMessages")){
+                content.append("const appHandledMessages = ").append(handled).append(";").append("\n");
+            }
+
+            try (final BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                writer.write(content.toString());
+            }
+            this.logger.info("Plik JavaScript został zaktualizowany.");
+        } catch (final IOException exception) {
+            this.logger.critical("Wystąpił błąd przy próbie edytowania wartości", exception);
         }
     }
 

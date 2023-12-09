@@ -1,28 +1,30 @@
 package me.indian.bds.server.manager;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.command.CommandSender;
-import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.jda.DiscordJda;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.watchdog.module.PackModule;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.command.CommandSender;
+import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.discord.jda.manager.LinkingManager;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.watchdog.module.PackModule;
 
 
 public class ServerManager {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
+    private final AppConfigManager appConfigManager;
     private final DiscordIntegration discord;
-    private final ExecutorService service;
+    private final ExecutorService service, chatService;
     private final List<String> onlinePlayers, offlinePlayers;
     private final StatsManager statsManager;
     private int lastTPS;
@@ -30,8 +32,10 @@ public class ServerManager {
     public ServerManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
+        this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.discord = this.bdsAutoEnable.getDiscord();
         this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Player Manager"));
+        this.chatService = Executors.newSingleThreadExecutor(new ThreadUtil("Chat Service"));
         this.onlinePlayers = new ArrayList<>();
         this.offlinePlayers = new ArrayList<>();
         this.statsManager = new StatsManager(this.bdsAutoEnable, this);
@@ -81,15 +85,18 @@ public class ServerManager {
     }
 
     private void chatMessage(final String logEntry) {
-        final String patternString = "PlayerChat:([^,]+) Message:(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        this.chatService.execute(() -> {
+            final String patternString = "PlayerChat:([^,]+) Message:(.+)";
+            final Pattern pattern = Pattern.compile(patternString);
+            final Matcher matcher = pattern.matcher(logEntry);
 
-        if (matcher.find()) {
-            final String playerChat = MessageUtil.fixMessage(matcher.group(1));
-            final String message = MessageUtil.fixMessage(matcher.group(2));
-            this.discord.sendPlayerMessage(playerChat, message);
-        }
+            if (matcher.find()) {
+                final String playerChat = MessageUtil.fixMessage(matcher.group(1));
+                final String message = MessageUtil.fixMessage(matcher.group(2));
+                this.discord.sendPlayerMessage(playerChat, message);
+                this.handleChatMessage(playerChat, message);
+            }
+        });
     }
 
     private void customCommand(final String logEntry) {
@@ -188,6 +195,25 @@ public class ServerManager {
 
         final String[] newArgs = MessageUtil.removeArgs(args, 1);
         this.bdsAutoEnable.getCommandManager().runCommands(CommandSender.PLAYER, playerCommand, args[0], newArgs, isOp);
+    }
+
+    private void handleChatMessage(final String playerChat, final String message) {
+        if (!this.bdsAutoEnable.getWatchDog().getPackModule().getAppHandledMessages()) return;
+        String role = "";
+
+        if (this.discord instanceof final DiscordJda jda) {
+            final LinkingManager linkingManager = jda.getLinkingManager();
+            if (linkingManager.isLinked(playerChat)) {
+                role = jda.getColoredRole(jda.getHighestRole(linkingManager.getIdByName(playerChat))) + " ";
+            }
+        }
+
+        this.bdsAutoEnable.getServerProcess().tellrawToAll(
+                this.appConfigManager.getWatchDogConfig().getPackModuleConfig().getChatMessageFormat()
+                        .replaceAll("<player>", playerChat)
+                        .replaceAll("<message>", message)
+                        .replaceAll("<role>", role)
+        );
     }
 
     public StatsManager getStatsManager() {
