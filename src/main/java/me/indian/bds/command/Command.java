@@ -63,6 +63,8 @@ public abstract class Command {
     public String toString() {
         return "Command(name=" + this.name +
                 " description=" + this.description +
+                " playerName= " + this.playerName +
+                " commandSender= " + this.commandSender +
                 ")";
     }
 }
