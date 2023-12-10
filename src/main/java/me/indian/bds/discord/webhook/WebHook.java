@@ -2,6 +2,12 @@ package me.indian.bds.discord.webhook;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.DiscordConfig;
@@ -11,12 +17,6 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
-
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class WebHook implements DiscordIntegration {
 
@@ -33,7 +33,7 @@ public class WebHook implements DiscordIntegration {
         this.name = this.discordConfig.getWebHookConfig().getName();
         this.webhookURL = this.discordConfig.getWebHookConfig().getUrl();
         this.avatarUrl = this.discordConfig.getWebHookConfig().getAvatarUrl();
-        this.service = Executors.newScheduledThreadPool(4, new ThreadUtil("Discord-WebHook"));
+        this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Discord-WebHook"));
     }
 
     @Override
@@ -73,7 +73,7 @@ public class WebHook implements DiscordIntegration {
 
                 final int responseCode = connection.getResponseCode();
                 if (responseCode != HttpURLConnection.HTTP_NO_CONTENT) {
-                    this.logger.info("Kod odpowiedzi: " + responseCode);
+                    this.logger.debug("Kod odpowiedzi: " + responseCode);
                 }
             } catch (final Exception exception) {
                 this.logger.critical("Nie można wysłać wiadomości do Discord: " + exception);
@@ -88,7 +88,7 @@ public class WebHook implements DiscordIntegration {
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message, final Field[] fields ,final String footer) {
+    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final String footer) {
         this.service.execute(() -> {
             try {
                 final HttpURLConnection connection = (HttpURLConnection) new URL(this.webhookURL).openConnection();
@@ -106,20 +106,18 @@ public class WebHook implements DiscordIntegration {
                 embed.addProperty("title", title);
                 embed.addProperty("description", message.replaceAll("<owner>", ""));
 
-
-                if(fields != null && !fields.isEmpty()){
+                if (fields != null && !fields.isEmpty()) {
                     final JsonArray fieldsArray = new JsonArray();
-    for (Field field : fields) {
-        JsonObject fieldObject = new JsonObject();
-        fieldObject.addProperty("name", field.getName());
-        fieldObject.addProperty("value", field.getValue());
-        fieldObject.addProperty("inline", field.isInline());
-        fieldsArray.add(fieldObject);
-    }
+                    for (final Field field : fields) {
+                        final JsonObject fieldObject = new JsonObject();
+                        fieldObject.addProperty("name", field.name());
+                        fieldObject.addProperty("value", field.value());
+                        fieldObject.addProperty("inline", field.inline());
+                        fieldsArray.add(fieldObject);
+                    }
 
-    embed.add("fields", fieldsArray);
-    
-    }
+                    embed.add("fields", fieldsArray);
+                }
 
                 final JsonObject footerObject = new JsonObject();
                 footerObject.addProperty("text", footer);
@@ -138,7 +136,7 @@ public class WebHook implements DiscordIntegration {
 
                 final int responseCode = connection.getResponseCode();
                 if (responseCode != HttpURLConnection.HTTP_NO_CONTENT) {
-                    this.logger.info("Kod odpowiedzi: " + responseCode);
+                    this.logger.debug("Kod odpowiedzi: " + responseCode);
                 }
             } catch (final Exception exception) {
                 this.logger.critical("Nie można wysłać wiadomości do Discord: " + exception);
@@ -147,10 +145,16 @@ public class WebHook implements DiscordIntegration {
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message,final String footer) {
-            this.sendEmbedMessage( title,  message,null ,footer);
-        }
-    
+    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final String footer) {
+        this.sendEmbedMessage(title, message +
+                "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```", fields, footer);
+    }
+
+    @Override
+    public void sendEmbedMessage(final String title, final String message, final String footer) {
+        this.sendEmbedMessage(title, message, (List<Field>) null, footer);
+    }
+
     @Override
     public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer) {
         this.sendEmbedMessage(title, message +

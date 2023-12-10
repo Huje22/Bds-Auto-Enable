@@ -1,9 +1,22 @@
 package me.indian.bds.discord.jda;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.Field;
 import me.indian.bds.discord.jda.listener.CommandListener;
 import me.indian.bds.discord.jda.listener.JDAListener;
 import me.indian.bds.discord.jda.listener.MentionPatternCacheListener;
@@ -31,19 +44,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-
-import java.awt.Color;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Pattern;
 
 public class DiscordJda implements DiscordIntegration {
 
@@ -376,18 +376,35 @@ public class DiscordJda implements DiscordIntegration {
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message, final String footer) {
+    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final String footer) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
             if (title.isEmpty() || message.isEmpty() || footer.isEmpty()) return;
-            final MessageEmbed embed = new EmbedBuilder()
+            final EmbedBuilder embed = new EmbedBuilder()
                     .setTitle(title)
                     .setDescription(message.replaceAll("<owner>", this.getOwnerMention()))
                     .setColor(Color.BLUE)
-                    .setFooter(footer)
-                    .build();
+                    .setFooter(footer);
 
-            this.textChannel.sendMessageEmbeds(embed).queue();
+            if (fields != null && !fields.isEmpty()) {
+                for (final Field field : fields) {
+                    embed.addField(field.name(), field.value(), field.inline());
+                }
+            }
+
+            this.textChannel.sendMessageEmbeds(embed.build()).queue();
         }
+
+    }
+
+    @Override
+    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final String footer) {
+        this.sendEmbedMessage(title, message +
+                "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```", fields, footer);
+    }
+
+    @Override
+    public void sendEmbedMessage(final String title, final String message, final String footer) {
+        this.sendEmbedMessage(title, message, (List<Field>) null, footer);
     }
 
     @Override

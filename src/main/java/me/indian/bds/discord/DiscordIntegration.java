@@ -1,7 +1,8 @@
 package me.indian.bds.discord;
 
-public interface DiscordIntegration {
+import java.util.List;
 
+public interface DiscordIntegration {
 
     void init();
 
@@ -9,9 +10,11 @@ public interface DiscordIntegration {
 
     void sendMessage(final String message, final Throwable throwable);
 
-    void sendEmbedMessage(final String title, final String message, final String footer);
+    void sendEmbedMessage(final String title, final String message, final List<Field> fields, final String footer);
 
-    void sendEmbedMessage(final String title, final String message, final Field[] fields ,final String footer);
+    void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final String footer);
+
+    void sendEmbedMessage(final String title, final String message, final String footer);
 
     void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer);
 
