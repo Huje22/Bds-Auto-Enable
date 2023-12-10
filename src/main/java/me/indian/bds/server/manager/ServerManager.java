@@ -199,7 +199,7 @@ public class ServerManager {
     }
 
     private void handleChatMessage(final String playerChat, final String message) {
-        if (!this.bdsAutoEnable.getWatchDog().getPackModule().getAppHandledMessages()) return;
+        if (!this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages()) return;
         String role = "";
 
         if (this.discord instanceof final DiscordJda jda) {

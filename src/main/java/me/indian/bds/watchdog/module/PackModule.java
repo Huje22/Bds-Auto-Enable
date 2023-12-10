@@ -200,7 +200,7 @@ public class PackModule {
                 }
             }
 
-            if(!content.toString().contains("const appHandledMessages")){
+            if (!content.toString().contains("const appHandledMessages")) {
                 content.append("const appHandledMessages = ").append(handled).append(";").append("\n");
             }
 
@@ -275,8 +275,8 @@ public class PackModule {
             this.logger.error("Nie można pobrać paczki ", ioException);
         }
     }
-    
-    public boolean isAppHandledMessages(){
+
+    public boolean isAppHandledMessages() {
         return this.appHandledMessages;
     }
 
