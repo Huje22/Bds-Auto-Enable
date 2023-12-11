@@ -30,6 +30,9 @@ public class RestWebsite {
     private final ServerManager serverManager;
     private final BackupModule backupModule;
 
+    //TODO: Dodać funkcje obsługi poleceń z odbieranych na dany endpoint
+
+    
     public RestWebsite(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
         this.discordIntegration = bdsAutoEnable.getDiscord();
