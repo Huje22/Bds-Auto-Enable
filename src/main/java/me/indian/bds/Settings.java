@@ -125,6 +125,12 @@ public class Settings {
         }
 
         scannerUtil.addBooleanQuestion(
+                (defaultValue) -> this.logger.info("&n&lCzy zamknąć aplikacje gdy wystąpi niezłapany wyjątek? (Domyślnie: " + defaultValue + ")?" + this.enter),
+                true,
+                (input) -> this.logger.info("Zamknięcie aplikacji po niezłapanym wyjątku ustawione na:&b " + input)
+        );
+
+        scannerUtil.addBooleanQuestion(
                 (defaultValue) -> this.logger.info("&n&lRozpocząć częściową konfiguracje servera?&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 true,
                 (input) -> {

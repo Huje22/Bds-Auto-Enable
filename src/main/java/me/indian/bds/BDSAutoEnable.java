@@ -1,5 +1,11 @@
 package me.indian.bds;
 
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Scanner;
+import java.util.UUID;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
@@ -21,15 +27,9 @@ import me.indian.bds.util.StatusUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
 
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
-
 public class BDSAutoEnable {
 
+    private final Thread mainThread;
     private final long startTime;
     private final String projectVersion, runDate;
     private final Scanner scanner;
@@ -46,6 +46,7 @@ public class BDSAutoEnable {
     private WatchDog watchDog;
 
     public BDSAutoEnable() {
+        this.mainThread = Thread.currentThread();
         this.startTime = System.currentTimeMillis();
         this.runDate = DateUtil.getFixedDate();
         this.projectVersion = "0.0.1-Dev";
@@ -79,8 +80,8 @@ public class BDSAutoEnable {
     }
 
     public void init() {
+        new ShutdownHandler(this);
         this.settings.loadSettings(this.scanner);
-        this.shutdownHook();
         this.watchDog = new WatchDog(this);
         this.serverProcess.init();
         this.watchDog.init(this.discord);
@@ -96,7 +97,6 @@ public class BDSAutoEnable {
         new ConsoleInput(this.scanner, this);
         new AutoMessages(this).start();
         new Metrics(this);
-
     }
 
     public void isJavaVersionLessThan17() {
@@ -192,16 +192,8 @@ public class BDSAutoEnable {
         return this.startTime;
     }
 
-    private void shutdownHook() {
-        final Thread shutdown = new Thread(() -> {
-            try {
-                this.serverProcess.instantShutdown();
-            } catch (final Exception exception) {
-                this.logger.critical("Wystąpił błąd podczas próby uruchomienia shutdown hooku ", exception);
-            }
-        });
-        shutdown.setName("Shutdown");
-        Runtime.getRuntime().addShutdownHook(shutdown);
+    public boolean isMainThread(){
+        return Thread.currentThread() == this.mainThread;
     }
 
     public String getRunDate() {

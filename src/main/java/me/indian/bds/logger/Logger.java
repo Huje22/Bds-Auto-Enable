@@ -193,7 +193,7 @@ public class Logger {
         }
     }
 
-    private void logThrowableToFile(final Throwable throwable) {
+    public void logThrowableToFile(final Throwable throwable) {
         if (this.printStream != null && throwable != null) {
             throwable.printStackTrace();
             throwable.printStackTrace(this.printStream);
