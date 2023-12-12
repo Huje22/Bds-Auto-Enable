@@ -40,6 +40,7 @@ import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
+import net.dv8tion.jda.api.entities.channel.unions.DefaultGuildChannelUnion;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -275,19 +276,19 @@ public class DiscordJda implements DiscordIntegration {
 
         switch (Activity.ActivityType.valueOf(this.discordConfig.getBotConfig().getActivity().toUpperCase())) {
             case PLAYING -> {
-                return Activity.playing(activityMessage.replaceAll("<time>", replacement));
+                return Activity.playing(activityMessage);
             }
             case WATCHING -> {
-                return Activity.watching(activityMessage.replaceAll("<time>", replacement));
+                return Activity.watching(activityMessage);
             }
             case COMPETING -> {
-                return Activity.competing(activityMessage.replaceAll("<time>", replacement));
+                return Activity.competing(activityMessage);
             }
             case LISTENING -> {
-                return Activity.listening(activityMessage.replaceAll("<time>", replacement));
+                return Activity.listening(activityMessage);
             }
             case STREAMING -> {
-                return Activity.streaming(activityMessage.replaceAll("<time>", replacement), this.discordConfig.getBotConfig().getStreamUrl());
+                return Activity.streaming(activityMessage, this.discordConfig.getBotConfig().getStreamUrl());
             }
             default -> {
                 this.logger.error("Wykryto nie wspierany status! ");
@@ -300,13 +301,14 @@ public class DiscordJda implements DiscordIntegration {
         if (!this.discordConfig.getBotConfig().isLeaveServers()) return;
         for (final Guild guild1 : this.jda.getGuilds()) {
             if (guild1 != this.guild) {
-                final String inviteLink = guild1.getDefaultChannel().createInvite().complete().getUrl();
+                String inviteLink = "";
+                final DefaultGuildChannelUnion defaultChannel = guild1.getDefaultChannel();
+                if (defaultChannel != null) inviteLink += defaultChannel.createInvite().complete().getUrl();
+                
                 guild1.leave().queue();
-
                 this.sendMessage("Opuściłem serwer o ID: " + guild1.getId() +
                         "\n Nazwie: " + guild1.getName() +
                         "\n Zaproszenie: " + inviteLink
-
                 );
             }
         }
