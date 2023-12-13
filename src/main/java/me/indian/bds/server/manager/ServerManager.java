@@ -202,6 +202,8 @@ public class ServerManager {
         if (!this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages()) return;
         String role = "";
 
+        //TODO: Dodać opcję mute , synchronizowaną z discord
+
         if (this.discord instanceof final DiscordJda jda) {
             final LinkingManager linkingManager = jda.getLinkingManager();
             if (linkingManager.isLinked(playerChat)) {
