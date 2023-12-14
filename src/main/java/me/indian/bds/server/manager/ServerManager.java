@@ -25,7 +25,7 @@ public class ServerManager {
     private final AppConfigManager appConfigManager;
     private final DiscordIntegration discord;
     private final ExecutorService service, chatService;
-    private final List<String> onlinePlayers, offlinePlayers;
+    private final List<String> onlinePlayers, offlinePlayers, muted;
     private final StatsManager statsManager;
     private int lastTPS;
 
@@ -38,6 +38,7 @@ public class ServerManager {
         this.chatService = Executors.newSingleThreadExecutor(new ThreadUtil("Chat Service"));
         this.onlinePlayers = new ArrayList<>();
         this.offlinePlayers = new ArrayList<>();
+        this.muted = new ArrayList<>();
         this.statsManager = new StatsManager(this.bdsAutoEnable, this);
         this.lastTPS = 20;
     }
@@ -202,8 +203,13 @@ public class ServerManager {
         if (!this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages()) return;
         String role = "";
 
-        //TODO: Dodać opcję mute , synchronizowaną z discord
+        //TODO: Synchronizować mute z discord 
 
+        if(this.muted.contains(playerChat)){
+         this.bdsAutoEnable.getServerProcess().tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
+            return;
+        }
+        
         if (this.discord instanceof final DiscordJda jda) {
             final LinkingManager linkingManager = jda.getLinkingManager();
             if (linkingManager.isLinked(playerChat)) {
@@ -237,5 +243,9 @@ public class ServerManager {
 
     public List<String> getOfflinePlayers() {
         return this.offlinePlayers;
+    }
+
+    public List<String> getMuted(){
+      return this.muted;
     }
 }
