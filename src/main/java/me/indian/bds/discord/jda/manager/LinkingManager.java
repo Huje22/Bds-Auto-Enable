@@ -109,6 +109,11 @@ public class LinkingManager {
         return this.linkedAccounts.get(name);
     }
 
+    public Member getMember(final String name){
+      if(!this.isLinked(name)) return null;
+        return this.discordJda.getGuild().getMemberById(this.getIdByName(name));
+    }
+
     public boolean hasPermissions(final String name, final Permission permission) {
         if(!this.isLinked(name)) return false;
         final Member member = this.discordJda.getGuild().getMemberById(this.getIdByName(name));
