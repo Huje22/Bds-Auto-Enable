@@ -25,6 +25,7 @@ import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import org.jetbrains.annotations.Nullable;
 
 public class LinkingManager {
 
@@ -91,6 +92,7 @@ public class LinkingManager {
         this.accountsToLink.put(name, code);
     }
 
+    @Nullable
     public String getNameToLinkByCode(final String code) {
         for (final Map.Entry<String, String> map : this.accountsToLink.entrySet()) {
             if (Objects.equals(map.getValue(), code)) return map.getKey();
@@ -98,6 +100,7 @@ public class LinkingManager {
         return null;
     }
 
+    @Nullable
     public String getNameByID(final long id) {
         for (final Map.Entry<String, Long> map : this.linkedAccounts.entrySet()) {
             if (Objects.equals(map.getValue(), id)) return map.getKey();
@@ -109,6 +112,7 @@ public class LinkingManager {
         return this.linkedAccounts.get(name);
     }
 
+    @Nullable
     public Member getMember(final String name){
       if(!this.isLinked(name)) return null;
         return this.discordJda.getGuild().getMemberById(this.getIdByName(name));
