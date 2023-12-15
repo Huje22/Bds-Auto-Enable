@@ -1,14 +1,14 @@
 package me.indian.bds.server.properties;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Properties;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.version.VersionManager;
-
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.util.Properties;
 
 public class ServerProperties {
 
@@ -25,7 +25,7 @@ public class ServerProperties {
     }
 
     public void loadProperties() {
-       this.checkForProperties();
+        this.checkForProperties();
         try {
             this.properties.clear();
             this.properties.load(Files.newInputStream(this.propertiesFile.toPath()));
@@ -36,16 +36,15 @@ public class ServerProperties {
     }
 
     private void saveProperties() {
-        this.checkForProperties();
-        try {
-            this.properties.store(Files.newOutputStream(this.propertiesFile.toPath()), null);
-        } catch (final IOException exception) {
+        try (final FileWriter writer = new FileWriter(this.propertiesFile)) {
+            this.properties.store(writer, null);
+        } catch (final Exception exception) {
             this.logger.critical("&cWystąpił krytyczny błąd podczas zapisywania&a server.properties", exception);
             System.exit(0);
         }
     }
 
-    private void checkForProperties(){
+    private void checkForProperties() {
         if (!this.propertiesFile.exists()) {
             final VersionManager manager = this.bdsAutoEnable.getVersionManager();
             if (manager != null) {
@@ -98,6 +97,30 @@ public class ServerProperties {
 
     public void setMOTD(final String name) {
         this.properties.setProperty("server-name", name);
+        this.reloadServerProperties();
+    }
+
+    public CompressionAlgorithm getCompressionAlgorithm() {
+        try {
+            final String algorithm = this.properties.getProperty("compression-algorithm");
+            switch (algorithm.toLowerCase()) {
+                case "zlib" -> {
+                    return CompressionAlgorithm.ZLIB;
+                }
+                case "snappy" -> {
+                    return CompressionAlgorithm.SNAPPY;
+                }
+
+            }
+        } catch (final Exception exception) {
+            this.logger.debug("", exception);
+            this.setCompressionAlgorithm(CompressionAlgorithm.ZLIB);
+        }
+        return CompressionAlgorithm.ZLIB;
+    }
+
+    public void setCompressionAlgorithm(final CompressionAlgorithm compressionAlgorithm) {
+        this.properties.setProperty("compression-algorithm", compressionAlgorithm.getAlgorithmName());
         this.reloadServerProperties();
     }
 
@@ -407,5 +430,44 @@ public class ServerProperties {
 
     public Properties getProperties() {
         return this.properties;
+    }
+
+    @Override
+    public String toString() {
+        return "ServerProperties(" +
+                " viewDistance=" + this.getViewDistance() +
+//                ", levelSeed='" + this.getLevelSeed() + '\'' +
+//                ", disablePersona=" + this.isDisablePersona() +
+//                ", disablePlayerInteraction=" + this.isDisablePlayerInteraction() +
+//                ", blockNetworkIdsAreHashes=" + this.isBlockNetworkIdsAreHashes() +
+//                ", levelName='" + this.getLevelName() + '\'' +
+//                ", gamemode='" + this.getGamemode() + '\'' +
+                ", serverPort=" + this.getServerPort() +
+                ", serverPortV6=" + this.getServerPortV6() +
+                ", maxThreads=" + this.getMaxThreads() +
+//                ", enableLanVisibility=" + this.isEnableLanVisibility() +
+                ", playerIdleTimeout=" + this.getPlayerIdleTimeout() +
+                ", serverName='" + this.getMOTD() + "&r'" +
+//                ", playerMovementDistanceThreshold=" + this.getPlayerMovementDistanceThreshold() +
+                ", serverAuthoritativeMovement='" + this.getServerAuthoritativeMovement() + '\'' +
+                ", serverBuildRadiusRatio=" + this.getServerBuildRadiusRatio() +
+                ", clientSideChunkGenerationEnabled=" + this.isClientSideChunkGeneration() +
+                ", tickDistance=" + this.getTickDistance() +
+                ", texturepackRequired=" + this.isTexturePackRequired() +
+//                ", compressionThreshold=" + this.getCompressionThreshold() +
+                ", compressionAlgorithm='" + this.getCompressionAlgorithm() + '\'' +
+//                ", forceGamemode=" + this.isForceGamemode() +
+//                ", playerMovementScoreThreshold=" + this.getPlayerMovementScoreThreshold() +
+                ", allowCheats=" + this.isAllowCheats() +
+                ", difficulty='" + this.getDifficulty() + '\'' +
+                ", correctPlayerMovement=" + this.isCorrectPlayerMovement() +
+//                ", chatRestriction='" + this.getChatRestriction() + '\'' +
+                ", maxPlayers=" + this.getMaxPlayers() +
+                ", onlineMode=" + this.isOnlineMode() +
+                ", emitServerTelemetry=" + this.isServerTelemetry() +
+//                ", disableCustomSkins=" + this.isDisableCustomSkins() +
+//                ", allowList=" + this.isAllowList() +
+//                ", contentLogFileEnabled=" + this.isContentLogFileEnabled() +
+                ')';
     }
 }
