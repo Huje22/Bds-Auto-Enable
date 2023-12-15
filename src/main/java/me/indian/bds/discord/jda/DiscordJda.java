@@ -45,6 +45,7 @@ import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.Commands;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.jetbrains.annotations.Nullable;
 
 public class DiscordJda implements DiscordIntegration {
 
@@ -588,10 +589,12 @@ public class DiscordJda implements DiscordIntegration {
         return this.consoleChannel;
     }
 
+    @Nullable
     public StatsChannelsManager getStatsChannelsManager() {
         return this.statsChannelsManager;
     }
 
+    @Nullable
     public LinkingManager getLinkingManager() {
         return this.linkingManager;
     }
