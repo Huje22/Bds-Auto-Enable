@@ -9,10 +9,12 @@ import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandSender;
 import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.config.sub.EventsConfig;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.PackModule;
@@ -23,19 +25,23 @@ public class ServerManager {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final AppConfigManager appConfigManager;
+    private final EventsConfig eventsConfig;
     private final DiscordIntegration discord;
-    private final ExecutorService service, chatService;
+    private final ExecutorService service, chatService, eventServcie;
     private final List<String> onlinePlayers, offlinePlayers, muted;
     private final StatsManager statsManager;
+    private ServerProcess serverProcess;
     private int lastTPS;
 
     public ServerManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
+        this.eventsConfig = this.appConfigManager.getEventsConfig();
         this.discord = this.bdsAutoEnable.getDiscord();
         this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Player Manager"));
         this.chatService = Executors.newSingleThreadExecutor(new ThreadUtil("Chat Service"));
+        this.eventServcie = Executors.newSingleThreadExecutor(new ThreadUtil("Event Service"));
         this.onlinePlayers = new ArrayList<>();
         this.offlinePlayers = new ArrayList<>();
         this.muted = new ArrayList<>();
@@ -43,13 +49,18 @@ public class ServerManager {
         this.lastTPS = 20;
     }
 
+    public void init() {
+        this.serverProcess = this.bdsAutoEnable.getServerProcess();
+    }
+
     public void initFromLog(final String logEntry) {
         this.chatMessage(logEntry);
-        
+
         this.service.execute(() -> {
             //Metody związane z graczem
             this.playerJoin(logEntry);
             this.playerQuit(logEntry);
+            this.playerSpawn(logEntry);
             this.deathMessage(logEntry);
             this.customCommand(logEntry);
 
@@ -66,7 +77,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = MessageUtil.fixMessage(matcher.group(1));
+            final String playerName = matcher.group(1);
             this.onlinePlayers.remove(playerName);
             this.offlinePlayers.add(playerName);
             this.discord.sendLeaveMessage(playerName);
@@ -79,10 +90,22 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = MessageUtil.fixMessage(matcher.group(1));
+            final String playerName = matcher.group(1);
             this.onlinePlayers.add(playerName);
             this.offlinePlayers.remove(playerName);
             this.discord.sendJoinMessage(playerName);
+            this.eventServcie.execute(() -> this.eventsConfig.getOnJoin().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
+        }
+    }
+
+    private void playerSpawn(final String logEntry) {
+        final String patternString = "PlayerSpawn:([^,]+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerName = matcher.group(1);
+            this.eventServcie.execute(() -> this.eventsConfig.getOnSpawn().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
         }
     }
 
@@ -93,7 +116,7 @@ public class ServerManager {
             final Matcher matcher = pattern.matcher(logEntry);
 
             if (matcher.find()) {
-                final String playerChat = MessageUtil.fixMessage(matcher.group(1));
+                final String playerChat = matcher.group(1);
                 final String message = MessageUtil.fixMessage(matcher.group(2));
                 if (this.handleChatMessage(playerChat, message)) {
                     this.discord.sendPlayerMessage(playerChat, message);
@@ -108,7 +131,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerCommand = MessageUtil.fixMessage(matcher.group(1));
+            final String playerCommand = matcher.group(1);
             final String command = MessageUtil.fixMessage(matcher.group(2));
             final boolean isOp = Boolean.parseBoolean(matcher.group(3));
             this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command), isOp);
@@ -205,7 +228,7 @@ public class ServerManager {
         String role = "";
 
         if (this.isMuted(playerChat)) {
-            this.bdsAutoEnable.getServerProcess().tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
+            this.serverProcess.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
             return false;
         }
 
@@ -216,7 +239,7 @@ public class ServerManager {
             }
         }
 
-        this.bdsAutoEnable.getServerProcess().tellrawToAll(
+        this.serverProcess.tellrawToAll(
                 this.appConfigManager.getWatchDogConfig().getPackModuleConfig().getChatMessageFormat()
                         .replaceAll("<player>", playerChat)
                         .replaceAll("<message>", message)
