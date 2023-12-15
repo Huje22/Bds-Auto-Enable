@@ -355,7 +355,8 @@ public class ServerProperties {
     public double getServerBuildRadiusRatio() {
         try {
             return Double.parseDouble(this.properties.getProperty("server-build-radius-ratio"));
-        } catch (final NumberFormatException exception) {
+        } catch (final NullPointerException | NumberFormatException exception) {
+            this.setServerBuildRadiusRatio(-1.0);
             return -1.0;
         }
     }
