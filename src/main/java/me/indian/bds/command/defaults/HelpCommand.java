@@ -19,7 +19,7 @@ public class HelpCommand extends Command {
         this.sendMessage("&a---------------------");
         if (this.commandSender == CommandSender.PLAYER) this.sendMessage("&a!tps&4-&b ilość tików na sekundę servera");
         for (final Command command : this.commandList) {
-            this.sendMessage("&a" + command.getName() + "&4-&b " + command.getDescription());
+            this.sendMessage("&a" + command.getName() + " &4-&b " + command.getDescription());
         }
         this.sendMessage("&a---------------------");
 

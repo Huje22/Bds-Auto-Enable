@@ -233,7 +233,7 @@ public class ServerProcess {
             this.logger.info("Zatrzymywanie wątków procesu servera");
             try {
                 this.processService.shutdown();
-                if (!this.processService.awaitTermination(10, TimeUnit.SECONDS)) {
+                if (this.processService.awaitTermination(10, TimeUnit.SECONDS)) {
                     this.logger.info("Zatrzymano wątki procesu servera");
                 }
             } catch (final Exception exception) {
