@@ -48,6 +48,7 @@ public class ServerProperties {
         if (!this.propertiesFile.exists()) {
             final VersionManager manager = this.bdsAutoEnable.getVersionManager();
             if (manager != null) {
+                manager.setLoaded(false);
                 manager.loadVersion();
             } else {
                 this.logger.critical("&cNie można odnaleźć pliku&a server.properties");
