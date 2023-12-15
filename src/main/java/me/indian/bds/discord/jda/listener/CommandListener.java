@@ -1,5 +1,14 @@
 package me.indian.bds.discord.jda.listener;
 
+import java.awt.Color;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.BotConfig;
@@ -30,16 +39,6 @@ import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
-import java.awt.Color;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 public class CommandListener extends ListenerAdapter implements JDAListener {
 
     private final DiscordJda discordJda;
@@ -62,7 +61,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.backupButtons = new ArrayList<>();
         this.difficultyButtons = new ArrayList<>();
         this.statsButtons = new ArrayList<>();
-        this.service = Executors.newScheduledThreadPool(5, new ThreadUtil("Discord Command"));
+        this.service = Executors.newScheduledThreadPool(5, new ThreadUtil("Discord Command Listener"));
     }
 
     @Override
@@ -405,11 +404,13 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     }
 
     private void serveUpdateButton(final ButtonInteractionEvent event) {
-        if (event.getComponentId().equals("update")) {
-            event.reply("Server jest już prawdopodobnie aktualizowany , jeśli nie zajrzyj w konsole")
-                    .setEphemeral(true).queue();
-            this.bdsAutoEnable.getVersionManager().getVersionUpdater().updateToLatest();
-        }
+        this.service.execute(() -> {
+            if (event.getComponentId().equals("update")) {
+                event.reply("Server jest już prawdopodobnie aktualizowany , jeśli nie zajrzyj w konsole")
+                        .setEphemeral(true).queue();
+                this.bdsAutoEnable.getVersionManager().getVersionUpdater().updateToLatest();
+            }
+        });
     }
 
     private void serveStatsButtons(final ButtonInteractionEvent event) {

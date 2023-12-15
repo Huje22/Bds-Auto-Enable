@@ -95,8 +95,9 @@ public class ServerManager {
             if (matcher.find()) {
                 final String playerChat = MessageUtil.fixMessage(matcher.group(1));
                 final String message = MessageUtil.fixMessage(matcher.group(2));
-                this.discord.sendPlayerMessage(playerChat, message);
-                this.handleChatMessage(playerChat, message);
+                if (this.handleChatMessage(playerChat, message)) {
+                    this.discord.sendPlayerMessage(playerChat, message);
+                }
             }
         });
     }
@@ -199,20 +200,18 @@ public class ServerManager {
         this.bdsAutoEnable.getCommandManager().runCommands(CommandSender.PLAYER, playerCommand, args[0], newArgs, isOp);
     }
 
-    private void handleChatMessage(final String playerChat, final String message) {
-        if (!this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages()) return;
+    private boolean handleChatMessage(final String playerChat, final String message) {
+        if (!this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages()) return true;
         String role = "";
 
-        //TODO: Synchronizować mute z discord 
-
-        if(this.muted.contains(playerChat)){
-         this.bdsAutoEnable.getServerProcess().tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
-            return;
+        if (this.isMuted(playerChat)) {
+            this.bdsAutoEnable.getServerProcess().tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
+            return false;
         }
-        
+
         if (this.discord instanceof final DiscordJda jda) {
             final LinkingManager linkingManager = jda.getLinkingManager();
-            if (linkingManager.isLinked(playerChat)) {
+            if (linkingManager != null && linkingManager.isLinked(playerChat)) {
                 role = jda.getColoredRole(jda.getHighestRole(linkingManager.getIdByName(playerChat))) + " ";
             }
         }
@@ -223,6 +222,7 @@ public class ServerManager {
                         .replaceAll("<message>", message)
                         .replaceAll("<role>", role)
         );
+        return true;
     }
 
     public StatsManager getStatsManager() {
@@ -241,11 +241,23 @@ public class ServerManager {
         return this.onlinePlayers;
     }
 
+    public boolean isOnline(final String name) {
+        return this.onlinePlayers.contains(name);
+    }
+
     public List<String> getOfflinePlayers() {
         return this.offlinePlayers;
     }
 
-    public List<String> getMuted(){
-      return this.muted;
+    public boolean isMuted(final String name) {
+        return this.muted.contains(name);
+    }
+
+    public void mute(final String name) {
+        this.muted.add(name);
+    }
+
+    public void unMute(final String name) {
+        this.muted.remove(name);
     }
 }

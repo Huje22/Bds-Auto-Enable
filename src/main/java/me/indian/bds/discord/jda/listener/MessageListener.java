@@ -1,5 +1,7 @@
 package me.indian.bds.discord.jda.listener;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.config.sub.discord.LinkingConfig;
@@ -8,6 +10,7 @@ import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MessageUtil;
 import net.dv8tion.jda.api.Permission;
@@ -21,13 +24,10 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
-import java.awt.Color;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 public class MessageListener extends ListenerAdapter implements JDAListener {
 
     private final DiscordJda discordJda;
+    private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final DiscordConfig discordConfig;
     private TextChannel textChannel;
@@ -36,8 +36,9 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     public MessageListener(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
         this.discordJda = discordJda;
-        this.logger = bdsAutoEnable.getLogger();
-        this.discordConfig = bdsAutoEnable.getAppConfigManager().getDiscordConfig();
+        this.bdsAutoEnable = bdsAutoEnable;
+        this.logger = this.bdsAutoEnable.getLogger();
+        this.discordConfig = this.bdsAutoEnable.getAppConfigManager().getDiscordConfig();
     }
 
     @Override
@@ -66,15 +67,17 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     @Override
     public void onMessageReceived(final MessageReceivedEvent event) {
-        if (event.getAuthor().equals(this.discordJda.getJda().getSelfUser())) return;
+        if (event.getAuthor().equals(this.discordJda.getJda().getSelfUser()) || !this.serverProcess.isEnabled()) return;
 
         final Member member = event.getMember();
         final User author = event.getAuthor();
         final Message message = event.getMessage();
         final String rawMessage = message.getContentRaw();
+        final ServerManager serverManager = this.bdsAutoEnable.getServerManager();
         final LinkingConfig linkingConfig = this.discordConfig.getBotConfig().getLinkingConfig();
 
         if (member == null) return;
+        final long id = member.getIdLong();
 
         if (event.getChannel().asTextChannel() == this.consoleChannel) {
             if (member.hasPermission(Permission.ADMINISTRATOR)) {
@@ -93,11 +96,21 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
 
         if (event.getChannel().asTextChannel() == this.textChannel) {
-            if (!linkingConfig.isCanType()) {
-                final LinkingManager linkingManager = this.discordJda.getLinkingManager();
-                if (!linkingManager.isLinked(member.getIdLong()) && !author.isBot()) {
-                    this.discordJda.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
+            final LinkingManager linkingManager = this.discordJda.getLinkingManager();
+            if (linkingManager != null) {
+                if (!linkingConfig.isCanType()) {
+                    if (!linkingManager.isLinked(id) && !author.isBot()) {
+                        this.discordJda.mute(member, 1, TimeUnit.MINUTES);
+                        message.delete().queue();
+                        this.discordJda.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
+                        return;
+                    }
+                }
+
+                if (serverManager.isMuted(linkingManager.getNameByID(id))) {
+                    this.discordJda.mute(member, 1, TimeUnit.MINUTES);
                     message.delete().queue();
+                    this.discordJda.sendPrivateMessage(author, "Jesteś wyciszony!");
                     return;
                 }
             }

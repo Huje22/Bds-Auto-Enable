@@ -215,6 +215,18 @@ public class DiscordJda implements DiscordIntegration {
         user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessageEmbeds(embed).queue());
     }
 
+    public void mute(final Member member, final long amount, final TimeUnit timeUnit) {
+        if (!member.isOwner()) {
+            member.timeoutFor(amount, timeUnit).queue();
+        }
+    }
+
+    public void unMute(final Member member) {
+        if (!member.isOwner() && member.isTimedOut()) {
+            member.removeTimeout().queue();
+        }
+    }
+
     public Role getHighestRole(final long memberID) {
         final Member member = this.guild.getMemberById(memberID);
         if (member == null) return null;
