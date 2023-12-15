@@ -67,7 +67,7 @@ public class LinkingManager {
             this.accountsToLink.remove(name);
             this.linkedAccounts.put(name, id);
             this.doForLinked();
-            this.saveLinedAccounts();
+            this.saveLinkedAccounts();
             return true;
         }
 
@@ -136,7 +136,7 @@ public class LinkingManager {
         return this.linkedMembers;
     }
 
-    public void saveLinedAccounts() {
+    public void saveLinkedAccounts() {
         try (final FileWriter writer = new FileWriter(this.linkedAccountsJson)) {
             writer.write(GsonUtil.getGson().toJson(this.linkedAccounts));
             this.logger.info("Pomyślnie zapisano&b połączone konta z discord");
@@ -165,7 +165,7 @@ public class LinkingManager {
         final TimerTask saveAccountsTimer = new TimerTask() {
             @Override
             public void run() {
-                LinkingManager.this.saveLinedAccounts();
+                LinkingManager.this.saveLinkedAccounts();
             }
         };
 

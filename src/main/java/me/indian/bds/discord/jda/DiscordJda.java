@@ -541,7 +541,7 @@ public class DiscordJda implements DiscordIntegration {
 
     @Override
     public void startShutdown() {
-        if (this.linkingManager != null) this.linkingManager.saveLinedAccounts();
+        if (this.linkingManager != null) this.linkingManager.saveLinkedAccounts();
         if (this.statsChannelsManager != null) this.statsChannelsManager.onShutdown();
     }
 
