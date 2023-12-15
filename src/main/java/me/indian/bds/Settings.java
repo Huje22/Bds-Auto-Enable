@@ -382,8 +382,7 @@ public class Settings {
                 false,
                 (input) -> {
                     if (input) {
-                        this.versionManagerConfig.setLoaded(false);
-                        this.appConfig.save();
+                        this.bdsAutoEnable.getVersionManager().setLoaded(false);
                         this.versionQuestion(scannerUtil);
                     }
                 });

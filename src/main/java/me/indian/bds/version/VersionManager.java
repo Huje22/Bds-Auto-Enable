@@ -105,7 +105,7 @@ public class VersionManager {
             }
             final long startTime = System.currentTimeMillis();
             ZipUtil.unzipFile(verFile.getAbsolutePath(), this.appConfig.getFilesPath(), false, this.importantFiles);
-            this.versionManagerConfig.setLoaded(true);
+            this.setLoaded(true);
             this.versionManagerConfig.setVersion(version);
             this.logger.info("Załadowano versie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final Exception exception) {
@@ -118,8 +118,7 @@ public class VersionManager {
     public void loadVersion() {
         final File serverFile = new File(this.appConfig.getFilesPath() + File.separator + DefaultsVariables.getDefaultFileName());
         if (!serverFile.exists()) {
-            this.versionManagerConfig.setLoaded(false);
-            this.versionManagerConfig.save();
+         this.setLoaded(false);
         }
 
         if (!this.versionManagerConfig.isLoaded()) {
@@ -252,6 +251,11 @@ public class VersionManager {
 
     public boolean hasVersion(final String version) {
         return this.availableVersions.contains(version);
+    }
+
+    public void setLoaded(final boolean loaded){
+        this.versionManagerConfig.setLoaded(loaded);
+        this.versionManagerConfig.save();
     }
 
     public String getLoadedVersion() {
