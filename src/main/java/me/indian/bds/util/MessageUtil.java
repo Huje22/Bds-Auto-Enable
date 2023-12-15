@@ -20,7 +20,7 @@ public final class MessageUtil {
     }
 
     public static String colorize(final String msg) {
-        return msg.replaceAll("&", "§");
+        return (msg == null ? "" : msg.replaceAll("&", "§"));
     }
 
     public static String fixMessage(final String message) {
@@ -28,6 +28,7 @@ public final class MessageUtil {
     }
 
     public static String fixMessage(final String message, final boolean newLines) {
+        if(message.isEmpty()) return "";
         String msg2 = message.replaceAll("\\\\", "")
                 .replaceAll("[\\uE000-\\uE0EA]", "?")
                 .replaceAll("\\$", "?")
@@ -47,6 +48,7 @@ public final class MessageUtil {
     }
 
     public static String buildMessageFromArgs(final String[] args, final String[] includeArgs) {
+        if(args == null) return "";
         String message = "";
         for (final String arg : args) {
             if (includeArgs != null && Arrays.stream(includeArgs).anyMatch(s -> s.equals(arg))) continue;
@@ -60,13 +62,11 @@ public final class MessageUtil {
     }
 
     public static String[] removeArgs(final String[] args) {
-        final String[] newArgs = new String[args.length - 1];
-        System.arraycopy(args, 1, newArgs, 0, newArgs.length);
-
-        return newArgs;
+       return removeArgs(args , 1);
     }
 
     public static String[] removeArgs(final String[] args, final int startFrom) {
+        if(args == null) return new String[]{};
         final String[] newArgs = new String[args.length - startFrom];
         System.arraycopy(args, startFrom, newArgs, 0, newArgs.length);
 

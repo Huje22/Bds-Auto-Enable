@@ -166,7 +166,9 @@ public class ServerProcess {
 
     private void colorizeMOTD() {
         final ServerProperties serverProperties = this.bdsAutoEnable.getServerProperties();
-        serverProperties.setMOTD(MessageUtil.colorize(serverProperties.getMOTD()));
+        final String motd = MessageUtil.fixMessage(MessageUtil.colorize(serverProperties.getMOTD()));
+
+        serverProperties.setMOTD(motd);
     }
 
     private void readConsoleOutput() {
@@ -204,6 +206,7 @@ public class ServerProcess {
     }
 
     public void sendToConsole(final String command) {
+        if(command.isEmpty()) return;
         this.cmdLock.lock();
         this.cmdResponseLock.lock();
         try {
