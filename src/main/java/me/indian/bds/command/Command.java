@@ -2,6 +2,7 @@ package me.indian.bds.command;
 
 
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.sub.CommandsConfig;
 import me.indian.bds.server.ServerProcess;
 
 public abstract class Command {
@@ -10,6 +11,7 @@ public abstract class Command {
     private String playerName;
     private BDSAutoEnable bdsAutoEnable;
     public CommandSender commandSender;
+    public CommandsConfig commandsConfig;
 
     public Command(final String name, final String description) {
         this(name, description, "");
@@ -57,14 +59,15 @@ public abstract class Command {
 
     public final void init(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
+        this.commandsConfig = bdsAutoEnable.getAppConfigManager().getCommandsConfig();
     }
 
     @Override
     public String toString() {
         return "Command(name=" + this.name +
-                " description=" + this.description +
-                " playerName= " + this.playerName +
-                " commandSender= " + this.commandSender +
+                ", description=" + this.description +
+                ", playerName= " + this.playerName +
+                ", commandSender= " + this.commandSender +
                 ")";
     }
 }
