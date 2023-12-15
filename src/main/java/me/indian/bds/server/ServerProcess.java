@@ -1,18 +1,5 @@
 package me.indian.bds.server;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.SystemOS;
-import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.exception.BadThreadException;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.manager.ServerManager;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.watchdog.WatchDog;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +11,19 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.SystemOS;
+import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.exception.BadThreadException;
+import me.indian.bds.logger.LogState;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.manager.ServerManager;
+import me.indian.bds.server.properties.ServerProperties;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.watchdog.WatchDog;
 
 public class ServerProcess {
 
@@ -132,6 +132,7 @@ public class ServerProcess {
                         }
                     }
                     this.watchDog.getPackModule().getPackInfo();
+                    this.colorizeMOTD();
                     this.process = this.processBuilder.start();
                     this.startTime = System.currentTimeMillis();
                     this.logger.info("Uruchomiono proces servera ");
@@ -161,6 +162,11 @@ public class ServerProcess {
                 }
             }
         });
+    }
+
+    private void colorizeMOTD() {
+        final ServerProperties serverProperties = this.bdsAutoEnable.getServerProperties();
+        serverProperties.setMOTD(MessageUtil.colorize(serverProperties.getMOTD()));
     }
 
     private void readConsoleOutput() {
@@ -195,53 +201,6 @@ public class ServerProcess {
                 consoleOutput.close();
             }
         }
-    }
-
-    public void instantShutdown() {
-        this.discord.startShutdown();
-        this.logger.alert("Wyłączanie...");
-        this.discord.sendDisablingMessage();
-        this.setCanRun(false);
-
-        this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
-        ThreadUtil.sleep(3);
-        this.bdsAutoEnable.getServerManager().getStatsManager().saveAllData();
-
-        if (this.isEnabled()) {
-            this.watchDog.saveAndResume();
-            this.sendToConsole("stop");
-
-            this.logger.info("Niszczenie procesu servera");
-            try {
-                this.process.destroy();
-                this.logger.info("Zniszczono proces servera");
-                this.discord.sendDestroyedMessage();
-            } catch (final Exception exception) {
-                this.logger.error("Nie udało się zniszczyć procesu servera", exception);
-            }
-        }
-
-        this.logger.info("Zapisywanie configu...");
-        try {
-            this.appConfigManager.save();
-            this.logger.info("Zapisano config");
-        } catch (final Exception exception) {
-            this.logger.critical("Nie można zapisać configu", exception);
-        }
-
-        if (this.processService != null && !this.processService.isTerminated()) {
-            this.logger.info("Zatrzymywanie wątków procesu servera");
-            try {
-                this.processService.shutdown();
-                if (this.processService.awaitTermination(10, TimeUnit.SECONDS)) {
-                    this.logger.info("Zatrzymano wątki procesu servera");
-                }
-            } catch (final Exception exception) {
-                this.logger.error("Nie udało się zatrzymać wątków procesu servera", exception);
-            }
-        }
-
-        this.discord.shutdown();
     }
 
     public void sendToConsole(final String command) {
@@ -333,6 +292,53 @@ public class ServerProcess {
     public void tellrawToAllAndLogger(final String prefix, final String msg, final Throwable throwable, final LogState logState) {
         this.logger.logByState("[To Minecraft] " + msg, throwable, logState);
         if (!this.serverManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
+    }
+
+    public void instantShutdown() {
+        this.discord.startShutdown();
+        this.logger.alert("Wyłączanie...");
+        this.discord.sendDisablingMessage();
+        this.setCanRun(false);
+
+        this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
+        ThreadUtil.sleep(3);
+        this.bdsAutoEnable.getServerManager().getStatsManager().saveAllData();
+
+        if (this.isEnabled()) {
+            this.watchDog.saveAndResume();
+            this.sendToConsole("stop");
+
+            this.logger.info("Niszczenie procesu servera");
+            try {
+                this.process.destroy();
+                this.logger.info("Zniszczono proces servera");
+                this.discord.sendDestroyedMessage();
+            } catch (final Exception exception) {
+                this.logger.error("Nie udało się zniszczyć procesu servera", exception);
+            }
+        }
+
+        this.logger.info("Zapisywanie configu...");
+        try {
+            this.appConfigManager.save();
+            this.logger.info("Zapisano config");
+        } catch (final Exception exception) {
+            this.logger.critical("Nie można zapisać configu", exception);
+        }
+
+        if (this.processService != null && !this.processService.isTerminated()) {
+            this.logger.info("Zatrzymywanie wątków procesu servera");
+            try {
+                this.processService.shutdown();
+                if (this.processService.awaitTermination(10, TimeUnit.SECONDS)) {
+                    this.logger.info("Zatrzymano wątki procesu servera");
+                }
+            } catch (final Exception exception) {
+                this.logger.error("Nie udało się zatrzymać wątków procesu servera", exception);
+            }
+        }
+
+        this.discord.shutdown();
     }
 
     public boolean isCanRun() {
