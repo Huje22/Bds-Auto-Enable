@@ -12,6 +12,8 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 * Program wymaga przynajmniej `1GB` ram do działania
 * Zaleca się używać integracji z discord (JDA)
 * Program wspiera użycie [**WINE**](https://github.com/wine-mirror/wine)
+* Jedyna wersia Minecraft jaką wspieramy
+  to ([kliknij](https://github.com/Huje22/Bds-Auto-Enable/blob/master/src/main/java/me/indian/bds/config/sub/version/VersionManagerConfig.java#L17))
 
 # Program zawiera
 
