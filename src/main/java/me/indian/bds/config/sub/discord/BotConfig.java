@@ -34,7 +34,7 @@ public class BotConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Czy tylko osoba wykonująca polecenie ma widzieć jego rezultat "})
     @Comment({"Polecenia typu /cmd , nadal bedzie widzieć tylko wykonawca"})
-    private boolean setEphemeral = false;
+    private boolean setEphemeral = true;
     @Comment({""})
     @Comment({"Info po wpisaniu /ip"})
     private List<String> ipMessage = Arrays.asList("Nasze IP: 127.0.0.1", "Nasz Port: 19132");
