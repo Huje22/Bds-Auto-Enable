@@ -219,6 +219,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             }
 
             case "playtime" -> {
+                //TODO: Dodac informacie gdy paczka nie jest załadowana
                 final List<String> playTime = StatusUtil.getTopPlayTime(true, 100);
                 final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
                 final String totalUpTime = "Łączny czas działania servera: "
