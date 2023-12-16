@@ -25,7 +25,9 @@ import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.watchdog.WatchDog;
 import me.indian.bds.watchdog.module.BackupModule;
+import me.indian.bds.watchdog.module.PackModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.Permission;
@@ -50,7 +52,10 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private final ExecutorService service;
     private JDA jda;
     private ServerProcess serverProcess;
+    private WatchDog watchDog;
     private BackupModule backupModule;
+    private PackModule packModule;
+    private LinkingManager linkingManager;
 
     public CommandListener(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
         this.discordJda = discordJda;
@@ -61,13 +66,16 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.backupButtons = new ArrayList<>();
         this.difficultyButtons = new ArrayList<>();
         this.statsButtons = new ArrayList<>();
-        this.service = Executors.newScheduledThreadPool(5, new ThreadUtil("Discord Command Listener"));
+        this.service = Executors.newScheduledThreadPool(7, new ThreadUtil("Discord Command Listener"));
     }
 
     @Override
     public void init() {
         this.jda = this.discordJda.getJda();
-        this.backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
+        this.watchDog = this.bdsAutoEnable.getWatchDog();
+        this.backupModule = this.watchDog.getBackupModule();
+        this.packModule = this.watchDog.getPackModule();
+        this.linkingManager = this.discordJda.getLinkingManager();
     }
 
     @Override
@@ -80,212 +88,228 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         final Member member = event.getMember();
         if (member == null) return;
 
-        switch (event.getName()) {
-            case "cmd" -> this.service.execute(() -> {
-                //Robie to na nowym wątku gdyby jakieś polecenie miało zblokować ten od JDA
-                if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                    if (!this.serverProcess.isEnabled()) {
-                        event.reply("Server jest wyłączony").setEphemeral(true).queue();
-                        return;
-                    }
-
-                    event.deferReply().setEphemeral(true).queue();
-
-                    final String command = event.getOption("command").getAsString();
-                    if (command.isEmpty()) {
-                        event.reply("Polecenie nie może być puste!").setEphemeral(true).queue();
-                        return;
-                    }
-
-                    this.bdsAutoEnable.getLogger().print(command, this.discordJda, DiscordLogChannelType.CONSOLE);
-
-                    final MessageEmbed embed = new EmbedBuilder()
-                            .setTitle("Ostatnia linijka z konsoli")
-                            .setDescription(this.serverProcess.commandAndResponse(command))
-                            .setColor(Color.BLUE)
-                            .setFooter("Używasz: " + command)
-                            .build();
-
-                    event.getHook().editOriginalEmbeds(embed).queue();
-
-                } else {
-                    event.reply("Nie posiadasz permisji!!").setEphemeral(true).queue();
-                }
-            });
-            case "link" -> {
-                final OptionMapping codeMapping = event.getOption("code");
-                if (codeMapping != null && !codeMapping.getAsString().isEmpty()) {
-                    final String code = codeMapping.getAsString();
-                    final LinkingManager linkingManager = this.discordJda.getLinkingManager();
-                    final long id = member.getIdLong();
-                    final long roleID = this.discordConfig.getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID();
-                    final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
-                            .getPlayTimeByName(linkingManager.getNameByID(id)), TimeUnit.MILLISECONDS);
-                    final EmbedBuilder linkingEmbed = new EmbedBuilder().setTitle("Łączenie kont").setColor(Color.BLUE)
-                            /* .setFooter("Aby rozłączyć konto wpisz /unlink") */;
-
-                    String hoursMessage = "";
-
-                    if (hours < 5) {
-                        if (this.jda.getRoleById(roleID) != null) {
-                            hoursMessage = "\nMasz za mało godzin gry aby otrzymać <@&" + roleID + "**" + hours + "** godzin gry)" +
-                                    "\nDostaniesz role gdy wbijesz **5** godzin gry";
+        this.service.execute(() -> {
+            //Robie to na nowym wątku gdyby jakieś polecenie miało zblokować ten od JDA
+            switch (event.getName()) {
+                case "cmd" -> {
+                    if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                        if (!this.serverProcess.isEnabled()) {
+                            event.reply("Server jest wyłączony").setEphemeral(true).queue();
+                            return;
                         }
-                    }
 
-                    if (linkingManager.isLinked(id)) {
-                        linkingEmbed.setDescription("Twoje konto jest już połączone z: **" + linkingManager.getNameByID(id) + "**" + hoursMessage);
-                        event.replyEmbeds(linkingEmbed.build()).setEphemeral(true).queue();
+                        event.deferReply().setEphemeral(true).queue();
+
+                        final String command = event.getOption("command").getAsString();
+                        if (command.isEmpty()) {
+                            event.reply("Polecenie nie może być puste!").setEphemeral(true).queue();
+                            return;
+                        }
+
+                        this.bdsAutoEnable.getLogger().print(command, this.discordJda, DiscordLogChannelType.CONSOLE);
+
+                        final MessageEmbed embed = new EmbedBuilder()
+                                .setTitle("Ostatnia linijka z konsoli")
+                                .setDescription(this.serverProcess.commandAndResponse(command))
+                                .setColor(Color.BLUE)
+                                .setFooter("Używasz: " + command)
+                                .build();
+
+                        event.getHook().editOriginalEmbeds(embed).queue();
+
+                    } else {
+                        event.reply("Nie posiadasz permisji!!").setEphemeral(true).queue();
+                    }
+                }
+                case "link" -> {
+                    if (!this.packModule.isLoaded()) {
+                        event.reply("Paczka **" + this.packModule.getPackName() + "** nie została załadowana").setEphemeral(true).queue();
                         return;
                     }
+                    final OptionMapping codeMapping = event.getOption("code");
+                    if (codeMapping != null && !codeMapping.getAsString().isEmpty()) {
+                        final String code = codeMapping.getAsString();
+                        final long id = member.getIdLong();
+                        final long roleID = this.discordConfig.getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID();
+                        final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
+                                .getPlayTimeByName(this.linkingManager.getNameByID(id)), TimeUnit.MILLISECONDS);
+                        final EmbedBuilder linkingEmbed = new EmbedBuilder().setTitle("Łączenie kont").setColor(Color.BLUE)
+                                /* .setFooter("Aby rozłączyć konto wpisz /unlink") */;
 
-                    if (linkingManager.linkAccount(code, id)) {
-                        linkingEmbed.setDescription("Połączono konto z nickiem: **" + linkingManager.getNameByID(id) + "**" + hoursMessage);
-                        event.replyEmbeds(linkingEmbed.build()).setEphemeral(true).queue();
-                        this.serverProcess.tellrawToPlayer(linkingManager.getNameByID(id),
-                                "&aPołączono konto z ID:&b " + id);
+                        String hoursMessage = "";
+
+                        if (hours < 5) {
+                            if (this.jda.getRoleById(roleID) != null) {
+                                hoursMessage = "\nMasz za mało godzin gry aby otrzymać <@&" + roleID + "**" + hours + "** godzin gry)" +
+                                        "\nDostaniesz role gdy wbijesz **5** godzin gry";
+                            }
+                        }
+
+                        if (this.linkingManager.isLinked(id)) {
+                            linkingEmbed.setDescription("Twoje konto jest już połączone z: **" + this.linkingManager.getNameByID(id) + "**" + hoursMessage);
+                            event.replyEmbeds(linkingEmbed.build()).setEphemeral(true).queue();
+                            return;
+                        }
+
+                        if (this.linkingManager.linkAccount(code, id)) {
+                            linkingEmbed.setDescription("Połączono konto z nickiem: **" + this.linkingManager.getNameByID(id) + "**" + hoursMessage);
+                            event.replyEmbeds(linkingEmbed.build()).setEphemeral(true).queue();
+                            this.serverProcess.tellrawToPlayer(this.linkingManager.getNameByID(id),
+                                    "&aPołączono konto z ID:&b " + id);
+                        } else {
+                            event.reply("Kod nie jest poprawny").setEphemeral(true).queue();
+                        }
                     } else {
-                        event.reply("Kod nie jest poprawny").setEphemeral(true).queue();
+                        final List<String> linkedAccounts = this.getLinkedAccounts();
+                        final MessageEmbed messageEmbed = new EmbedBuilder()
+                                .setTitle("Osoby z połączonym kontami")
+                                .setDescription((linkedAccounts.isEmpty() ? "**Brak połączonych kont**" : MessageUtil.listToSpacedString(linkedAccounts)))
+                                .setColor(Color.BLUE)
+                                .setFooter("Aby połączyć konto wpisz /link KOD")
+                                .build();
+
+                        event.replyEmbeds(messageEmbed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
                     }
-                } else {
-                    final List<String> linkedAccounts = this.getLinkedAccounts();
-                    final MessageEmbed messageEmbed = new EmbedBuilder()
-                            .setTitle("Osoby z połączonym kontami")
-                            .setDescription((linkedAccounts.isEmpty() ? "**Brak połączonych kont**" : MessageUtil.listToSpacedString(linkedAccounts)))
+                }
+
+                case "ping" -> {
+                    final MessageEmbed embed = new EmbedBuilder()
+                            .setTitle("Ping Bot <-> Discord")
+                            .setDescription("Aktualny ping z serverami discord wynosi: " + this.jda.getGatewayPing() + " ms")
                             .setColor(Color.BLUE)
-                            .setFooter("Aby połączyć konto wpisz /link KOD")
                             .build();
 
-                    event.replyEmbeds(messageEmbed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
-                }
-            }
-
-            case "ping" -> {
-                final MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Ping Bot <-> Discord")
-                        .setDescription("Aktualny ping z serverami discord wynosi: " + this.jda.getGatewayPing() + " ms")
-                        .setColor(Color.BLUE)
-                        .build();
-
-                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
-            }
-
-            case "ip" -> {
-                final MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Nasze ip!")
-                        .setDescription(MessageUtil.listToSpacedString(this.botConfig.getIpMessage()))
-                        .setColor(Color.BLUE)
-                        .build();
-
-                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
-            }
-
-            case "stats" -> {
-                if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                    event.replyEmbeds(this.getStatsEmbed()).setEphemeral(true)
-                            .setActionRow(ActionRow.of(this.statsButtons).getComponents())
-                            .queue();
-                } else {
-                    event.replyEmbeds(this.getStatsEmbed()).setEphemeral(this.botConfig.isSetEphemeral()).queue();
-                }
-            }
-
-            case "list" -> {
-                final List<String> players = this.bdsAutoEnable.getServerManager().getOnlinePlayers();
-                final String list = "`" + MessageUtil.stringListToString(players, "`, `") + "`";
-                final MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Lista Graczy")
-                        .setDescription(players.size() + "/" + this.bdsAutoEnable.getServerProperties().getMaxPlayers() + "\n" +
-                                (players.isEmpty() ? " " : list) + "\n")
-                        .setColor(Color.BLUE)
-                        .build();
-
-                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
-            }
-
-            case "backup" -> {
-                if (!this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getBackupConfig().isEnabled()) {
-                    event.reply("Backupy są wyłączone")
-                            .setEphemeral(true).queue();
-                    return;
-                }
-                if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                    event.replyEmbeds(this.getBackupEmbed())
-                            .addActionRow(ActionRow.of(this.backupButtons).getComponents())
-                            .setEphemeral(true).queue();
-                } else {
-                    event.replyEmbeds(this.getBackupEmbed()).setEphemeral(this.botConfig.isSetEphemeral()).queue();
-                }
-            }
-
-            case "playtime" -> {
-                //TODO: Dodac informacie gdy paczka nie jest załadowana
-                final List<String> playTime = StatusUtil.getTopPlayTime(true, 100);
-                final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
-                final String totalUpTime = "Łączny czas działania servera: "
-                        + DateUtil.formatTime(serverStats.getTotalUpTime() , "days hours minutes seconds ");
-
-                final MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Top 100 Czasu gry")
-                        .setDescription((playTime.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(playTime)))
-                        .setColor(Color.BLUE)
-                        .setFooter(totalUpTime)
-                        .build();
-
-                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
-            }
-
-            case "deaths" -> {
-                final List<String> deaths = StatusUtil.getTopDeaths(true, 100);
-                final MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Top 100 ilości śmierci")
-                        .setDescription((deaths.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(deaths)))
-                        .setColor(Color.BLUE)
-                        .build();
-
-                event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
-            }
-            case "difficulty" -> {
-                if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                    event.replyEmbeds(this.getDifficultyEmbed())
-                            .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
-                            .setEphemeral(true).queue();
-                } else {
-                    event.replyEmbeds(this.getDifficultyEmbed()).setEphemeral(this.botConfig.isSetEphemeral()).queue();
-                }
-            }
-            case "version" -> {
-                final String current = this.appConfigManager.getVersionManagerConfig().getVersion();
-                String latest = this.bdsAutoEnable.getVersionManager().getLatestVersion();
-                if (latest.equals("")) {
-                    latest = current;
-                }
-
-                final String checkLatest = (current.equals(latest) ? "`" + latest + "`" : "`" + current + "` (Najnowsza to: `" + latest + "`)");
-
-                final MessageEmbed embed = new EmbedBuilder()
-                        .setTitle("Informacje o wersji")
-                        .setDescription("**Wersjia __BDS-Auto-Enable__**: `" + this.bdsAutoEnable.getProjectVersion() + "`\n" +
-                                "**Wersjia Servera **: " + checkLatest + "\n"
-                        )
-                        .setColor(Color.BLUE)
-                        .build();
-
-                if (member.hasPermission(Permission.ADMINISTRATOR)) {
-                    Button button = Button.primary("update", "Update")
-                            .withEmoji(Emoji.fromUnicode("\uD83D\uDD3C"));
-                    if (current.equals(latest)) {
-                        button = button.asDisabled();
-                    } else {
-                        button = button.asEnabled();
-                    }
-
-                    event.replyEmbeds(embed).addActionRow(button).setEphemeral(true).queue();
-                } else {
                     event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
                 }
+
+                case "ip" -> {
+                    final MessageEmbed embed = new EmbedBuilder()
+                            .setTitle("Nasze ip!")
+                            .setDescription(MessageUtil.listToSpacedString(this.botConfig.getIpMessage()))
+                            .setColor(Color.BLUE)
+                            .build();
+
+                    event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
+                }
+
+                case "stats" -> {
+                    if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                        event.replyEmbeds(this.getStatsEmbed()).setEphemeral(true)
+                                .setActionRow(ActionRow.of(this.statsButtons).getComponents())
+                                .queue();
+                    } else {
+                        event.replyEmbeds(this.getStatsEmbed()).setEphemeral(this.botConfig.isSetEphemeral()).queue();
+                    }
+                }
+
+                case "list" -> {
+                    if (!this.packModule.isLoaded()) {
+                        event.reply("Paczka **" + this.packModule.getPackName() + "** nie została załadowana").setEphemeral(true).queue();
+                        return;
+                    }
+                    final List<String> players = this.bdsAutoEnable.getServerManager().getOnlinePlayers();
+                    final String list = "`" + MessageUtil.stringListToString(players, "`, `") + "`";
+                    final MessageEmbed embed = new EmbedBuilder()
+                            .setTitle("Lista Graczy")
+                            .setDescription(players.size() + "/" + this.bdsAutoEnable.getServerProperties().getMaxPlayers() + "\n" +
+                                    (players.isEmpty() ? " " : list) + "\n")
+                            .setColor(Color.BLUE)
+                            .build();
+
+                    event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
+                }
+
+                case "backup" -> {
+                    if (!this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getBackupConfig().isEnabled()) {
+                        event.reply("Backupy są wyłączone")
+                                .setEphemeral(true).queue();
+                        return;
+                    }
+                    if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                        event.replyEmbeds(this.getBackupEmbed())
+                                .addActionRow(ActionRow.of(this.backupButtons).getComponents())
+                                .setEphemeral(true).queue();
+                    } else {
+                        event.replyEmbeds(this.getBackupEmbed()).setEphemeral(this.botConfig.isSetEphemeral()).queue();
+                    }
+                }
+
+                case "playtime" -> {
+                    if (!this.packModule.isLoaded()) {
+                        event.reply("Paczka **" + this.packModule.getPackName() + "** nie została załadowana").setEphemeral(true).queue();
+                        return;
+                    }
+                    final List<String> playTime = StatusUtil.getTopPlayTime(true, 100);
+                    final ServerStats serverStats = this.bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
+                    final String totalUpTime = "Łączny czas działania servera: "
+                            + DateUtil.formatTime(serverStats.getTotalUpTime(), "days hours minutes seconds ");
+
+                    final MessageEmbed embed = new EmbedBuilder()
+                            .setTitle("Top 100 Czasu gry")
+                            .setDescription((playTime.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(playTime)))
+                            .setColor(Color.BLUE)
+                            .setFooter(totalUpTime)
+                            .build();
+
+                    event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
+                }
+
+                case "deaths" -> {
+                    if (!this.packModule.isLoaded()) {
+                        event.reply("Paczka **" + this.packModule.getPackName() + "** nie została załadowana").setEphemeral(true).queue();
+                        return;
+                    }
+                    final List<String> deaths = StatusUtil.getTopDeaths(true, 100);
+                    final MessageEmbed embed = new EmbedBuilder()
+                            .setTitle("Top 100 ilości śmierci")
+                            .setDescription((deaths.isEmpty() ? "**Brak Danych**" : MessageUtil.listToSpacedString(deaths)))
+                            .setColor(Color.BLUE)
+                            .build();
+
+                    event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
+                }
+                case "difficulty" -> {
+                    if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                        event.replyEmbeds(this.getDifficultyEmbed())
+                                .addActionRow(ActionRow.of(this.difficultyButtons).getComponents())
+                                .setEphemeral(true).queue();
+                    } else {
+                        event.replyEmbeds(this.getDifficultyEmbed()).setEphemeral(this.botConfig.isSetEphemeral()).queue();
+                    }
+                }
+                case "version" -> {
+                    final String current = this.appConfigManager.getVersionManagerConfig().getVersion();
+                    String latest = this.bdsAutoEnable.getVersionManager().getLatestVersion();
+                    if (latest.equals("")) {
+                        latest = current;
+                    }
+
+                    final String checkLatest = (current.equals(latest) ? "`" + latest + "`" : "`" + current + "` (Najnowsza to: `" + latest + "`)");
+
+                    final MessageEmbed embed = new EmbedBuilder()
+                            .setTitle("Informacje o wersji")
+                            .setDescription("**Wersjia __BDS-Auto-Enable__**: `" + this.bdsAutoEnable.getProjectVersion() + "`\n" +
+                                    "**Wersjia Servera **: " + checkLatest + "\n"
+                            )
+                            .setColor(Color.BLUE)
+                            .build();
+
+                    if (member.hasPermission(Permission.ADMINISTRATOR)) {
+                        Button button = Button.primary("update", "Update")
+                                .withEmoji(Emoji.fromUnicode("\uD83D\uDD3C"));
+                        if (current.equals(latest)) {
+                            button = button.asDisabled();
+                        } else {
+                            button = button.asEnabled();
+                        }
+
+                        event.replyEmbeds(embed).addActionRow(button).setEphemeral(true).queue();
+                    } else {
+                        event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
+                    }
+                }
             }
-        }
+        });
     }
 
     @Override
@@ -304,7 +328,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     }
 
     private List<String> getLinkedAccounts() {
-        final Map<String, Long> linkedAccounts = this.discordJda.getLinkingManager().getLinkedAccounts();
+        final Map<String, Long> linkedAccounts = this.linkingManager.getLinkedAccounts();
         final List<String> linked = new ArrayList<>();
 
         final List<Map.Entry<String, Long>> sortedEntries = linkedAccounts.entrySet().stream()
