@@ -18,7 +18,7 @@ public class VersionUpdater {
     private final VersionManagerConfig versionManagerConfig;
     private final ServerProcess serverProcess;
     private final String prefix;
-    private boolean running;
+    private boolean running, updating;
 
     public VersionUpdater(final BDSAutoEnable bdsAutoEnable, final VersionManager versionManager) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -68,32 +68,43 @@ public class VersionUpdater {
     }
 
     public void updateToLatest() {
-        final String version = this.versionManager.getLatestVersion();
-        if (this.versionManagerConfig.getVersion().equalsIgnoreCase(version)) return;
-        this.bdsAutoEnable.getDiscord().sendServerUpdateMessage(version);
-        if (!this.versionManager.hasVersion(version)) {
-            this.versionManager.downloadServerFiles(version);
+        if (this.updating) {
+            this.logger.error("Server jest już aktualizowany!!");
+            return;
         }
-
-        this.serverProcess.tellrawToAllAndLogger(
-                this.prefix,
-                "&aWersja &1" + version + "&a będzie właśnie ładowana!",
-                LogState.ALERT
-        );
-        this.serverProcess.setCanRun(false);
-
-        if (this.serverProcess.isEnabled()) {
-            this.serverProcess.kickAllPlayers(this.prefix + " &aAktualizowanie servera....");
-            this.serverProcess.sendToConsole("stop");
-            try {
-                this.serverProcess.getProcess().waitFor();
-            } catch (final InterruptedException exception) {
-                this.logger.error("", exception);
+        this.updating = true;
+        try {
+            final String version = this.versionManager.getLatestVersion();
+            if (this.versionManagerConfig.getVersion().equalsIgnoreCase(version)) return;
+            this.bdsAutoEnable.getDiscord().sendServerUpdateMessage(version);
+            if (!this.versionManager.hasVersion(version)) {
+                this.versionManager.downloadServerFiles(version);
             }
-        }
 
-        this.versionManager.loadVersion(version);
-        this.serverProcess.setCanRun(true);
-        this.serverProcess.startProcess();
+            this.serverProcess.tellrawToAllAndLogger(
+                    this.prefix,
+                    "&aWersja &1" + version + "&a będzie właśnie ładowana!",
+                    LogState.ALERT
+            );
+            this.serverProcess.setCanRun(false);
+
+            if (this.serverProcess.isEnabled()) {
+                this.serverProcess.kickAllPlayers(this.prefix + " &aAktualizowanie servera....");
+                this.serverProcess.sendToConsole("stop");
+                try {
+                    this.serverProcess.getProcess().waitFor();
+                } catch (final InterruptedException exception) {
+                    this.logger.error("", exception);
+                }
+            }
+
+            this.versionManager.loadVersion(version);
+            this.serverProcess.setCanRun(true);
+            this.serverProcess.startProcess();
+        } catch (final Exception exception) {
+            this.logger.critical("Wystąpił krytyczny błąd przy próbie aktualizacji sevrera do najnowszej wersji", exception);
+        } finally {
+            this.updating = false;
+        }
     }
 }
