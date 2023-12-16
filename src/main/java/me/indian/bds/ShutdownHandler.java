@@ -2,6 +2,7 @@ package me.indian.bds;
 
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.component.Footer;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 
@@ -47,7 +48,7 @@ public class ShutdownHandler {
             this.discordIntegration.sendEmbedMessage("Wystąpił niezłapany wyjątek w wątku** " + thread.getName() + "**",
                     (closeOnException ? "**Aplikacja zostaje zamknięta z tego powodu**" : ""),
                     throwable,
-                    throwable.getLocalizedMessage());
+                    new Footer(throwable.getLocalizedMessage()));
 
             if (closeOnException) {
                 this.logger.alert("Zamykanie aplikacji z powodu niezłapanego wyjątku");

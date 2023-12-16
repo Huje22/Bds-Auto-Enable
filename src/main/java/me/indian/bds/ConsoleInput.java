@@ -1,15 +1,15 @@
 package me.indian.bds;
 
+import java.util.Scanner;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.command.CommandSender;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.component.Footer;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
-
-import java.util.Scanner;
 
 public class ConsoleInput {
 
@@ -55,7 +55,7 @@ public class ConsoleInput {
                 this.discord.sendEmbedMessage("ServerProcess",
                         "Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji",
                         exception,
-                        exception.getLocalizedMessage());
+                        new Footer(exception.getLocalizedMessage()));
                 this.discord.sendMessage("<owner>");
                 System.exit(0);
             }

@@ -18,6 +18,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.component.Footer;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -162,7 +163,7 @@ public class BackupModule {
             } catch (final Exception exception) {
                 this.status = "Nie udało sie utworzyć kopij zapasowej";
                 if(this.appConfigManager.getDiscordConfig().getDiscordMessagesOptionsConfig().isSendBackupFailMessage()){
-                    this.discord.sendEmbedMessage("Backup" , this.status , exception , exception.getMessage());
+                    this.discord.sendEmbedMessage("Backup", this.status, exception, new Footer(exception.getMessage()));
                 }
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4" + this.status, exception, LogState.CRITICAL);
                 if (backup.delete()) {

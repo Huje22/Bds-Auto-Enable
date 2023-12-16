@@ -1,20 +1,20 @@
 package me.indian.bds.watchdog.module;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.AutoRestartConfig;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.component.Footer;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
-
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class AutoRestartModule {
 
@@ -106,7 +106,7 @@ public class AutoRestartModule {
                 this.discord.sendEmbedMessage("Restart",
                         "Nie można zrestartować servera!",
                         exception,
-                        exception.getLocalizedMessage());
+                        new Footer(exception.getLocalizedMessage()));
             } finally {
                 this.restarting = false;
             }

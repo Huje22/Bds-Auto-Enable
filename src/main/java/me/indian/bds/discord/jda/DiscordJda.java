@@ -16,7 +16,8 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.Field;
+import me.indian.bds.discord.component.Field;
+import me.indian.bds.discord.component.Footer;
 import me.indian.bds.discord.jda.listener.CommandListener;
 import me.indian.bds.discord.jda.listener.JDAListener;
 import me.indian.bds.discord.jda.listener.MentionPatternCacheListener;
@@ -203,7 +204,7 @@ public class DiscordJda implements DiscordIntegration {
             this.sendEmbedMessage("Brak uprawnień",
                     "**Bot nie posiada uprawnień administratora**\n" +
                             "Są one wymagane do `100%` pewności że wszytko bedzie działać w nim",
-                    "Brak uprawnień");
+                    new Footer("Brak uprawnień"));
         }
     }
 
@@ -391,14 +392,14 @@ public class DiscordJda implements DiscordIntegration {
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final String footer) {
+    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Footer footer) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
-            if (title.isEmpty() || message.isEmpty() || footer.isEmpty()) return;
+            if (title.isEmpty() || message.isEmpty()) return;
             final EmbedBuilder embed = new EmbedBuilder()
                     .setTitle(title)
                     .setDescription(message.replaceAll("<owner>", this.getOwnerMention()))
                     .setColor(Color.BLUE)
-                    .setFooter(footer);
+                    .setFooter(footer.text(), footer.imageURL());
 
             if (fields != null && !fields.isEmpty()) {
                 for (final Field field : fields) {
@@ -412,18 +413,18 @@ public class DiscordJda implements DiscordIntegration {
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final String footer) {
+    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final Footer footer) {
         this.sendEmbedMessage(title, message +
                 "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```", fields, footer);
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message, final String footer) {
+    public void sendEmbedMessage(final String title, final String message, final Footer footer) {
         this.sendEmbedMessage(title, message, (List<Field>) null, footer);
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer) {
+    public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final Footer footer) {
         this.sendEmbedMessage(title, message +
                 "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```", footer);
     }

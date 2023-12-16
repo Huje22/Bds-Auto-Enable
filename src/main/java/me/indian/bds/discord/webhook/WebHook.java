@@ -12,7 +12,8 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.Field;
+import me.indian.bds.discord.component.Field;
+import me.indian.bds.discord.component.Footer;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MessageUtil;
@@ -88,7 +89,7 @@ public class WebHook implements DiscordIntegration {
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final String footer) {
+    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Footer footer) {
         this.service.execute(() -> {
             try {
                 final HttpURLConnection connection = (HttpURLConnection) new URL(this.webhookURL).openConnection();
@@ -120,7 +121,8 @@ public class WebHook implements DiscordIntegration {
                 }
 
                 final JsonObject footerObject = new JsonObject();
-                footerObject.addProperty("text", footer);
+                footerObject.addProperty("text", footer.text());
+                footerObject.addProperty("icon_url", footer.imageURL());
 
                 embed.add("footer", footerObject);
                 embed.addProperty("color", 3838);
@@ -145,18 +147,18 @@ public class WebHook implements DiscordIntegration {
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final String footer) {
+    public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final Footer footer) {
         this.sendEmbedMessage(title, message +
                 "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```", fields, footer);
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message, final String footer) {
+    public void sendEmbedMessage(final String title, final String message, final Footer footer) {
         this.sendEmbedMessage(title, message, (List<Field>) null, footer);
     }
 
     @Override
-    public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer) {
+    public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final Footer footer) {
         this.sendEmbedMessage(title, message +
                 "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```", footer);
     }

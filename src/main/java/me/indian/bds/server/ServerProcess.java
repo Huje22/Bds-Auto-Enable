@@ -15,6 +15,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.SystemOS;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.component.Footer;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
@@ -90,7 +91,7 @@ public class ServerProcess {
             this.discord.sendEmbedMessage("ServerProcess",
                     "Nie można sprawdzić czy proces jest aktywny",
                     exception,
-                    exception.getLocalizedMessage());
+                    new Footer(exception.getLocalizedMessage()));
             System.exit(0);
         }
         return false;
@@ -156,7 +157,7 @@ public class ServerProcess {
                     this.discord.sendEmbedMessage("ServerProcess",
                             "Nie można uruchomić procesu",
                             exception,
-                            exception.getLocalizedMessage());
+                            new Footer(exception.getLocalizedMessage()));
 
                     System.exit(0);
                 }
@@ -195,7 +196,7 @@ public class ServerProcess {
                 this.discord.sendEmbedMessage("ServerProcess",
                         "Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji",
                         exception,
-                        exception.getLocalizedMessage());
+                        new Footer(exception.getLocalizedMessage()));
                 this.discord.sendMessage("<owner>");
 
                 System.exit(1);

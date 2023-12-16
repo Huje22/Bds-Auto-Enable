@@ -1,6 +1,8 @@
 package me.indian.bds.discord;
 
 import java.util.List;
+import me.indian.bds.discord.component.Field;
+import me.indian.bds.discord.component.Footer;
 
 public interface DiscordIntegration {
 
@@ -10,13 +12,13 @@ public interface DiscordIntegration {
 
     void sendMessage(final String message, final Throwable throwable);
 
-    void sendEmbedMessage(final String title, final String message, final List<Field> fields, final String footer);
+    void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Footer footer);
 
-    void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final String footer);
+    void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final Footer footer);
 
-    void sendEmbedMessage(final String title, final String message, final String footer);
+    void sendEmbedMessage(final String title, final String message, final Footer footer);
 
-    void sendEmbedMessage(final String title, final String message, final Throwable throwable, final String footer);
+    void sendEmbedMessage(final String title, final String message, final Throwable throwable, final Footer footer);
 
     void sendJoinMessage(final String playerName);
 

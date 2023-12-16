@@ -11,6 +11,7 @@ import me.indian.bds.command.CommandSender;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.EventsConfig;
 import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.component.Footer;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.logger.Logger;
@@ -192,7 +193,7 @@ public class ServerManager {
                     Funkcje jak: `licznik czasu gry/śmierci` nie będą działać 
                     """;
 
-            this.discord.sendEmbedMessage("Brak wymaganych eksperymentów", noExperiments, "Włącz Beta API's");
+            this.discord.sendEmbedMessage("Brak wymaganych eksperymentów", noExperiments, new Footer("Włącz Beta API's"));
             this.discord.sendMessage("<owner>");
             this.logger.alert(noExperiments.replaceAll("`", "").replaceAll("\n", ""));
         }
@@ -206,7 +207,7 @@ public class ServerManager {
 
             this.discord.sendEmbedMessage("Zła wersja paczki",
                     badVersion.replaceAll("<version>", packModule.getPackVersion()),
-                    "Zła wersja paczki");
+                    new Footer("Zła wersja paczki"));
 
             this.logger.alert(badVersion.replaceAll("\n", "")
                     .replaceAll("<version>", packModule.getPackVersion()));
