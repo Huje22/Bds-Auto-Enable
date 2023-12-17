@@ -233,9 +233,6 @@ public class ServerManager {
             return false;
         }
 
-
-        //TODO: Dodaj opcję wymagania połączenia konta z discord
-
         if (this.discord instanceof final DiscordJda jda) {
             final LinkingManager linkingManager = jda.getLinkingManager();
             if (linkingManager != null && linkingManager.isLinked(playerChat)) {
