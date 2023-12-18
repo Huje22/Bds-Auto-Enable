@@ -26,6 +26,7 @@ import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
+import org.jetbrains.annotations.Nullable;
 
 public class BDSAutoEnable {
 
@@ -185,7 +186,9 @@ public class BDSAutoEnable {
             case JDA -> {
                 return new DiscordJda(this);
             }
-            default -> throw new RuntimeException("Nie znany typ integracji discord! (" + integration + ")");
+            default -> {
+            return null;
+            }
         }
     }
 
@@ -233,6 +236,7 @@ public class BDSAutoEnable {
         return this.serverManager;
     }
 
+    @Nullable
     public DiscordIntegration getDiscord() {
         return this.discord;
     }
