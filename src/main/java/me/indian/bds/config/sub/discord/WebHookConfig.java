@@ -10,7 +10,7 @@ public class WebHookConfig extends OkaeriConfig {
     private String name = "Tezak";
     @Comment({""})
     @Comment({"URL do webhooku"})
-    private String url = "https://discord.com/api/webhooks/....";
+    private String chatUrl = "https://discord.com/api/webhooks/....";
     @Comment({""})
     @Comment({"Url do avataru webhooku"})
     private String avatarUrl = "https://cdn.discordapp.com/avatars/299247844353638401/a9c8e8a41aaf33b4292e41266ce0aca2.webp?size=2048";
@@ -20,8 +20,8 @@ public class WebHookConfig extends OkaeriConfig {
         return this.name;
     }
 
-    public String getUrl() {
-        return this.url;
+    public String getChatUrl() {
+        return this.chatUrl;
     }
 
     public String getAvatarUrl() {

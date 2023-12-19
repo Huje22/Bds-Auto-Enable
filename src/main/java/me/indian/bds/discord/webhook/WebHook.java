@@ -40,7 +40,7 @@ public class WebHook implements DiscordIntegration {
         this.appConfigManager = bdsAutoEnable.getAppConfigManager();
         this.discordConfig = this.appConfigManager.getDiscordConfig();
         this.name = this.discordConfig.getWebHookConfig().getName();
-        this.webhookURL = this.discordConfig.getWebHookConfig().getUrl();
+        this.webhookURL = this.discordConfig.getWebHookConfig().getChatUrl();
         this.avatarUrl = this.discordConfig.getWebHookConfig().getAvatarUrl();
         this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Discord-WebHook"));
         this.lock = new ReentrantLock();

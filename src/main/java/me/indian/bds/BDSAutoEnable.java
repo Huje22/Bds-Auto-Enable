@@ -11,6 +11,7 @@ import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.DiscordType;
+import me.indian.bds.discord.NoneDiscord;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.webhook.WebHook;
 import me.indian.bds.logger.Logger;
@@ -26,7 +27,6 @@ import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
-import org.jetbrains.annotations.Nullable;
 
 public class BDSAutoEnable {
 
@@ -186,9 +186,10 @@ public class BDSAutoEnable {
             case JDA -> {
                 return new DiscordJda(this);
             }
-            default -> {
-            return null;
+            case NONE -> {
+                return new NoneDiscord();
             }
+            default -> throw new RuntimeException("Nieznany typ integracji " + integration);
         }
     }
 
@@ -236,7 +237,6 @@ public class BDSAutoEnable {
         return this.serverManager;
     }
 
-    @Nullable
     public DiscordIntegration getDiscord() {
         return this.discord;
     }

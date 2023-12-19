@@ -16,6 +16,7 @@ public class DiscordConfig extends OkaeriConfig {
     @Comment({"Implementacja Bota / WebHooku"})
     @Comment({"WEBHOOK - Możliwe tylko wysyłanie wiadomości do discord z użyciem webhooku"})
     @Comment({"JDA - Bot discord przy użyciu biblioteki JDA"})
+    @Comment({"NONE - Brak integracji"})
     private DiscordType integrationType = DiscordType.JDA;
     @Comment({""})
     @Comment({"Ustawienia webhooka"})
