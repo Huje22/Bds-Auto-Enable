@@ -12,6 +12,9 @@ import java.util.zip.ZipOutputStream;
 
 public final class ZipUtil {
 
+    private ZipUtil() {
+    }
+
     public static void zipFolder(final String sourceFolderPath, final String zipFilePath) throws Exception {
         final File sourceFolder = new File(sourceFolderPath);
         try (final FileOutputStream fos = new FileOutputStream(zipFilePath);

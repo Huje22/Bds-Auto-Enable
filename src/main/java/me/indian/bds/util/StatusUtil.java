@@ -1,14 +1,6 @@
 package me.indian.bds.util;
 
 import com.sun.management.OperatingSystemMXBean;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.manager.StatsManager;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.ServerStats;
-import me.indian.bds.watchdog.WatchDog;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +11,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.ServerStats;
+import me.indian.bds.server.manager.StatsManager;
+import me.indian.bds.watchdog.WatchDog;
 
 public final class StatusUtil {
 
@@ -29,6 +28,9 @@ public final class StatusUtil {
     private static ServerProcess SERVERPROCESS;
     private static StatsManager STATSMANAGER;
     private static AppConfigManager APPCONFIGMANAGER;
+
+    private StatusUtil() {
+    }
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         StatusUtil.BDSAUTOENABLE = bdsAutoEnable;

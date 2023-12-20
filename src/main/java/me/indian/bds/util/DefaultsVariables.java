@@ -1,25 +1,27 @@
 package me.indian.bds.util;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.SystemOS;
-import me.indian.bds.config.AppConfig;
-import me.indian.bds.logger.Logger;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.SystemOS;
+import me.indian.bds.config.AppConfig;
+import me.indian.bds.logger.Logger;
 
 public final class DefaultsVariables {
 
-    
-        //TODO: Dodaj info o systemie operacyjnym 
-        // I dodaj prywatny konstruktor 
-    
+
+    //TODO: Dodaj info o systemie operacyjnym
+    // I dodaj prywatny konstruktor
+
     private static AppConfig APPCONFIG;
     private static Logger LOGGER;
     public static boolean WINE;
+
+    private DefaultsVariables() {
+    }
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         APPCONFIG = bdsAutoEnable.getAppConfigManager().getAppConfig();

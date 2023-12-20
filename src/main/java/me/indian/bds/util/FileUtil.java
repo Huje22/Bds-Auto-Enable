@@ -10,9 +10,12 @@ import java.nio.file.Path;
 
 public final class FileUtil {
 
+    private FileUtil() {
+    }
+
     public static boolean canExecute(final String filePath) {
         try {
-          return Files.isExecutable(Path.of(URLDecoder.decode(filePath.replace("/C", "C"), StandardCharsets.UTF_8)));
+            return Files.isExecutable(Path.of(URLDecoder.decode(filePath.replace("/C", "C"), StandardCharsets.UTF_8)));
         } catch (final Exception exception) {
             exception.printStackTrace();
         }

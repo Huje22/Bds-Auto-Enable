@@ -10,7 +10,10 @@ public final class DateUtil {
     public static final ZoneId POLISH_ZONE = ZoneId.of("Europe/Warsaw");
 
 //TODO: Dodać prywatne konstruktory di utili aby zapobiec robienia ich instancji 
-    
+
+    private DateUtil() {
+    }
+
     public static String getFixedDate() {
         final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
