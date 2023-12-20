@@ -6,15 +6,11 @@ import java.io.InputStreamReader;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.SystemOS;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.system.SystemOS;
 
 public final class DefaultsVariables {
-
-
-    //TODO: Dodaj info o systemie operacyjnym
-    // I dodaj prywatny konstruktor
 
     private static AppConfig APPCONFIG;
     private static Logger LOGGER;
@@ -29,24 +25,8 @@ public final class DefaultsVariables {
         WINE = wineCheck();
     }
 
-    public static SystemOS getSystem() {
-        final String os = System.getProperty("os.name").toLowerCase();
-
-        if (os.contains("win")) {
-            return SystemOS.WINDOWS;
-        } else if (os.contains("nix") || os.contains("nux")) {
-            return SystemOS.LINUX;
-        }
-//        else if (os.contains("mac")) {
-//            return "Mac";
-//        }
-        else {
-            return SystemOS.UNSUPPORTED;
-        }
-    }
-
     public static String getDefaultFileName() {
-        switch (getSystem()) {
+        switch (SystemOS.getSystem()) {
             case LINUX -> {
                 return "bedrock_server";
             }

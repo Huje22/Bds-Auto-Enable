@@ -12,7 +12,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.SystemOS;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.component.Footer;
@@ -24,6 +23,7 @@ import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.util.system.SystemOS;
 import me.indian.bds.watchdog.WatchDog;
 
 public class ServerProcess {
@@ -55,7 +55,7 @@ public class ServerProcess {
         this.cmdLock = new ReentrantLock();
         this.cmdResponseLock = new ReentrantLock();
         this.prefix = "&b[&3ServerProcess&b] ";
-        this.system = DefaultsVariables.getSystem();
+        this.system = SystemOS.getSystem();
         this.canRun = true;
     }
 

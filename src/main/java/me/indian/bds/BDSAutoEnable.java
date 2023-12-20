@@ -25,6 +25,8 @@ import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.system.SystemArch;
+import me.indian.bds.util.system.SystemOS;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
 
@@ -111,16 +113,35 @@ public class BDSAutoEnable {
                 return;
             }
 
-            this.logger.critical("Twoja wersja javy (&1" + javaVersion
-                    + "&r) jest zbyt niska! Potrzebujesz javy &117+ ");
+            this.logger.critical("Twoja wersja javy &d(&1" + javaVersion
+                    + "&d)&r jest zbyt niska! Potrzebujesz javy &117+ ");
             System.exit(0);
         }
     }
 
     private void checkSystemSupport() {
-        if (DefaultsVariables.getSystem() == SystemOS.UNSUPPORTED) {
+        final SystemArch arch = SystemArch.getCurrentArch();
+        final SystemOS systemOS = SystemOS.getSystem();
+
+        System.out.println(arch);
+
+        System.out.println(systemOS);
+
+        if (arch == SystemArch.ARM || arch == SystemArch.AMD_X32) {
+            if (this.appConfig.isDebug()) {
+                this.logger.warning("&aTwoja architektura systemu nie jest wspierana," +
+                        " lecz masz włączony&1 Debug&a robisz to na własne&c ryzyko&c!");
+                this.logger.alert("&aMoże nie udać się nam uruchomić &bBedrock Dedicated Server&a na twoim systemie");
+                return;
+            }
+            this.logger.critical("&cTwoja architektura systemu nie jest wspierana! Twoja architektura to&b "
+                    + SystemArch.getFullyArchCode());
+            System.exit(0);
+        }
+
+        if (systemOS == SystemOS.UNSUPPORTED) {
             /*
-            if (this.config.isDebug()) {
+            if (this.appConfig.isDebug()) {
                 this.logger.warning("&aTwój system nie jest wspierany lecz masz włączony&1 Debug&a robisz to na własne&c ryzyko&c!");
                 return;
             }

@@ -12,6 +12,7 @@ import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ScannerUtil;
+import me.indian.bds.util.system.SystemOS;
 
 public class Settings {
 
@@ -306,7 +307,7 @@ public class Settings {
         this.logger.info("&n&lAktualne Dane");
         this.logger.print();
         this.logger.info("&e----------&bAplikacja&e----------");
-        this.logger.info("System:&1 " + DefaultsVariables.getSystem());
+        this.logger.info("System:&1 " + SystemOS.getSystem());
         this.logger.info("Wine:&1 " + this.appConfig.isWine() + (DefaultsVariables.WINE ? " &d(&bPosiadasz&d)" : ""));
         this.logger.info("Ścieżka plików:&1 " + this.appConfig.getFilesPath());
         this.logger.info("Wersja:&1 " + this.versionManagerConfig.getVersion());

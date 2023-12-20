@@ -17,6 +17,7 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerStats;
 import me.indian.bds.server.manager.StatsManager;
+import me.indian.bds.util.system.SystemOS;
 import me.indian.bds.watchdog.WatchDog;
 
 public final class StatusUtil {
@@ -151,7 +152,7 @@ public final class StatusUtil {
     public static long getServerRamUsage() {
         if (!SERVERPROCESS.isEnabled()) return 0;
         try {
-            switch (DefaultsVariables.getSystem()) {
+            switch (SystemOS.getSystem()) {
                 case WINDOWS -> {
                     return getMemoryUsageWindows(SERVERPROCESS.getProcess().pid());
                 }
@@ -160,7 +161,7 @@ public final class StatusUtil {
                 }
             }
         } catch (final Exception exception) {
-            LOGGER.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + DefaultsVariables.getSystem(), exception);
+            LOGGER.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + SystemOS.getSystem(), exception);
         }
         return -1;
     }
