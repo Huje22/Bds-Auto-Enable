@@ -8,10 +8,10 @@ import me.indian.bds.server.ServerProcess;
 public abstract class Command {
 
     private final String name, description, usage;
-    private String playerName;
+    protected String playerName;
     private BDSAutoEnable bdsAutoEnable;
-    public CommandSender commandSender;
-    public CommandsConfig commandsConfig;
+    protected CommandSender commandSender;
+    protected CommandsConfig commandsConfig;
 
     public Command(final String name, final String description) {
         this(name, description, "");
@@ -35,10 +35,6 @@ public abstract class Command {
 
     public String getUsage() {
         return this.usage;
-    }
-
-    public String getPlayerName() {
-        return this.playerName;
     }
 
     public void setPlayerName(final String playerName) {
