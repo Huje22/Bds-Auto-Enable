@@ -20,6 +20,8 @@ public class SettingInfoCommand extends Command {
             return true;
         }
 
+        //TODO: Dodaj info o systemie operacyjnym 
+
         this.sendMessage("&eNie wszystkie wartości muszą być załadowane przez server");
 
         this.sendMessage("&aMaksymalny zasięg widoku:&b " + this.properties.getViewDistance() + "&e chunk");
