@@ -67,9 +67,7 @@ public final class DateUtil {
     }
 
     public static long formatSeconds(final long millis) {
-        final long totalSeconds = millis / 1000;
-
-        return totalSeconds % 60;
+        return (millis / 1000) % 60;
     }
     
     public static String formatTime(final long millis, final String times) {
