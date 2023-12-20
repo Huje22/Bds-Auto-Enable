@@ -13,6 +13,10 @@ import java.util.concurrent.TimeUnit;
 
 public final class DefaultsVariables {
 
+    
+        //TODO: Dodaj info o systemie operacyjnym 
+        // I dodaj prywatny konstruktor 
+    
     private static AppConfig APPCONFIG;
     private static Logger LOGGER;
     public static boolean WINE;
