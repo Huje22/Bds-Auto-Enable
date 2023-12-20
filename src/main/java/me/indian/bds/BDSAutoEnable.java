@@ -25,6 +25,7 @@ import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.ZipUtil;
 import me.indian.bds.util.system.SystemArch;
 import me.indian.bds.util.system.SystemOS;
 import me.indian.bds.version.VersionManager;
@@ -74,6 +75,7 @@ public class BDSAutoEnable {
         this.serverManager.init();
         this.versionManager = new VersionManager(this);
         StatusUtil.init(this);
+        ZipUtil.init(this);
 
         this.init();
     }
@@ -122,10 +124,6 @@ public class BDSAutoEnable {
     private void checkSystemSupport() {
         final SystemArch arch = SystemArch.getCurrentArch();
         final SystemOS systemOS = SystemOS.getSystem();
-
-        System.out.println(arch);
-
-        System.out.println(systemOS);
 
         if (arch == SystemArch.ARM || arch == SystemArch.AMD_X32) {
             if (this.appConfig.isDebug()) {

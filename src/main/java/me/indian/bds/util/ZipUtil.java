@@ -9,10 +9,18 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
 
 public final class ZipUtil {
 
+    private static Logger LOGGER ;
+
     private ZipUtil() {
+    }
+
+    public static void init(final BDSAutoEnable bdsAutoEnable){
+        LOGGER = bdsAutoEnable.getLogger();
     }
 
     public static void zipFolder(final String sourceFolderPath, final String zipFilePath) throws Exception {
@@ -55,9 +63,11 @@ public final class ZipUtil {
                 final File outputFile = new File(targetDirectory + File.separator + entryName);
                 if (entryName.contains(File.separator + ".git")) continue;
                 if (outputFile.exists() && skipFiles != null && skipFiles.contains(outputFile.getAbsolutePath())) {
-                    System.out.println("Omijam plik " + outputFile.getAbsolutePath());
+                    LOGGER.info("Omijam plik " + outputFile.getAbsolutePath());
                     continue;
                 }
+
+                LOGGER.debug(outputFile.getAbsolutePath());
 
                 if (zipEntry.isDirectory()) {
                     outputFile.mkdirs();
