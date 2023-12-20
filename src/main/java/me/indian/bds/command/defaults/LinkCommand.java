@@ -28,15 +28,15 @@ public class LinkCommand extends Command {
                 this.sendMessage("&cCoś poszło nie tak , &bLinkingManager&c jest&4 nullem");
                 return true;
             }
-            final String player = this.getPlayerName();
-            if (linkingManager.isLinked(player)) {
+
+            if (linkingManager.isLinked(this.playerName)) {
                 this.sendMessage(
-                        "&aTwoje konto jest już połączone z ID:&b " + linkingManager.getIdByName(player));
+                        "&aTwoje konto jest już połączone z ID:&b " + linkingManager.getIdByName(this.playerName));
                 return true;
             }
 
             final String code = MessageUtil.generateCode(6);
-            linkingManager.addAccountToLink(player, code);
+            linkingManager.addAccountToLink(this.playerName, code);
             this.sendMessage("&aTwój kod do połączenia konto to:&b " + code);
             this.sendMessage("&aUżyj na naszym discord&b /link&a aby go użyć");
 
