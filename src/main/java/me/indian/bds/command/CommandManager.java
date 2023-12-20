@@ -29,7 +29,7 @@ public class CommandManager {
         this.registerCommand(new HelpCommand(this.commandList));
         this.registerCommand(new BackupCommand(this.bdsAutoEnable));
         this.registerCommand(new PlaytimeCommand(this.bdsAutoEnable));
-        this.registerCommand(new DeathsCommand());
+        this.registerCommand(new DeathsCommand(this.bdsAutoEnable));
         this.registerCommand(new VersionCommand(this.bdsAutoEnable));
         this.registerCommand(new ChatFormatCommand(this.bdsAutoEnable));
         this.registerCommand(new MuteCommand(this.bdsAutoEnable));

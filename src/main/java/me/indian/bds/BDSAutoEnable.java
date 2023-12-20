@@ -95,7 +95,7 @@ public class BDSAutoEnable {
         this.serverManager.getStatsManager().startCountServerTime(this.serverProcess);
         this.serverProcess.startProcess();
         this.versionManager.getVersionUpdater().checkForUpdate();
-      this.commandManager = new CommandManager(this);
+        this.commandManager = new CommandManager(this);
         new ConsoleInput(this.scanner, this);
         new AutoMessages(this).start();
         new Metrics(this);
