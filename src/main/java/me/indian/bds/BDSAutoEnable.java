@@ -43,7 +43,7 @@ public class BDSAutoEnable {
     private final ServerManager serverManager;
     private final VersionManager versionManager;
     private final DiscordIntegration discord;
-    private final CommandManager commandManager;
+    private CommandManager commandManager;
     private WatchDog watchDog;
 
     public BDSAutoEnable() {
@@ -71,7 +71,6 @@ public class BDSAutoEnable {
         this.serverProcess = new ServerProcess(this);
         this.serverManager.init();
         this.versionManager = new VersionManager(this);
-        this.commandManager = new CommandManager(this);
         StatusUtil.init(this);
 
         this.init();
@@ -96,6 +95,7 @@ public class BDSAutoEnable {
         this.serverManager.getStatsManager().startCountServerTime(this.serverProcess);
         this.serverProcess.startProcess();
         this.versionManager.getVersionUpdater().checkForUpdate();
+      this.commandManager = new CommandManager(this);
         new ConsoleInput(this.scanner, this);
         new AutoMessages(this).start();
         new Metrics(this);
