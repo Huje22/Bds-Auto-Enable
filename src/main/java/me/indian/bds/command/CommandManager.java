@@ -46,13 +46,13 @@ public class CommandManager {
         }
 
         this.commandList.add(command);
+        command.init(this.bdsAutoEnable);
     }
 
     public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, boolean isOp) {
         for (final Command command : this.commandList) {
             if (command.getName().equals(commandName)) {
                 command.setCommandSender(sender);
-                command.init(this.bdsAutoEnable);
                 command.setPlayerName(playerName);
 
                 if (sender == CommandSender.PLAYER) isOp = this.timeOp(playerName);
