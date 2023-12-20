@@ -4,7 +4,6 @@
 
 Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
-
 </div>
 
 # Uwaga
@@ -19,9 +18,8 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
 * Automatyczne włączenie servera po crashu
 * Łatwe załadowanie innej wersji
-* Tworzenie backupów świata co dany czas i manualnie (
-  ___Ładowanie backup wymaga nadal wielkiej poprawy, wymaga debugu właczonego___)
-* Pisanie w konsoli w 99% (**Mogą wystąpić małe błędy**)
+* Tworzenie backupów świata co dany czas i manualnie 
+* Pisanie w konsoli w 99% (**Mogą wystąpić małe błędy podczas dłuższego działania, lecz już nie powinny**)
 * AutoMessages
 * Licznik czasu gry gracza (
   Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
@@ -66,9 +64,11 @@ paczka jest najwyżej)**
 
 ### W Bocie
 
+[Poradnik ustawienia integracji z Discord](DiscordInstalation.md)
+
 * Wszystkie je jak i także ich opisy znajdziesz po wpisaniu `/` (Wymaga dodania bota z
   ___&scope=bot+applications.commands___ inaczej mogą wystąpić problemy)
-
+  
 # Użyte biblioteki
 
 [Okaeri Configs - do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
