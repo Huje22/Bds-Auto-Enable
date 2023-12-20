@@ -43,7 +43,8 @@ public class ServerProcess {
     private String lastLine;
     private long startTime;
     private WatchDog watchDog;
-    private boolean canRun;
+    private volatile boolean canRun;
+    //TODO: Dodaj więcej volatile
 
     public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
