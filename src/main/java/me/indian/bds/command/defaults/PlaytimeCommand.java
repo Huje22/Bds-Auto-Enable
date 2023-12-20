@@ -9,14 +9,17 @@ import me.indian.bds.util.StatusUtil;
 public class PlaytimeCommand extends Command {
 
     private final ServerStats serverStats;
+    private PackModule packModule;
 
     public PlaytimeCommand(final BDSAutoEnable bdsAutoEnable) {
         super("playtime", "Top 10 graczy z największym czasem gry");
         this.serverStats = bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
+        this.packModule = this.bdsAutoEnable.getWatchDog().getPackModule();
     }
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
+       //TODO: Jeśli paczka nie jest załadowana zwrócić o tym informacje (dla konsoli to)
         this.sendMessage("&a---------------------");
         for (final String s : StatusUtil.getTopPlayTime(false, 10)) {
             this.sendMessage(s);
