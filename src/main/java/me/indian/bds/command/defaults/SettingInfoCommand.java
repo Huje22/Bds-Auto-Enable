@@ -3,6 +3,8 @@ package me.indian.bds.command.defaults;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.server.properties.ServerProperties;
+import me.indian.bds.util.system.SystemArch;
+import me.indian.bds.util.system.SystemOS;
 
 public class SettingInfoCommand extends Command {
 
@@ -20,7 +22,8 @@ public class SettingInfoCommand extends Command {
             return true;
         }
 
-        //TODO: Dodaj info o systemie operacyjnym 
+        this.sendMessage("&aSystem:&b " + SystemOS.getSystem() + " &d(&1" + SystemOS.getFullyOsName() + "&d)");
+        this.sendMessage("&aSystem arch:&b " + SystemArch.getFullyArchCode() + " &d(&1" + SystemArch.getCurrentArch() + "&d)");
 
         this.sendMessage("&eNie wszystkie wartości muszą być załadowane przez server");
 
