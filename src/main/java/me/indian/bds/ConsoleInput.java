@@ -14,15 +14,15 @@ import me.indian.bds.util.ThreadUtil;
 public class ConsoleInput {
 
     private final String prefix;
-    private final Scanner scanner;
+    private final Scanner mainScanner;
     private final Logger logger;
     private final ServerProcess serverProcess;
     private final DiscordIntegration discord;
     private final CommandManager commandManager;
 
-    public ConsoleInput(final Scanner scanner, final BDSAutoEnable bdsAutoEnable) {
+    public ConsoleInput(final Scanner mainScanner, final BDSAutoEnable bdsAutoEnable) {
         this.prefix = "&b[&eConsole&3Input&b] ";
-        this.scanner = scanner;
+        this.mainScanner = mainScanner;
         this.logger = bdsAutoEnable.getLogger();
         this.serverProcess = bdsAutoEnable.getServerProcess();
         this.discord = bdsAutoEnable.getDiscord();
@@ -34,8 +34,8 @@ public class ConsoleInput {
     private void handleCommands() {
         new ThreadUtil("ConsoleInput").newThread(() -> {
             try {
-                while (this.scanner.hasNext()) {
-                    final String input = this.scanner.nextLine();
+                while (this.mainScanner.hasNext()) {
+                    final String input = this.mainScanner.nextLine();
                     final String[] args = MessageUtil.stringToArgs(input);
                     final String[] newArgs = MessageUtil.removeArgs(args, 1);
 

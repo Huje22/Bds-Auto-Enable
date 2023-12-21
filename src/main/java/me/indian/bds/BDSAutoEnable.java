@@ -36,7 +36,7 @@ public class BDSAutoEnable {
     private final Thread mainThread;
     private final long startTime;
     private final String projectVersion, runDate;
-    private final Scanner scanner;
+    private final Scanner mainScanner;
     private final Logger logger;
     private final ServerProperties serverProperties;
     private final AppConfigManager appConfigManager;
@@ -54,7 +54,7 @@ public class BDSAutoEnable {
         this.startTime = System.currentTimeMillis();
         this.runDate = DateUtil.getFixedDate();
         this.projectVersion = "0.0.1-Dev";
-        this.scanner = new Scanner(System.in);
+        this.mainScanner = new Scanner(System.in);
         this.appConfigManager = new AppConfigManager();
         this.appConfig = this.appConfigManager.getAppConfig();
         this.logger = new Logger(this);
@@ -86,7 +86,7 @@ public class BDSAutoEnable {
 
     public void init() {
         new ShutdownHandler(this);
-        this.settings.loadSettings(this.scanner);
+        this.settings.loadSettings(this.mainScanner);
         this.watchDog = new WatchDog(this);
         this.serverProcess.init();
         this.watchDog.init(this.discord);
@@ -100,7 +100,7 @@ public class BDSAutoEnable {
         this.serverProcess.startProcess();
         this.versionManager.getVersionUpdater().checkForUpdate();
         this.commandManager = new CommandManager(this);
-        new ConsoleInput(this.scanner, this);
+        new ConsoleInput(this.mainScanner, this);
         new AutoMessages(this).start();
         new Metrics(this);
     }
@@ -220,14 +220,6 @@ public class BDSAutoEnable {
         return Thread.currentThread() == this.mainThread;
     }
 
-    public String getRunDate() {
-        return this.runDate;
-    }
-
-    public String getProjectVersion() {
-        return this.projectVersion;
-    }
-
     public String getAppUUID() {
         if (this.appConfig.getUuid().isEmpty()) {
             this.appConfig.setUuid(UUID.randomUUID().toString());
@@ -236,24 +228,44 @@ public class BDSAutoEnable {
         return this.appConfig.getUuid();
     }
 
-    public AppConfigManager getAppConfigManager() {
-        return this.appConfigManager;
+    public String getProjectVersion() {
+        return this.projectVersion;
+    }
+
+    public String getRunDate() {
+        return this.runDate;
+    }
+
+    public Scanner getMainScanner() {
+        return this.mainScanner;
     }
 
     public Logger getLogger() {
         return this.logger;
     }
 
+    public ServerProperties getServerProperties() {
+        return this.serverProperties;
+    }
+
+    public AppConfigManager getAppConfigManager() {
+        return this.appConfigManager;
+    }
+
+    public Settings getSettings() {
+        return this.settings;
+    }
+
     public ServerProcess getServerProcess() {
         return this.serverProcess;
     }
 
-    public VersionManager getVersionManager() {
-        return this.versionManager;
-    }
-
     public ServerManager getServerManager() {
         return this.serverManager;
+    }
+
+    public VersionManager getVersionManager() {
+        return this.versionManager;
     }
 
     public DiscordIntegration getDiscord() {
@@ -262,10 +274,6 @@ public class BDSAutoEnable {
 
     public CommandManager getCommandManager() {
         return this.commandManager;
-    }
-
-    public ServerProperties getServerProperties() {
-        return this.serverProperties;
     }
 
     public WatchDog getWatchDog() {
