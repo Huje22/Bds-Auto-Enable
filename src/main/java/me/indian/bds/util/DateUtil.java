@@ -8,9 +8,7 @@ import java.time.format.DateTimeFormatter;
 public final class DateUtil {
 
     public static final ZoneId POLISH_ZONE = ZoneId.of("Europe/Warsaw");
-
-//TODO: Dodać prywatne konstruktory di utili aby zapobiec robienia ich instancji 
-
+    
     private DateUtil() {
     }
 
