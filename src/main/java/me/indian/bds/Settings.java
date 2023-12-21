@@ -52,7 +52,7 @@ public class Settings {
                             }
                             this.againSetupServer(scannerUtil);
                             this.questionsSetting(scannerUtil);
-                            this.currentSettings(scanner);
+                            this.currentSettings(scanner, true);
                         } else {
                             this.logger.info("Zaczynamy od nowa");
                             this.init(scannerUtil);
@@ -143,7 +143,7 @@ public class Settings {
         this.questionsSetting(scannerUtil);
         this.logger.info("Ukończono odpowiedzi w&a " + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         this.appConfig.save();
-        this.currentSettings(scannerUtil.getScanner());
+        this.currentSettings(scannerUtil.getScanner() , true);
     }
 
     private void serverSettings(final ScannerUtil scannerUtil) {
@@ -302,7 +302,7 @@ public class Settings {
                 }));
     }
 
-    private void currentSettings(final Scanner scanner) {
+    public void currentSettings(final Scanner scanner, final boolean waitForUser) {
         this.logger.print();
         this.logger.info("&n&lAktualne Dane");
         this.logger.print();
@@ -346,9 +346,11 @@ public class Settings {
         this.logger.info("Emit server telemetry:&1 " + this.serverProperties.isServerTelemetry());
         this.logger.print();
 
-        this.logger.alert("&cWięcej opcji&e konfiguracji&c znajdziesz w config");
-        this.logger.info("Kliknij enter aby kontynuować");
-        scanner.nextLine();
+        if (waitForUser) {
+            this.logger.alert("&cWięcej opcji&e konfiguracji&c znajdziesz w config");
+            this.logger.info("Kliknij enter aby kontynuować");
+            scanner.nextLine();
+        }
 
         if (this.appConfig.isFirstRun()) {
             this.appConfig.setFirstRun(false);

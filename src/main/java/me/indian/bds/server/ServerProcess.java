@@ -136,9 +136,12 @@ public class ServerProcess {
                     this.colorizeMOTD();
                     this.process = this.processBuilder.start();
                     this.startTime = System.currentTimeMillis();
-                    this.logger.info("Uruchomiono proces servera ");
-                    this.discord.sendProcessEnabledMessage();
 
+                    if(!this.appConfigManager.getAppConfig().isQuestions()) {
+                        this.bdsAutoEnable.getSettings().currentSettings(this.bdsAutoEnable.getMainScanner(), false);
+                    }
+                    this.discord.sendProcessEnabledMessage();
+                    this.logger.info("Uruchomiono proces servera ");
                     this.logger.debug("&bPID&r procesu servera to&1 " + this.process.pid());
 
                     final Thread output = new ThreadUtil("Console-Output").newThread(this::readConsoleOutput);
