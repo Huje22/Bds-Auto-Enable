@@ -184,6 +184,8 @@ public class ServerManager {
         }
     }
 
+    //TODO: Dodać opcję ustawienia załadowanej wersji na tą z logów 
+
     private void checkPackDependency(final String logEntry) {
         final PackModule packModule = this.bdsAutoEnable.getWatchDog().getPackModule();
 
