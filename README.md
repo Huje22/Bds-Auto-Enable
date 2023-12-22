@@ -98,3 +98,11 @@ https://github.com/hesslink111/Minecraft-Telegram-Bot <br>
 [![bStats Players](https://img.shields.io/bstats/players/19727?style=for-the-badge)](https://bstats.org/plugin/bukkit/BDS-Auto-Enable/19727) <br>
 ![Latest Tag](https://img.shields.io/github/v/tag/Huje22/Bds-Auto-Enable?label=LATEST%20TAG&style=for-the-badge)
 ![GitHub commit activity (branch)](https://img.shields.io/github/commit-activity/m/Huje22/BDS-Auto-Enable?style=for-the-badge)
+
+
+
+
+Dodać poprawnie ten badge 
+
+[![BDS - Version](https://img.shields.io/badge/Bedrock%20Dedicated%20Server-1.20.51.03-brightgreen)](https://www.minecraft.net/download/server/bedrock)
+?style=for-the-badge
