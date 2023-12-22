@@ -58,6 +58,11 @@ public class BDSAutoEnable {
         this.appConfigManager = new AppConfigManager();
         this.appConfig = this.appConfigManager.getAppConfig();
         this.logger = new Logger(this);
+
+        //TODO: Wypisz logo z kolorami 
+System.out.println("  ____  _____   _____                 _          ______             _     _      \n |  _ \\|  __ \\ / ____|     /\\        | |        |  ____|           | |   | |     \n | |_) | |  | | (___      /  \\  _   _| |_ ___   | |__   _ __   __ _| |__ | | ___ \n |  _ <| |  | |\\___ \\    / /\\ \\| | | | __/ _ \\  |  __| | '_ \\ / _` | '_ \\| |/ _ \\ \n | |_) | |__| |____) |  / ____ \\ |_| | || (_) | | |____| | | | (_| | |_) | |  __/ \n |____/|_____/|_____/  /_/    \\_\\__,_|\\__\\___/  |______|_| |_|\\__,_|_.__/|_|\\___|"); 
+
+        
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
         this.logger.debug("&aUUID&r aplikacji:&b " + this.getAppUUID());
         DefaultsVariables.init(this);
