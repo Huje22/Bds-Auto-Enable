@@ -60,14 +60,12 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final User author = event.getAuthor();
         final Message message = event.getMessage();
 
-        if (event.getChannel().asTextChannel() == this.textChannel) {
-            this.sendMessage(member, author, message, true);
-        }
+        if (event.getChannel().asTextChannel() == this.textChannel) this.sendMessage(member, author, message, true);
     }
 
     @Override
     public void onMessageReceived(final MessageReceivedEvent event) {
-        if (event.getAuthor().equals(this.discordJda.getJda().getSelfUser()) || !this.serverProcess.isEnabled()) return;
+        if (event.getAuthor().equals(this.discordJda.getJda().getSelfUser())) return;
 
         final Member member = event.getMember();
         final User author = event.getAuthor();
@@ -80,6 +78,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final long id = member.getIdLong();
 
         if (event.getChannel().asTextChannel() == this.consoleChannel) {
+            if(!this.serverProcess.isEnabled()) return;
             if (member.hasPermission(Permission.ADMINISTRATOR)) {
                 this.serverProcess.sendToConsole(rawMessage);
                 this.logger.print("[" + DateUtil.getDate() + " DISCORD] " +
@@ -120,14 +119,15 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     }
 
     private void sendMessage(final Member member, final User author, final Message message, final boolean edited) {
+        if(!this.serverProcess.isEnabled() || this.isMaxLength(message))return;
+        
         final Role role = this.discordJda.getHighestRole(author.getIdLong());
-        if (this.isMaxLength(message)) return;
-
         String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
                 .replaceAll("<name>", this.discordJda.getUserName(member, author))
                 .replaceAll("<msg>", this.generateRawMessage(message))
                 .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
                 .replaceAll("<role>", this.discordJda.getColoredRole(role));
+        
         if (edited) {
             msg += this.discordConfig.getDiscordMessagesConfig().getEdited();
         }
@@ -156,41 +156,27 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final List<Member> members = message.getMentions().getMembers();
         String rawMessage = MessageUtil.fixMessage(message.getContentRaw());
 
-        if (!message.getAttachments().isEmpty()) {
-            rawMessage += this.discordConfig.getDiscordMessagesConfig().getAttachment();
-        }
-
+        if (!message.getAttachments().isEmpty()) rawMessage += this.discordConfig.getDiscordMessagesConfig().getAttachment();
         if (members.isEmpty()) {
             for (final User user : message.getMentions().getUsers()) {
-                if (user == null) continue;
-                final long id = user.getIdLong();
-                rawMessage = rawMessage.replaceAll("<@" + id + ">", "@" + this.discordJda.getUserName(null, user));
+                if (user != null) rawMessage = rawMessage.replaceAll("<@" + user.getIdLong() + ">", "@" + this.discordJda.getUserName(null, user));
             }
         } else {
             for (final Member member : members) {
-                if (member == null) continue;
-                final long id = member.getIdLong();
-                rawMessage = rawMessage.replaceAll("<@" + id + ">", "@" + this.discordJda.getUserName(member, member.getUser()));
+                if (member != null) rawMessage = rawMessage.replaceAll("<@" + member.getIdLong() + ">", "@" + this.discordJda.getUserName(member, member.getUser()));
             }
         }
 
         for (final GuildChannel guildChannel : message.getMentions().getChannels()) {
-            if (guildChannel == null) continue;
-            final long id = guildChannel.getIdLong();
-            rawMessage = rawMessage.replaceAll("<#" + id + ">", "#" + guildChannel.getName());
+            if (guildChannel != null) rawMessage = rawMessage.replaceAll("<#" + guildChannel.getIdLong() + ">", "#" + guildChannel.getName());
         }
 
         for (final Role role : message.getMentions().getRoles()) {
-            if (role == null) continue;
-            final long id = role.getIdLong();
-            rawMessage = rawMessage.replaceAll("<@&" + id + ">",
-                    this.discordJda.getColoredRole(role) + "&r");
+            if (role != null) rawMessage = rawMessage.replaceAll("<@&" + role.getIdLong() + ">", this.discordJda.getColoredRole(role) + "&r");
         }
 
-        //Daje to ostatnie aby określić czy wiadomość nadal jest pusta
-        if (rawMessage.isEmpty()) {
-            rawMessage += message.getJumpUrl();
-        }
+        //Daje to aby określić czy wiadomość nadal jest pusta
+        if (rawMessage.isEmpty()) rawMessage += message.getJumpUrl();
 
         return rawMessage;
     }
@@ -198,14 +184,17 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     private String generatorReply(final Message messageReference) {
         if (messageReference == null) return "";
 
+        final Member member = messageReference.getMember();
+        final User author = messageReference.getAuthor();
+        
         final String replyStatement = this.discordConfig.getDiscordMessagesConfig().getReplyStatement()
                 .replaceAll("<msg>", this.generateRawMessage(messageReference).replaceAll("\\*\\*", ""))
-                .replaceAll("<author>", this.discordJda.getUserName(messageReference.getMember(), messageReference.getAuthor()));
+                .replaceAll("<author>", this.discordJda.getUserName(member, author));
 
-        if (messageReference.getAuthor().equals(this.discordJda.getJda().getSelfUser())) {
-            return this.discordConfig.getDiscordMessagesConfig().getBotReplyStatement()
-                    .replaceAll("<msg>", this.generateRawMessage(messageReference).replaceAll("\\*\\*", ""));
-        }
+        if (author.equals(this.discordJda.getJda().getSelfUser())) return this.discordConfig.getDiscordMessagesConfig().getBotReplyStatement()
+                    .replaceAll("<msg>", this.generateRawMessage(messageReference)
+                                .replaceAll("\\*\\*", ""));
+        
 
         return replyStatement;
     }
