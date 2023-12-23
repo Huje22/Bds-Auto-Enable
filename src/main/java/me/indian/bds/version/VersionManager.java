@@ -165,7 +165,6 @@ public class VersionManager {
             }
         } catch (final IOException ioException) {
             this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version, ioException);
-            ioException.printStackTrace();
         }
     }
 
@@ -252,8 +251,13 @@ public class VersionManager {
         return this.availableVersions.contains(version);
     }
 
-    public void setLoaded(final boolean loaded){
+    public void setLoaded(final boolean loaded) {
         this.versionManagerConfig.setLoaded(loaded);
+        this.versionManagerConfig.save();
+    }
+
+    public void setLoadedVersion(final String version) {
+        this.versionManagerConfig.setVersion(version);
         this.versionManagerConfig.save();
     }
 

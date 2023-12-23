@@ -18,6 +18,7 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.module.PackModule;
 
 
@@ -32,6 +33,7 @@ public class ServerManager {
     private final List<String> onlinePlayers, offlinePlayers, muted;
     private final StatsManager statsManager;
     private ServerProcess serverProcess;
+    private VersionManager versionManager;
     private int lastTPS;
 
     public ServerManager(final BDSAutoEnable bdsAutoEnable) {
@@ -52,6 +54,7 @@ public class ServerManager {
 
     public void init() {
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
+        this.versionManager = this.bdsAutoEnable.getVersionManager();
     }
 
     public void initFromLog(final String logEntry) {
@@ -69,6 +72,7 @@ public class ServerManager {
             this.serverEnabled(logEntry);
             this.checkPackDependency(logEntry);
             this.tps(logEntry);
+            this.version(logEntry);
         });
     }
 
@@ -184,7 +188,18 @@ public class ServerManager {
         }
     }
 
-    //TODO: Dodać opcję ustawienia załadowanej wersji na tą z logów 
+    private void version(final String logEntry) {
+        final String patternString = "Version: (.+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String version = MessageUtil.fixMessage(matcher.group(1));
+            if (!this.versionManager.getLoadedVersion().equals(version)) {
+                this.versionManager.setLoadedVersion(version);
+            }
+        }
+    }
 
     private void checkPackDependency(final String logEntry) {
         final PackModule packModule = this.bdsAutoEnable.getWatchDog().getPackModule();

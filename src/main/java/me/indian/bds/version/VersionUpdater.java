@@ -64,7 +64,7 @@ public class VersionUpdater {
             }
         };
 
-        timer.scheduleAtFixedRate(timerTask, 0, hours);
+        timer.scheduleAtFixedRate(timerTask, MathUtil.minutesTo(1, TimeUnit.MILLISECONDS), hours);
     }
 
     public void updateToLatest() {

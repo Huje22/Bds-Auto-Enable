@@ -73,8 +73,8 @@ public class BDSAutoEnable {
         this.settings = new Settings(this);
         this.serverManager = new ServerManager(this);
         this.serverProcess = new ServerProcess(this);
-        this.serverManager.init();
         this.versionManager = new VersionManager(this);
+        this.serverManager.init();
         StatusUtil.init(this);
         ZipUtil.init(this);
 
