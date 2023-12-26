@@ -170,9 +170,7 @@ public class ServerProcess {
 
     private void colorizeMOTD() {
         final ServerProperties serverProperties = this.bdsAutoEnable.getServerProperties();
-        final String motd = MessageUtil.fixMessage(MessageUtil.colorize(serverProperties.getMOTD()));
-
-        serverProperties.setMOTD(motd);
+        serverProperties.setMOTD(MessageUtil.fixMessage(MessageUtil.colorize(serverProperties.getMOTD())));
     }
 
     private void readConsoleOutput() {
@@ -354,7 +352,6 @@ public class ServerProcess {
 
     public void setCanRun(final boolean canRun) {
         this.canRun = canRun;
-        //TODO: dodac opcje aby na true mogla zmienic to kalas która ustawila to na false
     }
 
     public long getStartTime() {
@@ -370,13 +367,11 @@ public class ServerProcess {
     }
 
     private void someChangesForCommands(final String command) {
-        switch (command.toLowerCase()) {
-            case "stop" -> {
-                if (!this.isEnabled()) return;
-                this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
-                this.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
-                if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
-            }
+        if (command.equalsIgnoreCase("stop")) {
+            if (!this.isEnabled()) return;
+            this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
+            this.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
+            if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
         }
 
         if (command.startsWith("say")) this.discord.sendPlayerMessage("say", command.substring(3));
