@@ -5,7 +5,6 @@ import me.indian.bds.command.CommandManager;
 import me.indian.bds.command.CommandSender;
 import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.embed.component.Footer;
-import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
@@ -47,7 +46,6 @@ public class ConsoleInput {
 
                     if (done) continue;
 
-                    this.someChangesForCommands(args[0]);
                     this.serverProcess.sendToConsole(input);
                 }
             } catch (final Exception exception) {
@@ -60,16 +58,5 @@ public class ConsoleInput {
                 System.exit(0);
             }
         }).start();
-    }
-
-    private void someChangesForCommands(final String command) {
-        switch (command.toLowerCase()) {
-            case "stop" -> {
-                if(!this.serverProcess.isEnabled()) return;
-                this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
-                this.serverProcess.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
-                if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
-            }
-        }
     }
 }

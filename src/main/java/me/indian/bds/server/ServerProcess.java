@@ -229,7 +229,7 @@ public class ServerProcess {
             outputStream.write((command + "\n").getBytes());
             outputStream.flush();
 
-            if(command.startsWith("say")) this.discord.sendPlayerMessage("say", command.substring(3));
+            this.someChangesForCommands(command);
 
             this.logger.debug("Wysłano &b" + command);
 
@@ -244,13 +244,10 @@ public class ServerProcess {
     public String commandAndResponse(final String command) {
         final Thread thread = Thread.currentThread();
 
-        if (ThreadUtil.isImportantThread()) {
+        if (ThreadUtil.isImportantThread())
             throw new BadThreadException("Nie możesz wykonać tego na tym wątku! (" + thread.getName() + ")");
-        }
-
-        if (thread.isInterrupted()) {
+        if (thread.isInterrupted())
             throw new RuntimeException("Ten wątek (" + thread.getName() + ") został przerwany, nie można na nim wykonać tej metody.");
-        }
 
         this.cmdResponseLock.lock();
         this.sendToConsole(command);
@@ -370,6 +367,19 @@ public class ServerProcess {
 
     public Process getProcess() {
         return this.process;
+    }
+
+    private void someChangesForCommands(final String command) {
+        switch (command.toLowerCase()) {
+            case "stop" -> {
+                if (!this.isEnabled()) return;
+                this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
+                this.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
+                if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
+            }
+        }
+
+        if (command.startsWith("say")) this.discord.sendPlayerMessage("say", command.substring(3));
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {
