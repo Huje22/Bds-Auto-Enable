@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.AutoRestartConfig;
 import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.component.Footer;
+import me.indian.bds.discord.embed.component.Footer;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;

@@ -1,8 +1,8 @@
 package me.indian.bds.discord;
 
 import java.util.List;
-import me.indian.bds.discord.component.Field;
-import me.indian.bds.discord.component.Footer;
+import me.indian.bds.discord.embed.component.Field;
+import me.indian.bds.discord.embed.component.Footer;
 
 public interface DiscordIntegration {
 

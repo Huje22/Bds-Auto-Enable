@@ -4,7 +4,7 @@ import java.util.Scanner;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.command.CommandSender;
 import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.component.Footer;
+import me.indian.bds.discord.embed.component.Footer;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;

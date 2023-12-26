@@ -2,7 +2,7 @@ package me.indian.bds;
 
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.component.Footer;
+import me.indian.bds.discord.embed.component.Footer;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 

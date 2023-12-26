@@ -11,7 +11,7 @@ import me.indian.bds.command.CommandSender;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.EventsConfig;
 import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.component.Footer;
+import me.indian.bds.discord.embed.component.Footer;
 import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.logger.Logger;

@@ -1,4 +1,4 @@
-package me.indian.bds.discord.component;
+package me.indian.bds.discord.embed.component;
 
 public record Footer(String text, String imageURL) {
 

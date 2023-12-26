@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.component.Footer;
+import me.indian.bds.discord.embed.component.Footer;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
