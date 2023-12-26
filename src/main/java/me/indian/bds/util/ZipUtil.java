@@ -91,6 +91,7 @@ public final class ZipUtil {
         final File[] files = folder.listFiles();
         if (files != null) {
             for (final File file : files) {
+                if (file.getAbsolutePath().contains(File.separator + ".git")) continue;
                 if (file.isDirectory()) {
                     addFolderToZip(file, folderName + File.separator + file.getName(), zos);
                 } else {
