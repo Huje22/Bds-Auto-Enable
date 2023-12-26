@@ -89,7 +89,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         if (member == null) return;
 
         this.service.execute(() -> {
-            //Robie to na nowym wątku gdyby jakieś polecenie miało zblokować ten od JDA
+            //Robie to na oaru wątkach gdyby jakieś polecenie miało zblokować ten od JDA
             switch (event.getName()) {
                 case "cmd" -> {
                     if (member.hasPermission(Permission.ADMINISTRATOR)) {
@@ -216,6 +216,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             .setColor(Color.BLUE)
                             .build();
 
+                    //TODO: Dodaj opcję "advanced" gdzie będzie wyświetlone więcej informacji o graczu który jest teraz online 
+                    
                     event.replyEmbeds(embed).setEphemeral(this.botConfig.isSetEphemeral()).queue();
                 }
 
