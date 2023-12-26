@@ -10,12 +10,12 @@
     <!--    Intergacja z discord za pomocą JDA-->
 
     <!--    <logger name="net.dv8tion.jda" level="OFF"/>-->
-    <logger name="net.dv8tion.jda" level="ERROR"/>
+    <logger name="net.dv8tion.jda" level="ERROR,WARN"/>
 
 
     <!--    Strona -->
-    <logger name="org.eclipse.jetty" level="ERROR"/>
-    <logger name="io.javalin" level="ERROR"/>
+    <logger name="org.eclipse.jetty" level="ERROR,WARN""/>
+    <logger name="io.javalin" level="ERROR,WARN""/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
