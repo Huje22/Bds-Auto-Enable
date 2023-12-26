@@ -228,6 +228,9 @@ public class ServerProcess {
 
             outputStream.write((command + "\n").getBytes());
             outputStream.flush();
+
+            if(command.startsWith("say")) this.discord.sendPlayerMessage("say", command.substring(3));
+
             this.logger.debug("Wysłano &b" + command);
 
         } catch (final Exception exception) {
