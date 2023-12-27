@@ -14,8 +14,8 @@
 
 
     <!--    Strona -->
-    <logger name="org.eclipse.jetty" level="ERROR,WARN""/>
-    <logger name="io.javalin" level="ERROR,WARN""/>
+    <logger name="org.eclipse.jetty" level="ERROR,WARN"/>
+    <logger name="io.javalin" level="ERROR,WARN"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
