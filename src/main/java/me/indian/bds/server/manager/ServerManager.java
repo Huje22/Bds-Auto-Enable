@@ -29,7 +29,7 @@ public class ServerManager {
     private final AppConfigManager appConfigManager;
     private final EventsConfig eventsConfig;
     private final DiscordIntegration discord;
-    private final ExecutorService service, chatService, eventServcie;
+    private final ExecutorService mainService, chatService, eventService;
     private final List<String> onlinePlayers, offlinePlayers, muted;
     private final StatsManager statsManager;
     private ServerProcess serverProcess;
@@ -42,9 +42,9 @@ public class ServerManager {
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.eventsConfig = this.appConfigManager.getEventsConfig();
         this.discord = this.bdsAutoEnable.getDiscord();
-        this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Player Manager"));
+        this.mainService = Executors.newScheduledThreadPool(2, new ThreadUtil("Player Manager"));
         this.chatService = Executors.newSingleThreadExecutor(new ThreadUtil("Chat Service"));
-        this.eventServcie = Executors.newSingleThreadExecutor(new ThreadUtil("Event Service"));
+        this.eventService = Executors.newScheduledThreadPool(2, new ThreadUtil("Event Service"));
         this.onlinePlayers = new ArrayList<>();
         this.offlinePlayers = new ArrayList<>();
         this.muted = new ArrayList<>();
@@ -60,7 +60,7 @@ public class ServerManager {
     public void initFromLog(final String logEntry) {
         this.chatMessage(logEntry);
 
-        this.service.execute(() -> {
+        this.mainService.execute(() -> {
             //Metody związane z graczem
             this.playerJoin(logEntry);
             this.playerQuit(logEntry);
@@ -99,7 +99,7 @@ public class ServerManager {
             this.onlinePlayers.add(playerName);
             this.offlinePlayers.remove(playerName);
             this.discord.sendJoinMessage(playerName);
-            this.eventServcie.execute(() -> this.eventsConfig.getOnJoin().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
+            this.eventService.execute(() -> this.eventsConfig.getOnJoin().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
         }
     }
 
@@ -110,7 +110,7 @@ public class ServerManager {
 
         if (matcher.find()) {
             final String playerName = matcher.group(1);
-            this.eventServcie.execute(() -> this.eventsConfig.getOnSpawn().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
+            this.eventService.execute(() -> this.eventsConfig.getOnSpawn().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
         }
     }
 
@@ -242,6 +242,7 @@ public class ServerManager {
     }
 
     private boolean handleChatMessage(final String playerChat, final String message) {
+        //Robione jest to w ten sposób aby nie wysyłać na discord wiadomości gracza który jest wyciszony
         if (!this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages()) return true;
         String role = "";
 

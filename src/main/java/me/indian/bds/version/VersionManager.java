@@ -75,9 +75,7 @@ public class VersionManager {
             for (final Path path : directoryStream) {
                 if (Files.isRegularFile(path)) {
                     final String name = String.valueOf(path.getFileName());
-                    if (name.endsWith(".zip")) {
-                        this.availableVersions.add(name.replaceAll(".zip", ""));
-                    }
+                    if (name.endsWith(".zip")) this.availableVersions.add(name.replaceAll(".zip", ""));
                 }
             }
         } catch (final IOException exception) {
@@ -87,7 +85,7 @@ public class VersionManager {
 
     public void loadVersion(final String version) {
         if (this.serverProcess.isEnabled()) {
-            this.logger.error("Nie można załadować innej wersji gdy server jest aktywny!!");
+            this.logger.alert("Nie można załadować innej wersji gdy server jest aktywny!!");
             return;
         }
         final File verFile = new File(this.versionFolder.getPath() + File.separator + version + ".zip");
@@ -99,7 +97,7 @@ public class VersionManager {
             this.logger.info("Ładowanie wersji:&1 " + version);
             final int versionSize = this.getSize(version);
             if (!(versionSize <= -1) && versionSize != Files.size(verFile.toPath())) {
-                this.logger.error("Wielkość versij nie jest zgodna!");
+                this.logger.error("Wielkość wersji nie jest zgodna!");
                 this.downloadServerFiles(version);
             }
             final long startTime = System.currentTimeMillis();
@@ -108,7 +106,7 @@ public class VersionManager {
             this.versionManagerConfig.setVersion(version);
             this.logger.info("Załadowano versie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final Exception exception) {
-            this.logger.critical("Nie można załadować wersji: " + version, exception);
+            this.logger.critical("Nie można załadować wersji: " + version);
             throw new RuntimeException(exception);
         }
         this.versionManagerConfig.save();
@@ -116,13 +114,9 @@ public class VersionManager {
 
     public void loadVersion() {
         final File serverFile = new File(this.appConfig.getFilesPath() + File.separator + DefaultsVariables.getDefaultFileName());
-        if (!serverFile.exists()) {
-         this.setLoaded(false);
-        }
+        if (!serverFile.exists()) this.setLoaded(false);
+        if (!this.versionManagerConfig.isLoaded()) this.loadVersion(this.versionManagerConfig.getVersion());
 
-        if (!this.versionManagerConfig.isLoaded()) {
-            this.loadVersion(this.versionManagerConfig.getVersion());
-        }
         this.bdsAutoEnable.getServerProperties().loadProperties();
     }
 
@@ -171,11 +165,8 @@ public class VersionManager {
     private int getSize(final String version) {
         try {
             final HttpURLConnection connection = (HttpURLConnection) new URL(this.getServerDownloadUrl(version)).openConnection();
-            if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
-                return connection.getContentLength();
-            } else {
-                return -1;
-            }
+            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) return -1;
+            return connection.getContentLength();
         } catch (final IOException ioException) {
             this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version, ioException);
         }
