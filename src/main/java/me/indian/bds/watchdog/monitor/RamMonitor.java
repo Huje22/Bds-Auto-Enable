@@ -84,7 +84,6 @@ public class RamMonitor {
             }
         };
 
-
         if (this.ramMonitorConfig.isMachine()) {
             this.ramMonitorTimer.scheduleAtFixedRate(machineRamMonitor, 0, MathUtil.secondToMillis(this.ramMonitorConfig.getCheckMachineTime()));
         } else {

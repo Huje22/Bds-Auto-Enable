@@ -8,9 +8,11 @@ public class BackupConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Czy robić backupy?"})
     private boolean enabled = false;
+
     @Comment({""})
     @Comment({"Co ile min robić backup?"})
     private int backupFrequency = 60;
+
     @Comment({""})
     @Comment({"Nie zmieniaj tego!"})
     private double lastBackupTime = 20;

@@ -79,9 +79,8 @@ public class Metrics {
     private boolean enabled;
 
     public Metrics(final BDSAutoEnable bdsAutoEnable) {
-        if (bdsAutoEnable == null) {
-            throw new IllegalArgumentException("Instancjia aplikacji jest nullem!");
-        }
+        if (bdsAutoEnable == null) throw new IllegalArgumentException("Instancjia aplikacji jest nullem!");
+
         Metrics.bdsAutoEnable = bdsAutoEnable;
         Metrics.server = bdsAutoEnable.getServerProcess();
         Metrics.random = new Random();
@@ -103,15 +102,10 @@ public class Metrics {
      * @throws Exception If the request failed.
      */
     private static void sendData(final JsonObject data) throws Exception {
-        if (data == null) {
-            throw new IllegalArgumentException("Data nie może być nullem!");
-        }
-        if (ThreadUtil.isImportantThread()) {
-            throw new IllegalAccessError("Nie możesz wykonac tego na tym wątku!");
-        }
-        if (logSentData) {
-            bdsAutoEnable.getLogger().info("Wysyłanie danych do bStats: " + data);
-        }
+        if (data == null) throw new IllegalArgumentException("Data nie może być nullem!");
+        if (ThreadUtil.isImportantThread()) throw new IllegalAccessError("Nie możesz wykonac tego na tym wątku!");
+        if (logSentData) bdsAutoEnable.getLogger().info("Wysyłanie danych do bStats: " + data);
+
         final HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();
 
         // Compress the data to save bandwidth
@@ -154,9 +148,8 @@ public class Metrics {
      * @throws IOException If the compression failed.
      */
     private static byte[] compress(final String str) throws IOException {
-        if (str == null) {
-            return null;
-        }
+        if (str == null) return null;
+
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try (final GZIPOutputStream gzip = new GZIPOutputStream(outputStream)) {
             gzip.write(str.getBytes(StandardCharsets.UTF_8));
@@ -179,9 +172,7 @@ public class Metrics {
      * @param chart The chart to add.
      */
     public void addCustomChart(final CustomChart chart) {
-        if (chart == null) {
-            throw new IllegalArgumentException("Chart nie może być nullem!");
-        }
+        if (chart == null) throw new IllegalArgumentException("Chart nie może być nullem!");
         this.charts.add(chart);
     }
 
@@ -194,9 +185,7 @@ public class Metrics {
         final TimerTask submitTask = new TimerTask() {
             @Override
             public void run() {
-                if (server.isEnabled()) {
-                    Metrics.this.submitData();
-                }
+                if (server.isEnabled()) Metrics.this.submitData();
             }
         };
 
@@ -219,7 +208,6 @@ public class Metrics {
      */
     public JsonObject getPluginData() {
         final JsonObject data = new JsonObject();
-
         final String appName = "BDS-Auto-Enable";
         final String appVersion = bdsAutoEnable.getProjectVersion();
 
@@ -337,11 +325,10 @@ public class Metrics {
             final MetricsConfig configData = gson.fromJson(reader, MetricsConfig.class);
 
             // Load the data from the deserialized object
-            this.enabled = configData.isEnabled();
-            serverUUID = bdsAutoEnable.getAppUUID();
-            logFailedRequests = configData.isLogFailedRequests();
-            logSentData = configData.isLogSentData();
-            logResponseStatusText = configData.isLogResponseStatusText();
+            this.enabled = configData.enabled();
+            logFailedRequests = configData.logFailedRequests();
+            logSentData = configData.logSentData();
+            logResponseStatusText = configData.logResponseStatusText();
         }
     }
 

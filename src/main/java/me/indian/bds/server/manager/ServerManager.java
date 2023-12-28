@@ -165,10 +165,7 @@ public class ServerManager {
             final String tpsString = matcher.group(1);
             final int tps = Integer.parseInt(tpsString);
 
-            if (tps <= 8) {
-                this.discord.sendMessage("Server posiada: **" + tps + "** TPS");
-            }
-
+            if (tps <= 8) this.discord.sendMessage("Server posiada: **" + tps + "** TPS");
             if (this.lastTPS <= 8 && tps <= 8) {
                 this.discord.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS"
                         + " (Teraz: **" + tps + "** Ostatnie: **" + this.lastTPS + "**)");

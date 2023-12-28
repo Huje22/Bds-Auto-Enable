@@ -97,7 +97,6 @@ public class BackupModule {
 
     private void run() {
         if (this.watchDogConfig.getBackupConfig().isEnabled()) {
-
             final long time = MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS);
             
             final TimerTask backupTask = new TimerTask() {

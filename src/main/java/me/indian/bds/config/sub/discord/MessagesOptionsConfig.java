@@ -8,39 +8,49 @@ public class MessagesOptionsConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Wysyłać wiadomość o zrobieniu backup"})
     private boolean sendBackupMessage = false;
+
     @Comment({""})
     @Comment({"Wysyłać wiadomość o nie zrobieniu backup"})
     private boolean sendBackupFailMessage = false;
+
     @Comment({""})
     @Comment({"Wysyłać wiadomość o dołączeniu gracza"})
     private boolean sendJoinMessage = true;
+
     @Comment({""})
     @Comment({"Wysyłać wiadomość o opuszczeniu gracza"})
     private boolean sendLeaveMessage = true;
+
     @Comment({""})
     @Comment({"Wysyłać wiadomość gracza"})
     private boolean sendPlayerMessage = true;
+
     @Comment({""})
     @Comment({"Wysyłać wiadomość o śmierci gracza"})
     private boolean sendDeathMessage = true;
+
     @Comment({""})
     @Comment({"Wysyłać wiadomość o wyłączeniu servera"})
     private boolean sendDisabledMessage = true;
+
     @Comment({""})
     @Comment({"Wysyłać wiadomość o wyłączaniu servera"})
     private boolean sendDisablingMessage = true;
+
     @Comment({""})
     @Comment({"Wysyłać wiadomość o włączeniu procesu servera"})
     private boolean sendProcessEnabledMessage = false;
     @Comment({""})
     @Comment({"Wysyłać wiadomość o włączeniu servera"})
     private boolean sendEnabledMessage = true;
+
     @Comment({""})
     @Comment({"Wysyłać wiadomość o zniszczeniu procesu"})
     private boolean sendDestroyedMessage = false;
     @Comment({""})
     @Comment({"Wysyłać wiadomość o aktualizowaniu wersji servera"})
     private boolean sendServerUpdateMessage = true;
+
     @Comment({""})
     @Comment({"Wysyłać wiadomość o restarcie servera"})
     private boolean sendRestartMessage = true;

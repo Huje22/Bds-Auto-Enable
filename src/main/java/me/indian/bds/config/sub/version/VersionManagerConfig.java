@@ -36,7 +36,6 @@ public class VersionManagerConfig extends OkaeriConfig {
     @CustomKey("VersionCheckFrequency")
     private int versionCheckFrequency = 1;
 
-
     public String getVersion() {
         return this.version;
     }

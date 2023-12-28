@@ -17,18 +17,22 @@ public class AutoMessagesConfig extends OkaeriConfig {
     @Comment({"Włączenie jak i każda inna zmiana wymaga restartu aplikacji"})
     @CustomKey("Enabled")
     private boolean enabled = true;
+
     @Comment({""})
     @Comment({"Jeśli włączone lista nie leci po kolei"})
     @CustomKey("Random")
     private boolean random = false;
+
     @Comment({""})
     @Comment({"Odstęp czasowy w sekundach z jakim wysyłane są wiadomości"})
     @CustomKey("Time")
     private int time = 120;
+
     @Comment({""})
     @Comment({"Prefix wiadomości"})
     @CustomKey("Prefix")
     private String prefix = "&7[&aAuto&eMessages&7] ";
+
     @Comment({""})
     @Comment({"Lista wiadomości , możesz użyć & do kolorów"})
     @CustomKey("Messages")

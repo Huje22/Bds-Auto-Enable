@@ -17,7 +17,6 @@ public class CommandsConfig extends OkaeriConfig {
     @CustomKey("SettingsForAll")
     private boolean settingsForAll = true;
 
-
     public boolean isSettingsForAll() {
         return this.settingsForAll;
     }

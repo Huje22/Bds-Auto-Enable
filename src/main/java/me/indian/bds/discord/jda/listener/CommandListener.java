@@ -361,14 +361,9 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private List<String> getLinkedAccounts() {
         final Map<String, Long> linkedAccounts = this.linkingManager.getLinkedAccounts();
         final List<String> linked = new ArrayList<>();
-
-        final List<Map.Entry<String, Long>> sortedEntries = linkedAccounts.entrySet().stream()
-                .limit(Integer.MAX_VALUE)
-                .toList();
-
         int place = 1;
 
-        for (final Map.Entry<String, Long> entry : sortedEntries) {
+        for (final Map.Entry<String, Long> entry : linkedAccounts.entrySet()) {
             final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
                     .getPlayTimeByName(entry.getKey()), TimeUnit.MILLISECONDS);
 

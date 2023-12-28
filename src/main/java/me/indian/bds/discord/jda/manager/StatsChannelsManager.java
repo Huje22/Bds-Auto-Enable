@@ -1,5 +1,8 @@
 package me.indian.bds.discord.jda.manager;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.StatsChannelsConfig;
 import me.indian.bds.discord.jda.DiscordJda;
@@ -8,19 +11,15 @@ import me.indian.bds.util.MathUtil;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
-
 public class StatsChannelsManager {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final StatsChannelsConfig statsChannelsConfig;
-    private static int latsTPS;
     private final Timer timer;
     private final Guild guild;
     private final long onlinePlayersID, tpsID;
+    private int latsTPS;
     private VoiceChannel onlinePlayersChannel, tpsChannel;
 
     public StatsChannelsManager(final BDSAutoEnable bdsAutoEnable, final DiscordJda discordJda) {
@@ -33,7 +32,7 @@ public class StatsChannelsManager {
         this.tpsID = this.statsChannelsConfig.getTpsID();
         this.guild = discordJda.getGuild();
 
-        latsTPS = 0;
+        this.latsTPS = 0;
     }
 
     public void init() {
@@ -41,20 +40,16 @@ public class StatsChannelsManager {
         this.tpsChannel = this.guild.getVoiceChannelById(this.tpsID);
         this.setOnlinePlayersCount();
 
-        if (this.onlinePlayersChannel == null) {
+        if (this.onlinePlayersChannel == null)
             this.logger.debug("(Gracz online) Nie można odnaleźć kanału głosowego z ID &b " + this.onlinePlayersID);
-        }
-
-        if (this.tpsChannel == null) {
+        if (this.tpsChannel == null)
             this.logger.debug("(TPS) Nie można odnaleźć kanału głosowego z ID &b " + this.onlinePlayersID);
-        }
-
     }
 
     public void setTpsCount(final int tps) {
         if (this.tpsChannel != null) {
-            if (tps == latsTPS) return;
-            latsTPS = tps;
+            if (tps == this.latsTPS) return;
+            this.latsTPS = tps;
 
             this.tpsChannel.getManager().setName(this.statsChannelsConfig.getTpsName()
                             .replaceAll("<tps>", String.valueOf(tps)))
