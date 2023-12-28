@@ -55,8 +55,7 @@ public class CommandManager {
                 command.setCommandSender(sender);
                 command.setPlayerName(playerName);
 
-                if (sender == CommandSender.PLAYER) isOp = this.timeOp(playerName);
-                if (!command.onExecute(args, isOp) && !command.getUsage().isEmpty()) {
+                if (!command.onExecute(args, this.isOp(sender, playerName)) && !command.getUsage().isEmpty()) {
                     switch (sender) {
                         case CONSOLE -> this.bdsAutoEnable.getLogger().print(command.getUsage());
                         case PLAYER -> this.serverProcess.tellrawToPlayer(playerName, command.getUsage());
@@ -73,8 +72,9 @@ public class CommandManager {
         return false;
     }
 
-    private boolean timeOp(final String name) {
+    private boolean isOp(final CommandSender sender, final String name) {
         //Ta metoda jest do czasu aż mojang nie naprawi w scriptAPI metody `isOp()`
+        if (sender == CommandSender.CONSOLE) return true;
         if (this.bdsAutoEnable.getDiscord() instanceof final DiscordJda jda) {
             return jda.getLinkingManager().hasPermissions(name, Permission.ADMINISTRATOR);
         }

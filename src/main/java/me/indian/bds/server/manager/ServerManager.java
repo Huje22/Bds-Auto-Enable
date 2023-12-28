@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
@@ -32,6 +33,7 @@ public class ServerManager {
     private final ExecutorService mainService, chatService, eventService;
     private final List<String> onlinePlayers, offlinePlayers, muted;
     private final StatsManager statsManager;
+    private final ReentrantLock chatLock;
     private ServerProcess serverProcess;
     private VersionManager versionManager;
     private int lastTPS;
@@ -43,12 +45,13 @@ public class ServerManager {
         this.eventsConfig = this.appConfigManager.getEventsConfig();
         this.discord = this.bdsAutoEnable.getDiscord();
         this.mainService = Executors.newScheduledThreadPool(2, new ThreadUtil("Player Manager"));
-        this.chatService = Executors.newSingleThreadExecutor(new ThreadUtil("Chat Service"));
+        this.chatService = Executors.newScheduledThreadPool(3, new ThreadUtil("Chat Service"));
         this.eventService = Executors.newScheduledThreadPool(2, new ThreadUtil("Event Service"));
         this.onlinePlayers = new ArrayList<>();
         this.offlinePlayers = new ArrayList<>();
         this.muted = new ArrayList<>();
         this.statsManager = new StatsManager(this.bdsAutoEnable, this);
+        this.chatLock = new ReentrantLock();
         this.lastTPS = 20;
     }
 
@@ -58,7 +61,10 @@ public class ServerManager {
     }
 
     public void initFromLog(final String logEntry) {
-        this.chatMessage(logEntry);
+        this.chatService.execute(() -> {
+            this.chatMessage(logEntry);
+            this.customCommand(logEntry);
+        });
 
         this.mainService.execute(() -> {
             //Metody związane z graczem
@@ -66,7 +72,6 @@ public class ServerManager {
             this.playerQuit(logEntry);
             this.playerSpawn(logEntry);
             this.deathMessage(logEntry);
-            this.customCommand(logEntry);
 
             //Dodatkowe metody
             this.serverEnabled(logEntry);
@@ -115,7 +120,9 @@ public class ServerManager {
     }
 
     private void chatMessage(final String logEntry) {
-        this.chatService.execute(() -> {
+        try {
+            this.chatLock.lock();
+
             final String patternString = "PlayerChat:([^,]+) Message:(.+)";
             final Pattern pattern = Pattern.compile(patternString);
             final Matcher matcher = pattern.matcher(logEntry);
@@ -127,7 +134,11 @@ public class ServerManager {
                     this.discord.sendPlayerMessage(playerChat, message);
                 }
             }
-        });
+        } catch (final Exception exception) {
+            this.logger.error("Wystąpił błąd podczas próby przetworzenia wiadomości gracza", exception);
+        } finally {
+            this.chatLock.unlock();
+        }
     }
 
     private void customCommand(final String logEntry) {
