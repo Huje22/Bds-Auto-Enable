@@ -127,9 +127,7 @@ public class DiscordJda implements DiscordIntegration {
 
         this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
 
-        if (this.consoleChannel == null) {
-            this.logger.debug("(konsola) Nie można odnaleźć kanału z ID &b " + this.consoleID);
-        }
+        if (this.consoleChannel == null) this.logger.debug("(konsola) Nie można odnaleźć kanału z ID &b " + this.consoleID);
 
         this.linkingManager = new LinkingManager(this.bdsAutoEnable, this);
         this.statsChannelsManager = new StatsChannelsManager(this.bdsAutoEnable, this);
@@ -185,6 +183,7 @@ public class DiscordJda implements DiscordIntegration {
         disable.add(CacheFlag.VOICE_STATE);
         disable.add(CacheFlag.CLIENT_STATUS);
         disable.add(CacheFlag.ONLINE_STATUS);
+        disable.add(CacheFlag.SCHEDULED_EVENTS);
         return disable;
     }
 
