@@ -10,12 +10,15 @@
     <!--    Intergacja z discord za pomocą JDA-->
 
     <!--    <logger name="net.dv8tion.jda" level="OFF"/>-->
-    <logger name="net.dv8tion.jda" level="ERROR,WARN"/>
+    <logger name="net.dv8tion.jda" level="ERROR"/>
+    <logger name="net.dv8tion.jda" level="WARN"/>
 
 
     <!--    Strona -->
-    <logger name="org.eclipse.jetty" level="ERROR,WARN"/>
-    <logger name="io.javalin" level="ERROR,WARN"/>
+    <logger name="org.eclipse.jetty" level="WARN"/>
+    <logger name="org.eclipse.jetty" level="ERROR"/>
+    <logger name="io.javalin" level="ERROR"/>
+    <logger name="io.javalin" level="WARN"/>
 
     <root level="INFO">
         <appender-ref ref="STDOUT"/>
