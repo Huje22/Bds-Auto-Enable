@@ -150,6 +150,16 @@ public class Settings {
         this.logger.info("&aKonfiguracja servera&r");
         this.logger.print();
 
+
+/*
+TODO: Dodać pytanie o algorytm kompresji
+
+**Snappy:** Szybki algorytm kompresji z niską latencją, idealny do zastosowań czasu rzeczywistego, choć pliki mogą być nieco większe.
+
+**zlib:** Potężny algorytm, osiągający wysoki stosunek kompresji, nadający się do sytuacji wymagających znaczącej redukcji rozmiaru plików.
+
+    */
+        
         this.serverProperties.setServerPort(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lUstaw port v4&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
