@@ -16,12 +16,14 @@ public class ServerProperties {
     private final Properties properties;
     private final Logger logger;
     private final File propertiesFile;
+    private boolean canReload;
 
     public ServerProperties(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.properties = new Properties();
         this.logger = this.bdsAutoEnable.getLogger();
         this.propertiesFile = new File(this.bdsAutoEnable.getAppConfigManager().getAppConfig().getFilesPath() + File.separator + "server.properties");
+        this.canReload = true;
     }
 
     public void loadProperties() {
@@ -58,6 +60,7 @@ public class ServerProperties {
     }
 
     public void reloadServerProperties() {
+        if(!this.canReload) return;
         this.saveProperties();
         this.loadProperties();
     }
@@ -431,6 +434,7 @@ public class ServerProperties {
     }
 
 public void setFromStored(final StoreServerProperties storedProperties) {
+    this.canReload = false;
         this.setViewDistance(storedProperties.viewDistance());
         this.setServerPort(storedProperties.serverPort());
         this.setServerPortV6(storedProperties.serverPortV6());
@@ -450,6 +454,9 @@ public void setFromStored(final StoreServerProperties storedProperties) {
         this.setMaxPlayers(storedProperties.maxPlayers());
         this.setOnlineMode(storedProperties.onlineMode());
         this.setEmitServerTelemetry(storedProperties.emitServerTelemetry());
+this.canReload = true;
+    this.reloadServerProperties();
+    
 }
 
     public Properties getProperties() {
