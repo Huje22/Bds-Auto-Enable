@@ -459,6 +459,10 @@ this.canReload = true;
     
 }
 
+public boolean propertiesExsist(){
+    return this.propertiesFile.exsist();
+}
+
     public Properties getProperties() {
         return this.properties;
     }
