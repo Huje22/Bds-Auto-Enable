@@ -64,7 +64,7 @@ public class VersionManager {
         this.loadVersionsInfo();
 
         this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "allowlist.json");
-        this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "server.properties");
+      //  this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "server.properties");
         this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "config" + File.separator + "default" + File.separator + "permissions.json");
         this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "permissions.json");
     }
@@ -100,9 +100,21 @@ public class VersionManager {
                 this.logger.error("Wielkość wersji nie jest zgodna!");
                 this.downloadServerFiles(version);
             }
+
+            
+ StoreServerProperties properties = StoreServerProperties.fromServerProperties(bdsAutEnable.getServerProperties());
+            
             final long startTime = System.currentTimeMillis();
             ZipUtil.unzipFile(verFile.getAbsolutePath(), this.appConfig.getFilesPath(), false, this.importantFiles);
             this.setLoaded(true);
+
+            if(bdsAutEnable.getServerProperties().propertiesExsist()){
+bdsAutEnable.getServerProperties().setFromStored(properties);
+            }
+            
+            //TODO: Zrobić to poprawnie i sprawdzić kiedy plik napewno istnieję czy trzeba dopiero go wypakować 
+
+            
             this.versionManagerConfig.setVersion(version);
             this.logger.info("Załadowano versie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final Exception exception) {
