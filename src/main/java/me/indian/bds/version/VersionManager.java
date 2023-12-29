@@ -23,6 +23,8 @@ import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.properties.ServerProperties;
+import me.indian.bds.server.properties.StoreServerProperties;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.ZipUtil;
 import me.indian.bds.util.system.SystemOS;
@@ -39,7 +41,8 @@ public class VersionManager {
     private final ServerProcess serverProcess;
     private final VersionUpdater versionUpdater;
     private final SystemOS system;
-    
+    private final ServerProperties serverProperties;
+
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
@@ -51,6 +54,7 @@ public class VersionManager {
         this.serverProcess = bdsAutoEnable.getServerProcess();
         this.versionUpdater = new VersionUpdater(bdsAutoEnable, this);
         this.system = SystemOS.getSystem();
+        this.serverProperties = this.bdsAutoEnable.getServerProperties();
 
         if (!this.versionFolder.exists()) {
             if (this.versionFolder.mkdirs()) {
@@ -64,7 +68,7 @@ public class VersionManager {
         this.loadVersionsInfo();
 
         this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "allowlist.json");
-      //  this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "server.properties");
+        //  this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "server.properties");
         this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "config" + File.separator + "default" + File.separator + "permissions.json");
         this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "permissions.json");
     }
@@ -79,7 +83,7 @@ public class VersionManager {
                 }
             }
         } catch (final IOException exception) {
-         this.logger.error("Nie można załadować pobranych wersji", exception);
+            this.logger.error("Nie można załadować pobranych wersji", exception);
         }
     }
 
@@ -101,25 +105,19 @@ public class VersionManager {
                 this.downloadServerFiles(version);
             }
 
-            
- StoreServerProperties properties = StoreServerProperties.fromServerProperties(bdsAutEnable.getServerProperties());
-            
+            final StoreServerProperties storeServerProperties = StoreServerProperties.fromServerProperties(this.serverProperties);
             final long startTime = System.currentTimeMillis();
+
             ZipUtil.unzipFile(verFile.getAbsolutePath(), this.appConfig.getFilesPath(), false, this.importantFiles);
             this.setLoaded(true);
 
-            if(bdsAutEnable.getServerProperties().propertiesExsist()){
-bdsAutEnable.getServerProperties().setFromStored(properties);
-            }
-            
-            //TODO: Zrobić to poprawnie i sprawdzić kiedy plik napewno istnieję czy trzeba dopiero go wypakować 
-
-            
+            if (this.serverProperties.propertiesExists() && storeServerProperties != null)
+                this.serverProperties.setFromStored(storeServerProperties);
             this.versionManagerConfig.setVersion(version);
             this.logger.info("Załadowano versie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final Exception exception) {
-            this.logger.critical("Nie można załadować wersji: " + version);
-            throw new RuntimeException(exception);
+            this.logger.critical("Nie można załadować wersji: " + version, exception);
+            System.exit(0);
         }
         this.versionManagerConfig.save();
     }

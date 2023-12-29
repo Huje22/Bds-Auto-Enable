@@ -32,7 +32,7 @@ public class SettingInfoCommand extends Command {
         this.sendMessage("&aMaksymalna ilość wątków których może użyć server:&b " + this.properties.getMaxThreads());
         this.sendMessage("&aMaksymalny czas bycia AFK:&b " + this.properties.getPlayerIdleTimeout() + "&e minut");
 
-        this.sendMessage("&aAutoryzacja ruchu gracza:&b " + this.properties.getServerAuthoritativeMovement().getAuthName());
+        this.sendMessage("&aAutoryzacja ruchu gracza:&b " + this.properties.getServerMovementAuth().getAuthName());
 
         this.sendMessage("&aCzy server poprawia ruch gracza:&b " + this.properties.isCorrectPlayerMovement());
         this.sendMessage("&aCzy paczki są wymagane do pobrania:&b " + this.properties.isTexturePackRequired());

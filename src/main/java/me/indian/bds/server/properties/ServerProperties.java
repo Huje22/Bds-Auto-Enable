@@ -60,7 +60,7 @@ public class ServerProperties {
     }
 
     public void reloadServerProperties() {
-        if(!this.canReload) return;
+        if (!this.canReload) return;
         this.saveProperties();
         this.loadProperties();
     }
@@ -70,8 +70,14 @@ public class ServerProperties {
             return Boolean.parseBoolean(this.properties.getProperty("online-mode"));
         } catch (final Exception exception) {
             this.logger.debug("", exception);
+            this.setOnlineMode(true);
             return true;
         }
+    }
+
+    public void setOnlineMode(final boolean onlineMode) {
+        this.properties.setProperty("online-mode", String.valueOf(onlineMode));
+        this.reloadServerProperties();
     }
 
     public String getWorldName() {
@@ -85,6 +91,7 @@ public class ServerProperties {
     }
 
     public void setWorldName(final String name) {
+        if (name == null) return;
         this.properties.setProperty("level-name", name);
         this.reloadServerProperties();
     }
@@ -100,6 +107,7 @@ public class ServerProperties {
     }
 
     public void setMOTD(final String name) {
+        if (name == null) return;
         this.properties.setProperty("server-name", name);
         this.reloadServerProperties();
     }
@@ -159,7 +167,7 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
-    public PlayerPermissionLevel getDefaultPlayerPermissionLevel() {
+    public PlayerPermissionLevel getPlayerPermissionLevel() {
         try {
             final String permissionLevel = this.properties.getProperty("default-player-permission-level");
             int level = -1;
@@ -180,12 +188,12 @@ public class ServerProperties {
 
         } catch (final Exception exception) {
             this.logger.debug("", exception);
-            this.setDefaultPlayerPermissionLevel(PlayerPermissionLevel.MEMBER);
+            this.setPlayerPermissionLevel(PlayerPermissionLevel.MEMBER);
             return PlayerPermissionLevel.MEMBER;
         }
     }
 
-    public void setDefaultPlayerPermissionLevel(final PlayerPermissionLevel level) {
+    public void setPlayerPermissionLevel(final PlayerPermissionLevel level) {
         this.properties.setProperty("default-player-permission-level", level.getPermissionName());
         this.reloadServerProperties();
     }
@@ -389,7 +397,7 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
-    public ServerMovementAuth getServerAuthoritativeMovement() {
+    public ServerMovementAuth getServerMovementAuth() {
         try {
             final String serverMovement = this.properties.getProperty("server-authoritative-movement");
             switch (serverMovement) {
@@ -408,12 +416,12 @@ public class ServerProperties {
             }
         } catch (final Exception exception) {
             this.logger.debug("", exception);
-            this.setServerAuthoritativeMovement(ServerMovementAuth.SERVER_AUTH);
+            this.setServerMovementAuth(ServerMovementAuth.SERVER_AUTH);
             return ServerMovementAuth.SERVER_AUTH;
         }
     }
 
-    public void setServerAuthoritativeMovement(final ServerMovementAuth serverAuthoritativeMovement) {
+    public void setServerMovementAuth(final ServerMovementAuth serverAuthoritativeMovement) {
         this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement.getAuthName());
         this.reloadServerProperties();
     }
@@ -433,17 +441,17 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
-public void setFromStored(final StoreServerProperties storedProperties) {
-    this.canReload = false;
+    public void setFromStored(final StoreServerProperties storedProperties) {
+        this.canReload = false;
         this.setViewDistance(storedProperties.viewDistance());
         this.setServerPort(storedProperties.serverPort());
         this.setServerPortV6(storedProperties.serverPortV6());
         this.setMaxThreads(storedProperties.maxThreads());
         this.setPlayerIdleTimeout(storedProperties.playerIdleTimeout());
-        this.setServerName(storedProperties.serverName());
+        this.setMOTD(storedProperties.serverName());
         this.setServerMovementAuth(storedProperties.serverMovementAuth());
         this.setServerBuildRadiusRatio(storedProperties.serverBuildRadiusRatio());
-        this.setClientSideChunkGenerationEnabled(storedProperties.clientSideChunkGenerationEnabled());
+        this.setClientSideChunkGeneration(storedProperties.clientSideChunkGenerationEnabled());
         this.setTickDistance(storedProperties.tickDistance());
         this.setTexturePackRequired(storedProperties.texturepackRequired());
         this.setCompressionAlgorithm(storedProperties.compressionAlgorithm());
@@ -453,15 +461,14 @@ public void setFromStored(final StoreServerProperties storedProperties) {
         this.setCorrectPlayerMovement(storedProperties.correctPlayerMovement());
         this.setMaxPlayers(storedProperties.maxPlayers());
         this.setOnlineMode(storedProperties.onlineMode());
-        this.setEmitServerTelemetry(storedProperties.emitServerTelemetry());
-this.canReload = true;
-    this.reloadServerProperties();
-    
-}
+        this.setServerTelemetry(storedProperties.emitServerTelemetry());
+        this.canReload = true;
+        this.reloadServerProperties();
+    }
 
-public boolean propertiesExsist(){
-    return this.propertiesFile.exsist();
-}
+    public boolean propertiesExists() {
+        return this.propertiesFile.exists();
+    }
 
     public Properties getProperties() {
         return this.properties;
@@ -484,7 +491,7 @@ public boolean propertiesExsist(){
                 ", playerIdleTimeout=" + this.getPlayerIdleTimeout() +
                 ", serverName='" + this.getMOTD() + "&r'" +
 //                ", playerMovementDistanceThreshold=" + this.getPlayerMovementDistanceThreshold() +
-                ", serverAuthoritativeMovement='" + this.getServerAuthoritativeMovement() + '\'' +
+                ", serverAuthoritativeMovement='" + this.getServerMovementAuth() + '\'' +
                 ", serverBuildRadiusRatio=" + this.getServerBuildRadiusRatio() +
                 ", clientSideChunkGenerationEnabled=" + this.isClientSideChunkGeneration() +
                 ", tickDistance=" + this.getTickDistance() +
@@ -495,6 +502,7 @@ public boolean propertiesExsist(){
 //                ", playerMovementScoreThreshold=" + this.getPlayerMovementScoreThreshold() +
                 ", allowCheats=" + this.isAllowCheats() +
                 ", difficulty='" + this.getDifficulty() + '\'' +
+                ", playerPermissionLevel='" + this.getPlayerPermissionLevel() + '\'' +
                 ", correctPlayerMovement=" + this.isCorrectPlayerMovement() +
 //                ", chatRestriction='" + this.getChatRestriction() + '\'' +
                 ", maxPlayers=" + this.getMaxPlayers() +

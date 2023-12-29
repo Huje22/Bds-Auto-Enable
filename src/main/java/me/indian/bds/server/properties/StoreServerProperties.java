@@ -1,10 +1,5 @@
 package me.indian.bds.server.properties;
 
-import me.indian.bds.server.properties.Difficulty;
-import me.indian.bds.server.properties.ServerProperties;
-import me.indian.bds.server.properties.ServerMovementAuth;
-import me.indian.bds.server.properties.CompressionAlgorithm;
-import me.indian.bds.server.properties.PlayerPermissionLevel;
 import org.jetbrains.annotations.Nullable;
 
 public record StoreServerProperties(
@@ -29,19 +24,19 @@ public record StoreServerProperties(
         boolean emitServerTelemetry
 ) {
 
-        @Nullable
-    public static StoreServerProperties fromServerProperties(ServerProperties serverProperties) {
-        if (!serverProperties.propertiesExist()) return null;
-            return new StoreServerProperties(
+    @Nullable
+    public static StoreServerProperties fromServerProperties(final ServerProperties serverProperties) {
+        if (!serverProperties.propertiesExists()) return null;
+        return new StoreServerProperties(
                 serverProperties.getViewDistance(),
                 serverProperties.getServerPort(),
                 serverProperties.getServerPortV6(),
                 serverProperties.getMaxThreads(),
                 serverProperties.getPlayerIdleTimeout(),
-                serverProperties.getServerName(),
+                serverProperties.getMOTD(),
                 serverProperties.getServerMovementAuth(),
                 serverProperties.getServerBuildRadiusRatio(),
-                serverProperties.isClientSideChunkGenerationEnabled(),
+                serverProperties.isClientSideChunkGeneration(),
                 serverProperties.getTickDistance(),
                 serverProperties.isTexturePackRequired(),
                 serverProperties.getCompressionAlgorithm(),
@@ -51,7 +46,7 @@ public record StoreServerProperties(
                 serverProperties.isCorrectPlayerMovement(),
                 serverProperties.getMaxPlayers(),
                 serverProperties.isOnlineMode(),
-                serverProperties.isEmitServerTelemetry()
+                serverProperties.isServerTelemetry()
         );
     }
 }

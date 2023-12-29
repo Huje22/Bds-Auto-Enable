@@ -6,6 +6,7 @@ import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.server.properties.CompressionAlgorithm;
 import me.indian.bds.server.properties.PlayerPermissionLevel;
 import me.indian.bds.server.properties.ServerMovementAuth;
 import me.indian.bds.server.properties.ServerProperties;
@@ -149,16 +150,6 @@ public class Settings {
     private void serverSettings(final ScannerUtil scannerUtil) {
         this.logger.info("&aKonfiguracja servera&r");
         this.logger.print();
-
-
-/*
-TODO: Dodać pytanie o algorytm kompresji
-
-**Snappy:** Szybki algorytm kompresji z niską latencją, idealny do zastosowań czasu rzeczywistego, choć pliki mogą być nieco większe.
-
-**zlib:** Potężny algorytm, osiągający wysoki stosunek kompresji, nadający się do sytuacji wymagających znaczącej redukcji rozmiaru plików.
-
-    */
         
         this.serverProperties.setServerPort(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
@@ -174,7 +165,9 @@ TODO: Dodać pytanie o algorytm kompresji
                     this.logger.info("&cJeśli twoja sieć obsługuje&b ipv6&c ustaw go na dostępny z puli portów");
                 }, this.serverProperties.getServerPortV6(), (input) -> this.logger.info("Port v6 ustawiony na:&1 " + input)
         ));
+        this.logger.print();
 
+        this.addCompressionAlgorithmQuestion(scannerUtil);
         this.logger.print();
 
         this.serverProperties.setMaxThreads(scannerUtil.addIntQuestion(
@@ -243,7 +236,7 @@ TODO: Dodać pytanie o algorytm kompresji
         this.addServerAuthQuestion(scannerUtil);
         this.logger.print();
 
-        if (this.serverProperties.getServerAuthoritativeMovement() != ServerMovementAuth.CLIENT_AUTH) {
+        if (this.serverProperties.getServerMovementAuth() != ServerMovementAuth.CLIENT_AUTH) {
             this.serverProperties.setCorrectPlayerMovement(scannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
                         this.logger.info("&n&lUstaw Correct Player Movement&r (Polecamy ustawić na: " + defaultValue + ")" + this.enter);
@@ -334,6 +327,7 @@ TODO: Dodać pytanie o algorytm kompresji
         this.logger.info("&e-----------&bserver.properties&e----------");
         this.logger.info("Port v4:&1 " + this.serverProperties.getServerPort());
         this.logger.info("Port v6:&1 " + this.serverProperties.getServerPortV6());
+        this.logger.info("Algorytm kompresji:&1 " + this.serverProperties.getCompressionAlgorithm());
         this.logger.print();
 
         this.logger.info("Liczba wątków używana przez server:&1 " + this.serverProperties.getMaxThreads());
@@ -347,8 +341,8 @@ TODO: Dodać pytanie o algorytm kompresji
         this.logger.info("Tick Distance:&1 " + this.serverProperties.getTickDistance());
         this.logger.print();
 
-        this.logger.info("Default Player Permission Level:&1 " + this.serverProperties.getDefaultPlayerPermissionLevel().getPermissionName());
-        this.logger.info("Server Authoritative Movement:&1 " + this.serverProperties.getServerAuthoritativeMovement().getAuthName());
+        this.logger.info("Default Player Permission Level:&1 " + this.serverProperties.getPlayerPermissionLevel().getPermissionName());
+        this.logger.info("Server Authoritative Movement:&1 " + this.serverProperties.getServerMovementAuth().getAuthName());
         this.logger.info("Server Authoritative Block Breaking:&1 " + this.serverProperties.isServerAuthoritativeBlockBreaking());
         this.logger.info("Correct Player Movement:&1 " + this.serverProperties.isCorrectPlayerMovement());
         this.logger.info("Wymug tekstur:&1 " + this.serverProperties.isTexturePackRequired());
@@ -412,6 +406,26 @@ TODO: Dodać pytanie o algorytm kompresji
                 });
     }
 
+    private void addCompressionAlgorithmQuestion(final ScannerUtil scannerUtil) {
+        CompressionAlgorithm compressionAlgorithm;
+        try {
+            compressionAlgorithm = CompressionAlgorithm.valueOf(
+                    scannerUtil.addStringQuestion(
+                            (defaultValue) -> {
+                                this.logger.info("&n&lUstaw Algorytm kompresji&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                                this.logger.info("&b" + CompressionAlgorithm.SNAPPY + "&a Szybki algorytm kompresji z niską latencją, idealny do zastosowań czasu rzeczywistego, choć pliki mogą być nieco większe.");
+                                this.logger.info("&b" + CompressionAlgorithm.ZLIB + "&a Potężny algorytm, osiągający wysoki stosunek kompresji, nadający się do sytuacji wymagających znaczącej redukcji rozmiaru plików.");
+                            },
+                            String.valueOf(this.serverProperties.getCompressionAlgorithm()),
+                            (input) -> this.logger.info("Algorytm kompresji ustawiono na:&1 " + input)
+                    ).toUpperCase());
+        } catch (final IllegalArgumentException exception) {
+            this.logger.error("Podano nieznany algorytm kompresji, ustawiliśmy go dla ciebie na:&1 " + CompressionAlgorithm.ZLIB, exception);
+            compressionAlgorithm = CompressionAlgorithm.ZLIB;
+        }
+        this.serverProperties.setCompressionAlgorithm(compressionAlgorithm);
+    }
+
     private void addPlayerPermissionQuestion(final ScannerUtil scannerUtil) {
         PlayerPermissionLevel playerPermissionLevel;
 
@@ -422,14 +436,14 @@ TODO: Dodać pytanie o algorytm kompresji
                                 this.logger.info("&n&lUstaw Default Player Permission Level&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                                 this.logger.info("Dostępne:&b " + MessageUtil.objectListToString(List.of(PlayerPermissionLevel.values()), "&a, &b"));
                             },
-                            this.serverProperties.getDefaultPlayerPermissionLevel().name(),
+                            this.serverProperties.getPlayerPermissionLevel().name(),
                             (input) -> this.logger.info("Default Player Permission Level ustawiono na:&1 " + input)
                     ).toUpperCase());
         } catch (final IllegalArgumentException exception) {
             this.logger.error("Podano nieznany poziom uprawnień gracza, ustawiliśmy go dla ciebie na:&1 " + PlayerPermissionLevel.MEMBER.getPermissionName(), exception);
             playerPermissionLevel = PlayerPermissionLevel.MEMBER;
         }
-        this.serverProperties.setDefaultPlayerPermissionLevel(playerPermissionLevel);
+        this.serverProperties.setPlayerPermissionLevel(playerPermissionLevel);
     }
 
     private void addServerAuthQuestion(final ScannerUtil scannerUtil) {
@@ -444,13 +458,13 @@ TODO: Dodać pytanie o algorytm kompresji
                                 this.logger.alert("Jeśli chcesz uniknąć cheaterów włącz&b server-auth-with-rewind&r wraz z &bcorrect-player-movement&r ," +
                                         " lecz uważaj! Osoby z słabym połączeniem bedą się okropnie teleportować");
                             },
-                            this.serverProperties.getServerAuthoritativeMovement().name(),
+                            this.serverProperties.getServerMovementAuth().name(),
                             (input) -> this.logger.info("Server Authoritative Movement ustawiono na:&1 " + input)
                     ).toUpperCase());
         } catch (final Exception exception) {
             this.logger.error("Podano nieznany typ uwierzytelnienia poruszania sie , ustawiliśmy go dla ciebie na:&b " + ServerMovementAuth.SERVER_AUTH.getAuthName(), exception);
             serverMovementAuth = ServerMovementAuth.SERVER_AUTH;
         }
-        this.serverProperties.setServerAuthoritativeMovement(serverMovementAuth);
+        this.serverProperties.setServerMovementAuth(serverMovementAuth);
     }
 }
