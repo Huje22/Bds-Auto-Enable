@@ -5,6 +5,7 @@ import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.server.properties.ServerMovementAuth;
 import me.indian.bds.server.properties.CompressionAlgorithm;
 import me.indian.bds.server.properties.PlayerPermissionLevel;
+import org.jetbrains.annotations.Nullable;
 
 public record StoreServerProperties(
         int viewDistance,
@@ -28,8 +29,10 @@ public record StoreServerProperties(
         boolean emitServerTelemetry
 ) {
 
+        @Nullable
     public static StoreServerProperties fromServerProperties(ServerProperties serverProperties) {
-        return new StoreServerProperties(
+        if (!serverProperties.propertiesExist()) return null;
+            return new StoreServerProperties(
                 serverProperties.getViewDistance(),
                 serverProperties.getServerPort(),
                 serverProperties.getServerPortV6(),
