@@ -430,6 +430,28 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
+public void setFromStored(final StoreServerProperties storedProperties) {
+        this.setViewDistance(storedProperties.viewDistance());
+        this.setServerPort(storedProperties.serverPort());
+        this.setServerPortV6(storedProperties.serverPortV6());
+        this.setMaxThreads(storedProperties.maxThreads());
+        this.setPlayerIdleTimeout(storedProperties.playerIdleTimeout());
+        this.setServerName(storedProperties.serverName());
+        this.setServerMovementAuth(storedProperties.serverMovementAuth());
+        this.setServerBuildRadiusRatio(storedProperties.serverBuildRadiusRatio());
+        this.setClientSideChunkGenerationEnabled(storedProperties.clientSideChunkGenerationEnabled());
+        this.setTickDistance(storedProperties.tickDistance());
+        this.setTexturePackRequired(storedProperties.texturepackRequired());
+        this.setCompressionAlgorithm(storedProperties.compressionAlgorithm());
+        this.setAllowCheats(storedProperties.allowCheats());
+        this.setDifficulty(storedProperties.difficulty());
+        this.setPlayerPermissionLevel(storedProperties.playerPermissionLevel());
+        this.setCorrectPlayerMovement(storedProperties.correctPlayerMovement());
+        this.setMaxPlayers(storedProperties.maxPlayers());
+        this.setOnlineMode(storedProperties.onlineMode());
+        this.setEmitServerTelemetry(storedProperties.emitServerTelemetry());
+}
+
     public Properties getProperties() {
         return this.properties;
     }
