@@ -30,19 +30,17 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
   (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) do obsługi
   większej
   ilości funkcji)
+* Formatowanie czatu (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) działa tylko gdy paczka jest najwyżej)
 * **Rest API** z czasem gry , liczbą śmierci i graczami online/offline (Również wymaga paczki)
 
 # Jak to działa
 
 Komunikuje się on z serverem BDS za pomocą wysyłania komend do konsoli a także czytania ważnych informacji z konsoli na
 przykład: <br>
-Paczka [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) wysyła do konsoli
-log
-
-```
+Paczka [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) wysyła do konsoli log <br>
+``
 PlayerChat:JndjanBartonka Message:Witaj
-```
-
+``<br>
 A aplikacja odczytuje nick gracza z `PlayerChat` i wiadomość z `Message` , i dalej na przykład wysyła wiadomość tą do
 discord , podobnie z dołączaniem gracza (w tym wypadku `PlayerJoin`) , i w tym wypadku dodaje gracza na listę graczy
 online i timer działający co 1s dodaje mu wtedy 1s czasu gry.<br>
@@ -58,11 +56,8 @@ paczke [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enab
 paczka jest najwyżej)**
 
 * `!help` - lista poleceń
-* `!tps` - Ticki na sekunde servera
-* `!playtime` - Top 10 graczy z największym czasem gry
-* `!deaths` - Top 10 graczy z największą ilością śmierci
-* `!link` - Łączy nick z mc z kontem discord
-* `!version`  - Pokazuje załadowaną versie minecraft + versie oprogramowania
+* `!tps` - Ticki na sekunde servera (działa tylko w minecraft)
+  **Po resztę użyj `!help`**
 
 ### W Bocie
 
@@ -71,14 +66,6 @@ paczka jest najwyżej)**
 * Wszystkie je jak i także ich opisy znajdziesz po wpisaniu `/` (Wymaga dodania bota z
   ___&scope=bot+applications.commands___ inaczej mogą wystąpić problemy)
   
-# Użyte biblioteki
-
-[Okaeri Configs - do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
-[Gson - do plików i samych Json](https://github.com/google/gson)<br>
-[JDA - Integracja z discord](https://github.com/discord-jda/JDA)<br>
-[Javalin - Rest API](https://github.com/javalin/javalin)<br>
-[Logback - Tylko do wyłączenia niektórych wiadomości z Javalin i JDA](https://github.com/qos-ch/logback)<br>
-
 # Program nie wspiera
 
 * Wtyczek do Minecraft ani czytania pakietów z Minecraft
@@ -89,6 +76,14 @@ https://github.com/hesslink111/Minecraft-Telegram-Bot <br>
 # Szybkie info
 
 * Paczka sama się pobierze do twojego świata i załaduje , potrzebujesz jedynie włączonych experymentów w tym świecie!
+
+# Użyte biblioteki
+
+[Okaeri Configs - do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
+[Gson - do plików i samych Json](https://github.com/google/gson)<br>
+[JDA - Integracja z discord](https://github.com/discord-jda/JDA)<br>
+[Javalin - Rest API](https://github.com/javalin/javalin)<br>
+[Logback - Tylko do wyłączenia niektórych wiadomości z Javalin i JDA](https://github.com/qos-ch/logback)<br>
 
   ----
   
