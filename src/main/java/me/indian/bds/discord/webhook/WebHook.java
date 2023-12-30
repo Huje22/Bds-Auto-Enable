@@ -201,7 +201,7 @@ public class WebHook implements DiscordIntegration {
     @Override
     public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final Footer footer) {
         this.sendEmbedMessage(title, message +
-                "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```", fields, footer);
+                 (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"), fields, footer);
     }
 
     @Override
@@ -212,7 +212,7 @@ public class WebHook implements DiscordIntegration {
     @Override
     public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final Footer footer) {
         this.sendEmbedMessage(title, message +
-                "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```", footer);
+                 (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"), footer);
     }
 
     @Override
