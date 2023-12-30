@@ -14,12 +14,8 @@ import java.util.List;
 public class RestApiConfig extends OkaeriConfig {
 
     @Comment({""})
-    @Comment({"Dostępne endpointy to:"})
-    @Comment({"/api/stats/deaths - śmierci graczy   "})
-    @Comment({"/api/stats/playtime - czas gry w ms graczy "})
-    @Comment({"/api/stats/players - gracze online i offline"})
-    @Comment({"/api/{api-key}/backup/{filename} - pobierz któryś z dostępnych backup (wymagany klucz autoryzacji)"})
-    @Comment({""})
+    @Comment({"Apy zobaczyć dostępne endpointy zobacz:"})
+    @Comment({"https://github.com/Huje22/Bds-Auto-Enable/blob/master/RestAPI.MD"})
     @Comment({"Czy włączyć strone z Rest API?"})
     @CustomKey("Enable")
     private boolean enabled = false;
