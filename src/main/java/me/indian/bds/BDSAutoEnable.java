@@ -197,6 +197,7 @@ public class BDSAutoEnable {
     }
 
     private DiscordIntegration determinateDiscordIntegration() {
+        //TODO: Dodać tylko JDA jako typ integracji, a webhook używać w nagłych wypadkach 
         final DiscordType integration = this.appConfigManager.getDiscordConfig().getIntegrationType();
         if (integration == null) throw new RuntimeException("Integracja z discord nie może być nullem!");
 
