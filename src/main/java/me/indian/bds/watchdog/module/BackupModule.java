@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
-import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.embed.component.Footer;
+import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -43,7 +43,7 @@ public class BackupModule {
     private final List<Path> backups;
     private final String worldPath, worldName;
     private final File worldFile;
-    private final DiscordIntegration discord;
+    private final DiscordJDA discordJDA;
     private final WatchDog watchDog;
     private final String prefix;
     private final boolean enabled;
@@ -67,7 +67,7 @@ public class BackupModule {
         this.worldPath = DefaultsVariables.getWorldsPath() + this.worldName;
         this.worldFile = new File(this.worldPath);
         this.prefix = this.watchDog.getWatchDogPrefix();
-        this.discord = bdsAutoEnable.getDiscord();
+        this.discordJDA = bdsAutoEnable.getDiscordHelper().getDiscordJDA();
         this.enabled = this.watchDogConfig.getBackupConfig().isEnabled();
         this.serverManager = this.bdsAutoEnable.getServerManager();
         if (this.watchDogConfig.getBackupConfig().isEnabled()) {
@@ -157,12 +157,13 @@ public class BackupModule {
                         "&aDostępne jest&d " + this.backups.size() + "&a kopi zapasowych",
                         LogState.INFO);
 
-                this.discord.sendBackupDoneMessage();
+                this.discordJDA.sendBackupDoneMessage();
                 this.status = "Utworzono backup";
             } catch (final Exception exception) {
                 this.status = "Nie udało sie utworzyć kopij zapasowej";
-                if(this.appConfigManager.getDiscordConfig().getDiscordMessagesOptionsConfig().isSendBackupFailMessage()){
-                    this.discord.sendEmbedMessage("Backup", this.status, exception, new Footer(exception.getMessage()));
+                if (this.appConfigManager.getDiscordConfig().getDiscordMessagesOptionsConfig().isSendBackupFailMessage()) {
+                    this.bdsAutoEnable.getDiscordHelper().getWebHook()
+                            .sendEmbedMessage("Backup", this.status, exception, new Footer(exception.getMessage()));
                 }
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4" + this.status, exception, LogState.CRITICAL);
                 if (backup.delete()) {

@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.DiscordConfig;
-import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.DiscordHelper;
 import me.indian.bds.discord.embed.component.Field;
 import me.indian.bds.discord.embed.component.Footer;
 import me.indian.bds.discord.jda.listener.CommandListener;
@@ -48,7 +48,7 @@ import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.jetbrains.annotations.Nullable;
 
-public class DiscordJda implements DiscordIntegration {
+public class DiscordJDA {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
@@ -58,13 +58,14 @@ public class DiscordJda implements DiscordIntegration {
     private final ExecutorService consoleService;
     private final List<JDAListener> listeners;
     private final Map<String, Pattern> mentionPatternCache;
+    private final DiscordHelper discordHelper;
     private JDA jda;
     private Guild guild;
     private TextChannel textChannel, consoleChannel;
     private StatsChannelsManager statsChannelsManager;
     private LinkingManager linkingManager;
 
-    public DiscordJda(final BDSAutoEnable bdsAutoEnable) {
+    public DiscordJDA(final BDSAutoEnable bdsAutoEnable, final DiscordHelper discordHelper) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfigManager = bdsAutoEnable.getAppConfigManager();
@@ -72,9 +73,10 @@ public class DiscordJda implements DiscordIntegration {
         this.serverID = this.discordConfig.getBotConfig().getServerID();
         this.channelID = this.discordConfig.getBotConfig().getChannelID();
         this.consoleID = this.discordConfig.getBotConfig().getConsoleID();
-        this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("Discord-Console"));
+        this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("discord-Console"));
         this.listeners = new ArrayList<>();
         this.mentionPatternCache = new HashMap<>();
+        this.discordHelper = discordHelper;
 
         this.listeners.add(new CommandListener(this, this.bdsAutoEnable));
         this.listeners.add(new MessageListener(this, this.bdsAutoEnable));
@@ -82,89 +84,93 @@ public class DiscordJda implements DiscordIntegration {
 
     }
 
-    @Override
     public void init() {
-        final PackModule packModule = this.bdsAutoEnable.getWatchDog().getPackModule();
-        this.logger.info("&aŁadowanie bota....");
-        if (this.discordConfig.getBotConfig().getToken().isEmpty()) {
-            this.logger.alert("&aNie znaleziono tokenu , pomijanie ładowania.");
-            return;
-        }
-        if (!packModule.isLoaded()) {
-            this.logger.error("&cNie załadowano paczki&b " + packModule.getPackName() + "&4.&cBot nie może bez niej normalnie działać");
-            this.logger.error("Możesz znaleźć ją tu:&b https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack");
-            return;
-        }
-
-        try {
-            this.jda = JDABuilder.create(this.discordConfig.getBotConfig().getToken(), this.getGatewayIntents())
-                    .disableCache(this.getDisableCacheFlag())
-                    .enableCache(this.getEnableCacheFlag())
-                    .setEnableShutdownHook(false)
-                    .build();
-            this.jda.awaitReady();
-            this.logger.info("&aZaładowano bota");
-        } catch (final Exception exception) {
-            this.logger.error("&cNie można uruchomić bota", exception);
-            return;
-        }
-
-        this.guild = this.jda.getGuildById(this.serverID);
-        if (this.guild == null) {
-            this.jda.shutdown();
-            this.jda = null;
-            throw new NullPointerException("Nie można odnaleźć servera o ID&b " + this.serverID);
-        }
-
-        this.textChannel = this.guild.getTextChannelById(this.channelID);
-        if (this.textChannel == null) {
-            this.jda.shutdown();
-            this.jda = null;
-            throw new NullPointerException("Nie można odnaleźć kanału z ID&b " + this.channelID);
-        }
-
-        this.textChannel.getManager().setSlowmode(1).queue();
-
-        this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
-
-        if (this.consoleChannel == null) this.logger.debug("(konsola) Nie można odnaleźć kanału z ID &b " + this.consoleID);
-
-        this.linkingManager = new LinkingManager(this.bdsAutoEnable, this);
-        this.statsChannelsManager = new StatsChannelsManager(this.bdsAutoEnable, this);
-        this.statsChannelsManager.init();
-
-        for (final JDAListener listener : this.listeners) {
-            try {
-                listener.init();
-                listener.initServerProcess(this.bdsAutoEnable.getServerProcess());
-                this.jda.addEventListener(listener);
-                this.logger.debug("Zarejestrowano listener JDA:&b " + listener.getClass().getSimpleName());
-            } catch (final Exception exception) {
-                this.logger.critical("Wystąpił błąd podczas ładowania listeneru: &b" + listener.getClass().getSimpleName(), exception);
-                System.exit(0);
+        if (this.discordConfig.getBotConfig().isEnable()) {
+            this.logger.info("&aŁadowanie bota....");
+            if (this.discordConfig.getBotConfig().getToken().isEmpty()) {
+                this.logger.alert("&aNie znaleziono tokenu , pomijanie ładowania.");
+                return;
             }
+
+            final PackModule packModule = this.bdsAutoEnable.getWatchDog().getPackModule();
+            if (!packModule.isLoaded()) {
+                this.logger.error("&cNie załadowano paczki&b " + packModule.getPackName() + "&4.&cBot nie może bez niej normalnie działać");
+                this.logger.error("Możesz znaleźć ją tu:&b https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack");
+                return;
+            }
+
+            try {
+                this.jda = JDABuilder.create(this.discordConfig.getBotConfig().getToken(), this.getGatewayIntents())
+                        .disableCache(this.getDisableCacheFlag())
+                        .enableCache(this.getEnableCacheFlag())
+                        .setEnableShutdownHook(false)
+                        .build();
+                this.jda.awaitReady();
+                this.logger.info("&aZaładowano bota");
+            } catch (final Exception exception) {
+                this.logger.error("&cNie można uruchomić bota", exception);
+                this.discordHelper.setBotEnabled(false);
+                return;
+            }
+
+            this.guild = this.jda.getGuildById(this.serverID);
+            if (this.guild == null) {
+                this.jda.shutdown();
+                this.jda = null;
+                throw new NullPointerException("Nie można odnaleźć servera o ID&b " + this.serverID);
+            }
+
+            this.textChannel = this.guild.getTextChannelById(this.channelID);
+            if (this.textChannel == null) {
+                this.jda.shutdown();
+                this.jda = null;
+                throw new NullPointerException("Nie można odnaleźć kanału z ID&b " + this.channelID);
+            }
+
+            this.textChannel.getManager().setSlowmode(1).queue();
+
+            this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
+
+            if (this.consoleChannel == null)
+                this.logger.debug("(konsola) Nie można odnaleźć kanału z ID &b " + this.consoleID);
+
+            this.linkingManager = new LinkingManager(this.bdsAutoEnable, this);
+            this.statsChannelsManager = new StatsChannelsManager(this.bdsAutoEnable, this);
+            this.statsChannelsManager.init();
+
+            for (final JDAListener listener : this.listeners) {
+                try {
+                    listener.init();
+                    listener.initServerProcess(this.bdsAutoEnable.getServerProcess());
+                    this.jda.addEventListener(listener);
+                    this.logger.debug("Zarejestrowano listener JDA:&b " + listener.getClass().getSimpleName());
+                } catch (final Exception exception) {
+                    this.logger.critical("Wystąpił błąd podczas ładowania listeneru: &b" + listener.getClass().getSimpleName(), exception);
+                    System.exit(0);
+                }
+            }
+
+            this.checkBotPermissions();
+
+            this.guild.updateCommands().addCommands(
+                    Commands.slash("list", "lista graczy online."),
+                    Commands.slash("backup", "Tworzenie bądź ostatni czas backupa"),
+                    Commands.slash("difficulty", "Zmienia poziom trudności"),
+                    Commands.slash("version", "Wersja BDS-Auto-Enable i severa, umożliwia update servera"),
+                    Commands.slash("ping", "aktualny ping bot z serwerami discord"),
+                    Commands.slash("stats", "Statystyki Servera i aplikacji."),
+                    Commands.slash("cmd", "Wykonuje polecenie w konsoli.")
+                            .addOption(OptionType.STRING, "command", "Polecenie które zostanie wysłane do konsoli.", true),
+                    Commands.slash("link", "Łączy konto discord z kontem nickiem Minecraft.")
+                            .addOption(OptionType.STRING, "code", "Kod aby połączyć konta", false),
+                    Commands.slash("ip", "Informacje o ip ustawione w config"),
+                    Commands.slash("playtime", "Top 100 graczy z największą ilością przegranego czasu"),
+                    Commands.slash("deaths", "Top 100 graczy z największą ilością śmierci")
+            ).queue();
+
+            this.customStatusUpdate();
+            this.leaveGuilds();
         }
-
-        this.checkBotPermissions();
-
-        this.guild.updateCommands().addCommands(
-                Commands.slash("list", "lista graczy online."),
-                Commands.slash("backup", "Tworzenie bądź ostatni czas backupa"),
-                Commands.slash("difficulty", "Zmienia poziom trudności"),
-                Commands.slash("version", "Wersja BDS-Auto-Enable i severa, umożliwia update servera"),
-                Commands.slash("ping", "aktualny ping bot z serwerami discord"),
-                Commands.slash("stats", "Statystyki Servera i aplikacji."),
-                Commands.slash("cmd", "Wykonuje polecenie w konsoli.")
-                        .addOption(OptionType.STRING, "command", "Polecenie które zostanie wysłane do konsoli.", true),
-                Commands.slash("link", "Łączy konto discord z kontem nickiem Minecraft.")
-                        .addOption(OptionType.STRING, "code", "Kod aby połączyć konta", false),
-                Commands.slash("ip", "Informacje o ip ustawione w config"),
-                Commands.slash("playtime", "Top 100 graczy z największą ilością przegranego czasu"),
-                Commands.slash("deaths", "Top 100 graczy z największą ilością śmierci")
-        ).queue();
-
-        this.customStatusUpdate();
-        this.leaveGuilds();
     }
 
     private List<GatewayIntent> getGatewayIntents() {
@@ -271,12 +277,11 @@ public class DiscordJda implements DiscordIntegration {
     }
 
     private void customStatusUpdate() {
-        final Timer timer = new Timer("Discord Status Changer", true);
+        final Timer timer = new Timer("discord Status Changer", true);
         final TimerTask statusTask = new TimerTask() {
 
-            @Override
             public void run() {
-                DiscordJda.this.jda.getPresence().setActivity(DiscordJda.this.getCustomActivity());
+                DiscordJDA.this.jda.getPresence().setActivity(DiscordJDA.this.getCustomActivity());
             }
         };
 
@@ -374,7 +379,6 @@ public class DiscordJda implements DiscordIntegration {
         return message;
     }
 
-    @Override
     public void sendMessage(final String message) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
             if (message.isEmpty()) return;
@@ -384,13 +388,11 @@ public class DiscordJda implements DiscordIntegration {
         }
     }
 
-    @Override
     public void sendMessage(final String message, final Throwable throwable) {
         this.sendMessage(message +
                 (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"));
     }
 
-    @Override
     public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Footer footer) {
         if (this.jda != null && this.textChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
             if (title.isEmpty() || message.isEmpty()) return;
@@ -411,24 +413,20 @@ public class DiscordJda implements DiscordIntegration {
 
     }
 
-    @Override
     public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final Footer footer) {
         this.sendEmbedMessage(title, message +
                 (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"), fields, footer);
     }
 
-    @Override
     public void sendEmbedMessage(final String title, final String message, final Footer footer) {
         this.sendEmbedMessage(title, message, (List<Field>) null, footer);
     }
 
-    @Override
     public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final Footer footer) {
         this.sendEmbedMessage(title, message +
                 (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"), footer);
     }
 
-    @Override
     public void writeConsole(final String message) {
         if (this.jda != null && this.consoleChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
             if (message.isEmpty()) return;
@@ -436,26 +434,22 @@ public class DiscordJda implements DiscordIntegration {
         }
     }
 
-    @Override
     public void writeConsole(final String message, final Throwable throwable) {
         this.writeConsole(message + (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"));
     }
 
-    @Override
     public void sendJoinMessage(final String playerName) {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendJoinMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getJoinMessage().replaceAll("<name>", playerName));
         }
     }
 
-    @Override
     public void sendLeaveMessage(final String playerName) {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendLeaveMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getLeaveMessage().replaceAll("<name>", playerName));
         }
     }
 
-    @Override
     public void sendPlayerMessage(final String playerName, final String playerMessage) {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendPlayerMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getMinecraftToDiscordMessage()
@@ -467,7 +461,6 @@ public class DiscordJda implements DiscordIntegration {
         }
     }
 
-    @Override
     public void sendDeathMessage(final String playerName, final String deathMessage) {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendDeathMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getDeathMessage()
@@ -477,63 +470,54 @@ public class DiscordJda implements DiscordIntegration {
         }
     }
 
-    @Override
     public void sendDisabledMessage() {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendDisabledMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getDisabledMessage());
         }
     }
 
-    @Override
     public void sendDisablingMessage() {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendDisablingMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getDisablingMessage());
         }
     }
 
-    @Override
     public void sendProcessEnabledMessage() {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendProcessEnabledMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getProcessEnabledMessage());
         }
     }
 
-    @Override
     public void sendEnabledMessage() {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendEnabledMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getEnabledMessage());
         }
     }
 
-    @Override
     public void sendDestroyedMessage() {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendDestroyedMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getDestroyedMessage());
         }
     }
 
-    @Override
     public void sendBackupDoneMessage() {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendBackupMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getBackupDoneMessage());
         }
     }
 
-    @Override
     public void sendAppRamAlert() {
         if (this.appConfigManager.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
             this.sendMessage(this.getOwnerMention() + this.discordConfig.getDiscordMessagesConfig().getAppRamAlter());
         }
     }
 
-    @Override
     public void sendMachineRamAlert() {
         if (this.appConfigManager.getWatchDogConfig().getRamMonitorConfig().isDiscordAlters()) {
             this.sendMessage(this.getOwnerMention() + this.discordConfig.getDiscordMessagesConfig().getMachineRamAlter());
         }
     }
 
-    @Override
     public void sendServerUpdateMessage(final String version) {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendServerUpdateMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getServerUpdate()
@@ -544,34 +528,12 @@ public class DiscordJda implements DiscordIntegration {
         }
     }
 
-    @Override
     public void sendRestartMessage() {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendRestartMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getRestartMessage());
         }
     }
 
-    @Override
-    public void startShutdown() {
-        if (this.linkingManager != null) this.linkingManager.saveLinkedAccounts();
-        if (this.statsChannelsManager != null) this.statsChannelsManager.onShutdown();
-    }
-
-    @Override
-    public void shutdown() {
-        if (this.jda != null) {
-            if (this.jda.getStatus() == JDA.Status.CONNECTED) {
-                try {
-                    this.jda.shutdown();
-                    if (!this.jda.awaitShutdown(10L, TimeUnit.SECONDS)) {
-                        this.logger.info("Wyłączono bota");
-                    }
-                } catch (final Exception exception) {
-                    this.logger.critical("Nie można wyłączyć bota", exception);
-                }
-            }
-        }
-    }
 
     public JDA getJda() {
         return this.jda;

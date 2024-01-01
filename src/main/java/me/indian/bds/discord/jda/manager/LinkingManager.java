@@ -15,7 +15,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.GsonUtil;
@@ -30,17 +30,17 @@ public class LinkingManager {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final AppConfigManager appConfigManager;
-    private final DiscordJda discordJda;
+    private final DiscordJDA DiscordJDA;
     private final Logger logger;
     private final File linkedAccountsJson;
     private final HashMap<String, Long> linkedAccounts;
     private final HashMap<String, String> accountsToLink;
     private final List<Member> linkedMembers;
 
-    public LinkingManager(final BDSAutoEnable bdsAutoEnable, final DiscordJda discordJda) {
+    public LinkingManager(final BDSAutoEnable bdsAutoEnable, final DiscordJDA DiscordJDA) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
-        this.discordJda = discordJda;
+        this.DiscordJDA = DiscordJDA;
         this.logger = this.bdsAutoEnable.getLogger();
         this.linkedAccountsJson = new File(DefaultsVariables.getAppDir() + "linkedAccounts.json");
         this.createJson();
@@ -114,12 +114,12 @@ public class LinkingManager {
     @Nullable
     public Member getMember(final String name) {
         if (!this.isLinked(name)) return null;
-        return this.discordJda.getGuild().getMemberById(this.getIdByName(name));
+        return this.DiscordJDA.getGuild().getMemberById(this.getIdByName(name));
     }
 
     public boolean hasPermissions(final String name, final Permission permission) {
         if (!this.isLinked(name)) return false;
-        final Member member = this.discordJda.getGuild().getMemberById(this.getIdByName(name));
+        final Member member = this.DiscordJDA.getGuild().getMemberById(this.getIdByName(name));
         return (member != null && member.hasPermission(permission));
     }
 
@@ -131,7 +131,7 @@ public class LinkingManager {
         this.linkedMembers.clear();
 
         for (final Map.Entry<String, Long> map : this.linkedAccounts.entrySet()) {
-            final Member member = this.discordJda.getGuild().getMemberById(map.getValue());
+            final Member member = this.DiscordJDA.getGuild().getMemberById(map.getValue());
             if (member == null) continue;
             this.linkedMembers.add(member);
         }
@@ -187,7 +187,7 @@ public class LinkingManager {
         for (final Map.Entry<String, Long> map : this.linkedAccounts.entrySet()) {
             final String name = map.getKey();
             final long id = map.getValue();
-            final Guild guild = this.discordJda.getGuild();
+            final Guild guild = this.DiscordJDA.getGuild();
             final Member member = guild.getMemberById(id);
 
             if (member == null) continue;

@@ -76,7 +76,7 @@ public class VersionUpdater {
         try {
             final String version = this.versionManager.getLatestVersion();
             if (this.versionManagerConfig.getVersion().equalsIgnoreCase(version)) return;
-            this.bdsAutoEnable.getDiscord().sendServerUpdateMessage(version);
+            this.bdsAutoEnable.getDiscordHelper().getDiscordJDA().sendServerUpdateMessage(version);
             if (!this.versionManager.hasVersion(version)) {
                 this.versionManager.downloadServerFiles(version);
             }

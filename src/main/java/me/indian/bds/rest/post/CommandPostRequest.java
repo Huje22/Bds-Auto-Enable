@@ -50,7 +50,7 @@ public class CommandPostRequest implements Request {
             }
 
             this.logger.debug("&b" + ip + "&r używa poprawnie endpointu&1 COMMAND");
-            this.logger.print(command, this.bdsAutoEnable.getDiscord(), DiscordLogChannelType.CONSOLE);
+            this.logger.print(command, this.bdsAutoEnable.getDiscordHelper().getDiscordJDA(), DiscordLogChannelType.CONSOLE);
             ctx.result("Ostatnia linia z konsoli: " + this.serverProcess.commandAndResponse(command));
         });
     }

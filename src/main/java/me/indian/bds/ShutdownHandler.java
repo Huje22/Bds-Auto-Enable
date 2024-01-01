@@ -1,7 +1,6 @@
 package me.indian.bds;
 
 import me.indian.bds.config.AppConfig;
-import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.embed.component.Footer;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -10,14 +9,12 @@ public class ShutdownHandler {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
-    private final DiscordIntegration discordIntegration;
     private final AppConfig appConfig;
     private final ServerProcess serverProcess;
 
     public ShutdownHandler(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.discordIntegration = this.bdsAutoEnable.getDiscord();
         this.appConfig = this.bdsAutoEnable.getAppConfigManager().getAppConfig();
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
 
@@ -45,7 +42,7 @@ public class ShutdownHandler {
             this.logger.critical("Wystąpił niezłapany wyjątek w wątku&b " + thread.getName());
             this.logger.logThrowableToFile(throwable);
 
-            this.discordIntegration.sendEmbedMessage("Wystąpił niezłapany wyjątek w wątku** " + thread.getName() + "**",
+            this.bdsAutoEnable.getDiscordHelper().getWebHook().sendEmbedMessage("Wystąpił niezłapany wyjątek w wątku** " + thread.getName() + "**",
                     (closeOnException ? "**Aplikacja zostaje zamknięta z tego powodu**" : ""),
                     throwable,
                     new Footer(throwable.getLocalizedMessage()));

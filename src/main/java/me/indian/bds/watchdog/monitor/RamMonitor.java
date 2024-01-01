@@ -6,7 +6,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.RamMonitorConfig;
-import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -21,7 +21,7 @@ public class RamMonitor {
     private final Logger logger;
     private final String prefix;
     private final RamMonitorConfig ramMonitorConfig;
-    private DiscordIntegration discord;
+    private DiscordJDA discordJDA;
     private ServerProcess serverProcess;
     private boolean running;
 
@@ -35,8 +35,8 @@ public class RamMonitor {
 
     }
 
-    public void init(final DiscordIntegration discord) {
-        this.discord = discord;
+    public void init(final DiscordJDA discordJDA) {
+        this.discordJDA = discordJDA;
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
     }
 
@@ -56,7 +56,7 @@ public class RamMonitor {
                             "&cWiększe użycje może to prowadzić do crashy aplikacji a w tym servera&4!!",
                             LogState.CRITICAL);
 
-                    RamMonitor.this.discord.sendAppRamAlert();
+                    RamMonitor.this.discordJDA.sendAppRamAlert();
                 }
             }
         };
@@ -79,7 +79,7 @@ public class RamMonitor {
                             freeComputerMemory + " / " + maxComputerMemory,
                             LogState.ALERT);
 
-                    RamMonitor.this.discord.sendMachineRamAlert();
+                    RamMonitor.this.discordJDA.sendMachineRamAlert();
                 }
             }
         };

@@ -9,11 +9,7 @@ import java.util.UUID;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.discord.DiscordIntegration;
-import me.indian.bds.discord.DiscordType;
-import me.indian.bds.discord.NoneDiscord;
-import me.indian.bds.discord.jda.DiscordJda;
-import me.indian.bds.discord.webhook.WebHook;
+import me.indian.bds.discord.DiscordHelper;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.rest.RestWebsite;
 import me.indian.bds.server.ServerProcess;
@@ -45,7 +41,7 @@ public class BDSAutoEnable {
     private final ServerProcess serverProcess;
     private final ServerManager serverManager;
     private final VersionManager versionManager;
-    private final DiscordIntegration discord;
+    private final DiscordHelper discordHelper;
     private CommandManager commandManager;
     private WatchDog watchDog;
 
@@ -68,7 +64,7 @@ public class BDSAutoEnable {
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
         this.logger.debug("&aUUID&r aplikacji:&b " + this.getAppUUID());
         DefaultsVariables.init(this);
-        this.discord = this.determinateDiscordIntegration();
+        this.discordHelper = new DiscordHelper(this);
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
         this.serverManager = new ServerManager(this);
@@ -90,14 +86,14 @@ public class BDSAutoEnable {
         this.settings.loadSettings(this.mainScanner);
         this.watchDog = new WatchDog(this);
         this.serverProcess.init();
-        this.watchDog.init(this.discord);
+        this.watchDog.init(this.discordHelper.getDiscordJDA());
         this.watchDog.getRamMonitor().monitRamUsage();
         this.versionManager.loadVersion();
         this.checkExecutable();
         this.watchDog.getPackModule().initPackModule();
         new RestWebsite(this).init();
 
-        this.discord.init();
+        this.discordHelper.init();
         this.serverManager.getStatsManager().startCountServerTime(this.serverProcess);
         this.serverProcess.startProcess();
         this.versionManager.getVersionUpdater().checkForUpdate();
@@ -196,25 +192,6 @@ public class BDSAutoEnable {
         }
     }
 
-    private DiscordIntegration determinateDiscordIntegration() {
-        //TODO: Dodać tylko JDA jako typ integracji, a webhook używać w nagłych wypadkach 
-        final DiscordType integration = this.appConfigManager.getDiscordConfig().getIntegrationType();
-        if (integration == null) throw new RuntimeException("Integracja z discord nie może być nullem!");
-
-        switch (integration) {
-            case WEBHOOK -> {
-                return new WebHook(this);
-            }
-            case JDA -> {
-                return new DiscordJda(this);
-            }
-            case NONE -> {
-                return new NoneDiscord();
-            }
-            default -> throw new RuntimeException("Nieznany typ integracji " + integration);
-        }
-    }
-
     public long getStartTime() {
         return this.startTime;
     }
@@ -271,8 +248,8 @@ public class BDSAutoEnable {
         return this.versionManager;
     }
 
-    public DiscordIntegration getDiscord() {
-        return this.discord;
+    public DiscordHelper getDiscordHelper() {
+        return this.discordHelper;
     }
 
     public CommandManager getCommandManager() {

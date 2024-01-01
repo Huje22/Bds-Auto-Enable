@@ -5,7 +5,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.StatsChannelsConfig;
-import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MathUtil;
 import net.dv8tion.jda.api.entities.Guild;
@@ -22,7 +22,7 @@ public class StatsChannelsManager {
     private int latsTPS;
     private VoiceChannel onlinePlayersChannel, tpsChannel;
 
-    public StatsChannelsManager(final BDSAutoEnable bdsAutoEnable, final DiscordJda discordJda) {
+    public StatsChannelsManager(final BDSAutoEnable bdsAutoEnable, final DiscordJDA DiscordJDA) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.statsChannelsConfig = this.bdsAutoEnable.getAppConfigManager().getDiscordConfig()
@@ -30,7 +30,7 @@ public class StatsChannelsManager {
         this.timer = new Timer("Discord Channel Manager Timer", true);
         this.onlinePlayersID = this.statsChannelsConfig.getOnlinePlayersID();
         this.tpsID = this.statsChannelsConfig.getTpsID();
-        this.guild = discordJda.getGuild();
+        this.guild = DiscordJDA.getGuild();
 
         this.latsTPS = 0;
     }

@@ -9,6 +9,9 @@ import java.util.List;
 public class BotConfig extends OkaeriConfig {
 
     @Comment({""})
+    @Comment({"Czy włączyć bota"})
+    private boolean enable = true;
+    @Comment({""})
     @Comment({"Zostaw puste aby nie uruchamiać "})
     private String token = "";
 
@@ -70,6 +73,11 @@ public class BotConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"URL do stream "})
     private String streamUrl = "https://www.youtube.com/@IndianBartonka?sub_confirmation=1";
+
+
+    public boolean isEnable() {
+        return this.enable;
+    }
 
     public String getToken() {
         return this.token;

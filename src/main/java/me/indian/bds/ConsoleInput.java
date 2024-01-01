@@ -3,8 +3,9 @@ package me.indian.bds;
 import java.util.Scanner;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.command.CommandSender;
-import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.DiscordHelper;
 import me.indian.bds.discord.embed.component.Footer;
+import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
@@ -16,7 +17,8 @@ public class ConsoleInput {
     private final Scanner mainScanner;
     private final Logger logger;
     private final ServerProcess serverProcess;
-    private final DiscordIntegration discord;
+    private final DiscordHelper discordHelper;
+    private final DiscordJDA discordJDA;
     private final CommandManager commandManager;
 
     public ConsoleInput(final Scanner mainScanner, final BDSAutoEnable bdsAutoEnable) {
@@ -24,7 +26,8 @@ public class ConsoleInput {
         this.mainScanner = mainScanner;
         this.logger = bdsAutoEnable.getLogger();
         this.serverProcess = bdsAutoEnable.getServerProcess();
-        this.discord = bdsAutoEnable.getDiscord();
+        this.discordHelper = bdsAutoEnable.getDiscordHelper();
+        this.discordJDA = this.discordHelper.getDiscordJDA();
         this.commandManager = bdsAutoEnable.getCommandManager();
 
         this.handleCommands();
@@ -39,7 +42,7 @@ public class ConsoleInput {
                     final String[] newArgs = MessageUtil.removeArgs(args, 1);
 
                     this.logger.instantLogToFile(input);
-                    this.discord.writeConsole(input);
+                    this.discordJDA.writeConsole(input);
 
                     final boolean done = this.commandManager.runCommands(CommandSender.CONSOLE,
                             "CONSOLE", args[0], newArgs, true);
@@ -50,11 +53,11 @@ public class ConsoleInput {
                 }
             } catch (final Exception exception) {
                 this.logger.critical("Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
-                this.discord.sendEmbedMessage("ServerProcess",
+                this.discordHelper.getWebHook().sendEmbedMessage("ServerProcess",
                         "Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji",
                         exception,
                         new Footer(exception.getLocalizedMessage()));
-                this.discord.sendMessage("<owner>");
+                this.discordHelper.getWebHook().sendMessage("<owner>");
                 System.exit(0);
             }
         }).start();

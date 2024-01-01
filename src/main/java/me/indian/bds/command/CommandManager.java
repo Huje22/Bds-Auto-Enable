@@ -11,8 +11,8 @@ import me.indian.bds.command.defaults.LinkCommand;
 import me.indian.bds.command.defaults.MuteCommand;
 import me.indian.bds.command.defaults.PlaytimeCommand;
 import me.indian.bds.command.defaults.SettingInfoCommand;
+import me.indian.bds.command.defaults.TestCommand;
 import me.indian.bds.command.defaults.VersionCommand;
-import me.indian.bds.discord.jda.DiscordJda;
 import me.indian.bds.server.ServerProcess;
 import net.dv8tion.jda.api.Permission;
 
@@ -35,7 +35,9 @@ public class CommandManager {
         this.registerCommand(new MuteCommand(this.bdsAutoEnable));
         this.registerCommand(new SettingInfoCommand(this.bdsAutoEnable));
 
-        if (bdsAutoEnable.getDiscord() instanceof DiscordJda) {
+        this.registerCommand(new TestCommand());
+
+        if (this.bdsAutoEnable.getDiscordHelper().isBotEnabled()) {
             this.registerCommand(new LinkCommand(this.bdsAutoEnable));
         }
     }
@@ -75,9 +77,7 @@ public class CommandManager {
     private boolean isOp(final CommandSender sender, final String name) {
         //Ta metoda jest do czasu aż mojang nie naprawi w scriptAPI metody `isOp()`
         if (sender == CommandSender.CONSOLE) return true;
-        if (this.bdsAutoEnable.getDiscord() instanceof final DiscordJda jda) {
-            return jda.getLinkingManager().hasPermissions(name, Permission.ADMINISTRATOR);
-        }
-        return false;
+        return this.bdsAutoEnable.getDiscordHelper().getDiscordJDA()
+                .getLinkingManager().hasPermissions(name, Permission.ADMINISTRATOR);
     }
 }

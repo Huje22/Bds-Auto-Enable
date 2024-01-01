@@ -11,10 +11,10 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandSender;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.EventsConfig;
-import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.embed.component.Footer;
-import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.discord.jda.manager.LinkingManager;
+import me.indian.bds.discord.jda.manager.StatsChannelsManager;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
@@ -29,7 +29,7 @@ public class ServerManager {
     private final Logger logger;
     private final AppConfigManager appConfigManager;
     private final EventsConfig eventsConfig;
-    private final DiscordIntegration discord;
+    private final DiscordJDA discordJDA;
     private final ExecutorService mainService, chatService, eventService;
     private final List<String> onlinePlayers, offlinePlayers, muted;
     private final StatsManager statsManager;
@@ -43,7 +43,7 @@ public class ServerManager {
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.eventsConfig = this.appConfigManager.getEventsConfig();
-        this.discord = this.bdsAutoEnable.getDiscord();
+        this.discordJDA = this.bdsAutoEnable.getDiscordHelper().getDiscordJDA();
         this.mainService = Executors.newScheduledThreadPool(2, new ThreadUtil("Player Manager"));
         this.chatService = Executors.newScheduledThreadPool(3, new ThreadUtil("Chat Service"));
         this.eventService = Executors.newScheduledThreadPool(2, new ThreadUtil("Event Service"));
@@ -90,7 +90,7 @@ public class ServerManager {
             final String playerName = matcher.group(1);
             this.onlinePlayers.remove(playerName);
             this.offlinePlayers.add(playerName);
-            this.discord.sendLeaveMessage(playerName);
+            this.discordJDA.sendLeaveMessage(playerName);
         }
     }
 
@@ -103,7 +103,7 @@ public class ServerManager {
             final String playerName = matcher.group(1);
             this.onlinePlayers.add(playerName);
             this.offlinePlayers.remove(playerName);
-            this.discord.sendJoinMessage(playerName);
+            this.discordJDA.sendJoinMessage(playerName);
             this.eventService.execute(() -> this.eventsConfig.getOnJoin().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
         }
     }
@@ -131,7 +131,7 @@ public class ServerManager {
                 final String playerChat = matcher.group(1);
                 final String message = MessageUtil.fixMessage(matcher.group(2));
                 if (this.handleChatMessage(playerChat, message)) {
-                    this.discord.sendPlayerMessage(playerChat, message);
+                    this.discordJDA.sendPlayerMessage(playerChat, message);
                 }
             }
         } catch (final Exception exception) {
@@ -162,12 +162,13 @@ public class ServerManager {
         if (matcher.find()) {
             final String playerDeath = MessageUtil.fixMessage(matcher.group(1));
             final String casue = MessageUtil.fixMessage(matcher.group(2));
-            this.discord.sendDeathMessage(playerDeath, casue);
+            this.discordJDA.sendDeathMessage(playerDeath, casue);
             this.statsManager.addDeaths(playerDeath, 1);
         }
     }
 
     private void tps(final String logEntry) {
+        final StatsChannelsManager statsChannelsManager = this.discordJDA.getStatsChannelsManager();
         final String patternString = "TPS: (\\d{1,4})";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
@@ -176,22 +177,22 @@ public class ServerManager {
             final String tpsString = matcher.group(1);
             final int tps = Integer.parseInt(tpsString);
 
-            if (tps <= 8) this.discord.sendMessage("Server posiada: **" + tps + "** TPS");
+            if (tps <= 8) this.discordJDA.sendMessage("Server posiada: **" + tps + "** TPS");
             if (this.lastTPS <= 8 && tps <= 8) {
-                this.discord.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS"
+                this.discordJDA.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS"
                         + " (Teraz: **" + tps + "** Ostatnie: **" + this.lastTPS + "**)");
                 this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true);
             }
 
             this.lastTPS = tps;
 
-            if (this.discord instanceof final DiscordJda jda) jda.getStatsChannelsManager().setTpsCount(tps);
+            if (statsChannelsManager != null) statsChannelsManager.setTpsCount(tps);
         }
     }
 
     private void serverEnabled(final String logEntry) {
         if (logEntry.contains("Server started")) {
-            this.discord.sendEnabledMessage();
+            this.discordJDA.sendEnabledMessage();
             this.lastTPS = 20;
         }
     }
@@ -218,8 +219,8 @@ public class ServerManager {
                     Funkcje jak: `licznik czasu gry/śmierci` nie będą działać 
                     """;
 
-            this.discord.sendEmbedMessage("Brak wymaganych eksperymentów", noExperiments, new Footer("Włącz Beta API's"));
-            this.discord.sendMessage("<owner>");
+            this.discordJDA.sendEmbedMessage("Brak wymaganych eksperymentów", noExperiments, new Footer("Włącz Beta API's"));
+            this.bdsAutoEnable.getDiscordHelper().getWebHook().sendMessage("<owner>");
             this.logger.alert(noExperiments.replaceAll("`", "").replaceAll("\n", ""));
         }
 
@@ -230,14 +231,14 @@ public class ServerManager {
                         Ewentualnie twój server lub paczka wymaga aktualizacji
                     """;
 
-            this.discord.sendEmbedMessage("Zła wersja paczki",
+            this.discordJDA.sendEmbedMessage("Zła wersja paczki",
                     badVersion.replaceAll("<version>", packModule.getPackVersion()),
                     new Footer("Zła wersja paczki"));
 
             this.logger.alert(badVersion.replaceAll("\n", "")
                     .replaceAll("<version>", packModule.getPackVersion()));
 
-            this.discord.sendMessage("<owner>");
+            this.bdsAutoEnable.getDiscordHelper().getWebHook().sendMessage("<owner>");
         }
     }
 
@@ -259,12 +260,11 @@ public class ServerManager {
             return false;
         }
 
-        if (this.discord instanceof final DiscordJda jda) {
-            final LinkingManager linkingManager = jda.getLinkingManager();
+        final LinkingManager linkingManager = this.discordJDA.getLinkingManager();
             if (linkingManager != null && linkingManager.isLinked(playerChat)) {
-                role = jda.getColoredRole(jda.getHighestRole(linkingManager.getIdByName(playerChat))) + " ";
+                role = this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(linkingManager.getIdByName(playerChat))) + " ";
+
             }
-        }
 
         this.serverProcess.tellrawToAll(
                 this.appConfigManager.getWatchDogConfig().getPackModuleConfig().getChatMessageFormat()

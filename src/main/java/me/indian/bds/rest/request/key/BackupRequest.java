@@ -9,7 +9,7 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.rest.Request;
 import me.indian.bds.rest.RestWebsite;
@@ -21,14 +21,14 @@ public class BackupRequest implements Request {
     private final RestWebsite restWebsite;
     private final Logger logger;
     private final Javalin app;
-    private final DiscordIntegration discordIntegration;
+    private final DiscordJDA discordJDA;
     private final BackupModule backupModule;
 
     public BackupRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
         this.restWebsite = restWebsite;
         this.logger = bdsAutoEnable.getLogger();
         this.app = this.restWebsite.getApp();
-        this.discordIntegration = bdsAutoEnable.getDiscord();
+        this.discordJDA = bdsAutoEnable.getDiscordHelper().getDiscordJDA();
         this.backupModule = bdsAutoEnable.getWatchDog().getBackupModule();
     }
 
@@ -46,7 +46,7 @@ public class BackupRequest implements Request {
                 if (filename.equalsIgnoreCase(fileName)) {
 
                     this.logger.info("&b" + ip + "&r pobiera&3 " + filename);
-                    this.discordIntegration.writeConsole("`" + ip + "` pobiera `" + filename + "`");
+                    this.discordJDA.writeConsole("`" + ip + "` pobiera `" + filename + "`");
 
                     final File file = new File(path.toString());
                     ctx.res().setHeader("Content-Disposition", "attachment; filename=" + filename + ".zip");

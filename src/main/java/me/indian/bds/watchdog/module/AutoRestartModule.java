@@ -7,8 +7,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.AutoRestartConfig;
-import me.indian.bds.discord.DiscordIntegration;
 import me.indian.bds.discord.embed.component.Footer;
+import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -21,7 +21,7 @@ public class AutoRestartModule {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final AutoRestartConfig autoRestartConfig;
-    private final DiscordIntegration discord;
+    private final DiscordJDA discordJDA;
     private final WatchDog watchDog;
     private final Timer timer;
     private final ExecutorService service;
@@ -38,7 +38,7 @@ public class AutoRestartModule {
         this.watchDog = watchDog;
         this.timer = new Timer("AutoRestart", true);
         this.service = Executors.newSingleThreadExecutor(new ThreadUtil("Restart"));
-        this.discord = bdsAutoEnable.getDiscord();
+        this.discordJDA = bdsAutoEnable.getDiscordHelper().getDiscordJDA();
         this.lastRestartMillis = System.currentTimeMillis();
         this.restarting = false;
 
@@ -86,7 +86,7 @@ public class AutoRestartModule {
                 this.watchDog.saveAndResume();
                 if (alert) this.restartAlert();
 
-                this.discord.sendRestartMessage();
+                this.discordJDA.sendRestartMessage();
 
                 this.serverProcess.kickAllPlayers(this.prefix + " &aServer jest restartowany....");
                 this.serverProcess.sendToConsole("stop");
@@ -103,7 +103,7 @@ public class AutoRestartModule {
             } catch (final Exception exception) {
                 this.serverProcess.tellrawToAllAndLogger(this.prefix,
                         "Nie można zrestartować servera!", exception, LogState.ERROR);
-                this.discord.sendEmbedMessage("Restart",
+                this.bdsAutoEnable.getDiscordHelper().getWebHook().sendEmbedMessage("Restart",
                         "Nie można zrestartować servera!",
                         exception,
                         new Footer(exception.getLocalizedMessage()));

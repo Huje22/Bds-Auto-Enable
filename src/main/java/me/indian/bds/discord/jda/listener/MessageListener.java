@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.config.sub.discord.LinkingConfig;
-import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.Logger;
@@ -26,7 +26,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class MessageListener extends ListenerAdapter implements JDAListener {
 
-    private final DiscordJda discordJda;
+    private final DiscordJDA DiscordJDA;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final DiscordConfig discordConfig;
@@ -34,8 +34,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     private TextChannel consoleChannel;
     private ServerProcess serverProcess;
 
-    public MessageListener(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
-        this.discordJda = discordJda;
+    public MessageListener(final DiscordJDA DiscordJDA, final BDSAutoEnable bdsAutoEnable) {
+        this.DiscordJDA = DiscordJDA;
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.discordConfig = this.bdsAutoEnable.getAppConfigManager().getDiscordConfig();
@@ -43,8 +43,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     @Override
     public void init() {
-        this.textChannel = this.discordJda.getTextChannel();
-        this.consoleChannel = this.discordJda.getConsoleChannel();
+        this.textChannel = this.DiscordJDA.getTextChannel();
+        this.consoleChannel = this.DiscordJDA.getConsoleChannel();
     }
 
     @Override
@@ -54,7 +54,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     @Override
     public void onMessageUpdate(final MessageUpdateEvent event) {
-        if (event.getAuthor().equals(this.discordJda.getJda().getSelfUser())) return;
+        if (event.getAuthor().equals(this.DiscordJDA.getJda().getSelfUser())) return;
 
         final Member member = event.getMember();
         final User author = event.getAuthor();
@@ -65,7 +65,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
     @Override
     public void onMessageReceived(final MessageReceivedEvent event) {
-        if (event.getAuthor().equals(this.discordJda.getJda().getSelfUser())) return;
+        if (event.getAuthor().equals(this.DiscordJDA.getJda().getSelfUser())) return;
 
         final Member member = event.getMember();
         final User author = event.getAuthor();
@@ -95,21 +95,21 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
 
         if (event.getChannel().asTextChannel() == this.textChannel) {
-            final LinkingManager linkingManager = this.discordJda.getLinkingManager();
+            final LinkingManager linkingManager = this.DiscordJDA.getLinkingManager();
             if (linkingManager != null) {
                 if (!linkingConfig.isCanType()) {
                     if (!linkingManager.isLinked(id) && !author.isBot()) {
-                        this.discordJda.mute(member, 1, TimeUnit.MINUTES);
+                        this.DiscordJDA.mute(member, 1, TimeUnit.MINUTES);
                         message.delete().queue();
-                        this.discordJda.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
+                        this.DiscordJDA.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
                         return;
                     }
                 }
 
                 if (serverManager.isMuted(linkingManager.getNameByID(id))) {
-                    this.discordJda.mute(member, 1, TimeUnit.MINUTES);
+                    this.DiscordJDA.mute(member, 1, TimeUnit.MINUTES);
                     message.delete().queue();
-                    this.discordJda.sendPrivateMessage(author, "Jesteś wyciszony!");
+                    this.DiscordJDA.sendPrivateMessage(author, "Jesteś wyciszony!");
                     return;
                 }
             }
@@ -119,15 +119,15 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
     }
 
     private void sendMessage(final Member member, final User author, final Message message, final boolean edited) {
-        if(!this.serverProcess.isEnabled() || this.isMaxLength(message))return;
-        
-        final Role role = this.discordJda.getHighestRole(author.getIdLong());
+        if (!this.serverProcess.isEnabled() || this.isMaxLength(message)) return;
+
+        final Role role = this.DiscordJDA.getHighestRole(author.getIdLong());
         String msg = this.discordConfig.getDiscordMessagesConfig().getDiscordToMinecraftMessage()
-                .replaceAll("<name>", this.discordJda.getUserName(member, author))
+                .replaceAll("<name>", this.DiscordJDA.getUserName(member, author))
                 .replaceAll("<msg>", this.generateRawMessage(message))
                 .replaceAll("<reply>", this.generatorReply(message.getReferencedMessage()))
-                .replaceAll("<role>", this.discordJda.getColoredRole(role));
-        
+                .replaceAll("<role>", this.DiscordJDA.getColoredRole(role));
+
         if (edited) {
             msg += this.discordConfig.getDiscordMessagesConfig().getEdited();
         }
@@ -137,16 +137,16 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
         this.serverProcess.tellrawToAll(msg);
         this.logger.info(msg);
-        this.discordJda.writeConsole(ConsoleColors.removeColors(msg));
+        this.DiscordJDA.writeConsole(ConsoleColors.removeColors(msg));
     }
 
     private boolean isMaxLength(final Message message) {
         if (!this.discordConfig.getBotConfig().isDeleteOnReachLimit()) return false;
 
         if (message.getContentRaw().length() >= this.discordConfig.getBotConfig().getAllowedLength()) {
-            this.discordJda.sendPrivateMessage(message.getAuthor(), this.discordConfig.getBotConfig().getReachedMessage());
+            this.DiscordJDA.sendPrivateMessage(message.getAuthor(), this.discordConfig.getBotConfig().getReachedMessage());
             message.delete().queue();
-            this.discordJda.sendPrivateMessage(message.getAuthor(), "`" + message.getContentRaw() + "`");
+            this.DiscordJDA.sendPrivateMessage(message.getAuthor(), "`" + message.getContentRaw() + "`");
             return true;
         }
         return false;
@@ -159,11 +159,13 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         if (!message.getAttachments().isEmpty()) rawMessage += this.discordConfig.getDiscordMessagesConfig().getAttachment();
         if (members.isEmpty()) {
             for (final User user : message.getMentions().getUsers()) {
-                if (user != null) rawMessage = rawMessage.replaceAll("<@" + user.getIdLong() + ">", "@" + this.discordJda.getUserName(null, user));
+                if (user != null)
+                    rawMessage = rawMessage.replaceAll("<@" + user.getIdLong() + ">", "@" + this.DiscordJDA.getUserName(null, user));
             }
         } else {
             for (final Member member : members) {
-                if (member != null) rawMessage = rawMessage.replaceAll("<@" + member.getIdLong() + ">", "@" + this.discordJda.getUserName(member, member.getUser()));
+                if (member != null)
+                    rawMessage = rawMessage.replaceAll("<@" + member.getIdLong() + ">", "@" + this.DiscordJDA.getUserName(member, member.getUser()));
             }
         }
 
@@ -172,7 +174,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
 
         for (final Role role : message.getMentions().getRoles()) {
-            if (role != null) rawMessage = rawMessage.replaceAll("<@&" + role.getIdLong() + ">", this.discordJda.getColoredRole(role) + "&r");
+            if (role != null)
+                rawMessage = rawMessage.replaceAll("<@&" + role.getIdLong() + ">", this.DiscordJDA.getColoredRole(role) + "&r");
         }
 
         //Daje to aby określić czy wiadomość nadal jest pusta
@@ -186,15 +189,16 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
         final Member member = messageReference.getMember();
         final User author = messageReference.getAuthor();
-        
+
         final String replyStatement = this.discordConfig.getDiscordMessagesConfig().getReplyStatement()
                 .replaceAll("<msg>", this.generateRawMessage(messageReference).replaceAll("\\*\\*", ""))
-                .replaceAll("<author>", this.discordJda.getUserName(member, author));
+                .replaceAll("<author>", this.DiscordJDA.getUserName(member, author));
 
-        if (author.equals(this.discordJda.getJda().getSelfUser())) return this.discordConfig.getDiscordMessagesConfig().getBotReplyStatement()
+        if (author.equals(this.DiscordJDA.getJda().getSelfUser()))
+            return this.discordConfig.getDiscordMessagesConfig().getBotReplyStatement()
                     .replaceAll("<msg>", this.generateRawMessage(messageReference)
-                                .replaceAll("\\*\\*", ""));
-        
+                            .replaceAll("\\*\\*", ""));
+
 
         return replyStatement;
     }

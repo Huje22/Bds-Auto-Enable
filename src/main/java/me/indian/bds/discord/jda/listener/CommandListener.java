@@ -14,7 +14,7 @@ import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.discord.BotConfig;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordLogChannelType;
-import me.indian.bds.discord.jda.DiscordJda;
+import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
@@ -44,7 +44,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.Button;
 
 public class CommandListener extends ListenerAdapter implements JDAListener {
 
-    private final DiscordJda discordJda;
+    private final DiscordJDA DiscordJDA;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final AppConfigManager appConfigManager;
@@ -60,8 +60,8 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
     private LinkingManager linkingManager;
 
 
-    public CommandListener(final DiscordJda discordJda, final BDSAutoEnable bdsAutoEnable) {
-        this.discordJda = discordJda;
+    public CommandListener(final DiscordJDA DiscordJDA, final BDSAutoEnable bdsAutoEnable) {
+        this.DiscordJDA = DiscordJDA;
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
@@ -70,16 +70,16 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         this.backupButtons = new ArrayList<>();
         this.difficultyButtons = new ArrayList<>();
         this.statsButtons = new ArrayList<>();
-        this.service = Executors.newScheduledThreadPool(7, new ThreadUtil("Discord Command Listener"));
+        this.service = Executors.newScheduledThreadPool(3, new ThreadUtil("Discord Command Listener"));
     }
 
     @Override
     public void init() {
-        this.jda = this.discordJda.getJda();
+        this.jda = this.DiscordJDA.getJda();
         this.statsManager = this.bdsAutoEnable.getServerManager().getStatsManager();
         this.backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
         this.packModule = this.bdsAutoEnable.getWatchDog().getPackModule();
-        this.linkingManager = this.discordJda.getLinkingManager();
+        this.linkingManager = this.DiscordJDA.getLinkingManager();
     }
 
     @Override
@@ -111,7 +111,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                                 return;
                             }
 
-                            this.bdsAutoEnable.getLogger().print(command, this.discordJda, DiscordLogChannelType.CONSOLE);
+                            this.bdsAutoEnable.getLogger().print(command, this.DiscordJDA, DiscordLogChannelType.CONSOLE);
 
                             final MessageEmbed embed = new EmbedBuilder()
                                     .setTitle("Ostatnia linijka z konsoli")
@@ -421,7 +421,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             .setActionRow(ActionRow.of(this.backupButtons).getComponents())
                             .queue();
                     this.serverProcess.tellrawToAllAndLogger("&7[&bDiscord&7]",
-                            "&aUżytkownik&b " + this.discordJda.getUserName(event.getMember(), event.getUser()) +
+                            "&aUżytkownik&b " + this.DiscordJDA.getUserName(event.getMember(), event.getUser()) +
                                     "&a usunął backup&b " + fileName + "&a za pomocą&e discord"
                             , LogState.INFO);
 

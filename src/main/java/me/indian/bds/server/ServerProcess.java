@@ -13,8 +13,9 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.discord.DiscordIntegration;
+import me.indian.bds.discord.DiscordHelper;
 import me.indian.bds.discord.embed.component.Footer;
+import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
@@ -31,7 +32,8 @@ public class ServerProcess {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final AppConfigManager appConfigManager;
-    private final DiscordIntegration discord;
+    private final DiscordHelper discordHelper;
+    private final DiscordJDA discordJDA;
     private final ServerManager serverManager;
     private final ExecutorService processService;
     private final Lock cmdLock, cmdResponseLock;
@@ -49,9 +51,10 @@ public class ServerProcess {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
-        this.discord = this.bdsAutoEnable.getDiscord();
+        this.discordHelper = this.bdsAutoEnable.getDiscordHelper();
+        this.discordJDA = this.discordHelper.getDiscordJDA();
         this.serverManager = this.bdsAutoEnable.getServerManager();
-        this.processService = Executors.newScheduledThreadPool(5, new ThreadUtil("Server process"));
+        this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
         this.cmdLock = new ReentrantLock();
         this.cmdResponseLock = new ReentrantLock();
         this.prefix = "&b[&3ServerProcess&b] ";
@@ -88,7 +91,7 @@ public class ServerProcess {
             }
         } catch (final IOException | InterruptedException exception) {
             this.logger.critical("Nie można sprawdzić czy proces jest aktywny", exception);
-            this.discord.sendEmbedMessage("ServerProcess",
+            this.bdsAutoEnable.getDiscordHelper().getWebHook().sendEmbedMessage("ServerProcess",
                     "Nie można sprawdzić czy proces jest aktywny",
                     exception,
                     new Footer(exception.getLocalizedMessage()));
@@ -140,7 +143,7 @@ public class ServerProcess {
                     if(!this.appConfigManager.getAppConfig().isQuestions()) {
                         this.bdsAutoEnable.getSettings().currentSettings(this.bdsAutoEnable.getMainScanner(), false);
                     }
-                    this.discord.sendProcessEnabledMessage();
+                    this.discordJDA.sendProcessEnabledMessage();
                     this.logger.info("Uruchomiono proces servera ");
                     this.logger.debug("&bPID&r procesu servera to&1 " + this.process.pid());
 
@@ -153,11 +156,11 @@ public class ServerProcess {
                     this.serverManager.clearPlayers();
                     this.serverManager.getStatsManager().saveAllData();
                     output.interrupt();
-                    this.discord.sendDisabledMessage();
+                    this.discordJDA.sendDisabledMessage();
                     this.startProcess();
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można uruchomić procesu", exception);
-                    this.discord.sendEmbedMessage("ServerProcess",
+                    this.bdsAutoEnable.getDiscordHelper().getWebHook().sendEmbedMessage("ServerProcess",
                             "Nie można uruchomić procesu",
                             exception,
                             new Footer(exception.getLocalizedMessage()));
@@ -189,16 +192,16 @@ public class ServerProcess {
                         this.serverManager.initFromLog(line);
                     }
                     if (!this.containsNotAllowedToDiscordConsoleLog(line)) {
-                        this.discord.writeConsole(line);
+                        this.discordJDA.writeConsole(line);
                     }
                 }
             } catch (final Exception exception) {
                 this.logger.critical("Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
-                this.discord.sendEmbedMessage("ServerProcess",
+                this.bdsAutoEnable.getDiscordHelper().getWebHook().sendEmbedMessage("ServerProcess",
                         "Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji",
                         exception,
                         new Footer(exception.getLocalizedMessage()));
-                this.discord.sendMessage("<owner>");
+                this.bdsAutoEnable.getDiscordHelper().getWebHook().sendMessage("<owner>");
 
                 System.exit(1);
             } finally {
@@ -300,9 +303,9 @@ public class ServerProcess {
     }
 
     public void instantShutdown() {
-        this.discord.startShutdown();
+        this.discordHelper.startShutdown();
         this.logger.alert("Wyłączanie...");
-        this.discord.sendDisablingMessage();
+        this.discordJDA.sendDisablingMessage();
         this.setCanRun(false);
 
         this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
@@ -317,7 +320,7 @@ public class ServerProcess {
             try {
                 this.process.destroy();
                 this.logger.info("Zniszczono proces servera");
-                this.discord.sendDestroyedMessage();
+                this.discordJDA.sendDestroyedMessage();
             } catch (final Exception exception) {
                 this.logger.error("Nie udało się zniszczyć procesu servera", exception);
             }
@@ -343,7 +346,7 @@ public class ServerProcess {
             }
         }
 
-        this.discord.shutdown();
+        this.discordHelper.shutdown();
     }
 
     public boolean isCanRun() {
@@ -374,7 +377,7 @@ public class ServerProcess {
             if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
         }
 
-        if (command.startsWith("say")) this.discord.sendPlayerMessage("say", command.substring(3));
+        if (command.startsWith("say")) this.discordJDA.sendPlayerMessage("say", command.substring(3));
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {

@@ -4,7 +4,6 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
-import me.indian.bds.discord.DiscordType;
 
 @Header("################################################################")
 @Header("#           Ustawienia Integracji z Discord                    #")
@@ -12,12 +11,6 @@ import me.indian.bds.discord.DiscordType;
 
 public class DiscordConfig extends OkaeriConfig {
 
-    @Comment({""})
-    @Comment({"Implementacja Bota / WebHooku"})
-    @Comment({"WEBHOOK - Możliwe tylko wysyłanie wiadomości do discord z użyciem webhooku"})
-    @Comment({"JDA - Bot discord przy użyciu biblioteki JDA"})
-    @Comment({"NONE - Brak integracji"})
-    private DiscordType integrationType = DiscordType.JDA;
     @Comment({""})
     @Comment({"Ustawienia webhooka"})
     @CustomKey("WebHook")
@@ -36,10 +29,6 @@ public class DiscordConfig extends OkaeriConfig {
     @Comment({"Konfiguracja dostępnych wiadomości "})
     @CustomKey("Messages")
     private MessagesConfig messagesConfig = new MessagesConfig();
-
-    public DiscordType getIntegrationType() {
-        return this.integrationType;
-    }
 
     public WebHookConfig getWebHookConfig() {
         return this.webHookConfig;
