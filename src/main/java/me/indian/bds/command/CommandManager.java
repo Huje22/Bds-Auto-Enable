@@ -10,7 +10,9 @@ import me.indian.bds.command.defaults.HelpCommand;
 import me.indian.bds.command.defaults.LinkCommand;
 import me.indian.bds.command.defaults.MuteCommand;
 import me.indian.bds.command.defaults.PlaytimeCommand;
+import me.indian.bds.command.defaults.ServerPingCommand;
 import me.indian.bds.command.defaults.SettingInfoCommand;
+import me.indian.bds.command.defaults.StatsCommand;
 import me.indian.bds.command.defaults.TestCommand;
 import me.indian.bds.command.defaults.VersionCommand;
 import me.indian.bds.server.ServerProcess;
@@ -34,8 +36,12 @@ public class CommandManager {
         this.registerCommand(new ChatFormatCommand(this.bdsAutoEnable));
         this.registerCommand(new MuteCommand(this.bdsAutoEnable));
         this.registerCommand(new SettingInfoCommand(this.bdsAutoEnable));
+        this.registerCommand(new ServerPingCommand(this.bdsAutoEnable));
+        this.registerCommand(new StatsCommand());
 
-        this.registerCommand(new TestCommand());
+        if (this.bdsAutoEnable.getAppConfigManager().getAppConfig().isDebug()) {
+            this.registerCommand(new TestCommand(this.bdsAutoEnable));
+        }
 
         if (this.bdsAutoEnable.getDiscordHelper().isBotEnabled()) {
             this.registerCommand(new LinkCommand(this.bdsAutoEnable));
