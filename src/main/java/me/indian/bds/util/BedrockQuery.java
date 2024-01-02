@@ -5,10 +5,15 @@ import java.io.DataOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 import java.util.Random;
 import me.indian.bds.server.properties.Gamemode;
+
+ /*
+    Kod zaczerpnięty z
+    https://github.com/justin-eckenweber/BedrockServerQuery/blob/main/src/main/java/me/justin/bedrockserverquery/data/BedrockQuery.java
+     */
 
 public record BedrockQuery(boolean online, String motd, int protocol, String minecraftVersion, int playerCount,
                            int maxPlayers, String mapName, Gamemode gamemode) {
@@ -48,8 +53,11 @@ public record BedrockQuery(boolean online, String motd, int protocol, String min
                     Integer.parseInt(splittedData[4]), Integer.parseInt(splittedData[5]),
                     splittedData[7], Gamemode.getByName(splittedData[8]));
         } catch (final Exception exception) {
-            if (!(exception instanceof UnknownHostException)) exception.printStackTrace();
-            
+            if (!(exception instanceof UnknownHostException) &&
+                    !(exception instanceof SocketTimeoutException)) {
+                exception.printStackTrace();
+            }
+
             return new BedrockQuery(false, "", -1, "", 0, 0, "", Gamemode.SURVIVAL);
         }
     }
