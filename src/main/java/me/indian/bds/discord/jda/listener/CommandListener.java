@@ -22,6 +22,8 @@ import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerStats;
 import me.indian.bds.server.manager.StatsManager;
 import me.indian.bds.server.properties.Difficulty;
+import me.indian.bds.server.properties.Gamemode;
+import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
@@ -331,6 +333,16 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             event.getHook().editOriginalEmbeds(embed).queue();
                         }
                     }
+
+                    case "server" -> {
+                        final OptionMapping portOption = event.getOption("port");
+                        final String adres = event.getOption("ip").getAsString();
+                        int port = 19132;
+
+                        if (portOption != null) port = portOption.getAsInt();
+
+                        event.getHook().editOriginalEmbeds(this.getServerInfo(adres, port)).queue();
+                    }
                 }
             } catch (final Exception exception) {
                 this.logger.error("Wystąpił błąd przy próbie wykonania&b " + event.getName() + "&r przez&e " + member.getNickname(), exception);
@@ -572,5 +584,30 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         (gbSpace < 2 ? "**Zbyt mało pamięci aby wykonać backup!**" : ""))
                 .setColor(Color.BLUE)
                 .build();
+    }
+
+    private MessageEmbed getServerInfo(final String adres, final int port) {
+        final BedrockQuery query = BedrockQuery.create(adres, port);
+        final EmbedBuilder embedBuilder = new EmbedBuilder()
+                .setTitle("Server info")
+                .setFooter(adres + ":" + port)
+                .setColor(Color.BLUE);
+
+        if (query.online()) {
+            final Gamemode gamemode = query.gamemode();
+
+            embedBuilder.addField("Wersja Minecraft", query.minecraftVersion(), true);
+            embedBuilder.addField("Protokół", String.valueOf(query.protocol()), true);
+            embedBuilder.addField("MOTD", query.motd(), true);
+            embedBuilder.addField("Nazwa Mapy", query.mapName(), true);
+            embedBuilder.addField("Gracz online", String.valueOf(query.playerCount()), true);
+            embedBuilder.addField("Maksymalna ilość graczy", String.valueOf(query.maxPlayers()), true);
+            embedBuilder.addField("Tryb Gry", gamemode.getName().toUpperCase() + " (" + gamemode.getId() + ")",
+                    true);
+        } else {
+            embedBuilder.setDescription("Nie można uzyskać informacji o serwerze ``" + adres + ":" + port + "``");
+        }
+
+        return embedBuilder.build();
     }
 }

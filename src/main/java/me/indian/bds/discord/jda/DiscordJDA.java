@@ -165,7 +165,10 @@ public class DiscordJDA {
                             .addOption(OptionType.STRING, "code", "Kod aby połączyć konta", false),
                     Commands.slash("ip", "Informacje o ip ustawione w config"),
                     Commands.slash("playtime", "Top 100 graczy z największą ilością przegranego czasu"),
-                    Commands.slash("deaths", "Top 100 graczy z największą ilością śmierci")
+                    Commands.slash("deaths", "Top 100 graczy z największą ilością śmierci"),
+                    Commands.slash("server", "Informacje o danym serwerze")
+                            .addOption(OptionType.STRING, "ip", "Adres IP servera", true)
+                            .addOption(OptionType.INTEGER, "port", "Port servera", false)
             ).queue();
 
             this.customStatusUpdate();
