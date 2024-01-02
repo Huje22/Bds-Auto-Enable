@@ -42,7 +42,7 @@ public final class StatusUtil {
 
     }
 
-    public static List<String> getStatus(final boolean forDiscord) {
+    public static List<String> getMainStats(final boolean forDiscord) {
         STATUS.clear();
 
         final WatchDog watchDog = BDSAUTOENABLE.getWatchDog();

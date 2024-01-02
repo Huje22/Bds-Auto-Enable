@@ -510,7 +510,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
         return new EmbedBuilder()
                 .setTitle("Statystyki ")
-                .setDescription(MessageUtil.listToSpacedString(StatusUtil.getStatus(true)))
+                .setDescription(MessageUtil.listToSpacedString(StatusUtil.getMainStats(true)))
                 .setColor(Color.BLUE)
                 .build();
     }
