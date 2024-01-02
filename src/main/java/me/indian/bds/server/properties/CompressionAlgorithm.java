@@ -14,4 +14,12 @@ public enum CompressionAlgorithm {
   public String getAlgorithmName() {
     return this.algorithmName;
   }
+
+  public static CompressionAlgorithm getByName(final String algorithmName) throws NullPointerException {
+    return switch (algorithmName.toLowerCase()) {
+      case "zlib" -> CompressionAlgorithm.ZLIB;
+      case "snappy" -> CompressionAlgorithm.SNAPPY;
+      default -> throw new NullPointerException();
+    };
+  }
 }

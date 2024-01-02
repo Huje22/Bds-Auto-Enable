@@ -114,17 +114,8 @@ public class ServerProperties {
 
     public CompressionAlgorithm getCompressionAlgorithm() {
         try {
-            final String algorithm = this.properties.getProperty("compression-algorithm");
-            switch (algorithm.toLowerCase()) {
-                case "zlib" -> {
-                    return CompressionAlgorithm.ZLIB;
-                }
-                case "snappy" -> {
-                    return CompressionAlgorithm.SNAPPY;
-                }
-
-            }
-        } catch (final Exception exception) {
+            return CompressionAlgorithm.getByName(this.properties.getProperty("compression-algorithm"));
+        } catch (final NullPointerException exception) {
             this.logger.debug("", exception);
             this.setCompressionAlgorithm(CompressionAlgorithm.ZLIB);
         }
@@ -139,23 +130,12 @@ public class ServerProperties {
     public Difficulty getDifficulty() {
         try {
             final String difficulty1 = this.properties.getProperty("difficulty");
-            int difficulty2 = -1;
             try {
-                difficulty2 = Integer.parseInt(difficulty1);
+               return Difficulty.getById(Integer.parseInt(difficulty1));
             } catch (final NumberFormatException ignored) {
             }
-
-            if (difficulty1.equalsIgnoreCase("peaceful") || difficulty2 == 0) {
-                return Difficulty.PEACEFUL;
-            } else if (difficulty1.equalsIgnoreCase("easy") || difficulty2 == 1) {
-                return Difficulty.EASY;
-            } else if (difficulty1.equalsIgnoreCase("normal") || difficulty2 == 2) {
-                return Difficulty.NORMAL;
-            } else if (difficulty1.equalsIgnoreCase("hard") || difficulty2 == 3) {
-                return Difficulty.HARD;
-            }
-
-        } catch (final Exception exception) {
+            return Difficulty.getByName(difficulty1);
+        } catch (final NullPointerException exception) {
             this.logger.debug("", exception);
             this.setDifficulty(Difficulty.NORMAL);
         }
@@ -170,23 +150,12 @@ public class ServerProperties {
     public PlayerPermissionLevel getPlayerPermissionLevel() {
         try {
             final String permissionLevel = this.properties.getProperty("default-player-permission-level");
-            int level = -1;
             try {
-                level = Integer.parseInt(permissionLevel);
+                return PlayerPermissionLevel.getByLevel(Integer.parseInt(permissionLevel));
             } catch (final NumberFormatException ignored) {
             }
-
-            if (permissionLevel.equalsIgnoreCase("VISITOR") || level == 0) {
-                return PlayerPermissionLevel.VISITOR;
-            } else if (permissionLevel.equalsIgnoreCase("MEMBER") || level == 1) {
-                return PlayerPermissionLevel.MEMBER;
-            } else if (permissionLevel.equalsIgnoreCase("OPERATOR") || level == 2) {
-                return PlayerPermissionLevel.OPERATOR;
-            } else {
-                return PlayerPermissionLevel.MEMBER;
-            }
-
-        } catch (final Exception exception) {
+            return PlayerPermissionLevel.getByName(permissionLevel);
+        } catch (final NullPointerException exception) {
             this.logger.debug("", exception);
             this.setPlayerPermissionLevel(PlayerPermissionLevel.MEMBER);
             return PlayerPermissionLevel.MEMBER;
@@ -272,7 +241,6 @@ public class ServerProperties {
         this.properties.setProperty("view-distance", String.valueOf(Math.max(tickDistance, 5)));
         this.reloadServerProperties();
     }
-
 
     public int getTickDistance() {
         try {
@@ -399,21 +367,7 @@ public class ServerProperties {
 
     public ServerMovementAuth getServerMovementAuth() {
         try {
-            final String serverMovement = this.properties.getProperty("server-authoritative-movement");
-            switch (serverMovement) {
-                case "client-auth" -> {
-                    return ServerMovementAuth.CLIENT_AUTH;
-                }
-//            case "server-auth" -> {
-//              return ServerMovementAuth.SERVER;
-//            }
-                case "server-auth-with-rewind" -> {
-                    return ServerMovementAuth.SERVER_AUTH_REWIND;
-                }
-                default -> {
-                    return ServerMovementAuth.SERVER_AUTH;
-                }
-            }
+            return ServerMovementAuth.getByName(this.properties.getProperty("server-authoritative-movement"));
         } catch (final Exception exception) {
             this.logger.debug("", exception);
             this.setServerMovementAuth(ServerMovementAuth.SERVER_AUTH);

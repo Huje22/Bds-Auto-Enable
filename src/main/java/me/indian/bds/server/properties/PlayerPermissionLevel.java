@@ -21,4 +21,22 @@ public enum PlayerPermissionLevel {
     public String getPermissionName() {
         return this.permissionName;
     }
+
+    public static PlayerPermissionLevel getByName(final String permissionName) throws NullPointerException {
+        return switch (permissionName.toUpperCase()) {
+            case "VISITOR" -> PlayerPermissionLevel.VISITOR;
+            case "MEMBER" -> PlayerPermissionLevel.MEMBER;
+            case "OPERATOR" -> PlayerPermissionLevel.OPERATOR;
+            default -> throw new NullPointerException();
+        };
+    }
+
+    public static PlayerPermissionLevel getByLevel(final int permissionLevel) {
+        return switch (permissionLevel) {
+            case 0 -> PlayerPermissionLevel.VISITOR;
+            case 1 -> PlayerPermissionLevel.MEMBER;
+            case 2 -> PlayerPermissionLevel.OPERATOR;
+            default -> throw new NullPointerException();
+        };
+    }
 }

@@ -22,4 +22,24 @@ public enum Difficulty {
     public int getDifficultyId() {
         return this.difficultyId;
     }
+
+    public static Difficulty getById(final int difficultyId) throws NullPointerException {
+        return switch (difficultyId) {
+            case 0 -> Difficulty.PEACEFUL;
+            case 1 -> Difficulty.EASY;
+            case 2 -> Difficulty.NORMAL;
+            case 3 -> Difficulty.HARD;
+            default -> throw new NullPointerException();
+        };
+    }
+
+    public static Difficulty getByName(final String difficultyName) throws NullPointerException {
+        return switch (difficultyName.toLowerCase()) {
+            case "peaceful" -> Difficulty.PEACEFUL;
+            case "easy" -> Difficulty.EASY;
+            case "normal" -> Difficulty.NORMAL;
+            case "hard" -> Difficulty.HARD;
+            default -> throw new NullPointerException();
+        };
+    }
 }
