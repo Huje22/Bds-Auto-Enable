@@ -11,7 +11,7 @@ public class SettingInfoCommand extends Command {
     private final ServerProperties properties;
 
     public SettingInfoCommand(final BDSAutoEnable bdsAutoEnable) {
-        super("setting", "info o aktualnych ustawieniach servera");
+        super("setting", "Info o aktualnych ustawieniach servera");
         this.properties = bdsAutoEnable.getServerProperties();
     }
 

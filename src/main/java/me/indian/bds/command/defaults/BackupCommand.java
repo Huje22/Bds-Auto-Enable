@@ -14,7 +14,7 @@ public class BackupCommand extends Command {
     private final BDSAutoEnable bdsAutoEnable;
 
     public BackupCommand(final BDSAutoEnable bdsAutoEnable) {
-        super("backup", "info o backup");
+        super("backup", "Info o backup");
         this.bdsAutoEnable = bdsAutoEnable;
     }
 
