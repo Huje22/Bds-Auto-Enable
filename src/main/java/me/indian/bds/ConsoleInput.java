@@ -52,7 +52,7 @@ public class ConsoleInput {
                     this.serverProcess.sendToConsole(input);
                 }
             } catch (final Exception exception) {
-                this.logger.critical("Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
+                this.logger.critical("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ", exception);
                 this.discordHelper.getWebHook().sendEmbedMessage("ServerProcess",
                         "Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji",
                         exception,
