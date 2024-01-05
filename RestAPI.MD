@@ -20,6 +20,8 @@ GET /api/stats/players
 ```
 Zwraca informacje o graczach, którzy są obecnie online oraz offline.
 
+# Backup
+
 ### Pobierz backup za pomocą klucza autoryzacji
 ```
 GET /api/{api-key}/backup/{filename}
@@ -43,10 +45,9 @@ Wykonuje polecenie w konsoli serwera i zwraca ostatnią linię z konsoli.
 
 #### Przykład wysłania JSON z poziomu konsoli
 ```
-curl -X POST -H "Content-Type: application/json" -d "{ \"command\": \"say To wiadomość oddana za pomocą REST API\"}" http://localhost:PORT_STRONY/command/KLUCZ_API
+curl -X POST -H "Content-Type: application/json" -d "{ \"command\": \"say To wiadomość oddana za pomocą REST API\"}" http://localhost:PORT/command/KLUCZ_API
 ```
-Pamiętaj o podmianie `PORT_STRONY` i `KLUCZ_API`, i zmianie `localhost` na ip twojego servera jeśli nie robisz tego lokalnie
+Pamiętaj o podmianie `PORT` i `KLUCZ_API`, i zmianie `localhost` na IP twojego serwera, jeśli nie robisz tego lokalnie.
 
 ### Ostrzeżenie
 Nie udostępniaj kluczy API
-
