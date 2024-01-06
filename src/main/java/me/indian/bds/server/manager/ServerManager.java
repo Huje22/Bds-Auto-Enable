@@ -246,7 +246,7 @@ public class ServerManager {
         // !tps jest handlowane w https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack
         // boolean isOp narazie nie działa bo Mojang rozjebało BDS i zawsze zwraca on false
 
-        final String[] newArgs = MessageUtil.removeArgs(args, 1);
+        final String[] newArgs = MessageUtil.removeFirstArgs(args);
         this.bdsAutoEnable.getCommandManager().runCommands(CommandSender.PLAYER, playerCommand, args[0], newArgs, isOp);
     }
 

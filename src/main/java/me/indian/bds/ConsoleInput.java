@@ -39,7 +39,7 @@ public class ConsoleInput {
                 while (this.mainScanner.hasNext()) {
                     final String input = this.mainScanner.nextLine();
                     final String[] args = MessageUtil.stringToArgs(input);
-                    final String[] newArgs = MessageUtil.removeArgs(args, 1);
+                    final String[] newArgs = MessageUtil.removeFirstArgs(args);
 
                     this.logger.instantLogToFile(input);
                     this.discordJDA.writeConsole(input);
