@@ -5,6 +5,8 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import java.util.Arrays;
 import java.util.List;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
 public class BotConfig extends OkaeriConfig {
 
@@ -14,6 +16,25 @@ public class BotConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Zostaw puste aby nie uruchamiać "})
     private String token = "";
+
+    @Comment({""})
+    @Comment({"Poczytaj o tych flagach tutaj"})
+    @Comment({"https://github.com/discord-jda/JDA/wiki/Gateway-Intents-and-Member-Cache-Policy/#cacheflags"})
+    private List<CacheFlag> enableCacheFlag = Arrays.asList(
+            CacheFlag.EMOJI,
+            CacheFlag.CLIENT_STATUS,
+            CacheFlag.ACTIVITY,
+            CacheFlag.CLIENT_STATUS,
+            CacheFlag.ONLINE_STATUS
+    );
+
+    private List<CacheFlag> disableCacheFlag = Arrays.asList(
+            CacheFlag.VOICE_STATE,
+            // CacheFlag.ACTIVITY,
+            // CacheFlag.CLIENT_STATUS,
+            // CacheFlag.ONLINE_STATUS,
+            CacheFlag.SCHEDULED_EVENTS
+    );
 
     @Comment({""})
     @Comment({"ID servera discord"})
@@ -63,7 +84,7 @@ public class BotConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Aktywność , aktualizowana co 10min"})
     @Comment({"Dostępne aktywności:  PLAYING, STREAMING, LISTENING, WATCHING, COMPETING"})
-    private String activity = "PLAYING";
+    private Activity.ActivityType activity = Activity.ActivityType.PLAYING;
 
     @Comment({""})
     @Comment({"Wiadomość w statusie bota"})
@@ -93,6 +114,14 @@ public class BotConfig extends OkaeriConfig {
 
     public long getConsoleID() {
         return this.consoleID;
+    }
+
+    public List<CacheFlag> getEnableCacheFlag() {
+        return this.enableCacheFlag;
+    }
+
+    public List<CacheFlag> getDisableCacheFlag() {
+        return this.disableCacheFlag;
     }
 
     public LinkingConfig getLinkingConfig() {
@@ -127,12 +156,20 @@ public class BotConfig extends OkaeriConfig {
         return this.reachedMessage;
     }
 
-    public String getActivity() {
+    public Activity.ActivityType getActivity() {
         return this.activity;
+    }
+
+    public void setActivity(final Activity.ActivityType activity) {
+        this.activity = activity;
     }
 
     public String getActivityMessage() {
         return this.activityMessage;
+    }
+
+    public void setActivityMessage(final String activityMessage) {
+        this.activityMessage = activityMessage;
     }
 
     public String getStreamUrl() {

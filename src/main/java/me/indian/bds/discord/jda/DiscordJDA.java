@@ -2,6 +2,7 @@ package me.indian.bds.discord.jda;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import me.indian.bds.watchdog.module.PackModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.OnlineStatus;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
@@ -101,8 +103,8 @@ public class DiscordJDA {
 
             try {
                 this.jda = JDABuilder.create(this.discordConfig.getBotConfig().getToken(), this.getGatewayIntents())
-                        .disableCache(this.getDisableCacheFlag())
-                        .enableCache(this.getEnableCacheFlag())
+                        .disableCache(this.discordConfig.getBotConfig().getDisableCacheFlag())
+                        .enableCache(this.discordConfig.getBotConfig().getEnableCacheFlag())
                         .setEnableShutdownHook(false)
                         .build();
                 this.jda.awaitReady();
@@ -146,7 +148,7 @@ public class DiscordJDA {
                     this.logger.debug("Zarejestrowano listener JDA:&b " + listener.getClass().getSimpleName());
                 } catch (final Exception exception) {
                     this.logger.critical("Wystąpił błąd podczas ładowania listeneru: &b" + listener.getClass().getSimpleName(), exception);
-                    System.exit(0);
+                    throw exception;
                 }
             }
 
@@ -177,30 +179,13 @@ public class DiscordJDA {
     }
 
     private List<GatewayIntent> getGatewayIntents() {
-        final List<GatewayIntent> gatewayIntents = new ArrayList<>();
-        gatewayIntents.add(GatewayIntent.GUILD_PRESENCES);
-        gatewayIntents.add(GatewayIntent.GUILD_MEMBERS);
-        gatewayIntents.add(GatewayIntent.GUILD_MESSAGES);
-        gatewayIntents.add(GatewayIntent.GUILD_EMOJIS_AND_STICKERS);
-        gatewayIntents.add(GatewayIntent.MESSAGE_CONTENT);
-        return gatewayIntents;
-    }
-
-    private List<CacheFlag> getDisableCacheFlag() {
-        final List<CacheFlag> disable = new ArrayList<>();
-        disable.add(CacheFlag.ACTIVITY);
-        disable.add(CacheFlag.VOICE_STATE);
-        disable.add(CacheFlag.CLIENT_STATUS);
-        disable.add(CacheFlag.ONLINE_STATUS);
-        disable.add(CacheFlag.SCHEDULED_EVENTS);
-        return disable;
-    }
-
-    private List<CacheFlag> getEnableCacheFlag() {
-        final List<CacheFlag> enable = new ArrayList<>();
-        enable.add(CacheFlag.EMOJI);
-        enable.add(CacheFlag.CLIENT_STATUS);
-        return enable;
+        return Arrays.asList(
+                GatewayIntent.GUILD_PRESENCES,
+                GatewayIntent.GUILD_MEMBERS,
+                GatewayIntent.GUILD_MESSAGES,
+                GatewayIntent.GUILD_EMOJIS_AND_STICKERS,
+                GatewayIntent.MESSAGE_CONTENT
+        );
     }
 
     private void checkBotPermissions() {
@@ -214,6 +199,10 @@ public class DiscordJDA {
                             "Są one wymagane do `100%` pewności że wszytko bedzie działać w nim",
                     new Footer("Brak uprawnień"));
         }
+    }
+
+    public boolean isCacheFlagEnabled(final CacheFlag cacheFlag) {
+        return this.jda.getCacheFlags().contains(cacheFlag);
     }
 
     public void sendPrivateMessage(final User user, final String message) {
@@ -250,7 +239,9 @@ public class DiscordJDA {
 
     public String getUserName(final Member member, final User author) {
         if (member != null && member.getNickname() != null) return member.getNickname();
-        return author.getName();
+
+        //Robie tak aby uzyskać custom nick gracza który ma na serwerze
+        return (author != null ? author.getName() : (member != null ? member.getEffectiveName() : ""));
     }
 
     public String getOwnerMention() {
@@ -268,15 +259,44 @@ public class DiscordJDA {
         return role == null ? "" : (this.getRoleColor(role) + "@" + role.getName() + "&r");
     }
 
+    public String getStatusColor(final OnlineStatus onlineStatus) {
+        return switch (onlineStatus) {
+            case OFFLINE -> "&7";
+            case IDLE -> "&e";
+            case ONLINE -> "&a";
+            case INVISIBLE -> "&f";
+            case DO_NOT_DISTURB -> "&4";
+            case UNKNOWN -> "&0";
+        };
+    }
+
     public List<Member> getAllChannelMembers(final TextChannel textChannel) {
         return textChannel.getMembers().stream()
                 .filter(member -> !member.getUser().isBot())
                 .toList();
     }
 
+    public List<Member> getAllChannelOnlineMembers(final TextChannel textChannel) {
+        return textChannel.getMembers().stream()
+                .filter(member -> !member.getUser().isBot())
+                .filter(member -> !member.getOnlineStatus().equals(OnlineStatus.OFFLINE))
+                .toList();
+    }
+
     private List<Member> getGuildMembers(final Guild guild) {
         return guild.getMembers().stream()
                 .filter(member -> !member.getUser().isBot()).sorted(Comparator.comparing(Member::getTimeJoined)).toList();
+    }
+
+    public void setActivityStatus(final String activityMessage) {
+        this.setActivityStatus(activityMessage, null);
+    }
+
+    public void setActivityStatus(final String activityMessage, @Nullable final Activity.ActivityType activityType) {
+        this.discordConfig.getBotConfig().setActivityMessage(activityMessage);
+        if (activityType != null) this.discordConfig.getBotConfig().setActivity(activityType);
+        this.discordConfig.save();
+        this.jda.getPresence().setActivity(DiscordJDA.this.getCustomActivity());
     }
 
     private void customStatusUpdate() {
@@ -295,7 +315,7 @@ public class DiscordJDA {
         final String replacement = String.valueOf(MathUtil.millisTo((System.currentTimeMillis() - this.bdsAutoEnable.getServerProcess().getStartTime()), TimeUnit.MINUTES));
         final String activityMessage = this.discordConfig.getBotConfig().getActivityMessage().replaceAll("<time>", replacement);
 
-        switch (Activity.ActivityType.valueOf(this.discordConfig.getBotConfig().getActivity().toUpperCase())) {
+        switch (this.discordConfig.getBotConfig().getActivity()) {
             case PLAYING -> {
                 return Activity.playing(activityMessage);
             }
@@ -413,7 +433,6 @@ public class DiscordJDA {
 
             this.textChannel.sendMessageEmbeds(embed.build()).queue();
         }
-
     }
 
     public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final Footer footer) {
@@ -457,7 +476,7 @@ public class DiscordJDA {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendPlayerMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getMinecraftToDiscordMessage()
                     .replaceAll("<name>", playerName)
-                    .replaceAll("<msg>", playerMessage)
+                    .replaceAll("<msg>", playerMessage.replaceAll("\\\\", ""))
                     .replaceAll("@everyone", "/everyone/")
                     .replaceAll("@here", "/here/")
             );
@@ -468,7 +487,7 @@ public class DiscordJDA {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendDeathMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getDeathMessage()
                     .replaceAll("<name>", playerName)
-                    .replaceAll("<casue>", deathMessage)
+                    .replaceAll("<casue>", deathMessage.replaceAll("\\\\", ""))
             );
         }
     }
@@ -536,7 +555,6 @@ public class DiscordJDA {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getRestartMessage());
         }
     }
-
 
     public JDA getJda() {
         return this.jda;

@@ -2,6 +2,7 @@ package me.indian.bds.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Random;
 
@@ -32,17 +33,15 @@ public final class MessageUtil {
 
     public static String fixMessage(final String message, final boolean newLines) {
         if (message.isEmpty()) return "";
-        String msg2 = message.replaceAll("\\\\", "")
-                .replaceAll("[\\uE000-\\uE0EA]", "?")
+        String msg2 = message.replaceAll("[\\uE000-\\uE0EA]", "?")
                 .replaceAll("\\$", "?")
                 .replaceAll("ঋ", "?")
                 .replaceAll("ༀ", "?")
                 .replaceAll("", "?");
+//                        .replaceAll("\\\\", "")
 
-        if (!newLines) {
-            msg2 = msg2.replaceAll("\\r\\n|\\r|\\n", " ");
-        }
-
+        if (!newLines) msg2 = msg2.replaceAll("\\r\\n|\\r|\\n", " ");
+        
         return msg2;
     }
 
@@ -64,7 +63,7 @@ public final class MessageUtil {
         return input.split("\\s+");
     }
 
-    public static String[] removeArgs(final String[] args) {
+    public static String[] removeFirstArgs(final String[] args) {
         return removeArgs(args, 1);
     }
 
@@ -82,21 +81,23 @@ public final class MessageUtil {
 
     public static String stringListToString(final List<String> list, String split) {
         if (split == null) split = " ";
-        if (list == null) return "";
+        if (list == null || list.isEmpty()) return "";
 
         return String.join(split, list);
     }
 
-    public static String objectListToString(final List<Object> list, String split) {
-        String string = "";
+    public static <T> String objectListToString(final List<T> list, String split) {
         if (split == null) split = " ";
-        if (list == null) return "";
+        if (list == null || list.isEmpty()) return "";
 
-        for (final Object object : list) {
-            string += object.toString() + split;
-        }
+        return String.join(split, list.stream().map(Object::toString).toArray(String[]::new));
+    }
 
-        return string;
+    public static <E extends Enum<E>> String enumSetToString(final EnumSet<E> enumSet, String split) {
+        if (split == null) split = " ";
+        if (enumSet == null || enumSet.isEmpty()) return "";
+
+        return String.join(split, enumSet.stream().map(Enum::toString).toArray(String[]::new));
     }
 
     public static List<String> stringToStringList(final String text, String split) {
