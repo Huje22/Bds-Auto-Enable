@@ -9,8 +9,11 @@ public class ServerPingCommand extends Command {
     private final BDSAutoEnable bdsAutoEnable;
 
     public ServerPingCommand(final BDSAutoEnable bdsAutoEnable) {
-        super("server", "Pinguje server w celu uzyskania z niego informacji", "&a!server&b <ip> [port]");
+        super("server", "Pinguje server w celu uzyskania z niego informacji");
         this.bdsAutoEnable = bdsAutoEnable;
+
+        this.addOption("<ip>");
+        this.addOption("<ip> [port]");
     }
 
     @Override

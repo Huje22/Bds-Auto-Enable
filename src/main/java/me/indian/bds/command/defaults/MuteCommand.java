@@ -15,10 +15,12 @@ public class MuteCommand extends Command {
     private final DiscordJDA discordJDA;
 
     public MuteCommand(final BDSAutoEnable bdsAutoEnable) {
-        super("mute", "Wycisz/odcisz kogoś na czacie i na discord", "&a!mute&b <player>");
+        super("mute", "Wycisz/odcisz kogoś na czacie i na discord");
         this.bdsAutoEnable = bdsAutoEnable;
         this.serverManager = this.bdsAutoEnable.getServerManager();
         this.discordJDA = this.bdsAutoEnable.getDiscordHelper().getDiscordJDA();
+
+        this.addOption("<player>");
     }
 
     @Override

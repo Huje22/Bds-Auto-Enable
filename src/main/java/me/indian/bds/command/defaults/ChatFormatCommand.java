@@ -10,9 +10,11 @@ public class ChatFormatCommand extends Command {
     private final ServerProcess serverProcess;
 
     public ChatFormatCommand(final BDSAutoEnable bdsAutoEnable) {
-        super("format", "Czy aplikacja ma handlować wiadomości graczy", "&a!format&b <true/false>");
+        super("format", "Czy aplikacja ma handlować wiadomości graczy");
         this.bdsAutoEnable = bdsAutoEnable;
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
+
+        this.addOption("<true/false>");
     }
 
     @Override

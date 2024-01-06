@@ -1,26 +1,25 @@
 package me.indian.bds.command;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.CommandsConfig;
 import me.indian.bds.server.ServerProcess;
 
 public abstract class Command {
 
-    private final String name, description, usage;
+    private final String name, description;
+    private final List<String> options;
     protected String playerName;
     protected CommandSender commandSender;
     protected CommandsConfig commandsConfig;
     private BDSAutoEnable bdsAutoEnable;
 
     public Command(final String name, final String description) {
-        this(name, description, "");
-    }
-
-    public Command(final String name, final String description, final String usage) {
         this.name = "!" + name;
         this.description = description;
-        this.usage = usage;
+        this.options = new ArrayList<>();
     }
 
     public abstract boolean onExecute(String[] args, boolean isOp);
@@ -33,8 +32,21 @@ public abstract class Command {
         return this.description;
     }
 
+    protected void addOption(final String option) {
+        this.options.add(option);
+    }
+
     public String getUsage() {
-        return this.usage;
+        String usage = "";
+        int counter = 0;
+        for (final String option : this.options) {
+            usage += option + (counter < this.options.size() - 1 ? ", " : "");
+            counter++;
+        }
+
+        if (usage.isEmpty()) return "";
+
+        return "&a" + this.name + "&4 -&b " + usage;
     }
 
     public void setPlayerName(final String playerName) {
@@ -45,8 +57,9 @@ public abstract class Command {
         this.commandSender = commandSender;
     }
 
-    public final void sendMessage(final String message) {
+    protected final void sendMessage(final String message) {
         final ServerProcess serverProcess = this.bdsAutoEnable.getServerProcess();
+        if(message.isEmpty()) return;
         switch (this.commandSender) {
             case CONSOLE -> this.bdsAutoEnable.getLogger().print(message);
             case PLAYER -> serverProcess.tellrawToPlayer(this.playerName, message);
