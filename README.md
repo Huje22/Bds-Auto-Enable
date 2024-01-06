@@ -28,6 +28,15 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
   (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) do obsługi
   większej
   ilości funkcji)
+* [**Rest API**](RestAPI.MD) również wymaga paczki
+
+<details>
+  <summary>Jak działa to z Paczką?</summary>
+  <p>Aplikacja komunikuje się z serwerem BDS za pomocą wysyłania komend do konsoli oraz czytania ważnych informacji z konsoli, na przykład:</p>
+  <p>Paczka <a href="https://github.com/Huje22/BDS-Auto-Enable-Management-Pack">BDS-Auto-Enable-Management-Pack</a> wysyła do konsoli log np <code>PlayerChat:JndjanBartonka Message:Witaj</code>Aplikacja odczytuje nick gracza z <code>PlayerChat</code> i wiadomość z <code>Message</code>. Następnie wysyła tę wiadomość do Discorda, podobnie z dołączaniem gracza (w tym wypadku <code>PlayerJoin</code>).<br>
+  W tym przypadku dodaje gracza do listy graczy online, a timer działający co 1s dodaje mu 1s czasu gry.<br>
+  Większość takich akcji odbywa się w klasie <a href="https://github.com/Huje22/Bds-Auto-Enable/blob/master/src/main/java/me/indian/bds/manager/server/ServerManager.java">ServerManager.java</a></p>
+</details>
 
 # Polecenia
 
