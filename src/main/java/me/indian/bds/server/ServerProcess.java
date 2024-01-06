@@ -227,12 +227,12 @@ public class ServerProcess {
                 return;
             }
 
-            outputStream.write((command + "\n").getBytes());
-            outputStream.flush();
-
             this.someChangesForCommands(command);
 
-            this.logger.debug("Wysłano &b" + command);
+            outputStream.write((command.replaceAll("\n", "\\\\n") + "\n").getBytes());
+            outputStream.flush();
+
+            this.logger.debug("Wysłano &b" + command.replaceAll("\n", "\\\\n"));
 
         } catch (final Exception exception) {
             this.logger.error("Wystąpił błąd podczas próby wysłania polecenia do konsoli", exception);
@@ -288,7 +288,7 @@ public class ServerProcess {
             return;
         }
 
-        final String msg2 = MessageUtil.fixMessage(msg, false).replace("\"", "\\\"");
+        final String msg2 = MessageUtil.fixMessage(msg, true).replace("\"", "\\\"");
 
         this.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + msg2 + "\"}]}"));
     }
