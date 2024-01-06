@@ -33,7 +33,7 @@ public class BackupRequest implements Request {
     }
 
     @Override
-    public void init(){
+    public void init() {
         this.app.get("/api/{api-key}/backup/{filename}", ctx -> {
             this.restWebsite.addRateLimit(ctx);
             if (!this.restWebsite.checkApiKey(ctx)) return;

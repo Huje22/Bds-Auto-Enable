@@ -12,9 +12,9 @@ import me.indian.bds.util.system.SystemOS;
 
 public final class DefaultsVariables {
 
+    public static boolean WINE;
     private static AppConfig APPCONFIG;
     private static Logger LOGGER;
-    public static boolean WINE;
 
     private DefaultsVariables() {
     }

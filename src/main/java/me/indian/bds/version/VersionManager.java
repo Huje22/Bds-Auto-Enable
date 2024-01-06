@@ -257,12 +257,12 @@ public class VersionManager {
         this.versionManagerConfig.save();
     }
 
+    public String getLoadedVersion() {
+        return (this.versionManagerConfig.isLoaded() ? this.versionManagerConfig.getVersion() : "");
+    }
+
     public void setLoadedVersion(final String version) {
         this.versionManagerConfig.setVersion(version);
         this.versionManagerConfig.save();
-    }
-
-    public String getLoadedVersion() {
-        return (this.versionManagerConfig.isLoaded() ? this.versionManagerConfig.getVersion() : "");
     }
 }

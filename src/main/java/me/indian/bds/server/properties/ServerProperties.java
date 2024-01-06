@@ -131,7 +131,7 @@ public class ServerProperties {
         try {
             final String difficulty1 = this.properties.getProperty("difficulty");
             try {
-               return Difficulty.getById(Integer.parseInt(difficulty1));
+                return Difficulty.getById(Integer.parseInt(difficulty1));
             } catch (final NumberFormatException ignored) {
             }
             return Difficulty.getByName(difficulty1);

@@ -165,7 +165,7 @@ public class Logger {
     }
 
     public void logByState(final Object log, final LogState logState) {
-        this.logByState(log , null , logState);
+        this.logByState(log, null, logState);
     }
 
     public void logByState(final Object log, final Throwable throwable, final LogState logState) {

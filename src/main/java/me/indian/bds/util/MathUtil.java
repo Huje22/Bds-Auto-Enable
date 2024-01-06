@@ -10,12 +10,12 @@ public final class MathUtil {
 
     private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat();
 
-    private MathUtil() {
-    }
-
     static {
         final DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols(Locale.ENGLISH);
         DECIMAL_FORMAT.setDecimalFormatSymbols(decimalFormatSymbols);
+    }
+
+    private MathUtil() {
     }
 
     public static int getCorrectNumber(final int number, final int mini, final int max) {

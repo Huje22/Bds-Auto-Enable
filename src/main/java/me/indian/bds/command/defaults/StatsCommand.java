@@ -11,7 +11,7 @@ public class StatsCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        for(final String stats : StatusUtil.getMainStats(false)){
+        for (final String stats : StatusUtil.getMainStats(false)) {
             this.sendMessage(stats);
         }
         return true;

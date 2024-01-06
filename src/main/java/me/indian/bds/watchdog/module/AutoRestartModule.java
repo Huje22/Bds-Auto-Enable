@@ -121,10 +121,10 @@ public class AutoRestartModule {
     }
 
     private void restartAlert() {
-        for(int i = 10; i >= 0; i--){
-          AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                "&aZa&1 "+ i +"&a sekund zostanie zrestartowany server!", LogState.INFO);
-        ThreadUtil.sleep(1);
+        for (int i = 10; i >= 0; i--) {
+            AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
+                    "&aZa&1 " + i + "&a sekund zostanie zrestartowany server!", LogState.INFO);
+            ThreadUtil.sleep(1);
         }
     }
 

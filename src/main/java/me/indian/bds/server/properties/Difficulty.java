@@ -15,14 +15,6 @@ public enum Difficulty {
         this.difficultyId = difficultyId;
     }
 
-    public String getDifficultyName() {
-        return this.difficultyName;
-    }
-
-    public int getDifficultyId() {
-        return this.difficultyId;
-    }
-
     public static Difficulty getById(final int difficultyId) throws NullPointerException {
         return switch (difficultyId) {
             case 0 -> Difficulty.PEACEFUL;
@@ -41,5 +33,13 @@ public enum Difficulty {
             case "hard" -> Difficulty.HARD;
             default -> throw new NullPointerException();
         };
+    }
+
+    public String getDifficultyName() {
+        return this.difficultyName;
+    }
+
+    public int getDifficultyId() {
+        return this.difficultyId;
     }
 }

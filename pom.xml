@@ -42,7 +42,7 @@
             <version>5.0.0-beta.19</version>
             <scope>compile</scope>
         </dependency>
-<!--   Używam starszej wersji logback bo w nowej nie rozumiem co sie dzieje     -->
+        <!--   Używam starszej wersji logback bo w nowej nie rozumiem co sie dzieje     -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>

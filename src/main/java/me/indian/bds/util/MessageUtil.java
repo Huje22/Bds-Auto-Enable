@@ -31,7 +31,7 @@ public final class MessageUtil {
     }
 
     public static String fixMessage(final String message, final boolean newLines) {
-        if(message.isEmpty()) return "";
+        if (message.isEmpty()) return "";
         String msg2 = message.replaceAll("\\\\", "")
                 .replaceAll("[\\uE000-\\uE0EA]", "?")
                 .replaceAll("\\$", "?")
@@ -47,11 +47,11 @@ public final class MessageUtil {
     }
 
     public static String buildMessageFromArgs(final String[] args) {
-       return buildMessageFromArgs(args, null);
+        return buildMessageFromArgs(args, null);
     }
 
     public static String buildMessageFromArgs(final String[] args, final String[] includeArgs) {
-        if(args == null) return "";
+        if (args == null) return "";
         String message = "";
         for (final String arg : args) {
             if (includeArgs != null && Arrays.stream(includeArgs).anyMatch(s -> s.equals(arg))) continue;
@@ -65,11 +65,11 @@ public final class MessageUtil {
     }
 
     public static String[] removeArgs(final String[] args) {
-       return removeArgs(args , 1);
+        return removeArgs(args, 1);
     }
 
     public static String[] removeArgs(final String[] args, final int startFrom) {
-        if(args == null) return new String[]{};
+        if (args == null) return new String[]{};
         final String[] newArgs = new String[args.length - startFrom];
         System.arraycopy(args, startFrom, newArgs, 0, newArgs.length);
 

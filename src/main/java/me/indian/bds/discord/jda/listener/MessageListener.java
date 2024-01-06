@@ -78,7 +78,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final long id = member.getIdLong();
 
         if (event.getChannel().asTextChannel() == this.consoleChannel) {
-            if(!this.serverProcess.isEnabled()) return;
+            if (!this.serverProcess.isEnabled()) return;
             if (member.hasPermission(Permission.ADMINISTRATOR)) {
                 this.serverProcess.sendToConsole(rawMessage);
                 this.logger.print("[" + DateUtil.getDate() + " DISCORD] " +
@@ -156,7 +156,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final List<Member> members = message.getMentions().getMembers();
         String rawMessage = MessageUtil.fixMessage(message.getContentRaw());
 
-        if (!message.getAttachments().isEmpty()) rawMessage += this.discordConfig.getDiscordMessagesConfig().getAttachment();
+        if (!message.getAttachments().isEmpty())
+            rawMessage += this.discordConfig.getDiscordMessagesConfig().getAttachment();
         if (members.isEmpty()) {
             for (final User user : message.getMentions().getUsers()) {
                 if (user != null)
@@ -170,7 +171,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         }
 
         for (final GuildChannel guildChannel : message.getMentions().getChannels()) {
-            if (guildChannel != null) rawMessage = rawMessage.replaceAll("<#" + guildChannel.getIdLong() + ">", "#" + guildChannel.getName());
+            if (guildChannel != null)
+                rawMessage = rawMessage.replaceAll("<#" + guildChannel.getIdLong() + ">", "#" + guildChannel.getName());
         }
 
         for (final Role role : message.getMentions().getRoles()) {

@@ -9,9 +9,9 @@ public abstract class Command {
 
     private final String name, description, usage;
     protected String playerName;
-    private BDSAutoEnable bdsAutoEnable;
     protected CommandSender commandSender;
     protected CommandsConfig commandsConfig;
+    private BDSAutoEnable bdsAutoEnable;
 
     public Command(final String name, final String description) {
         this(name, description, "");

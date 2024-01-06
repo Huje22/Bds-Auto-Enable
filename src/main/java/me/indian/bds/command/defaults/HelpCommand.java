@@ -1,9 +1,8 @@
 package me.indian.bds.command.defaults;
 
+import java.util.List;
 import me.indian.bds.command.Command;
 import me.indian.bds.command.CommandSender;
-
-import java.util.List;
 
 public class HelpCommand extends Command {
 

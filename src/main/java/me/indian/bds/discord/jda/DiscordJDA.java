@@ -325,7 +325,7 @@ public class DiscordJDA {
                 String inviteLink = "";
                 final DefaultGuildChannelUnion defaultChannel = guild1.getDefaultChannel();
                 if (defaultChannel != null) inviteLink += defaultChannel.createInvite().complete().getUrl();
-                
+
                 guild1.leave().queue();
                 this.sendMessage("Opuściłem serwer o ID: " + guild1.getId() +
                         "\n Nazwie: " + guild1.getName() +

@@ -261,10 +261,10 @@ public class ServerManager {
         }
 
         final LinkingManager linkingManager = this.discordJDA.getLinkingManager();
-            if (linkingManager != null && linkingManager.isLinked(playerChat)) {
-                role = this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(linkingManager.getIdByName(playerChat))) + " ";
+        if (linkingManager != null && linkingManager.isLinked(playerChat)) {
+            role = this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(linkingManager.getIdByName(playerChat))) + " ";
 
-            }
+        }
 
         this.serverProcess.tellrawToAll(
                 this.appConfigManager.getWatchDogConfig().getPackModuleConfig().getChatMessageFormat()
