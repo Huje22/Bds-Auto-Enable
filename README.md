@@ -8,12 +8,11 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
 # Uwaga
 
-* Program wymaga przynajmniej `1GB` ram do działania
-* Zaleca się używać integracji z discord (JDA)
+* Program wymaga przynajmniej `1GB` RAM do działania
+  * Jeśli chcesz zmieniać coś w `NoDiscordConsole` w `Log.yml` wypisywanie większej ilości tekstu może wymagać więcej ramu z powodu RateLimitu Discord
+* Zaleca się używać integracji z Discord
+  * Dla wygodniejszego zarządzania serwerem</details>
 * Program wspiera użycie [**WINE**](https://github.com/wine-mirror/wine)
-* Jedyna wersia Minecraft jaką wspieramy
-  to <br>
-  [![BDS - Version](https://img.shields.io/badge/Bedrock%20Dedicated%20Server-1.20.51.01-brightgreen)](https://www.minecraft.net/download/server/bedrock)
 
 # Program zawiera
 
@@ -29,25 +28,6 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
   (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) do obsługi
   większej
   ilości funkcji)
-* Formatowanie czatu (
-  Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) działa tylko gdy
-  paczka jest najwyżej)
-* **Rest API** z czasem gry , liczbą śmierci i graczami online/offline (Również wymaga paczki)
-
-# Jak to działa
-
-Komunikuje się on z serverem BDS za pomocą wysyłania komend do konsoli a także czytania ważnych informacji z konsoli na
-przykład: <br>
-Paczka [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) wysyła do konsoli
-log <br>
-``
-PlayerChat:JndjanBartonka Message:Witaj
-``<br>
-A aplikacja odczytuje nick gracza z `PlayerChat` i wiadomość z `Message` , i dalej na przykład wysyła wiadomość tą do
-discord , podobnie z dołączaniem gracza (w tym wypadku `PlayerJoin`) , i w tym wypadku dodaje gracza na listę graczy
-online i timer działający co 1s dodaje mu wtedy 1s czasu gry.<br>
-Większość takich akcji odbywa się w
-klasie [ServerManager.java](https://github.com/Huje22/Bds-Auto-Enable/blob/master/src/main/java/me/indian/bds/manager/server/ServerManager.java)
 
 # Polecenia
 
@@ -71,19 +51,14 @@ paczka jest najwyżej)**
 # Program nie wspiera
 
 * Wtyczek do Minecraft ani czytania pakietów z Minecraft
-
-# Projekty które powinienem kiedyś uwzględnić
-
-https://github.com/hesslink111/Minecraft-Telegram-Bot <br>
-
 # Szybkie info
 
 * Paczka sama się pobierze do twojego świata i załaduje , potrzebujesz jedynie włączonych experymentów w tym świecie!
 
 # Użyte biblioteki
 
-[Okaeri Configs - do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
-[Gson - do plików i samych Json](https://github.com/google/gson)<br>
+[Okaeri Configs - Do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
+[Gson - Do plików i samych Json](https://github.com/google/gson)<br>
 [JDA - Integracja z discord](https://github.com/discord-jda/JDA)<br>
 [Javalin - Rest API](https://github.com/javalin/javalin)<br>
 [Logback - Tylko do wyłączenia niektórych wiadomości z Javalin i JDA](https://github.com/qos-ch/logback)<br>
