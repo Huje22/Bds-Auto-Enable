@@ -6,6 +6,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.defaults.BackupCommand;
 import me.indian.bds.command.defaults.ChatFormatCommand;
 import me.indian.bds.command.defaults.DeathsCommand;
+import me.indian.bds.command.defaults.DiscordCommand;
 import me.indian.bds.command.defaults.HelpCommand;
 import me.indian.bds.command.defaults.LinkCommand;
 import me.indian.bds.command.defaults.MuteCommand;
@@ -44,6 +45,7 @@ public class CommandManager {
         }
 
         if (this.bdsAutoEnable.getDiscordHelper().isBotEnabled()) {
+            this.registerCommand(new DiscordCommand(this.bdsAutoEnable));
             this.registerCommand(new LinkCommand(this.bdsAutoEnable));
         }
     }
