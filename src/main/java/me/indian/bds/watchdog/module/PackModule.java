@@ -184,36 +184,6 @@ public class PackModule {
         return false;
     }
 
-    public void setAppHandledMessages(final boolean handled) {
-        if (!this.loaded) return;
-        final String filePath = this.pack.getPath() + File.separator + "scripts" + File.separator + "index.js";
-        if (this.getAppHandledMessages() == handled) return;
-        try {
-            final StringBuilder content = new StringBuilder();
-            try (final BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (line.contains("const appHandledMessages")) {
-                        line = "const appHandledMessages = " + handled + ";";
-                    }
-                    content.append(line).append("\n");
-                }
-            }
-
-            if (!content.toString().contains("const appHandledMessages")) {
-                content.append("const appHandledMessages = ").append(handled).append(";").append("\n");
-            }
-
-            try (final BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-                writer.write(content.toString());
-            }
-            this.logger.info("Plik JavaScript został zaktualizowany.");
-        } catch (final IOException exception) {
-            this.logger.critical("Wystąpił błąd przy próbie edytowania wartości", exception);
-        }
-        this.appHandledMessages = this.getAppHandledMessages();
-    }
-
     private void makeItArray() {
         try (final FileWriter writer = new FileWriter(this.worldBehaviorsJson.getPath())) {
             writer.write("[]");
@@ -278,6 +248,36 @@ public class PackModule {
 
     public boolean isAppHandledMessages() {
         return this.appHandledMessages;
+    }
+
+    public void setAppHandledMessages(final boolean handled) {
+        if (!this.loaded) return;
+        final String filePath = this.pack.getPath() + File.separator + "scripts" + File.separator + "index.js";
+        if (this.getAppHandledMessages() == handled) return;
+        try {
+            final StringBuilder content = new StringBuilder();
+            try (final BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("const appHandledMessages")) {
+                        line = "const appHandledMessages = " + handled + ";";
+                    }
+                    content.append(line).append("\n");
+                }
+            }
+
+            if (!content.toString().contains("const appHandledMessages")) {
+                content.append("const appHandledMessages = ").append(handled).append(";").append("\n");
+            }
+
+            try (final BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+                writer.write(content.toString());
+            }
+            this.logger.info("Plik JavaScript został zaktualizowany.");
+        } catch (final IOException exception) {
+            this.logger.critical("Wystąpił błąd przy próbie edytowania wartości", exception);
+        }
+        this.appHandledMessages = this.getAppHandledMessages();
     }
 
     public boolean isLoaded() {

@@ -15,14 +15,6 @@ public enum Gamemode {
         this.id = id;
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public int getId() {
-        return this.id;
-    }
-
     public static Gamemode getByName(final String name) throws NullPointerException {
         return switch (name.toLowerCase()) {
             case "survival" -> SURVIVAL;
@@ -41,5 +33,13 @@ public enum Gamemode {
             case 3 -> SPECTATOR;
             default -> throw new NullPointerException();
         };
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public int getId() {
+        return this.id;
     }
 }

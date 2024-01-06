@@ -12,10 +12,6 @@ public enum ServerMovementAuth {
         this.authName = authName;
     }
 
-    public String getAuthName() {
-        return this.authName;
-    }
-
     public static ServerMovementAuth getByName(final String authName) throws NullPointerException {
         return switch (authName) {
             case "client-auth" -> ServerMovementAuth.CLIENT_AUTH;
@@ -23,5 +19,9 @@ public enum ServerMovementAuth {
             case "server-auth-with-rewind" -> ServerMovementAuth.SERVER_AUTH_REWIND;
             default -> throw new NullPointerException();
         };
+    }
+
+    public String getAuthName() {
+        return this.authName;
     }
 }

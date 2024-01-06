@@ -20,7 +20,7 @@ public class EventsConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Komendy które zostaną wykonane gdy gracz dołączy na server"})
     @CustomKey("OnJoin")
-    private List<String> onJoin= List.of("effect <player> resistance 10 100");
+    private List<String> onJoin = List.of("effect <player> resistance 10 100");
 
     public List<String> getOnSpawn() {
         return this.onSpawn;

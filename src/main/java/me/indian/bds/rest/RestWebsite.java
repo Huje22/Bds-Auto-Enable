@@ -56,7 +56,7 @@ public class RestWebsite {
                 ctx.contentType("text/json").result(info);
             });
 
-            for(final Request request : this.requests){
+            for (final Request request : this.requests) {
                 request.init();
             }
 

@@ -144,13 +144,13 @@ public class Settings {
         this.questionsSetting(scannerUtil);
         this.logger.info("Ukończono odpowiedzi w&a " + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         this.appConfig.save();
-        this.currentSettings(scannerUtil.getScanner() , true);
+        this.currentSettings(scannerUtil.getScanner(), true);
     }
 
     private void serverSettings(final ScannerUtil scannerUtil) {
         this.logger.info("&aKonfiguracja servera&r");
         this.logger.print();
-        
+
         this.serverProperties.setServerPort(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lUstaw port v4&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);

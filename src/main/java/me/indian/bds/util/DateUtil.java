@@ -8,7 +8,7 @@ import java.time.format.DateTimeFormatter;
 public final class DateUtil {
 
     public static final ZoneId POLISH_ZONE = ZoneId.of("Europe/Warsaw");
-    
+
     private DateUtil() {
     }
 
@@ -70,7 +70,7 @@ public final class DateUtil {
     public static long formatSeconds(final long millis) {
         return (millis / 1000) % 60;
     }
-    
+
     public static String formatTime(final long millis, final String times) {
         String formattedTime = "";
 

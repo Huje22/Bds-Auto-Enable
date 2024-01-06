@@ -199,7 +199,7 @@ public class WebHook {
 
     public void sendEmbedMessage(final String title, final String message, final List<Field> fields, final Throwable throwable, final Footer footer) {
         this.sendEmbedMessage(title, message +
-                 (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"), fields, footer);
+                (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"), fields, footer);
     }
 
     public void sendEmbedMessage(final String title, final String message, final Footer footer) {
@@ -208,7 +208,7 @@ public class WebHook {
 
     public void sendEmbedMessage(final String title, final String message, final Throwable throwable, final Footer footer) {
         this.sendEmbedMessage(title, message +
-                 (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"), footer);
+                (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"), footer);
     }
 
     public void shutdown() {

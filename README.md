@@ -13,14 +13,13 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 * Program wspiera użycie [**WINE**](https://github.com/wine-mirror/wine)
 * Jedyna wersia Minecraft jaką wspieramy
   to <br>
-[![BDS - Version](https://img.shields.io/badge/Bedrock%20Dedicated%20Server-1.20.51.01-brightgreen)](https://www.minecraft.net/download/server/bedrock)
-
+  [![BDS - Version](https://img.shields.io/badge/Bedrock%20Dedicated%20Server-1.20.51.01-brightgreen)](https://www.minecraft.net/download/server/bedrock)
 
 # Program zawiera
 
 * Automatyczne włączenie servera po crashu
 * Łatwe załadowanie innej wersji
-* Tworzenie backupów świata co dany czas i manualnie 
+* Tworzenie backupów świata co dany czas i manualnie
 * Pisanie w konsoli w 99% (**Mogą wystąpić małe błędy podczas dłuższego działania, lecz już nie powinny**)
 * AutoMessages
 * Licznik czasu gry gracza (
@@ -30,14 +29,17 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
   (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) do obsługi
   większej
   ilości funkcji)
-* Formatowanie czatu (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) działa tylko gdy paczka jest najwyżej)
+* Formatowanie czatu (
+  Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) działa tylko gdy
+  paczka jest najwyżej)
 * **Rest API** z czasem gry , liczbą śmierci i graczami online/offline (Również wymaga paczki)
 
 # Jak to działa
 
 Komunikuje się on z serverem BDS za pomocą wysyłania komend do konsoli a także czytania ważnych informacji z konsoli na
 przykład: <br>
-Paczka [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) wysyła do konsoli log <br>
+Paczka [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) wysyła do konsoli
+log <br>
 ``
 PlayerChat:JndjanBartonka Message:Witaj
 ``<br>
@@ -65,12 +67,13 @@ paczka jest najwyżej)**
 
 * Wszystkie je jak i także ich opisy znajdziesz po wpisaniu `/` (Wymaga dodania bota z
   ___&scope=bot+applications.commands___ inaczej mogą wystąpić problemy)
-  
+
 # Program nie wspiera
 
 * Wtyczek do Minecraft ani czytania pakietów z Minecraft
 
 # Projekty które powinienem kiedyś uwzględnić
+
 https://github.com/hesslink111/Minecraft-Telegram-Bot <br>
 
 # Szybkie info
@@ -86,7 +89,7 @@ https://github.com/hesslink111/Minecraft-Telegram-Bot <br>
 [Logback - Tylko do wyłączenia niektórych wiadomości z Javalin i JDA](https://github.com/qos-ch/logback)<br>
 
   ----
-  
+
 <div align="center">
 
 [![Bstats](https://bstats.org/signatures/bukkit/BDS-Auto-Enable.svg)](https://bstats.org/plugin/bukkit/BDS-Auto-Enable/19727)

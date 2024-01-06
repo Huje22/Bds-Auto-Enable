@@ -98,11 +98,11 @@ public class BackupModule {
     private void run() {
         if (this.watchDogConfig.getBackupConfig().isEnabled()) {
             final long time = MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS);
-            
+
             final TimerTask backupTask = new TimerTask() {
 
                 boolean cachedNonPlayers = false;
-                
+
                 @Override
                 public void run() {
                     final boolean nonPlayers = BackupModule.this.serverManager.getOnlinePlayers().isEmpty();

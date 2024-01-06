@@ -1,9 +1,8 @@
 package me.indian.bds.util;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.lang.management.ManagementFactory;
 import java.util.concurrent.ThreadFactory;
+import org.jetbrains.annotations.NotNull;
 
 public final class ThreadUtil implements ThreadFactory {
 
@@ -13,15 +12,15 @@ public final class ThreadUtil implements ThreadFactory {
     private int threadCount;
 
     public ThreadUtil(final String threadName) {
-       this(threadName , null, false);
+        this(threadName, null, false);
     }
 
-    public ThreadUtil(final String threadName , final boolean daemon){
+    public ThreadUtil(final String threadName, final boolean daemon) {
         this(threadName, null, daemon);
     }
 
-    public ThreadUtil(final String threadName,final Runnable runnable) {
-       this(threadName , runnable, false);
+    public ThreadUtil(final String threadName, final Runnable runnable) {
+        this(threadName, runnable, false);
     }
 
     public ThreadUtil(final String threadName, final Runnable runnable, final boolean daemon) {

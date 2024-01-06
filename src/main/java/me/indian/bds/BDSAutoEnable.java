@@ -196,7 +196,7 @@ public class BDSAutoEnable {
         return this.startTime;
     }
 
-    public boolean isMainThread(){
+    public boolean isMainThread() {
         return Thread.currentThread() == this.mainThread;
     }
 

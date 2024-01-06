@@ -14,12 +14,12 @@ import me.indian.bds.logger.Logger;
 
 public final class ZipUtil {
 
-    private static Logger LOGGER ;
+    private static Logger LOGGER;
 
     private ZipUtil() {
     }
 
-    public static void init(final BDSAutoEnable bdsAutoEnable){
+    public static void init(final BDSAutoEnable bdsAutoEnable) {
         LOGGER = bdsAutoEnable.getLogger();
     }
 

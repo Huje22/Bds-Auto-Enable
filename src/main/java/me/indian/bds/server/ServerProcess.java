@@ -140,7 +140,7 @@ public class ServerProcess {
                     this.process = this.processBuilder.start();
                     this.startTime = System.currentTimeMillis();
 
-                    if(!this.appConfigManager.getAppConfig().isQuestions()) {
+                    if (!this.appConfigManager.getAppConfig().isQuestions()) {
                         this.bdsAutoEnable.getSettings().currentSettings(this.bdsAutoEnable.getMainScanner(), false);
                     }
                     this.discordJDA.sendProcessEnabledMessage();
@@ -211,7 +211,7 @@ public class ServerProcess {
     }
 
     public void sendToConsole(final String command) {
-        if(command.isEmpty()) return;
+        if (command.isEmpty()) return;
         this.cmdLock.lock();
         this.cmdResponseLock.lock();
         try {

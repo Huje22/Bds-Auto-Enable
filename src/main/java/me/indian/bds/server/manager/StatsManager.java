@@ -13,10 +13,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerStats;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MathUtil;
 
@@ -128,7 +128,7 @@ public class StatsManager {
             this.logger.critical("Nie udało się zapisać liczby&b śmierci&r graczy", exception);
         }
     }
-    
+
     private void saveServerStats() {
         try (final FileWriter writer = new FileWriter(this.serverStatsJson)) {
             writer.write(GsonUtil.getGson().toJson(this.serverStats));
@@ -216,8 +216,8 @@ public class StatsManager {
                 this.logger.critical("Nie można utworzyć&b deaths.json", exception);
             }
         }
-        
-        
+
+
         if (!this.serverStatsJson.exists()) {
             try {
                 if (!this.serverStatsJson.createNewFile()) {
