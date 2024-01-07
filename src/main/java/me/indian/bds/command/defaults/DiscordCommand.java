@@ -1,5 +1,6 @@
 package me.indian.bds.command.defaults;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
@@ -71,18 +72,19 @@ public class DiscordCommand extends Command {
                 }
             }
 
-
             this.sendMessage("&aOsoby online mające dostęp do&1 #" + this.textChannel.getName());
             for (final Member member : this.discordJDA.getAllChannelOnlineMembers(this.textChannel)) {
                 final OnlineStatus onlineStatus = member.getOnlineStatus();
-                this.sendMessage("&b" + this.discordJDA.getUserName(member, member.getUser()) + " " +
-                                 this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(member.getIdLong())) +
+                this.sendMessage(this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(member.getIdLong())) +
+                        " &b" + this.discordJDA.getUserName(member, member.getUser()) +
                         "&d - " + this.discordJDA.getStatusColor(member.getOnlineStatus()) + onlineStatus +
-                        " &6[&9" + MessageUtil.enumSetToString(member.getActiveClients(), " &a,&9 ") + "&6]");
+                        " &6[&9" + MessageUtil.enumSetToString(member.getActiveClients(), " &a,&9 ") + "&6] " +
+                        (activity ? this.getJoinTime(member) : "")
+                );
+
                 if (activity) {
                     this.sendMessage(this.getActivity(member));
                 }
-
             }
             return true;
         }
@@ -118,6 +120,12 @@ public class DiscordCommand extends Command {
         return false;
     }
 
+    public String getJoinTime(final Member member) {
+        final OffsetDateTime joinedDate = member.getTimeJoined();
+        return "&eDołączył:&f " + joinedDate.toLocalDate() + " " + joinedDate.getHour() + ":" +
+                joinedDate.getMinute();
+    }
+
     public String getActivity(final Member member) {
         final List<Activity> activities = member.getActivities();
         final StringBuilder activityMessage = new StringBuilder();
@@ -151,7 +159,6 @@ public class DiscordCommand extends Command {
             }
             counter++;
         }
-
         return activityMessage + "\n";
     }
 }
