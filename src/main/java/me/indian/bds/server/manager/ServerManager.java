@@ -238,7 +238,7 @@ public class ServerManager {
             this.logger.alert(badVersion.replaceAll("\n", "")
                     .replaceAll("<version>", packModule.getPackVersion()));
 
-            this.bdsAutoEnable.getDiscordHelper().getWebHook().sendMessage("<owner>");
+            this.discordJDA.sendMessage("<owner>");
         }
     }
 
