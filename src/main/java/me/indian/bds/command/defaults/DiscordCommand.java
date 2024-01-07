@@ -75,7 +75,8 @@ public class DiscordCommand extends Command {
             this.sendMessage("&aOsoby online mające dostęp do&1 #" + this.textChannel.getName());
             for (final Member member : this.discordJDA.getAllChannelOnlineMembers(this.textChannel)) {
                 final OnlineStatus onlineStatus = member.getOnlineStatus();
-                this.sendMessage("&b" + this.discordJDA.getUserName(member, member.getUser()) +
+                this.sendMessage("&b" + this.discordJDA.getUserName(member, member.getUser()) + " " +
+                                 this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(member.getIdLong())) +
                         "&d - " + this.discordJDA.getStatusColor(member.getOnlineStatus()) + onlineStatus +
                         " &6[&9" + MessageUtil.enumSetToString(member.getActiveClients(), " &a,&9 ") + "&6]");
                 if (activity) {
