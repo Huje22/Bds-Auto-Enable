@@ -109,7 +109,7 @@ public class DiscordCommand extends Command {
                 return true;
             }
 
-            this.discordJDA.setActivityStatus(message);
+            this.discordJDA.setBotActivityStatus(message);
             this.sendMessage("&aUstawiono status aktywności bota na:&b " + message);
             return true;
         }

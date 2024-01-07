@@ -288,11 +288,11 @@ public class DiscordJDA {
                 .filter(member -> !member.getUser().isBot()).sorted(Comparator.comparing(Member::getTimeJoined)).toList();
     }
 
-    public void setActivityStatus(final String activityMessage) {
-        this.setActivityStatus(activityMessage, null);
+    public void setBotActivityStatus(final String activityMessage) {
+        this.setBotActivityStatus(activityMessage, null);
     }
 
-    public void setActivityStatus(final String activityMessage, @Nullable final Activity.ActivityType activityType) {
+    public void setBotActivityStatus(final String activityMessage, @Nullable final Activity.ActivityType activityType) {
         this.discordConfig.getBotConfig().setActivityMessage(activityMessage);
         if (activityType != null) this.discordConfig.getBotConfig().setActivity(activityType);
         this.discordConfig.save();
@@ -300,7 +300,7 @@ public class DiscordJDA {
     }
 
     private void customStatusUpdate() {
-        final Timer timer = new Timer("discord Status Changer", true);
+        final Timer timer = new Timer("Discord Status Changer", true);
         final TimerTask statusTask = new TimerTask() {
 
             public void run() {
@@ -327,6 +327,9 @@ public class DiscordJDA {
             }
             case LISTENING -> {
                 return Activity.listening(activityMessage);
+            }
+            case CUSTOM_STATUS -> {
+                    return Activity.customStatus(activityMessage);
             }
             case STREAMING -> {
                 return Activity.streaming(activityMessage, this.discordConfig.getBotConfig().getStreamUrl());

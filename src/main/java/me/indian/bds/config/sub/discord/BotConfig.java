@@ -83,7 +83,7 @@ public class BotConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Aktywność , aktualizowana co 10min"})
-    @Comment({"Dostępne aktywności:  PLAYING, STREAMING, LISTENING, WATCHING, COMPETING"})
+    @Comment({"Dostępne aktywności:  PLAYING, STREAMING, LISTENING, WATCHING, CUSTOM_STATUS, COMPETING"})
     private Activity.ActivityType activity = Activity.ActivityType.PLAYING;
 
     @Comment({""})
