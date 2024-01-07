@@ -14,26 +14,22 @@ public final class DateUtil {
 
     public static String getFixedDate() {
         final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return now.format(formatter).replace(":", "-");
+        return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).replace(":", "-");
     }
 
     public static String getDate() {
         final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        return now.format(formatter);
+        return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public static String getTimeHM() {
         final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return now.format(formatter);
+        return now.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
     public static String getTimeHMS() {
         final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
-        return now.format(formatter);
+        return now.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     }
 
     public static long localDateToLong(final LocalDate localDate) {
