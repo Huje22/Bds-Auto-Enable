@@ -158,7 +158,7 @@ public class PackModule {
             jsonArray.add(newEntry);
 
             try (final FileWriter writer = new FileWriter(this.worldBehaviorsJson.getPath())) {
-                GsonUtil.GSON.toJson(jsonArray, writer);
+                GsonUtil.getGson().toJson(jsonArray, writer);
                 this.logger.info("Załadowano paczke!");
                 this.loaded = true;
             }

@@ -44,7 +44,7 @@ public class WebHook {
         this.avatarUrl = discordConfig.getWebHookConfig().getAvatarUrl();
         this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Discord-WebHook"));
         this.lock = new ReentrantLock();
-        this.gson = GsonUtil.GSON;
+        this.gson = GsonUtil.getGson();
         this.requests = 0;
         this.block = false;
 

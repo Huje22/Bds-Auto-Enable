@@ -43,7 +43,7 @@ public class GeyserUtil {
                     xuidResponse.append(inputLine);
                 }
                 in.close();
-                final JsonObject jsonObject = GsonUtil.GSON.fromJson(xuidResponse.toString(), JsonObject.class);
+                final JsonObject jsonObject = GsonUtil.getGson().fromJson(xuidResponse.toString(), JsonObject.class);
 
                 if (jsonObject.has("xuid")) {
                     return jsonObject.get("xuid").getAsLong();
@@ -76,7 +76,7 @@ public class GeyserUtil {
                     nameResponse.append(inputLine);
                 }
                 in.close();
-                final JsonObject jsonObject = GsonUtil.GSON.fromJson(nameResponse.toString(), JsonObject.class);
+                final JsonObject jsonObject = GsonUtil.getGson().fromJson(nameResponse.toString(), JsonObject.class);
 
                 if (jsonObject.has("gamertag")) {
                     return jsonObject.get("gamertag").getAsString();

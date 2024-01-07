@@ -43,7 +43,7 @@ public class StatsManager {
         this.deaths = this.loadDeaths();
         this.serverManager = serverManager;
         this.serverStats = this.loadServerStats();
-        this.gson = GsonUtil.GSON;
+        this.gson = GsonUtil.getGson();
 
         this.startTasks();
     }
@@ -145,7 +145,7 @@ public class StatsManager {
         try (final FileReader reader = new FileReader(this.playTimeJson)) {
             final Type type = new TypeToken<HashMap<String, Long>>() {
             }.getType();
-            final HashMap<String, Long> loadedMap = GsonUtil.GSON.fromJson(reader, type);
+            final HashMap<String, Long> loadedMap = GsonUtil.getGson().fromJson(reader, type);
             return (loadedMap == null ? new HashMap<>() : loadedMap);
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się załadować&b czasu gry&r graczy", exception);
@@ -157,7 +157,7 @@ public class StatsManager {
         try (final FileReader reader = new FileReader(this.deathsJson)) {
             final Type type = new TypeToken<HashMap<String, Long>>() {
             }.getType();
-            final HashMap<String, Long> loadedMap = GsonUtil.GSON.fromJson(reader, type);
+            final HashMap<String, Long> loadedMap = GsonUtil.getGson().fromJson(reader, type);
             return (loadedMap == null ? new HashMap<>() : loadedMap);
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się załadować liczby&b śmierci&r graczy", exception);
@@ -167,7 +167,7 @@ public class StatsManager {
 
     private ServerStats loadServerStats() {
         try (final FileReader reader = new FileReader(this.serverStatsJson)) {
-            final ServerStats loadedStats = GsonUtil.GSON.fromJson(reader, ServerStats.class);
+            final ServerStats loadedStats = GsonUtil.getGson().fromJson(reader, ServerStats.class);
 
             if (loadedStats != null) return loadedStats;
         } catch (final Exception exception) {

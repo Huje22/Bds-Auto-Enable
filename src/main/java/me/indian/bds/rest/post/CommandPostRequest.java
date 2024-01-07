@@ -35,7 +35,7 @@ public class CommandPostRequest implements Request {
 
             final String ip = ctx.ip();
             final String requestBody = ctx.body();
-            final CommandRequestData commandRequestData = GsonUtil.GSON.fromJson(requestBody, CommandRequestData.class);
+            final CommandRequestData commandRequestData = GsonUtil.getGson().fromJson(requestBody, CommandRequestData.class);
             final String command = commandRequestData.command();
 
             if (command == null) {
