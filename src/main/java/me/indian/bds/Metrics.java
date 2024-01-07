@@ -302,7 +302,7 @@ public class Metrics {
      */
     private void loadConfig() throws IOException {
         final File configFile = new File(DefaultsVariables.getAppDir() + "bstats.json");
-        final Gson gson = GsonUtil.getGson();
+        final Gson gson = GsonUtil.GSON;
 
         serverUUID = bdsAutoEnable.getAppUUID();
 

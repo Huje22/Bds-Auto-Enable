@@ -21,7 +21,7 @@ public class StatsRequest implements Request {
         this.restWebsite = restWebsite;
         this.serverManager = bdsAutoEnable.getServerManager();
         this.app = this.restWebsite.getApp();
-        this.gson = GsonUtil.getGson();
+        this.gson = GsonUtil.GSON;
     }
 
     @Override

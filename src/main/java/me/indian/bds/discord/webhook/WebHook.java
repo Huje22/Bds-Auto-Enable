@@ -1,5 +1,6 @@
 package me.indian.bds.discord.webhook;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import java.io.OutputStream;
@@ -30,12 +31,12 @@ public class WebHook {
     private final String name, webhookURL, avatarUrl;
     private final ExecutorService service;
     private final ReentrantLock lock;
+    private final Gson gson;
     private int requests;
     private boolean block;
 
     public WebHook(final BDSAutoEnable bdsAutoEnable, final DiscordHelper discordHelper) {
         this.logger = bdsAutoEnable.getLogger();
-        ;
         final DiscordConfig discordConfig = bdsAutoEnable.getAppConfigManager().getDiscordConfig();
         this.discordHelper = discordHelper;
         this.name = discordConfig.getWebHookConfig().getName();
@@ -43,6 +44,7 @@ public class WebHook {
         this.avatarUrl = discordConfig.getWebHookConfig().getAvatarUrl();
         this.service = Executors.newScheduledThreadPool(2, new ThreadUtil("Discord-WebHook"));
         this.lock = new ReentrantLock();
+        this.gson = GsonUtil.GSON;
         this.requests = 0;
         this.block = false;
 
@@ -107,7 +109,7 @@ public class WebHook {
                 }
 
                 try (final OutputStream os = connection.getOutputStream()) {
-                    os.write(GsonUtil.getGson().toJson(jsonPayload).getBytes());
+                    os.write(this.gson.toJson(jsonPayload).getBytes());
                     os.flush();
                 }
 
@@ -179,7 +181,7 @@ public class WebHook {
                 jsonPayload.add("embeds", embeds);
 
                 try (final OutputStream os = connection.getOutputStream()) {
-                    os.write(GsonUtil.getGson().toJson(jsonPayload).getBytes());
+                    os.write(this.gson.toJson(jsonPayload).getBytes());
                     os.flush();
                 }
 

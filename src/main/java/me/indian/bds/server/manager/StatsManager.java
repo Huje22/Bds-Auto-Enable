@@ -1,5 +1,6 @@
 package me.indian.bds.server.manager;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileReader;
@@ -28,6 +29,7 @@ public class StatsManager {
     private final Map<String, Long> playTime, deaths;
     private final ServerManager serverManager;
     private final ServerStats serverStats;
+    private final Gson gson;
 
     public StatsManager(final BDSAutoEnable bdsAutoEnable, final ServerManager serverManager) {
         this.logger = bdsAutoEnable.getLogger();
@@ -41,6 +43,7 @@ public class StatsManager {
         this.deaths = this.loadDeaths();
         this.serverManager = serverManager;
         this.serverStats = this.loadServerStats();
+        this.gson = GsonUtil.GSON;
 
         this.startTasks();
     }
@@ -113,7 +116,7 @@ public class StatsManager {
 
     private void savePlayTime() {
         try (final FileWriter writer = new FileWriter(this.playTimeJson)) {
-            writer.write(GsonUtil.getGson().toJson(this.playTime));
+            writer.write(this.gson.toJson(this.playTime));
             this.logger.info("Pomyślnie zapisano&b czas gry&r graczy");
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się zapisać&b czasu gry&r graczy", exception);
@@ -122,7 +125,7 @@ public class StatsManager {
 
     private void saveDeaths() {
         try (final FileWriter writer = new FileWriter(this.deathsJson)) {
-            writer.write(GsonUtil.getGson().toJson(this.deaths));
+            writer.write(this.gson.toJson(this.deaths));
             this.logger.info("Pomyślnie zapisano&r liczbe&b śmierci&r graczy");
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się zapisać liczby&b śmierci&r graczy", exception);
@@ -131,7 +134,7 @@ public class StatsManager {
 
     private void saveServerStats() {
         try (final FileWriter writer = new FileWriter(this.serverStatsJson)) {
-            writer.write(GsonUtil.getGson().toJson(this.serverStats));
+            writer.write(this.gson.toJson(this.serverStats));
             this.logger.info("Pomyślnie zapisano&b statystyki servera");
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się zapisać liczby&b statystyk servera", exception);
@@ -142,7 +145,7 @@ public class StatsManager {
         try (final FileReader reader = new FileReader(this.playTimeJson)) {
             final Type type = new TypeToken<HashMap<String, Long>>() {
             }.getType();
-            final HashMap<String, Long> loadedMap = GsonUtil.getGson().fromJson(reader, type);
+            final HashMap<String, Long> loadedMap = GsonUtil.GSON.fromJson(reader, type);
             return (loadedMap == null ? new HashMap<>() : loadedMap);
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się załadować&b czasu gry&r graczy", exception);
@@ -154,7 +157,7 @@ public class StatsManager {
         try (final FileReader reader = new FileReader(this.deathsJson)) {
             final Type type = new TypeToken<HashMap<String, Long>>() {
             }.getType();
-            final HashMap<String, Long> loadedMap = GsonUtil.getGson().fromJson(reader, type);
+            final HashMap<String, Long> loadedMap = GsonUtil.GSON.fromJson(reader, type);
             return (loadedMap == null ? new HashMap<>() : loadedMap);
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się załadować liczby&b śmierci&r graczy", exception);
@@ -164,7 +167,7 @@ public class StatsManager {
 
     private ServerStats loadServerStats() {
         try (final FileReader reader = new FileReader(this.serverStatsJson)) {
-            final ServerStats loadedStats = GsonUtil.getGson().fromJson(reader, ServerStats.class);
+            final ServerStats loadedStats = GsonUtil.GSON.fromJson(reader, ServerStats.class);
 
             if (loadedStats != null) return loadedStats;
         } catch (final Exception exception) {

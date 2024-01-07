@@ -1,5 +1,6 @@
 package me.indian.bds.discord.jda.manager;
 
+import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileReader;
@@ -36,6 +37,7 @@ public class LinkingManager {
     private final HashMap<String, Long> linkedAccounts;
     private final HashMap<String, String> accountsToLink;
     private final List<Member> linkedMembers;
+    private final Gson gson;
 
     public LinkingManager(final BDSAutoEnable bdsAutoEnable, final DiscordJDA DiscordJDA) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -47,6 +49,7 @@ public class LinkingManager {
         this.linkedAccounts = this.loadLinkedAccounts();
         this.accountsToLink = new HashMap<>();
         this.linkedMembers = new ArrayList<>();
+        this.gson = GsonUtil.GSON;
 
         this.startTasks();
     }
@@ -141,7 +144,7 @@ public class LinkingManager {
 
     public void saveLinkedAccounts() {
         try (final FileWriter writer = new FileWriter(this.linkedAccountsJson)) {
-            writer.write(GsonUtil.getGson().toJson(this.linkedAccounts));
+            writer.write(this.gson.toJson(this.linkedAccounts));
             this.logger.info("Pomyślnie zapisano&b połączone konta z discord");
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się zapisać&b połączonych kont z discord", exception);
@@ -152,7 +155,7 @@ public class LinkingManager {
         try (final FileReader reader = new FileReader(this.linkedAccountsJson)) {
             final Type type = new TypeToken<HashMap<String, Long>>() {
             }.getType();
-            final HashMap<String, Long> loadedMap = GsonUtil.getGson().fromJson(reader, type);
+            final HashMap<String, Long> loadedMap = this.gson.fromJson(reader, type);
             return (loadedMap == null ? new HashMap<>() : loadedMap);
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się załadować&b połączonych kont z discord", exception);
