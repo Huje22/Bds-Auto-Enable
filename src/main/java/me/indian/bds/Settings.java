@@ -322,14 +322,7 @@ public class Settings {
             this.logger.info("Częstotliwość robienia backup:&1 " + this.watchDogConfig.getBackupConfig().getBackupFrequency() + "&a minut");
         }
 
-        final Strin worldName = this.serverProperties.getWorldName();
-
-        if (worldName == null || worldName.isEmpty() || worldName.equals("null")){
-         this.serverProperties.setWorldName("Bedrock level");
-            
-        }
-            this.logger.info("Nazwa świata:&1 " + this.serverProperties.getWorldName());
-        
+        this.logger.info("Nazwa świata:&1 " + this.serverProperties.getWorldName());
         this.logger.print();
         this.logger.info("&e-----------&bserver.properties&e----------");
         this.logger.info("Port v4:&1 " + this.serverProperties.getServerPort());

@@ -23,6 +23,7 @@ import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.manager.ServerManager;
+import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.FileUtil;
@@ -41,7 +42,7 @@ public class BackupModule {
     private final AppConfigManager appConfigManager;
     private final WatchDogConfig watchDogConfig;
     private final List<Path> backups;
-    private final String worldPath, worldName;
+    private final ServerProperties serverProperties;
     private final File worldFile;
     private final DiscordJDA discordJDA;
     private final WatchDog watchDog;
@@ -50,7 +51,7 @@ public class BackupModule {
     private final ServerManager serverManager;
     private ServerProcess serverProcess;
     private File backupFolder;
-    private String status;
+    private String status, worldName, worldPath;
     private long lastBackupMillis;
     private boolean backuping;
 
@@ -65,22 +66,21 @@ public class BackupModule {
         this.timer = new Timer("Backup-Timer", true);
         this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
         this.worldPath = DefaultsVariables.getWorldsPath() + this.worldName;
+        this.serverProperties = this.bdsAutoEnable.getServerProperties();
+        this.fixWorldName();
         this.worldFile = new File(this.worldPath);
+        this.createWorldFile();
         this.prefix = this.watchDog.getWatchDogPrefix();
         this.discordJDA = bdsAutoEnable.getDiscordHelper().getDiscordJDA();
         this.enabled = this.watchDogConfig.getBackupConfig().isEnabled();
         this.serverManager = this.bdsAutoEnable.getServerManager();
+
         if (this.watchDogConfig.getBackupConfig().isEnabled()) {
             this.backupFolder = new File(DefaultsVariables.getAppDir() + "backup");
             if (!this.backupFolder.exists()) {
                 if (!this.backupFolder.mkdirs()) {
                     this.logger.error("Nie można utworzyć folderu backupów");
                 }
-            }
-            if (!this.worldFile.exists()) {
-                this.logger.critical("Folder świata \"" + this.worldName + "\" nie istnieje");
-                this.logger.alert("Ścieżka " + this.worldPath);
-                this.createWorldFile();
             }
         }
 
@@ -194,19 +194,6 @@ public class BackupModule {
         }
     }
 
-    private void createWorldFile() {
-        if (!this.worldFile.exists()) {
-            if (!this.worldFile.mkdirs()) {
-                if (!this.worldFile.mkdir()) {
-                    this.logger.critical("Nie można utworzyć folderu świata!");
-                    System.exit(0);
-                    return;
-                }
-            }
-            this.logger.info("Utworzono brakujący folder świata");
-        }
-    }
-
     public String getBackupSize(final File backup, final boolean forDiscord) {
         long fileSizeBytes;
         try {
@@ -222,6 +209,42 @@ public class BackupModule {
             return gb + " GB " + mb + " MB " + kb + " KB";
         } else {
             return "&b" + gb + "&e GB &b" + mb + "&e MB &b" + kb + "&e KB";
+        }
+    }
+
+    private void createWorldFile() {
+        if (!this.worldFile.exists()) {
+            this.logger.critical("Folder świata \"" + this.worldName + "\" nie istnieje");
+            this.logger.alert("Ścieżka " + this.worldPath);
+
+            if (!this.worldFile.mkdirs()) {
+                if (!this.worldFile.mkdir()) {
+                    throw new RuntimeException("Nie można utworzyć folderu świata!");
+                }
+            }
+            this.logger.info("Utworzono brakujący folder świata");
+        }
+    }
+
+    public void fixWorldName() {
+        String worldName = this.serverProperties.getWorldName();
+
+        if (worldName == null || worldName.isEmpty() || worldName.equals("null")) {
+            try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DefaultsVariables.getWorldsPath()))) {
+                for (final Path path : directoryStream) {
+                    if (Files.isDirectory(path) && Files.exists(path)) {
+                        worldName = path.toFile().getName();
+                        this.worldPath = path.toString();
+                        break;
+                    }
+                }
+            } catch (final Exception exception) {
+                worldName = "Bedrock level";
+            }
+
+            this.serverProperties.setWorldName(worldName);
+            this.worldName = worldName;
+            this.logger.debug("&aNaprawiono nazwe świata&c!");
         }
     }
 
