@@ -273,6 +273,7 @@ public class DiscordJDA {
     public List<Member> getAllChannelMembers(final TextChannel textChannel) {
         return textChannel.getMembers().stream()
                 .filter(member -> !member.getUser().isBot())
+                .sorted(Comparator.comparing(Member::getTimeJoined))
                 .toList();
     }
 
@@ -280,6 +281,7 @@ public class DiscordJDA {
         return textChannel.getMembers().stream()
                 .filter(member -> !member.getUser().isBot())
                 .filter(member -> !member.getOnlineStatus().equals(OnlineStatus.OFFLINE))
+                .sorted(Comparator.comparing(Member::getTimeJoined))
                 .toList();
     }
 
