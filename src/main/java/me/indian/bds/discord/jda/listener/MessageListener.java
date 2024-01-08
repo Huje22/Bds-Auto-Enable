@@ -75,6 +75,9 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         final LinkingConfig linkingConfig = this.discordConfig.getBotConfig().getLinkingConfig();
 
         if (member == null) return;
+
+//TODO: Nie zezwalać na wysłanie wiadomości jeśli użytkownik ma status offline albo invisible, i nie zapomnieć dodać sprawdzania czy bot nie ma wylczonej flagi z info o statusie
+        
         final long id = member.getIdLong();
 
         if (event.getChannel().asTextChannel() == this.consoleChannel) {
