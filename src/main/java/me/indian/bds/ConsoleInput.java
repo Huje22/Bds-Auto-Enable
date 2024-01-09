@@ -51,6 +51,7 @@ public class ConsoleInput {
 
                     this.serverProcess.sendToConsole(input);
                 }
+                this.logger.alert("Konsola zakończyła działanie");
             } catch (final Exception exception) {
                 this.logger.critical("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ", exception);
                 this.discordHelper.getWebHook().sendEmbedMessage("ServerProcess",
@@ -58,6 +59,7 @@ public class ConsoleInput {
                         exception,
                         new Footer(exception.getLocalizedMessage()));
                 this.discordHelper.getWebHook().sendMessage("<owner>");
+            } finally {
                 System.exit(0);
             }
         }).start();
