@@ -189,7 +189,7 @@ public class DiscordJDA {
     }
 
     private void checkBotPermissions() {
-        final Member botMember = this.guild.getMember(this.jda.getSelfUser());
+        final Member botMember = this.getBotMember();
         if (botMember == null) return;
 
         if (!botMember.hasPermission(Permission.ADMINISTRATOR)) {
@@ -214,17 +214,18 @@ public class DiscordJDA {
     }
 
     public void mute(final Member member, final long amount, final TimeUnit timeUnit) {
-        if (!member.isOwner()) {
+        if (!member.isOwner() && this.getBotMember().canInteract(member)) {
             member.timeoutFor(amount, timeUnit).queue();
         }
     }
 
     public void unMute(final Member member) {
-        if (!member.isOwner() && member.isTimedOut()) {
+        if (!member.isOwner() && member.isTimedOut() && this.getBotMember().canInteract(member)) {
             member.removeTimeout().queue();
         }
     }
 
+    @Nullable
     public Role getHighestRole(final long memberID) {
         final Member member = this.guild.getMemberById(memberID);
         if (member == null) return null;
@@ -299,6 +300,10 @@ public class DiscordJDA {
         if (activityType != null) this.discordConfig.getBotConfig().setActivity(activityType);
         this.discordConfig.save();
         this.jda.getPresence().setActivity(DiscordJDA.this.getCustomActivity());
+    }
+
+    public Member getBotMember() {
+        return this.guild.getMember(this.jda.getSelfUser());
     }
 
     private void customStatusUpdate() {

@@ -33,6 +33,7 @@ public class BotConfig extends OkaeriConfig {
             // CacheFlag.ACTIVITY,
             // CacheFlag.CLIENT_STATUS,
             // CacheFlag.ONLINE_STATUS,
+            CacheFlag.FORUM_TAGS,
             CacheFlag.SCHEDULED_EVENTS
     );
 
