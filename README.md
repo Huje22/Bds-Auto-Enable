@@ -8,6 +8,7 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
 # Uwaga
 
+* Wymaga Javy 17
 * Program wymaga przynajmniej `1GB` RAM do działania
   * Jeśli chcesz zmieniać coś w `NoDiscordConsole` w `Log.yml` wypisywanie większej ilości tekstu może wymagać więcej ramu z powodu RateLimitu Discord
 * Zaleca się używać integracji z Discord
