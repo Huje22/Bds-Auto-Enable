@@ -57,6 +57,7 @@ public class BDSAutoEnable {
         this.isJavaVersionLessThan17();
         this.checkSystemSupport();
         this.checkEncoding();
+        this.checkDlls();
         this.checkFlags();
         this.checkMemory();
         this.checkTimeZone();
@@ -189,6 +190,23 @@ public class BDSAutoEnable {
     private void checkTimeZone() {
         if (!DefaultsVariables.isPolisTimeZone()) {
             this.logger.warning("Twoja strefa czasowa to:&1 " + ZoneId.systemDefault() + "&r czas logów aplikacji bedzie polski a servera inny ");
+        }
+    }
+
+    private void checkDlls(){
+        if(SystemOS.getSystem() == SystemOS.WINDOWS){
+            /*
+            TODO:
+             Sprawdzać czy użytkownik posiada "vcruntime 140_1.dll" i "MSVCP140.dll"
+             A jeśli nie , nie przepuszczać go dalej
+
+                "C:\Windows\System32\vcruntime140_1.dll"
+                "C:\Windows\System32\msvcp140.dll"
+
+             "Musisz pobrać pakiet redystrybucyjny programu Visual C++ &d(&b x64&r i&b x86&d)&r
+              z https://learn.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-170
+             */
+            
         }
     }
 
