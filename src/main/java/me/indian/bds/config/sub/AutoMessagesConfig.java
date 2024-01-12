@@ -38,8 +38,7 @@ public class AutoMessagesConfig extends OkaeriConfig {
     @CustomKey("Messages")
     private List<String> messages = Arrays.asList("&bTen server używa &aBDS-Auto-Enable&3 https://github.com/Huje22/Bds-Auto-Enable",
             "&aWpadnij na nasz discord&e https://discord.com/invite/&b56h83WPKdK",
-            "&bProjekt robiony dla servera&a Huje&e22&b !",
-            "&bZasponsoruj &aHuje&e22&3 https://host2play.com/donation/UqJqPNW0"
+            "&bProjekt robiony dla servera&a Huje&e22&b !"
     );
 
     public boolean isEnabled() {
