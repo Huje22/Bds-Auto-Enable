@@ -206,10 +206,12 @@ public class DiscordJDA {
     }
 
     public void sendPrivateMessage(final User user, final String message) {
+       if (user.isBot()) return;
         user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessage(message).queue());
     }
 
     public void sendPrivateMessage(final User user, final MessageEmbed embed) {
+        if (user.isBot()) return;
         user.openPrivateChannel().queue(privateChannel -> privateChannel.sendMessageEmbeds(embed).queue());
     }
 
