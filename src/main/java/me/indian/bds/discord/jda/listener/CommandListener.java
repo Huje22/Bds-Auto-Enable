@@ -147,7 +147,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                             if (hours < 5) {
                                 if (this.jda.getRoleById(roleID) != null) {
-                                    hoursMessage = "\nMasz za mało godzin gry aby otrzymać <@&" + roleID + "**" + hours + "** godzin gry)" +
+                                    hoursMessage = "\nMasz za mało godzin gry aby otrzymać <@&" + roleID + "> **" + hours + "** godzin gry)" +
                                             "\nDostaniesz role gdy wbijesz **5** godzin gry";
                                 }
                             }
