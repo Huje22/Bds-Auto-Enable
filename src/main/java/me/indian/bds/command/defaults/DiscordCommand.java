@@ -1,7 +1,5 @@
 package me.indian.bds.command.defaults;
 
-import java.time.OffsetDateTime;
-import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.config.AppConfigManager;
@@ -9,9 +7,7 @@ import me.indian.bds.discord.DiscordHelper;
 import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.util.MessageUtil;
 import net.dv8tion.jda.api.OnlineStatus;
-import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Member;
-import net.dv8tion.jda.api.entities.RichPresence;
 import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 
@@ -44,32 +40,15 @@ public class DiscordCommand extends Command {
 
         if (args[0].equalsIgnoreCase("help")) {
             this.sendMessage("&aonline&4 -&b Osoby online mające dostęp do&1 #" + this.textChannel.getName());
-            this.sendMessage("&aonline&e true&4 -&b Osoby online mające dostęp do&1 #" + this.textChannel.getName() +"&b i ich statusy aktywności");
             this.sendMessage("&amessage&4 -&b Wysyła wiadomość do Discord na kanał&1 #" + this.textChannel.getName());
             this.sendMessage("&astatus&4 -&b Zmienia status bota");
             return true;
         }
 
         if (args[0].equalsIgnoreCase("online")) {
-            boolean activity = false;
-
-            if (args.length == 2) {
-                try {
-                    activity = Boolean.parseBoolean(args[1]);
-                } catch (final Exception ignored) {
-                }
-            }
-
             if(!this.discordJDA.isCacheFlagEnabled(CacheFlag.ONLINE_STATUS)){
                 this.sendMessage("&cFlaga&b " +  CacheFlag.ONLINE_STATUS +"&c jest wyłączona , bot nie wie kto ma jaki status aktywności");
                 return true;
-            }
-
-            if(activity){
-                if(!this.discordJDA.isCacheFlagEnabled(CacheFlag.ACTIVITY)){
-                    this.sendMessage("&cFlaga&b " + CacheFlag.ACTIVITY +"&c jest wyłączona , bot nie ma dostępu do statusy aktywności osób");
-                    activity = false;
-                }
             }
 
             this.sendMessage("&aOsoby online mające dostęp do&1 #" + this.textChannel.getName());
@@ -78,13 +57,8 @@ public class DiscordCommand extends Command {
                 this.sendMessage(this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(member.getIdLong())) +
                         " &b" + this.discordJDA.getUserName(member, member.getUser()) +
                         "&d - " + this.discordJDA.getStatusColor(member.getOnlineStatus()) + onlineStatus +
-                        " &6[&9" + MessageUtil.enumSetToString(member.getActiveClients(), " &a,&9 ") + "&6] " +
-                        (activity ? this.getJoinTime(member) : "")
+                        " &6[&9" + MessageUtil.enumSetToString(member.getActiveClients(), " &a,&9 ") + "&6] "
                 );
-
-                if (activity) {
-                    this.sendMessage(this.getActivity(member));
-                }
             }
             return true;
         }
@@ -118,47 +92,5 @@ public class DiscordCommand extends Command {
         }
 
         return false;
-    }
-
-    public String getJoinTime(final Member member) {
-        final OffsetDateTime joinedDate = member.getTimeJoined();
-        return "&eDołączył:&f " + joinedDate.toLocalDate() + " " + joinedDate.getHour() + ":" +
-                joinedDate.getMinute();
-    }
-
-    public String getActivity(final Member member) {
-        final List<Activity> activities = member.getActivities();
-        final StringBuilder activityMessage = new StringBuilder();
-        int counter = 0;
-
-        if (activities.isEmpty()) return "";
-
-        for (final Activity activity : activities) {
-            final RichPresence richPresence = activity.asRichPresence();
-            final String detal = (richPresence == null ? "" : (richPresence.getDetails() == null ? "" : " &e=&3 " + richPresence.getDetails()));
-            final String url = (activity.getUrl() == null ? "" : activity.getUrl());
-
-            switch (activity.getType()) {
-                case LISTENING ->
-                        activityMessage.append("&a").append(activity.getName()).append(":&1 ").append(detal.replaceAll(" &e=&3 ", "")).append(counter < activities.size() - 1 ? "&r\n" : "");
-                case STREAMING ->
-                        activityMessage.append(activity.getName()).append(" ").append(url).append(detal).append(counter < activities.size() - 1 ? "&r\n" : "");
-                case CUSTOM_STATUS -> {
-                    if (!activity.getName().equalsIgnoreCase("Custom Status")) {
-                        activityMessage
-                                /* .append(activity.getEmoji() == null ? "" : activity.getEmoji().getName()) */
-                                .append(" ").append(activity.getName()).append(detal).append(counter < activities.size() - 1 ? "&r\n" : "");
-                    }
-                }
-//                case COMPETING ->  {}
-//                case WATCHING -> {}
-                case PLAYING ->
-                        activityMessage.append("Gra w:&1 ").append(activity.getName()).append(detal).append(counter < activities.size() - 1 ? "&r\n" : "");
-                default ->
-                        activityMessage.append(activity.getName()).append("  ").append(detal).append(counter < activities.size() - 1 ? "&r\n" : "");
-            }
-            counter++;
-        }
-        return activityMessage + "\n";
     }
 }
