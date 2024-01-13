@@ -47,7 +47,7 @@ public final class ThreadUtil implements ThreadFactory {
     }
 
     public static int getThreadsCount() {
-        int availableThreads = 2;
+        int availableThreads = Runtime.getRuntime().availableProcessors();
         try {
             availableThreads = ManagementFactory.getThreadMXBean().getThreadCount();
         } catch (final Exception ignore) {
