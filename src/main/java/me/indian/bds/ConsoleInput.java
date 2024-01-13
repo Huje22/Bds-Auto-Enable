@@ -53,14 +53,14 @@ public class ConsoleInput {
                 }
                 this.logger.alert("Konsola zakończyła działanie");
             } catch (final Exception exception) {
-                this.logger.critical("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ", exception);
+                this.logger.critical("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ");
                 this.discordHelper.getWebHook().sendEmbedMessage("ServerProcess",
                         "Wypisywanie konsoli uległo awarii , powoduje to wyłączenie aplikacji",
                         exception,
                         new Footer(exception.getLocalizedMessage()));
                 this.discordHelper.getWebHook().sendMessage("<owner>");
-            } finally {
-                System.exit(0);
+
+                throw exception;
             }
         }).start();
     }
