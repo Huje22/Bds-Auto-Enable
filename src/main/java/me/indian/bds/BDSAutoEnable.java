@@ -10,6 +10,7 @@ import me.indian.bds.command.CommandManager;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.DiscordHelper;
+import me.indian.bds.exception.MissingDllException;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.rest.RestWebsite;
 import me.indian.bds.server.ServerProcess;
@@ -193,20 +194,16 @@ public class BDSAutoEnable {
         }
     }
 
-    private void checkDlls(){
-        if(SystemOS.getSystem() == SystemOS.WINDOWS){
-            /*
-            TODO:
-             Sprawdzać czy użytkownik posiada "vcruntime 140_1.dll" i "MSVCP140.dll"
-             A jeśli nie , nie przepuszczać go dalej
+    private void checkDlls() {
+        if (SystemOS.getSystem() == SystemOS.WINDOWS) {
+            final File vcruntime = new File("C:\\Windows\\System32\\vcruntime140_1.dll");
+            final File msvcp = new File("C:\\Windows\\System32\\msvcp140.dll");
 
-                "C:\Windows\System32\vcruntime140_1.dll"
-                "C:\Windows\System32\msvcp140.dll"
-
-             "Musisz pobrać pakiet redystrybucyjny programu Visual C++ &d(&b x64&r i&b x86&d)&r
-              z https://learn.microsoft.com/en-US/cpp/windows/latest-supported-vc-redist?view=msvc-170
-             */
-            
+            if (!vcruntime.exists() || !msvcp.exists()) {
+                if (!vcruntime.exists()) this.logger.critical("Brak&b vcruntime140_1.dll&r bez tego nie możemy uruchomić&e BDS");
+                if (!msvcp.exists()) this.logger.critical("Brak&b msvcp140.dll&r bez tego nie możemy uruchomić&e BDS");
+                throw new MissingDllException("Musisz pobrać pakiet redystrybucyjny programu Visual C++ (x64 i x86)");
+            }
         }
     }
 
