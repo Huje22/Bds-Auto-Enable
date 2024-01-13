@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
@@ -29,7 +27,6 @@ import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.PackModule;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
@@ -57,7 +54,6 @@ public class DiscordJDA {
     private final AppConfigManager appConfigManager;
     private final DiscordConfig discordConfig;
     private final long serverID, channelID, consoleID;
-    private final ExecutorService consoleService;
     private final List<JDAListener> listeners;
     private final Map<String, Pattern> mentionPatternCache;
     private final DiscordHelper discordHelper;
@@ -75,7 +71,6 @@ public class DiscordJDA {
         this.serverID = this.discordConfig.getBotConfig().getServerID();
         this.channelID = this.discordConfig.getBotConfig().getChannelID();
         this.consoleID = this.discordConfig.getBotConfig().getConsoleID();
-        this.consoleService = Executors.newSingleThreadExecutor(new ThreadUtil("discord-Console"));
         this.listeners = new ArrayList<>();
         this.mentionPatternCache = new HashMap<>();
         this.discordHelper = discordHelper;
@@ -464,7 +459,7 @@ public class DiscordJDA {
     public void writeConsole(final String message) {
         if (this.jda != null && this.consoleChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
             if (message.isEmpty()) return;
-            this.consoleService.execute(() -> this.consoleChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue());
+            this.consoleChannel.sendMessage(message.replaceAll("<owner>", this.getOwnerMention())).queue();
         }
     }
 

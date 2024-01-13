@@ -34,7 +34,7 @@ public class ServerProcess {
     private final DiscordHelper discordHelper;
     private final DiscordJDA discordJDA;
     private final ServerManager serverManager;
-    private final ExecutorService processService;
+    private final ExecutorService processService, consoleOutputService;
     private final Lock cmdLock, cmdResponseLock;
     private final String prefix;
     private final SystemOS system;
@@ -44,7 +44,7 @@ public class ServerProcess {
     private String lastLine;
     private long startTime;
     private WatchDog watchDog;
-    private boolean canRun;
+    private boolean canRun, canWriteConsoleOutput;
 
     public ServerProcess(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -54,11 +54,13 @@ public class ServerProcess {
         this.discordJDA = this.discordHelper.getDiscordJDA();
         this.serverManager = this.bdsAutoEnable.getServerManager();
         this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
+        this.consoleOutputService = Executors.newScheduledThreadPool(4, new ThreadUtil("Console Output"));
         this.cmdLock = new ReentrantLock();
         this.cmdResponseLock = new ReentrantLock();
         this.prefix = "&b[&3ServerProcess&b] ";
         this.system = SystemOS.getSystem();
         this.canRun = true;
+        this.canWriteConsoleOutput = true;
     }
 
     public void init() {
@@ -134,6 +136,9 @@ public class ServerProcess {
                             System.exit(0);
                         }
                     }
+
+                    this.canWriteConsoleOutput = true;
+
                     this.watchDog.getPackModule().getPackInfo();
                     this.process = this.processBuilder.start();
                     this.startTime = System.currentTimeMillis();
@@ -141,19 +146,18 @@ public class ServerProcess {
                     if (!this.appConfigManager.getAppConfig().isQuestions()) {
                         this.bdsAutoEnable.getSettings().currentSettings(this.bdsAutoEnable.getMainScanner(), false);
                     }
+
                     this.discordJDA.sendProcessEnabledMessage();
                     this.logger.info("Uruchomiono proces servera ");
                     this.logger.debug("&bPID&r procesu servera to&1 " + this.process.pid());
-
-                    final Thread output = new ThreadUtil("Console-Output").newThread(this::readConsoleOutput);
-
-                    output.start();
+                    this.consoleOutputService.execute(this::readConsoleOutput);
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
+
+                    this.canWriteConsoleOutput = false;
                     this.watchDog.getAutoRestartModule().noteRestart();
                     this.serverManager.clearPlayers();
                     this.serverManager.getStatsManager().saveAllData();
-                    output.interrupt();
                     this.discordJDA.sendDisabledMessage();
                     this.startProcess();
                 } catch (final Exception exception) {
@@ -169,24 +173,30 @@ public class ServerProcess {
         });
     }
 
+    /**
+     * Metoda dzięki której konsola servera BDS wypisywana jest do konsoli aplikacji
+     * Metody wykonywane są z consoleOutputService aby nie obciążać jednego wątku wykonywaniem tylu akcji na raz
+     */
+
     private void readConsoleOutput() {
         try (final Scanner consoleOutput = new Scanner(this.process.getInputStream())) {
             try {
-                while (!Thread.currentThread().isInterrupted()) {
+                while (this.canWriteConsoleOutput) {
                     if (!consoleOutput.hasNext()) continue;
-                    //TODO: Dodać wielowątkowość ale zsynchronizowana 
                     final String line = consoleOutput.nextLine();
                     if (line.isEmpty()) continue;
+
                     if (!this.containsNotAllowedToFileLog(line)) {
-                        this.logger.instantLogToFile(line);
+                        this.consoleOutputService.execute(() -> this.logger.instantLogToFile(line));
                     }
+
                     if (!this.containsNotAllowedToConsoleLog(line)) {
-                        System.out.println(line);
+                        this.consoleOutputService.execute(() -> System.out.println(line));
                         this.lastLine = line;
                         this.serverManager.initFromLog(line);
                     }
                     if (!this.containsNotAllowedToDiscordConsoleLog(line)) {
-                        this.discordJDA.writeConsole(line);
+                        this.consoleOutputService.execute(() -> this.discordJDA.writeConsole(line));
                     }
                 }
             } catch (final Exception exception) {
