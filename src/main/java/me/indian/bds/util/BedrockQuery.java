@@ -10,7 +10,7 @@ import java.net.UnknownHostException;
 import java.util.Random;
 import me.indian.bds.server.properties.Gamemode;
 
- /*
+    /**
     Kod zaczerpnięty z
     https://github.com/justin-eckenweber/BedrockServerQuery/blob/main/src/main/java/me/justin/bedrockserverquery/data/BedrockQuery.java
      */

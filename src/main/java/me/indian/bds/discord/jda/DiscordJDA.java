@@ -362,8 +362,11 @@ public class DiscordJDA {
         }
     }
 
+    /**
+     * Kod lekko przerobiony z https://github.com/DiscordSRV/DiscordSRV/blob/master/src/main/java/github/scarsz/discordsrv/util/DiscordUtil.java#L135
+     */
+
     private String convertMentionsFromNames(String message) {
-        //Kod lekko przerobiony z https://github.com/DiscordSRV/DiscordSRV/blob/master/src/main/java/github/scarsz/discordsrv/util/DiscordUtil.java#L135
         if (!message.contains("@")) return message;
 
         final Map<Pattern, String> patterns = new HashMap<>();
