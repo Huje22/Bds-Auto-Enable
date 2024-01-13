@@ -59,7 +59,7 @@ public class AutoRestartModule {
                     AutoRestartModule.this.logger.error("Nie można zrestartować servera gdy jest on wyłączony!");
                     return;
                 }
-                AutoRestartModule.this.restart(true);
+                AutoRestartModule.this.restart(true, 10);
                 AutoRestartModule.this.lastRestartMillis = System.currentTimeMillis();
             }
         };
@@ -71,7 +71,7 @@ public class AutoRestartModule {
         }
     }
 
-    public void restart(final boolean alert) {
+    public void restart(final boolean alert, final int seconds) {
         if (this.restarting) return;
         this.restarting = true;
         this.service.execute(() -> {
@@ -84,7 +84,7 @@ public class AutoRestartModule {
                         "&aPrzygotowanie do&b restartu&a servera",
                         LogState.WARNING);
                 this.watchDog.saveAndResume();
-                if (alert) this.restartAlert();
+                if (alert) this.restartAlert(seconds);
 
                 this.discordJDA.sendRestartMessage();
 
@@ -120,8 +120,8 @@ public class AutoRestartModule {
         this.lastRestartMillis = System.currentTimeMillis();
     }
 
-    private void restartAlert() {
-        for (int i = 10; i >= 0; i--) {
+    private void restartAlert(int seconds) {
+        for (int i = seconds; i >= 0; i--) {
             AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
                     "&aZa&1 " + i + "&a sekund zostanie zrestartowany server!", LogState.INFO);
             ThreadUtil.sleep(1);

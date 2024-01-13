@@ -181,7 +181,7 @@ public class ServerManager {
             if (this.lastTPS <= 8 && tps <= 8) {
                 this.discordJDA.sendMessage("Zaraz nastąpi restartowanie servera z powodu niskiej ilości TPS"
                         + " (Teraz: **" + tps + "** Ostatnie: **" + this.lastTPS + "**)");
-                this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true);
+                this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true, 10);
             }
 
             this.lastTPS = tps;
