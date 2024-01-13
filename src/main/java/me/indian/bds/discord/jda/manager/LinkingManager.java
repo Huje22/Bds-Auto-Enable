@@ -200,6 +200,8 @@ public class LinkingManager {
 
             final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager().getPlayTimeByName(name), TimeUnit.MILLISECONDS);
 
+
+            //TODO: Naprawić to bo coś jest buggerd i gracz dostaje role jak ma mniej niż 5h
             final Role playtimeRole = guild.getRoleById(this.appConfigManager.getDiscordConfig()
                     .getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID());
 
