@@ -136,7 +136,6 @@ public class ServerProcess {
                         }
                     }
                     this.watchDog.getPackModule().getPackInfo();
-                    this.colorizeMOTD();
                     this.process = this.processBuilder.start();
                     this.startTime = System.currentTimeMillis();
 
@@ -171,16 +170,12 @@ public class ServerProcess {
         });
     }
 
-    private void colorizeMOTD() {
-        final ServerProperties serverProperties = this.bdsAutoEnable.getServerProperties();
-        serverProperties.setMOTD(MessageUtil.fixMessage(MessageUtil.colorize(serverProperties.getMOTD())));
-    }
-
     private void readConsoleOutput() {
         try (final Scanner consoleOutput = new Scanner(this.process.getInputStream())) {
             try {
                 while (!Thread.currentThread().isInterrupted()) {
                     if (!consoleOutput.hasNext()) continue;
+                    //TODO: Dodać wielowątkowość ale zsynchronizowana 
                     final String line = consoleOutput.nextLine();
                     if (line.isEmpty()) continue;
                     if (!this.containsNotAllowedToFileLog(line)) {
