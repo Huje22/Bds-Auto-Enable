@@ -11,6 +11,7 @@ import me.indian.bds.command.defaults.HelpCommand;
 import me.indian.bds.command.defaults.LinkCommand;
 import me.indian.bds.command.defaults.MuteCommand;
 import me.indian.bds.command.defaults.PlaytimeCommand;
+import me.indian.bds.command.defaults.RestartCommand;
 import me.indian.bds.command.defaults.ServerPingCommand;
 import me.indian.bds.command.defaults.SettingInfoCommand;
 import me.indian.bds.command.defaults.StatsCommand;
@@ -30,6 +31,7 @@ public class CommandManager {
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.commandList = new ArrayList<>();
         this.registerCommand(new HelpCommand(this.commandList));
+        this.registerCommand(new RestartCommand(this.bdsAutoEnable));
         this.registerCommand(new BackupCommand(this.bdsAutoEnable));
         this.registerCommand(new PlaytimeCommand(this.bdsAutoEnable));
         this.registerCommand(new DeathsCommand(this.bdsAutoEnable));
