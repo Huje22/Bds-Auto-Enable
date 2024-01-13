@@ -149,6 +149,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             msg += this.discordConfig.getDiscordMessagesConfig().getWebhook();
         }
 
+        msg += MessageUtil.fixMessage(msg);
+
         this.serverProcess.tellrawToAll(msg);
         this.logger.info(msg);
         this.discordJDA.writeConsole(ConsoleColors.removeColors(msg));

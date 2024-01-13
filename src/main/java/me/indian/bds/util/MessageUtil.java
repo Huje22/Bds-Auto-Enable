@@ -33,12 +33,12 @@ public final class MessageUtil {
 
     public static String fixMessage(final String message, final boolean newLines) {
         if (message.isEmpty()) return "";
-        String msg2 = message.replaceAll("[\\uE000-\\uE0EA]", "?")
+        String msg2 = message.replaceAll("\\\\", "")
+                .replaceAll("[\\uE000-\\uE0EA]", "?")
                 .replaceAll("\\$", "?")
                 .replaceAll("ঋ", "?")
                 .replaceAll("ༀ", "?")
                 .replaceAll("", "?");
-//                        .replaceAll("\\\\", "")
 
         if (!newLines) msg2 = msg2.replaceAll("\\r\\n|\\r|\\n", " ");
         

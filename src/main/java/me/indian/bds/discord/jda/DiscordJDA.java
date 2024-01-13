@@ -119,7 +119,7 @@ public class DiscordJDA {
             if (this.guild == null) {
                 this.jda.shutdown();
                 this.jda = null;
-                throw new NullPointerException("Nie można odnaleźć servera o ID&b " + this.serverID);
+                throw new NullPointerException("Nie można odnaleźć servera o ID " + this.serverID);
             }
 
             this.textChannel = this.guild.getTextChannelById(this.channelID);

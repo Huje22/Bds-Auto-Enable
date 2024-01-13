@@ -20,7 +20,6 @@ import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.manager.ServerManager;
-import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
@@ -224,7 +223,7 @@ public class ServerProcess {
 
             this.someChangesForCommands(command);
 
-            outputStream.write((command.replaceAll("\n", "\\\\n") + "\n").getBytes());
+            outputStream.write((command + "\n").getBytes());
             outputStream.flush();
 
             this.logger.debug("Wysłano &b" + command.replaceAll("\n", "\\\\n"));
