@@ -306,6 +306,9 @@ public class Settings {
     }
 
     public void currentSettings(final Scanner scanner, final boolean waitForUser) {
+
+        this.serverProperties.loadProperties();
+
         this.logger.print();
         this.logger.info("&n&lAktualne Dane");
         this.logger.print();

@@ -22,6 +22,8 @@ public class SettingInfoCommand extends Command {
             return true;
         }
 
+        this.properties.loadProperties();
+
         this.sendMessage("&aSystem:&b " + SystemOS.getSystem() + " &d(&1" + SystemOS.getFullyOsName() + "&d)");
         this.sendMessage("&aSystem arch:&b " + SystemArch.getFullyArchCode() + " &d(&1" + SystemArch.getCurrentArch() + "&d)");
 
