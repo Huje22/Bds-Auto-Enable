@@ -173,29 +173,4 @@ public final class StatusUtil {
     public static long getFreeRam() {
         return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getFreeMemorySize();
     }
-
-    private static long getMemoryUsageWindows(final long pid) throws IOException {
-        final Process process = Runtime.getRuntime().exec("tasklist /NH /FI \"PID eq " + pid + "\"");
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (line.contains(".exe")) {
-                    final String[] tokens = line.split("\\s+");
-                    if (tokens.length > 4) {
-                        final String memoryStr = tokens[4].replaceAll("\\D", "");
-                        return Long.parseLong(memoryStr);
-                    }
-                }
-            }
-        }
-        return -1;
-    }
-
-    private static long getMemoryUsageLinux(final long pid) throws IOException {
-        final Process process = Runtime.getRuntime().exec("ps -p " + pid + " -o rss=");
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
-            final String line = reader.readLine();
-            return line != null ? Long.parseLong(line) : -1;
-        }
-    }
 }
