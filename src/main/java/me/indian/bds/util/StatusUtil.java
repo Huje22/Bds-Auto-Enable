@@ -1,10 +1,7 @@
 package me.indian.bds.util;
 
 import com.sun.management.OperatingSystemMXBean;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
@@ -17,7 +14,7 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.ServerStats;
 import me.indian.bds.server.manager.StatsManager;
-import me.indian.bds.util.system.SystemOS;
+import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.watchdog.WatchDog;
 
 public final class StatusUtil {
@@ -152,9 +149,9 @@ public final class StatusUtil {
     public static long getServerRamUsage() {
         if (!SERVERPROCESS.isEnabled()) return 0;
         try {
-            return SystemUtil...
+            return SystemUtil.getRamUsageByPid(SERVERPROCESS.getProcess().pid());
         } catch (final Exception exception) {
-            LOGGER.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + SystemOS.getSystem(), exception);
+            LOGGER.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + SystemUtil.getSystem(), exception);
         }
         return -1;
     }

@@ -8,7 +8,7 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.system.SystemOS;
+import me.indian.bds.util.system.SystemUtil;
 
 public final class DefaultsVariables {
 
@@ -26,17 +26,11 @@ public final class DefaultsVariables {
     }
 
     public static String getDefaultFileName() {
-        switch (SystemOS.getSystem()) {
-            case LINUX -> {
-                return "bedrock_server";
-            }
-            case WINDOWS -> {
-                return "bedrock_server.exe";
-            }
-            default -> {
-                return "";
-            }
-        }
+       return switch (SystemUtil.getSystem()) {
+            case LINUX -> "bedrock_server";
+            case WINDOWS ->  "bedrock_server.exe";
+            default -> "";
+        };
     }
 
     public static String getJarDir() {

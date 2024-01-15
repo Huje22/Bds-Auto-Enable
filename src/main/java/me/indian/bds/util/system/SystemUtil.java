@@ -1,8 +1,14 @@
 package me.indian.bds.util.system;
 
-public class SystemUtil {
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import me.indian.bds.exception.UnSupportedSystemException;
 
-    private SystemUtil(){}
+public final class SystemUtil {
+
+    private SystemUtil() {
+    }
 
     public static SystemOS getSystem() {
         final String os = System.getProperty("os.name").toLowerCase();
@@ -22,27 +28,25 @@ public class SystemUtil {
         return System.getProperty("os.name");
     }
 
-  public static void clearSystemCache(){
-switch(getSystem()){
-    case LINUX ->{
-//sync && echo 3 > /proc/sys/vm/drop_caches
-    }
-    case WINDOWS -> {
-// echo 1 > %SystemRoot%\System32\\DriverStore\EnforcementCache\EnforcementClientAggregateCache.dat
-    }
-  }
-
-      public static long getRamUsageByPid(final long pid)  throws IOException , UnSupportedSystemException {
-            switch (SystemOS.getSystem()) {
-              case WINDOWS -> getMemoryUsageWindows(pid);
-                case LINUX -> getMemoryUsageLinux(pid);
-                case UNSUPORTED -> throw new UnSupportedSystemException("Nie można pozyskać ilość ram z nie wspieranego systemu");
-                
+    public static void clearSystemCache() throws IOException, UnSupportedSystemException {
+        switch (getSystem()) {
+            case LINUX -> Runtime.getRuntime().exec("sync && echo 3 > /proc/sys/vm/drop_caches");
+            case WINDOWS -> {
+                //TODO: Dodać sensowne wspracie dla windows
             }
-        } 
-      }
+            default -> throw new UnSupportedSystemException("Nie można wyczyścić pamięci cache dla nie wspieranego systemu");
+        }
+    }
 
-      private static long getMemoryUsageWindows(final long pid) throws IOException {
+    public static long getRamUsageByPid(final long pid) throws IOException, UnSupportedSystemException {
+        return switch (getSystem()) {
+            case WINDOWS -> getMemoryUsageWindows(pid);
+            case LINUX -> getMemoryUsageLinux(pid);
+            default -> throw new UnSupportedSystemException("Nie można pozyskać ilość ram dla wspieranego systemu");
+        };
+    }
+
+    private static long getMemoryUsageWindows(final long pid) throws IOException {
         final Process process = Runtime.getRuntime().exec("tasklist /NH /FI \"PID eq " + pid + "\"");
         try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
             String line;

@@ -25,6 +25,7 @@ import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ZipUtil;
 import me.indian.bds.util.system.SystemArch;
 import me.indian.bds.util.system.SystemOS;
+import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
 
@@ -123,7 +124,7 @@ public class BDSAutoEnable {
 
     private void checkSystemSupport() {
         final SystemArch arch = SystemArch.getCurrentArch();
-        final SystemOS systemOS = SystemOS.getSystem();
+        final SystemOS systemOS = SystemUtil.getSystem();
 
         if (arch == SystemArch.ARM || arch == SystemArch.AMD_X32) {
             if (this.appConfig.isDebug()) {
@@ -195,7 +196,7 @@ public class BDSAutoEnable {
     }
 
     private void checkDlls() {
-        if (SystemOS.getSystem() == SystemOS.WINDOWS) {
+        if (SystemUtil.getSystem() == SystemOS.WINDOWS) {
             final File vcruntime = new File("C:\\Windows\\System32\\vcruntime140_1.dll");
             final File msvcp = new File("C:\\Windows\\System32\\msvcp140.dll");
 

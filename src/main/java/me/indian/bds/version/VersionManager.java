@@ -28,6 +28,7 @@ import me.indian.bds.server.properties.StoreServerProperties;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.ZipUtil;
 import me.indian.bds.util.system.SystemOS;
+import me.indian.bds.util.system.SystemUtil;
 
 public class VersionManager {
 
@@ -53,7 +54,7 @@ public class VersionManager {
         this.availableVersions = new ArrayList<>();
         this.serverProcess = bdsAutoEnable.getServerProcess();
         this.versionUpdater = new VersionUpdater(bdsAutoEnable, this);
-        this.system = SystemOS.getSystem();
+        this.system = SystemUtil.getSystem();
         this.serverProperties = this.bdsAutoEnable.getServerProperties();
 
         if (!this.versionFolder.exists()) {

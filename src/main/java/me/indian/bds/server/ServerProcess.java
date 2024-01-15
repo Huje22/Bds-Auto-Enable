@@ -24,6 +24,7 @@ import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.system.SystemOS;
+import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.watchdog.WatchDog;
 
 public class ServerProcess {
@@ -58,7 +59,7 @@ public class ServerProcess {
         this.cmdLock = new ReentrantLock();
         this.cmdResponseLock = new ReentrantLock();
         this.prefix = "&b[&3ServerProcess&b] ";
-        this.system = SystemOS.getSystem();
+        this.system = SystemUtil.getSystem();
         this.canRun = true;
         this.canWriteConsoleOutput = true;
     }
