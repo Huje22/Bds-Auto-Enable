@@ -152,14 +152,7 @@ public final class StatusUtil {
     public static long getServerRamUsage() {
         if (!SERVERPROCESS.isEnabled()) return 0;
         try {
-            switch (SystemOS.getSystem()) {
-                case WINDOWS -> {
-                    return getMemoryUsageWindows(SERVERPROCESS.getProcess().pid());
-                }
-                case LINUX -> {
-                    return getMemoryUsageLinux(SERVERPROCESS.getProcess().pid());
-                }
-            }
+            return SystemUtil...
         } catch (final Exception exception) {
             LOGGER.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + SystemOS.getSystem(), exception);
         }
