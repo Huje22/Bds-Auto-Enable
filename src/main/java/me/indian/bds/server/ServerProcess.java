@@ -215,6 +215,10 @@ public class ServerProcess {
         }
     }
 
+    /**
+     * Metoda do wysyłania poleceń do konsoli servera BDS
+     */
+
     public void sendToConsole(final String command) {
         if (command.isEmpty()) return;
         this.cmdLock.lock();
@@ -246,6 +250,10 @@ public class ServerProcess {
             this.cmdResponseLock.unlock();
         }
     }
+
+    /**
+     * Metoda do wysyłania poleceń do konsoli servera BDS i uzyskania ostatniej linij z konsoli
+     */
 
     public String commandAndResponse(final String command) {
         final Thread thread = Thread.currentThread();
@@ -306,6 +314,10 @@ public class ServerProcess {
         this.logger.logByState("[To Minecraft] " + msg, throwable, logState);
         if (!this.serverManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
     }
+
+    /**
+     * Metoda do zatrzymania bezpiecznie servera wywoływana przez shutdown hook
+     */
 
     public void instantShutdown() {
         this.discordHelper.startShutdown();
