@@ -30,7 +30,16 @@ public final class SystemUtil {
 
     public static void clearSystemCache() throws IOException, UnSupportedSystemException {
         switch (getSystem()) {
-            case LINUX -> Runtime.getRuntime().exec("sync && echo 3 > /proc/sys/vm/drop_caches");
+            case LINUX ->{
+                try {
+    ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches");
+    Process process = processBuilder.start();
+    process.waitFor();
+                    //Ulepszyć to
+} catch (IOException | InterruptedException e) {
+    e.printStackTrace();
+                }
+            } 
             case WINDOWS -> {
                 //TODO: Dodać sensowne wspracie dla windows
             }
