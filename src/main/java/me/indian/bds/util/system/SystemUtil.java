@@ -28,25 +28,6 @@ public final class SystemUtil {
         return System.getProperty("os.name");
     }
 
-    public static void clearSystemCache() throws IOException, UnSupportedSystemException {
-        switch (getSystem()) {
-            case LINUX ->{
-                try {
-    ProcessBuilder processBuilder = new ProcessBuilder("sh", "-c", "sync && echo 3 > /proc/sys/vm/drop_caches");
-    Process process = processBuilder.start();
-    process.waitFor();
-                    //Ulepszyć to
-} catch (IOException | InterruptedException e) {
-    e.printStackTrace();
-                }
-            } 
-            case WINDOWS -> {
-                //TODO: Dodać sensowne wspracie dla windows
-            }
-            default -> throw new UnSupportedSystemException("Nie można wyczyścić pamięci cache dla nie wspieranego systemu");
-        }
-    }
-
     public static long getRamUsageByPid(final long pid) throws IOException, UnSupportedSystemException {
         return switch (getSystem()) {
             case WINDOWS -> getMemoryUsageWindows(pid);

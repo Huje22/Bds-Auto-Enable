@@ -12,8 +12,6 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.StatusUtil;
-import me.indian.bds.util.system.SystemOS;
-import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.watchdog.WatchDog;
 
 public class RamMonitor {
@@ -81,18 +79,6 @@ public class RamMonitor {
                             freeComputerMemory + " / " + maxComputerMemory,
                             LogState.ALERT);
 
-                    try {
-                        if (SystemUtil.getSystem() == SystemOS.LINUX && RamMonitor.this.ramMonitorConfig.isCleanCache()) {
-                            //TODO: Dodać sensowne wspracie dla windows
-                            SystemUtil.clearSystemCache();
-
-                            RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
-                                    "&aWyczyszczono pamięć cache maszyny", LogState.INFO);
-                            return;
-                        }
-                    } catch (final Exception exception) {
-                        RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix, "&aNie można wyczyścić pamięci cache servera", exception, LogState.ERROR);
-                    }
                     RamMonitor.this.discordJDA.sendMachineRamAlert();
                 }
             }
