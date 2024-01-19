@@ -2,7 +2,6 @@ package me.indian.bds.command.defaults;
 
 import java.util.List;
 import me.indian.bds.command.Command;
-import me.indian.bds.command.CommandSender;
 
 public class HelpCommand extends Command {
 
@@ -16,7 +15,6 @@ public class HelpCommand extends Command {
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         this.sendMessage("&a---------------------");
-        if (this.commandSender == CommandSender.PLAYER) this.sendMessage("&a!tps&4-&b ilość tików na sekundę servera");
         for (final Command command : this.commandList) {
             this.sendMessage("&a" + command.getName() + " &4-&b " + command.getDescription());
         }
