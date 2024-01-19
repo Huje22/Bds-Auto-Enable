@@ -162,7 +162,7 @@ public class ServerManager {
         if (matcher.find()) {
             final String playerDeath = MessageUtil.fixMessage(matcher.group(1));
             final String deathMessage = MessageUtil.fixMessage(matcher.group(2));
-            this.discordJDA.sendDeathMessage(playerDeath, deathMessage);
+            this.discordJDA.sendDeathMessage(playerDeath, deathMessage.replaceAll("§l" , "**"));
             this.statsManager.addDeaths(playerDeath, 1);
         }
     }
