@@ -69,7 +69,7 @@ public class ServerProcess {
         this.fileName = DefaultsVariables.getDefaultFileName();
     }
 
-    public boolean isProcessRunning() {
+    public boolean checkProcesRunning() {
         try {
             String command = "";
             switch (this.system) {
@@ -109,9 +109,11 @@ public class ServerProcess {
         }
         this.finalFilePath = this.appConfigManager.getAppConfig().getFilesPath() + File.separator + this.fileName;
         this.processService.execute(() -> {
-            if (this.isProcessRunning()) {
+            if (this.checkProcesRunning()) {
                 this.logger.info("Proces " + this.fileName + " jest już uruchomiony.");
-                System.exit(0);
+               this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera ");
+                ThreadUtil.sleep(30);
+                this.startProcess();
             } else {
                 this.logger.debug("Proces " + this.fileName + " nie jest uruchomiony. Uruchamianie...");
                 try {
