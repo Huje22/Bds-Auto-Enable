@@ -88,6 +88,7 @@ public abstract class Command {
                 ", description=" + this.description +
                 ", playerName= " + this.playerName +
                 ", commandSender= " + this.commandSender +
+                ", commandOptions= "+ this.commandOptions +
                 ")";
     }
 }
