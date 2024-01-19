@@ -497,7 +497,7 @@ public class DiscordJDA {
         if (this.discordConfig.getDiscordMessagesOptionsConfig().isSendDeathMessage()) {
             this.sendMessage(this.discordConfig.getDiscordMessagesConfig().getDeathMessage()
                     .replaceAll("<name>", playerName)
-                    .replaceAll("<casue>", deathMessage.replaceAll("\\\\", ""))
+                    .replaceAll("<deathMessage>", deathMessage.replaceAll("\\\\", ""))
             );
         }
     }

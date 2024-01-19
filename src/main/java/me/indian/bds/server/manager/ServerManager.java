@@ -155,14 +155,14 @@ public class ServerManager {
     }
 
     private void deathMessage(final String logEntry) {
-        final String patternString = "PlayerDeath:([^,]+) Casue:(.+)";
+        final String patternString = "PlayerDeath:([^,]+) DeathMessage:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerDeath = MessageUtil.fixMessage(matcher.group(1));
-            final String casue = MessageUtil.fixMessage(matcher.group(2));
-            this.discordJDA.sendDeathMessage(playerDeath, casue);
+            final String deathMessage = MessageUtil.fixMessage(matcher.group(2));
+            this.discordJDA.sendDeathMessage(playerDeath, deathMessage);
             this.statsManager.addDeaths(playerDeath, 1);
         }
     }

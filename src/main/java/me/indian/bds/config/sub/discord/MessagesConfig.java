@@ -35,7 +35,7 @@ public class MessagesConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Informacja o śmierci gracza"})
-    private String deathMessage = "Gracz **<name>** zabity przez <casue>";
+    private String deathMessage = "Gracz **<name>** <deathMessage>";
 
     @Comment({""})
     @Comment({"Wygląd wiadomości z Minecraft na Discord"})
