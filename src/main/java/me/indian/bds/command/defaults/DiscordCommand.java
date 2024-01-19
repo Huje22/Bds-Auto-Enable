@@ -17,7 +17,7 @@ public class DiscordCommand extends Command {
     private final AppConfigManager appConfigManager;
     private final DiscordHelper discordHelper;
     private final DiscordJDA discordJDA;
-    private TextChannel textChannel;
+    private final TextChannel textChannel;
 
     public DiscordCommand(final BDSAutoEnable bdsAutoEnable) {
         super("discord", "Komenda do zarządzania Discord ");
@@ -25,23 +25,20 @@ public class DiscordCommand extends Command {
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.discordHelper = this.bdsAutoEnable.getDiscordHelper();
         this.discordJDA = this.discordHelper.getDiscordJDA();
+        this.textChannel = this.discordJDA.getTextChannel();
 
-        this.addOption("help");
-        this.addOption("online [true]");
-        this.addOption("message <wiadomość>");
-        this.addOption("status <nowy status bota>");
+        this.addOption("help", "Lista poleceń");
+        this.addOption("online", "Osoby online mające dostęp do&1 #" + this.textChannel.getName());
+        this.addOption("message <wiadomość>", "Wysyła wiadomość do Discord na kanał&1 #" + this.textChannel.getName());
+        this.addOption("status <nowy status bota>", "Zmienia status bota");
     }
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (args.length == 0) return false;
 
-        this.textChannel = this.discordJDA.getTextChannel();
-
         if (args[0].equalsIgnoreCase("help")) {
-            this.sendMessage("&aonline&4 -&b Osoby online mające dostęp do&1 #" + this.textChannel.getName());
-            this.sendMessage("&amessage&4 -&b Wysyła wiadomość do Discord na kanał&1 #" + this.textChannel.getName());
-            this.sendMessage("&astatus&4 -&b Zmienia status bota");
+            this.buildHelp();
             return true;
         }
 

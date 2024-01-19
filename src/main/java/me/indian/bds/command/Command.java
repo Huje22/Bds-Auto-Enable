@@ -1,8 +1,8 @@
 package me.indian.bds.command;
 
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.CommandsConfig;
 import me.indian.bds.server.ServerProcess;
@@ -10,7 +10,7 @@ import me.indian.bds.server.ServerProcess;
 public abstract class Command {
 
     private final String name, description;
-    private final List<String> options;
+    private final Map<String, String> commandOptions;
     protected String playerName;
     protected CommandSender commandSender;
     protected CommandsConfig commandsConfig;
@@ -19,7 +19,7 @@ public abstract class Command {
     public Command(final String name, final String description) {
         this.name = "!" + name;
         this.description = description;
-        this.options = new ArrayList<>();
+        this.commandOptions = new HashMap<>();
     }
 
     public abstract boolean onExecute(String[] args, boolean isOp);
@@ -33,14 +33,25 @@ public abstract class Command {
     }
 
     protected void addOption(final String option) {
-        this.options.add(option);
+        this.commandOptions.put(option, "");
+    }
+
+    protected void addOption(final String option, final String description) {
+        this.commandOptions.put(option, description);
+    }
+
+    protected void buildHelp() {
+        for (final Map.Entry<String, String> option : this.commandOptions.entrySet()) {
+            this.sendMessage("&a" + option.getKey() + "&4 - &b" + option.getValue());
+        }
+        this.sendMessage("&b[]&4 -&a Opcjonalne &e<>&4 -&a Wymagane");
     }
 
     public String getUsage() {
         String usage = "";
         int counter = 0;
-        for (final String option : this.options) {
-            usage += option + (counter < this.options.size() - 1 ? ", " : "");
+        for (final Map.Entry<String, String> option : this.commandOptions.entrySet()) {
+            usage += option.getKey() + (counter < this.commandOptions.size() - 1 ? ", " : "");
             counter++;
         }
 
