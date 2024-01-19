@@ -154,12 +154,14 @@ public class DiscordJDA {
                     Commands.slash("backup", "Tworzenie bądź ostatni czas backupa"),
                     Commands.slash("difficulty", "Zmienia poziom trudności"),
                     Commands.slash("version", "Wersja BDS-Auto-Enable i severa, umożliwia update servera"),
-                    Commands.slash("ping", "aktualny ping bot z serwerami discord"),
+                    Commands.slash("ping", "Aktualny ping bot z serwerami discord"),
                     Commands.slash("stats", "Statystyki Servera i aplikacji."),
                     Commands.slash("cmd", "Wykonuje polecenie w konsoli.")
                             .addOption(OptionType.STRING, "command", "Polecenie które zostanie wysłane do konsoli.", true),
-                    Commands.slash("link", "Łączy konto discord z kontem nickiem Minecraft.")
+                    Commands.slash("link", "Łączy konto Discord z kontem nickiem Minecraft.")
                             .addOption(OptionType.STRING, "code", "Kod aby połączyć konta", false),
+                    Commands.slash("unlink", "Rozłącza konto Discord z kontem nickiem Minecraft")
+                            .addOption(OptionType.STRING, "name", "Nick użytkownika którego konto ma zostać rozłączone", false),
                     Commands.slash("ip", "Informacje o ip ustawione w config"),
                     Commands.slash("playtime", "Top 100 graczy z największą ilością przegranego czasu"),
                     Commands.slash("deaths", "Top 100 graczy z największą ilością śmierci"),

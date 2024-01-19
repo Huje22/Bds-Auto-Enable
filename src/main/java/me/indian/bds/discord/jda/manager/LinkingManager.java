@@ -15,6 +15,7 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.config.sub.discord.LinkingConfig;
 import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.DefaultsVariables;
@@ -30,7 +31,8 @@ public class LinkingManager {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final AppConfigManager appConfigManager;
-    private final DiscordJDA DiscordJDA;
+    private final LinkingConfig linkingConfig;
+    private final DiscordJDA discordJDA;
     private final Logger logger;
     private final File linkedAccountsJson;
     private final HashMap<String, Long> linkedAccounts;
@@ -40,7 +42,8 @@ public class LinkingManager {
     public LinkingManager(final BDSAutoEnable bdsAutoEnable, final DiscordJDA DiscordJDA) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
-        this.DiscordJDA = DiscordJDA;
+        this.linkingConfig = this.appConfigManager.getDiscordConfig().getBotConfig().getLinkingConfig();
+        this.discordJDA = DiscordJDA;
         this.logger = this.bdsAutoEnable.getLogger();
         this.linkedAccountsJson = new File(DefaultsVariables.getAppDir() + "linkedAccounts.json");
         this.createJson();
@@ -86,6 +89,10 @@ public class LinkingManager {
         }
     }
 
+    public boolean isCanUnlink() {
+        return this.linkingConfig.isCanUnlink();
+    }
+
     public void addAccountToLink(final String name, final String code) {
         if (this.isLinked(name)) return;
         this.accountsToLink.put(name, code);
@@ -114,12 +121,12 @@ public class LinkingManager {
     @Nullable
     public Member getMember(final String name) {
         if (!this.isLinked(name)) return null;
-        return this.DiscordJDA.getGuild().getMemberById(this.getIdByName(name));
+        return this.discordJDA.getGuild().getMemberById(this.getIdByName(name));
     }
 
     public boolean hasPermissions(final String name, final Permission permission) {
         if (!this.isLinked(name)) return false;
-        final Member member = this.DiscordJDA.getGuild().getMemberById(this.getIdByName(name));
+        final Member member = this.discordJDA.getGuild().getMemberById(this.getIdByName(name));
         return (member != null && member.hasPermission(permission));
     }
 
@@ -131,7 +138,7 @@ public class LinkingManager {
         this.linkedMembers.clear();
 
         for (final Map.Entry<String, Long> map : this.linkedAccounts.entrySet()) {
-            final Member member = this.DiscordJDA.getGuild().getMemberById(map.getValue());
+            final Member member = this.discordJDA.getGuild().getMemberById(map.getValue());
             if (member == null) continue;
             this.linkedMembers.add(member);
         }
@@ -187,7 +194,7 @@ public class LinkingManager {
         for (final Map.Entry<String, Long> map : this.linkedAccounts.entrySet()) {
             final String name = map.getKey();
             final long id = map.getValue();
-            final Guild guild = this.DiscordJDA.getGuild();
+            final Guild guild = this.discordJDA.getGuild();
             final Member member = guild.getMemberById(id);
 
             if (member == null) continue;
@@ -199,12 +206,8 @@ public class LinkingManager {
             }
 
             final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager().getPlayTimeByName(name), TimeUnit.MILLISECONDS);
-
-            final Role playtimeRole = guild.getRoleById(this.appConfigManager.getDiscordConfig()
-                    .getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID());
-
-            final Role linkingRole = guild.getRoleById(this.appConfigManager.getDiscordConfig()
-                    .getBotConfig().getLinkingConfig().getLinkedRoleID());
+            final Role playtimeRole = guild.getRoleById(this.linkingConfig.getLinkedPlaytimeRoleID());
+            final Role linkingRole = guild.getRoleById(this.linkingConfig.getLinkedRoleID());
 
             if (hours >= 5 && playtimeRole != null && !member.getRoles().contains(playtimeRole) && guild.getSelfMember().canInteract(playtimeRole)) {
                 guild.addRoleToMember(member, playtimeRole).queue();

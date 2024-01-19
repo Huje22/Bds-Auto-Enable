@@ -17,6 +17,7 @@ import me.indian.bds.command.defaults.SettingInfoCommand;
 import me.indian.bds.command.defaults.StatsCommand;
 import me.indian.bds.command.defaults.TPSCommand;
 import me.indian.bds.command.defaults.TestCommand;
+import me.indian.bds.command.defaults.UnlinkCommand;
 import me.indian.bds.command.defaults.VersionCommand;
 import me.indian.bds.server.ServerProcess;
 import net.dv8tion.jda.api.Permission;
@@ -51,6 +52,7 @@ public class CommandManager {
         if (this.bdsAutoEnable.getDiscordHelper().isBotEnabled()) {
             this.registerCommand(new DiscordCommand(this.bdsAutoEnable));
             this.registerCommand(new LinkCommand(this.bdsAutoEnable));
+            this.registerCommand(new UnlinkCommand(this.bdsAutoEnable));
         }
     }
 

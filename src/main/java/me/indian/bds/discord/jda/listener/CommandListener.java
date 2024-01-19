@@ -128,6 +128,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             event.getHook().editOriginal("Nie posiadasz permisji!!").queue();
                         }
                     }
+
                     case "link" -> {
                         if (!this.packModule.isLoaded()) {
                             event.getHook().editOriginal("Paczka **" + this.packModule.getPackName() + "** nie została załadowana").queue();
@@ -137,30 +138,21 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                         if (codeMapping != null && !codeMapping.getAsString().isEmpty()) {
                             final String code = codeMapping.getAsString();
                             final long id = member.getIdLong();
-                            final long roleID = this.discordConfig.getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID();
-                            final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
-                                    .getPlayTimeByName(this.linkingManager.getNameByID(id)), TimeUnit.MILLISECONDS);
-                            final EmbedBuilder linkingEmbed = new EmbedBuilder().setTitle("Łączenie kont").setColor(Color.BLUE)
-                                    /* .setFooter("Aby rozłączyć konto wpisz /unlink") */;
 
-                            String hoursMessage = "";
+                            final EmbedBuilder linkingEmbed = new EmbedBuilder().setTitle("Łączenie kont").setColor(Color.BLUE);
 
-                            if (hours < 5) {
-                                if (this.jda.getRoleById(roleID) != null) {
-                                    hoursMessage = "\nMasz za mało godzin gry aby otrzymać <@&" + roleID + "> **" + hours + "** godzin gry)" +
-                                            "\nDostaniesz role gdy wbijesz **5** godzin gry";
-                                }
+                            if (this.linkingManager.isCanUnlink()) {
+                                linkingEmbed.setFooter("Aby rozłączyć konto wpisz /unlink");
                             }
 
                             if (this.linkingManager.isLinked(id)) {
-                                linkingEmbed.setDescription("Twoje konto jest już połączone z: **" + this.linkingManager.getNameByID(id) + "**" + hoursMessage);
+                                linkingEmbed.setDescription("Twoje konto jest już połączone z: **" + this.linkingManager.getNameByID(id) + "**" + this.hasEnoughHours(member));
                                 event.getHook().editOriginalEmbeds(linkingEmbed.build()).queue();
-
                                 return;
                             }
 
                             if (this.linkingManager.linkAccount(code, id)) {
-                                linkingEmbed.setDescription("Połączono konto z nickiem: **" + this.linkingManager.getNameByID(id) + "**" + hoursMessage);
+                                linkingEmbed.setDescription("Połączono konto z nickiem: **" + this.linkingManager.getNameByID(id) + "**" + this.hasEnoughHours(member));
                                 event.getHook().editOriginalEmbeds(linkingEmbed.build()).queue();
                                 this.serverProcess.tellrawToPlayer(this.linkingManager.getNameByID(id),
                                         "&aPołączono konto z ID:&b " + id);
@@ -178,6 +170,42 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                             event.getHook().editOriginalEmbeds(messageEmbed).queue();
                         }
+                    }
+
+                    case "unlink" -> {
+                        final OptionMapping nameOption = event.getOption("name");
+                        final EmbedBuilder unlinkEmbed = new EmbedBuilder()
+                                .setTitle("Rozłączasz konto Discord z nickiem Minecraft")
+                                .setColor(Color.BLUE)
+                                .setFooter("Aby znów połączyć konto wpisz /link KOD");
+
+                        if (nameOption != null) {
+                            if (!member.hasPermission(Permission.ADMINISTRATOR)) {
+                                event.getHook().editOriginal("Nie masz permisji!").queue();
+                                return;
+                            }
+                            final String name = nameOption.getAsString();
+
+                            if (this.linkingManager.isLinked(name)) {
+                                this.linkingManager.unLinkAccount(name);
+                                unlinkEmbed.setDescription("Rozłączono konto " + name);
+                            } else {
+                                unlinkEmbed.setDescription("Gracz **" + name + "** nie posiada połączonych kont");
+                            }
+
+                        } else if (this.linkingManager.isCanUnlink() || member.hasPermission(Permission.ADMINISTRATOR)) {
+                            if (this.linkingManager.isLinked(member.getIdLong())) {
+                                this.linkingManager.unLinkAccount(member.getIdLong());
+                                unlinkEmbed.setDescription("Rozłączono konto z nickiem **" + this.linkingManager.getNameByID(member.getIdLong()) + "**");
+                            } else {
+                                unlinkEmbed.setDescription("Nie posiadasz połączonego konta Discord z nickiem Minecraft");
+                            }
+                        } else {
+                            event.getHook().editOriginal("Nie możesz sobie sam rozłączyć kont").queue();
+                            return;
+                        }
+
+                        event.getHook().editOriginalEmbeds(unlinkEmbed.build()).queue();
                     }
 
                     case "ping" -> {
@@ -293,6 +321,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                         event.getHook().editOriginalEmbeds(embed).queue();
                     }
+
                     case "difficulty" -> {
                         if (member.hasPermission(Permission.ADMINISTRATOR)) {
                             event.getHook().editOriginalEmbeds(this.getDifficultyEmbed())
@@ -302,6 +331,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                             event.getHook().editOriginalEmbeds(this.getDifficultyEmbed()).queue();
                         }
                     }
+
                     case "version" -> {
                         final String current = this.appConfigManager.getVersionManagerConfig().getVersion();
                         String latest = this.bdsAutoEnable.getVersionManager().getLatestVersion();
@@ -341,7 +371,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
 
                         if (portOption != null) port = portOption.getAsInt();
 
-                        event.getHook().editOriginalEmbeds(this.getServerInfo(adres, port)).queue();
+                        event.getHook().editOriginalEmbeds(this.getServerInfoEmbed(adres, port)).queue();
                     }
                 }
             } catch (final Exception exception) {
@@ -384,6 +414,21 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         }
 
         return linked;
+    }
+
+    private String hasEnoughHours(final Member member){
+        String hoursMessage = "";
+        final long roleID = this.discordConfig.getBotConfig().getLinkingConfig().getLinkedPlaytimeRoleID();
+        final long hours = MathUtil.hoursFrom(this.bdsAutoEnable.getServerManager().getStatsManager()
+                .getPlayTimeByName(this.linkingManager.getNameByID(member.getIdLong())), TimeUnit.MILLISECONDS);
+        if (hours < 5) {
+            if (this.jda.getRoleById(roleID) != null) {
+                hoursMessage = "\nMasz za mało godzin gry aby otrzymać <@&" + roleID + "> **" + hours + "** godzin gry)" +
+                        "\nDostaniesz role gdy wbijesz **5** godzin gry";
+            }
+        }
+
+        return hoursMessage;
     }
 
     private void serveDifficultyButton(final ButtonInteractionEvent event) {
@@ -586,7 +631,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
                 .build();
     }
 
-    private MessageEmbed getServerInfo(final String adres, final int port) {
+    private MessageEmbed getServerInfoEmbed(final String adres, final int port) {
         final BedrockQuery query = BedrockQuery.create(adres, port);
         final EmbedBuilder embedBuilder = new EmbedBuilder()
                 .setTitle("Server info")

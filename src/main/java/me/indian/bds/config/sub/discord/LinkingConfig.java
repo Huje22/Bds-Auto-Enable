@@ -22,6 +22,10 @@ public class LinkingConfig extends OkaeriConfig {
     @Comment({"Wiadomość która zostanie wysłana na pv do użytkownika bez połączonych kont"})
     private String cantTypeMessage = "Aby wysyłać wiadomości na tym kanale musisz mieć połączone konta discord i Minecraft ";
 
+    @Comment({""})
+    @Comment({"Czy użytkownik może sam rozłączyć swoje konto Discord z kontem Minecraft?"})
+    private boolean canUnlink = false;
+
     public long getLinkedRoleID() {
         return this.linkedRoleID;
     }
@@ -36,5 +40,9 @@ public class LinkingConfig extends OkaeriConfig {
 
     public String getCantTypeMessage() {
         return this.cantTypeMessage;
+    }
+
+    public boolean isCanUnlink() {
+        return this.canUnlink;
     }
 }
