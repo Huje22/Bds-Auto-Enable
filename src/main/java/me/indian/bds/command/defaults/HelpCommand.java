@@ -15,9 +15,7 @@ public class HelpCommand extends Command {
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         this.sendMessage("&a---------------------");
-        for (final Command command : this.commandList) {
-            this.sendMessage("&a" + command.getName() + " &4-&b " + command.getDescription());
-        }
+        this.commandList.forEach(command -> this.sendMessage("&a" + command.getName() + " &4-&b " + command.getDescription()));
         this.sendMessage("&a---------------------");
 
         return true;
