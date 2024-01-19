@@ -22,11 +22,21 @@ public class EventsConfig extends OkaeriConfig {
     @CustomKey("OnJoin")
     private List<String> onJoin = List.of("effect <player> resistance 10 100");
 
+    @Comment({""})
+    @Comment({"Komendy które zostaną wykonane gdy gracz dołączy na server"})
+    @Comment({"Można użyć <form> i <to> aby uzyskać wymiary"})
+    @CustomKey("OnDimensionChange")
+    private List<String> onDimensionChange = List.of("effect <player> resistance 20 100");
+
     public List<String> getOnSpawn() {
         return this.onSpawn;
     }
 
     public List<String> getOnJoin() {
         return this.onJoin;
+    }
+
+    public List<String> getOnDimensionChange() {
+        return this.onDimensionChange;
     }
 }

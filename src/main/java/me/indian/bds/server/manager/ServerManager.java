@@ -72,6 +72,7 @@ public class ServerManager {
             this.playerQuit(logEntry);
             this.playerSpawn(logEntry);
             this.deathMessage(logEntry);
+            this.dimensionChange(logEntry);
 
             //Dodatkowe metody
             this.serverEnabled(logEntry);
@@ -162,7 +163,10 @@ public class ServerManager {
         if (matcher.find()) {
             final String playerDeath = MessageUtil.fixMessage(matcher.group(1));
             final String deathMessage = MessageUtil.fixMessage(matcher.group(2));
-            this.discordJDA.sendDeathMessage(playerDeath, deathMessage.replaceAll("§l" , "**"));
+            this.discordJDA.sendDeathMessage(playerDeath, deathMessage
+                    .replaceAll("§l" , "**")
+                    .replaceAll("§r" , "")
+            );
             this.statsManager.addDeaths(playerDeath, 1);
         }
     }
@@ -187,6 +191,25 @@ public class ServerManager {
             this.lastTPS = tps;
 
             if (statsChannelsManager != null) statsChannelsManager.setTpsCount(tps);
+        }
+    }
+
+    public void dimensionChange(final String logEntry) {
+        final String patternString = "DimensionChangePlayer:([^,]+) From:(.+) To:(.+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerName = matcher.group(1);
+            final String fromDimension = matcher.group(2);
+            final String toDimension = matcher.group(3);
+
+            this.eventService.execute(() -> this.eventsConfig.getOnDimensionChange().
+                    forEach(command -> this.serverProcess.sendToConsole(command
+                            .replaceAll("<player>", playerName)
+                            .replaceAll("<from>", fromDimension)
+                            .replaceAll("<to>", toDimension)
+                    )));
         }
     }
 
