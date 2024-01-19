@@ -17,7 +17,6 @@ public class HelpCommand extends Command {
         this.sendMessage("&a---------------------");
         this.commandList.forEach(command -> this.sendMessage("&a" + command.getName() + " &4-&b " + command.getDescription()));
         this.sendMessage("&a---------------------");
-
         return true;
     }
 }

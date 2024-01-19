@@ -12,7 +12,6 @@ public class ServerPingCommand extends Command {
         super("server", "Pinguje server w celu uzyskania z niego informacji");
         this.bdsAutoEnable = bdsAutoEnable;
 
-        this.addOption("<ip>");
         this.addOption("<ip> [port]");
     }
 
