@@ -83,6 +83,8 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
         if (this.discordJDA.isCacheFlagEnabled(CacheFlag.ONLINE_STATUS)) {
             final OnlineStatus memberStatus = member.getOnlineStatus();
             if (memberStatus == OnlineStatus.OFFLINE || memberStatus == OnlineStatus.INVISIBLE) {
+              //TODO: Dodać info na dany kanał jaka wiadomość została usunięta 
+                
                 message.delete().queue();
                 this.discordJDA.sendPrivateMessage(author, "Nie możesz wysyłać wiadomość na tym kanale " +
                         "gdy twój status aktywności to `" + memberStatus + "`");
@@ -113,7 +115,9 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             if (linkingManager != null) {
                 if (!linkingConfig.isCanType()) {
                     if (!linkingManager.isLinked(id) && !author.isBot()) {
-                        this.discordJDA.mute(member, 1, TimeUnit.MINUTES);
+                        this.discordJDA.mute(member, 10, TimeUnit.SECONDS);
+                     //TODO: Dodać info na dany kanał jaka wiadomość została usunięta 
+              
                         message.delete().queue();
                         this.discordJDA.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
                         return;
