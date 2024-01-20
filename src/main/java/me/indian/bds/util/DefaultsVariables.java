@@ -1,14 +1,15 @@
 package me.indian.bds.util;
 
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfig;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.system.SystemUtil;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfig;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.system.SystemUtil;
 
 public final class DefaultsVariables {
 
@@ -50,7 +51,7 @@ public final class DefaultsVariables {
     }
 
     public static boolean isJavaLoverThan17() {
-        return Double.parseDouble(System.getProperty("java.version").substring(0, 3)) < 17.0;
+        return Double.parseDouble(System.getProperty("java.version").substring(0, 2)) < 17.0;
     }
 
     private static boolean wineCheck() {
