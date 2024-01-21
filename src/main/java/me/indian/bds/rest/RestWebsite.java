@@ -4,15 +4,17 @@ import io.javalin.Javalin;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.util.RateLimiter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.rest.RestApiConfig;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.rest.post.CommandPostRequest;
+import me.indian.bds.rest.post.key.CommandPostRequest;
+import me.indian.bds.rest.post.key.PlayerInfoPostRequest;
 import me.indian.bds.rest.request.StatsRequest;
 import me.indian.bds.rest.request.key.BackupRequest;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class RestWebsite {
 
@@ -32,6 +34,7 @@ public class RestWebsite {
         this.requests.add(new StatsRequest(this, bdsAutoEnable));
         this.requests.add(new BackupRequest(this, bdsAutoEnable));
         this.requests.add(new CommandPostRequest(this, bdsAutoEnable));
+        this.requests.add(new PlayerInfoPostRequest(this, bdsAutoEnable));
     }
 
     public void init() {

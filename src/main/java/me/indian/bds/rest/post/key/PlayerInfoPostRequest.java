@@ -1,17 +1,15 @@
-package me.indian.bds.rest.post;
+package me.indian.bds.rest.post.key;
 
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.discord.DiscordLogChannelType;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.rest.Request;
 import me.indian.bds.rest.RestWebsite;
-import me.indian.bds.rest.component.CommandRequestData;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.GsonUtil;
 
-public class CommandPostRequest implements Request {
+public class PlayerInfoPostRequest implements Request {
 
     private final RestWebsite restWebsite;
     private final BDSAutoEnable bdsAutoEnable;
@@ -19,7 +17,7 @@ public class CommandPostRequest implements Request {
     private final ServerProcess serverProcess;
     private final Javalin app;
 
-    public CommandPostRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
+    public PlayerInfoPostRequest(final RestWebsite restWebsite, final BDSAutoEnable bdsAutoEnable) {
         this.restWebsite = restWebsite;
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
@@ -29,20 +27,18 @@ public class CommandPostRequest implements Request {
 
     @Override
     public void init() {
-        this.app.post("/command/{api-key}", ctx -> {
+        this.app.post("/playerInfo/{api-key}", ctx -> {
             this.restWebsite.addRateLimit(ctx);
             if (!this.restWebsite.checkApiKey(ctx)) return;
 
             final String ip = ctx.ip();
             final String requestBody = ctx.body();
-            final CommandRequestData commandRequestData = GsonUtil.getGson().fromJson(requestBody, CommandRequestData.class);
-            final String command = commandRequestData.command();
 
-            if (command == null) {
-                this.logger.debug("&b" + ip + "&r wysła niepoprawny json&1 " + requestBody.replaceAll("\n", ""));
-                ctx.status(HttpStatus.BAD_REQUEST).result("Niepoprawny Json! " + requestBody.replaceAll("\n", ""));
-                return;
-            }
+            System.out.println(requestBody);
+
+            final PlayerInfoPostRequest playerInfoPostRequest = GsonUtil.getGson().fromJson(requestBody, PlayerInfoPostRequest.class);
+
+            //TODO:Dokończyć to 
 
             if (!this.serverProcess.isEnabled()) {
                 ctx.status(HttpStatus.SERVICE_UNAVAILABLE).result("Server jest wyłączony");
@@ -50,8 +46,9 @@ public class CommandPostRequest implements Request {
             }
 
             this.logger.debug("&b" + ip + "&r używa poprawnie endpointu&1 COMMAND");
-            this.logger.print(command, this.bdsAutoEnable.getDiscordHelper().getDiscordJDA(), DiscordLogChannelType.CONSOLE);
-            ctx.result("Ostatnia linia z konsoli: " + this.serverProcess.commandAndResponse(command));
+
+
+            ctx.result("");
         });
     }
 }
