@@ -321,7 +321,7 @@ public class ServerProcess {
      * Metoda do zatrzymania bezpiecznie servera wywoływana przez shutdown hook
      */
 
-    public void instantShutdown() {
+    public void instantShutdown()  {
         this.discordHelper.startShutdown();
         this.logger.alert("Wyłączanie...");
         this.discordJDA.sendDisablingMessage();
@@ -335,13 +335,13 @@ public class ServerProcess {
             this.watchDog.saveAndResume();
             this.sendToConsole("stop");
 
-            this.logger.info("Niszczenie procesu servera");
+            this.logger.alert("Oczekiwanie na zamknięcie servera");
+
             try {
-                this.process.destroy();
-                this.logger.info("Zniszczono proces servera");
-                this.discordJDA.sendDestroyedMessage();
-            } catch (final Exception exception) {
-                this.logger.error("Nie udało się zniszczyć procesu servera", exception);
+                this.process.waitFor();
+                this.logger.info("&eProces servera zakończył się pomyślnie");
+            } catch (final InterruptedException exception) {
+                this.logger.critical("&4Nie udało się zamknąć procesu servera ,zrób to ręcznie!");
             }
         }
 
