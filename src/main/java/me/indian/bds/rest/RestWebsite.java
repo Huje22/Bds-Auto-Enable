@@ -1,6 +1,7 @@
 package me.indian.bds.rest;
 
 import io.javalin.Javalin;
+import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import io.javalin.http.HttpStatus;
 import io.javalin.http.util.RateLimiter;
@@ -9,8 +10,11 @@ import me.indian.bds.config.sub.rest.RestApiConfig;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.rest.post.key.CommandPostRequest;
 import me.indian.bds.rest.post.key.PlayerInfoPostRequest;
+import me.indian.bds.rest.post.key.discord.DiscordMessagePostRequest;
 import me.indian.bds.rest.request.StatsRequest;
 import me.indian.bds.rest.request.key.BackupRequest;
+import me.indian.bds.util.GsonUtil;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +39,7 @@ public class RestWebsite {
         this.requests.add(new BackupRequest(this, bdsAutoEnable));
         this.requests.add(new CommandPostRequest(this, bdsAutoEnable));
         this.requests.add(new PlayerInfoPostRequest(this, bdsAutoEnable));
+        this.requests.add(new DiscordMessagePostRequest(this, bdsAutoEnable));
     }
 
     public void init() {
@@ -71,10 +76,13 @@ public class RestWebsite {
 
     public boolean checkApiKey(final Context ctx) {
         final String apiKey = ctx.pathParam("api-key");
+        final String ip = ctx.ip();
 
         if (!this.restApiConfig.getApiKeys().contains(apiKey)) {
-            ctx.status(HttpStatus.UNAUTHORIZED).contentType("application/json")
-                    .result("Klucz API \"" + apiKey + "\" nie jest obsługiwany");
+            ctx.status(HttpStatus.UNAUTHORIZED).contentType(ContentType.APPLICATION_JSON)
+                    .result(GsonUtil.getGson().toJson("Klucz API \"" + apiKey + "\" nie jest obsługiwany"));
+
+            this.logger.debug("&b" + ip + "&r używa niepoprawnego klucza autoryzacji&c " + apiKey);
             return false;
         }
         return true;
@@ -82,6 +90,18 @@ public class RestWebsite {
 
     public void addRateLimit(final Context ctx) {
         this.limiter.incrementCounter(ctx, this.restApiConfig.getRateLimit());
+    }
+
+    public void incorrectJsonMessage(final Context ctx) {
+        this.incorrectJsonMessage(ctx, null);
+    }
+
+    public void incorrectJsonMessage(final Context ctx, final @Nullable Exception exception) {
+        final String ip = ctx.ip();
+        final String requestBody = ctx.body();
+
+        this.logger.debug("&b" + ip + "&r wysła niepoprawny json&1 " + requestBody.replaceAll("\n", ""), exception);
+        ctx.status(HttpStatus.BAD_REQUEST).result("Niepoprawny Json! " + requestBody.replaceAll("\n", ""));
     }
 
     public Javalin getApp() {

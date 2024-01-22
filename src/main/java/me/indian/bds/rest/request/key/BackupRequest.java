@@ -2,19 +2,21 @@ package me.indian.bds.rest.request.key;
 
 import io.javalin.Javalin;
 import io.javalin.http.HttpStatus;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.discord.jda.DiscordJDA;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.rest.Request;
+import me.indian.bds.rest.RestWebsite;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.MessageUtil;
+import me.indian.bds.watchdog.module.BackupModule;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.file.Path;
 import java.util.List;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.discord.jda.DiscordJDA;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.rest.Request;
-import me.indian.bds.rest.RestWebsite;
-import me.indian.bds.util.MessageUtil;
-import me.indian.bds.watchdog.module.BackupModule;
 
 public class BackupRequest implements Request {
 
@@ -61,7 +63,7 @@ public class BackupRequest implements Request {
                     } catch (final IOException exception) {
                         this.logger.error("", exception);
                         ctx.status(HttpStatus.INTERNAL_SERVER_ERROR).contentType("application/json")
-                                .result(exception.toString());
+                                .result(GsonUtil.getGson().toJson(exception));
                     }
                     return;
                 }

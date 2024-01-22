@@ -10,6 +10,8 @@ import me.indian.bds.rest.RestWebsite;
 import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.util.GsonUtil;
 
+import java.net.HttpURLConnection;
+
 public class StatsRequest implements Request {
 
     private final RestWebsite restWebsite;
@@ -28,17 +30,22 @@ public class StatsRequest implements Request {
     public void init() {
         this.app.get("/api/stats/playtime", ctx -> {
             this.restWebsite.addRateLimit(ctx);
-            ctx.contentType("application/json").result(this.gson.toJson(this.serverManager.getStatsManager().getPlayTime()));
+            ctx.contentType("application/json").status(HttpURLConnection.HTTP_OK)
+                    .result(this.gson.toJson(this.serverManager.getStatsManager().getPlayTime()));
         });
 
         this.app.get("/api/stats/deaths", ctx -> {
             this.restWebsite.addRateLimit(ctx);
-            ctx.contentType("application/json").result(this.gson.toJson(this.serverManager.getStatsManager().getDeaths()));
+            ctx.contentType("application/json")
+                    .status(HttpURLConnection.HTTP_OK)
+                    .result(this.gson.toJson(this.serverManager.getStatsManager().getDeaths()));
         });
 
         this.app.get("/api/stats/players", ctx -> {
             this.restWebsite.addRateLimit(ctx);
-            ctx.contentType("application/json").result(this.playersJson());
+            ctx.contentType("application/json")
+                    .status(HttpURLConnection.HTTP_OK)
+                    .result(this.playersJson());
         });
     }
 

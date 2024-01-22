@@ -1,15 +1,19 @@
 package me.indian.bds.rest.post.key;
 
+import com.google.gson.JsonSyntaxException;
 import io.javalin.Javalin;
+import io.javalin.http.ContentType;
 import io.javalin.http.HttpStatus;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.discord.DiscordLogChannelType;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.rest.Request;
 import me.indian.bds.rest.RestWebsite;
-import me.indian.bds.rest.component.CommandRequestData;
+import me.indian.bds.rest.component.CommandPostData;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.GsonUtil;
+
+import java.net.HttpURLConnection;
 
 public class CommandPostRequest implements Request {
 
@@ -35,12 +39,19 @@ public class CommandPostRequest implements Request {
 
             final String ip = ctx.ip();
             final String requestBody = ctx.body();
-            final CommandRequestData commandRequestData = GsonUtil.getGson().fromJson(requestBody, CommandRequestData.class);
-            final String command = commandRequestData.command();
+            final CommandPostData commandPostData;
+
+            try {
+                commandPostData = GsonUtil.getGson().fromJson(requestBody, CommandPostData.class);
+            } catch (final JsonSyntaxException jsonSyntaxException) {
+                this.restWebsite.incorrectJsonMessage(ctx, jsonSyntaxException);
+                return;
+            }
+
+            final String command = commandPostData.command();
 
             if (command == null) {
-                this.logger.debug("&b" + ip + "&r wysła niepoprawny json&1 " + requestBody.replaceAll("\n", ""));
-                ctx.status(HttpStatus.BAD_REQUEST).result("Niepoprawny Json! " + requestBody.replaceAll("\n", ""));
+                this.restWebsite.incorrectJsonMessage(ctx);
                 return;
             }
 
@@ -51,7 +62,9 @@ public class CommandPostRequest implements Request {
 
             this.logger.debug("&b" + ip + "&r używa poprawnie endpointu&1 COMMAND");
             this.logger.print(command, this.bdsAutoEnable.getDiscordHelper().getDiscordJDA(), DiscordLogChannelType.CONSOLE);
-            ctx.result("Ostatnia linia z konsoli: " + this.serverProcess.commandAndResponse(command));
+
+            ctx.contentType(ContentType.APPLICATION_JSON).status(HttpURLConnection.HTTP_OK)
+                    .result("Ostatnia linia z konsoli: " + this.serverProcess.commandAndResponse(command));
         });
     }
 }
