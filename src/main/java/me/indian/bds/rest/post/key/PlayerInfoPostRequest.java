@@ -7,6 +7,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.rest.Request;
 import me.indian.bds.rest.RestWebsite;
+import me.indian.bds.rest.component.PlayerPostData;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.GsonUtil;
 
@@ -39,10 +40,10 @@ public class PlayerInfoPostRequest implements Request {
 
             System.out.println(requestBody);
 
-            final PlayerInfoPostRequest playerInfoPostRequest;
+            final PlayerPostData playerPostData;
 
             try {
-                playerInfoPostRequest = GsonUtil.getGson().fromJson(requestBody, PlayerInfoPostRequest.class);
+                playerPostData = GsonUtil.getGson().fromJson(requestBody, PlayerPostData.class);
             } catch (final JsonSyntaxException jsonSyntaxException) {
                 this.restWebsite.incorrectJsonMessage(ctx, jsonSyntaxException);
                 return;
