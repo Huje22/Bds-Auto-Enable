@@ -38,6 +38,7 @@ public class ServerPingCommand extends Command {
         final BedrockQuery query = BedrockQuery.create(adres, port);
 
         if (query.online()) {
+            this.sendMessage("&aEdycja:&b " + query.edition());
             this.sendMessage("&aMOTD:&b " + query.motd());
             this.sendMessage("&aProtocol Version:&b " + query.protocol());
             this.sendMessage("&aMinecraft Version:&b " + query.minecraftVersion());
