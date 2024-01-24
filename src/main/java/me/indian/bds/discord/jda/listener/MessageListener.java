@@ -5,6 +5,7 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.config.sub.discord.LinkingConfig;
+import me.indian.bds.discord.embed.component.Footer;
 import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.logger.ConsoleColors;
@@ -80,17 +81,60 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
         final long id = member.getIdLong();
 
-        if (this.discordJDA.isCacheFlagEnabled(CacheFlag.ONLINE_STATUS)) {
-            final OnlineStatus memberStatus = member.getOnlineStatus();
-            if (memberStatus == OnlineStatus.OFFLINE || memberStatus == OnlineStatus.INVISIBLE) {
-              //TODO: Dodać info na dany kanał jaka wiadomość została usunięta 
-                
-                message.delete().queue();
-                this.discordJDA.sendPrivateMessage(author, "Nie możesz wysyłać wiadomość na tym kanale " +
-                        "gdy twój status aktywności to `" + memberStatus + "`");
-                this.discordJDA.mute(member, 10, TimeUnit.SECONDS);
-                return;
+
+        if (event.getChannel().asTextChannel() == this.textChannel) {
+
+            /*
+             Usuwanie wiadomości jeśli użytkownik ma status offline
+             */
+
+            if (this.discordJDA.isCacheFlagEnabled(CacheFlag.ONLINE_STATUS)) {
+                final OnlineStatus memberStatus = member.getOnlineStatus();
+                if (memberStatus == OnlineStatus.OFFLINE || memberStatus == OnlineStatus.INVISIBLE) {
+                    message.delete().queue();
+
+                    this.discordJDA.log("Status aktywności offline",
+                            "Wiadomość została usunięta z powodu statusu aktywności, jej treść to\n```" +
+                                    rawMessage + "```",
+                            new Footer(this.discordJDA.getUserName(member, author), member.getEffectiveAvatarUrl()));
+
+                    this.discordJDA.sendPrivateMessage(author, "Nie możesz wysyłać wiadomość na tym kanale " +
+                            "gdy twój status aktywności to `" + memberStatus + "`");
+                    this.discordJDA.mute(member, 10, TimeUnit.SECONDS);
+                    return;
+                }
             }
+
+            /*
+              Usuwanie wiadomości jeśli użytkownik nie ma połączonych kont lub jest wyciszony
+             */
+
+            final LinkingManager linkingManager = this.discordJDA.getLinkingManager();
+            if (linkingManager != null) {
+                if (!linkingConfig.isCanType()) {
+                    if (!linkingManager.isLinked(id) && !author.isBot()) {
+                        this.discordJDA.mute(member, 10, TimeUnit.SECONDS);
+                        message.delete().queue();
+
+                        this.discordJDA.log("Brak połączonych kont",
+                                "Wiadomość została usunięta z powodu braku połączonych kont, jej treść to:\n```" +
+                                        rawMessage + "```",
+                                new Footer(this.discordJDA.getUserName(member, author), member.getEffectiveAvatarUrl()));
+
+                        this.discordJDA.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
+                        return;
+                    }
+                }
+
+                if (serverManager.isMuted(linkingManager.getNameByID(id))) {
+                    this.discordJDA.mute(member, 1, TimeUnit.MINUTES);
+                    message.delete().queue();
+                    this.discordJDA.sendPrivateMessage(author, "Jesteś wyciszony!");
+                    return;
+                }
+            }
+
+            this.sendMessage(member, author, message, false);
         }
 
         if (event.getChannel().asTextChannel() == this.consoleChannel) {
@@ -107,32 +151,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                     message.delete().queueAfter(4, TimeUnit.SECONDS);
                 });
             }
-            return;
-        }
-
-        if (event.getChannel().asTextChannel() == this.textChannel) {
-            final LinkingManager linkingManager = this.discordJDA.getLinkingManager();
-            if (linkingManager != null) {
-                if (!linkingConfig.isCanType()) {
-                    if (!linkingManager.isLinked(id) && !author.isBot()) {
-                        this.discordJDA.mute(member, 10, TimeUnit.SECONDS);
-                     //TODO: Dodać info na dany kanał jaka wiadomość została usunięta 
-              
-                        message.delete().queue();
-                        this.discordJDA.sendPrivateMessage(author, linkingConfig.getCantTypeMessage());
-                        return;
-                    }
-                }
-
-                if (serverManager.isMuted(linkingManager.getNameByID(id))) {
-                    this.discordJDA.mute(member, 1, TimeUnit.MINUTES);
-                    message.delete().queue();
-                    this.discordJDA.sendPrivateMessage(author, "Jesteś wyciszony!");
-                    return;
-                }
-            }
-
-            this.sendMessage(member, author, message, false);
         }
     }
 

@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.config.sub.discord.BotConfig;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.discord.DiscordHelper;
 import me.indian.bds.discord.embed.component.Field;
@@ -53,13 +54,14 @@ public class DiscordJDA {
     private final Logger logger;
     private final AppConfigManager appConfigManager;
     private final DiscordConfig discordConfig;
-    private final long serverID, channelID, consoleID;
+    private final BotConfig botConfig;
+    private final long serverID, channelID, consoleID, logID;
     private final List<JDAListener> listeners;
     private final Map<String, Pattern> mentionPatternCache;
     private final DiscordHelper discordHelper;
     private JDA jda;
     private Guild guild;
-    private TextChannel textChannel, consoleChannel;
+    private TextChannel textChannel, consoleChannel, logChannel;
     private StatsChannelsManager statsChannelsManager;
     private LinkingManager linkingManager;
 
@@ -68,9 +70,11 @@ public class DiscordJDA {
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfigManager = bdsAutoEnable.getAppConfigManager();
         this.discordConfig = this.appConfigManager.getDiscordConfig();
-        this.serverID = this.discordConfig.getBotConfig().getServerID();
-        this.channelID = this.discordConfig.getBotConfig().getChannelID();
-        this.consoleID = this.discordConfig.getBotConfig().getConsoleID();
+        this.botConfig = this.discordConfig.getBotConfig();
+        this.serverID = this.botConfig.getServerID();
+        this.channelID = this.botConfig.getChannelID();
+        this.consoleID = this.botConfig.getConsoleID();
+        this.logID = this.botConfig.getLogID();
         this.listeners = new ArrayList<>();
         this.mentionPatternCache = new HashMap<>();
         this.discordHelper = discordHelper;
@@ -82,9 +86,9 @@ public class DiscordJDA {
     }
 
     public void init() {
-        if (this.discordConfig.getBotConfig().isEnable()) {
+        if (this.botConfig.isEnable()) {
             this.logger.info("&aŁadowanie bota....");
-            if (this.discordConfig.getBotConfig().getToken().isEmpty()) {
+            if (this.botConfig.getToken().isEmpty()) {
                 this.logger.alert("&aNie znaleziono tokenu , pomijanie ładowania.");
                 return;
             }
@@ -97,9 +101,9 @@ public class DiscordJDA {
             }
 
             try {
-                this.jda = JDABuilder.create(this.discordConfig.getBotConfig().getToken(), this.getGatewayIntents())
-                        .disableCache(this.discordConfig.getBotConfig().getDisableCacheFlag())
-                        .enableCache(this.discordConfig.getBotConfig().getEnableCacheFlag())
+                this.jda = JDABuilder.create(this.botConfig.getToken(), this.getGatewayIntents())
+                        .disableCache(this.botConfig.getDisableCacheFlag())
+                        .enableCache(this.botConfig.getEnableCacheFlag())
                         .setEnableShutdownHook(false)
                         .build();
                 this.jda.awaitReady();
@@ -126,10 +130,17 @@ public class DiscordJDA {
 
             this.textChannel.getManager().setSlowmode(1).queue();
 
+            this.logChannel = this.guild.getTextChannelById(this.logID);
+
+            if (this.logChannel == null) {
+                this.logger.debug("(log) Nie można odnaleźć kanału z ID &b " + this.consoleID);
+            }
+
             this.consoleChannel = this.guild.getTextChannelById(this.consoleID);
 
-            if (this.consoleChannel == null)
+            if (this.consoleChannel == null) {
                 this.logger.debug("(konsola) Nie można odnaleźć kanału z ID &b " + this.consoleID);
+            }
 
             this.linkingManager = new LinkingManager(this.bdsAutoEnable, this);
             this.statsChannelsManager = new StatsChannelsManager(this.bdsAutoEnable, this);
@@ -295,8 +306,8 @@ public class DiscordJDA {
     }
 
     public void setBotActivityStatus(final String activityMessage, @Nullable final Activity.ActivityType activityType) {
-        this.discordConfig.getBotConfig().setActivityMessage(activityMessage);
-        if (activityType != null) this.discordConfig.getBotConfig().setActivity(activityType);
+        this.botConfig.setActivityMessage(activityMessage);
+        if (activityType != null) this.botConfig.setActivity(activityType);
         this.discordConfig.save();
         this.jda.getPresence().setActivity(DiscordJDA.this.getCustomActivity());
     }
@@ -319,9 +330,9 @@ public class DiscordJDA {
 
     private Activity getCustomActivity() {
         final String replacement = String.valueOf(MathUtil.millisTo((System.currentTimeMillis() - this.bdsAutoEnable.getServerProcess().getStartTime()), TimeUnit.MINUTES));
-        final String activityMessage = this.discordConfig.getBotConfig().getActivityMessage().replaceAll("<time>", replacement);
+        final String activityMessage = this.botConfig.getActivityMessage().replaceAll("<time>", replacement);
 
-        switch (this.discordConfig.getBotConfig().getActivity()) {
+        switch (this.botConfig.getActivity()) {
             case PLAYING -> {
                 return Activity.playing(activityMessage);
             }
@@ -338,7 +349,7 @@ public class DiscordJDA {
                     return Activity.customStatus(activityMessage);
             }
             case STREAMING -> {
-                return Activity.streaming(activityMessage, this.discordConfig.getBotConfig().getStreamUrl());
+                return Activity.streaming(activityMessage, this.botConfig.getStreamUrl());
             }
             default -> {
                 this.logger.error("Wykryto nie wspierany status! ");
@@ -348,7 +359,7 @@ public class DiscordJDA {
     }
 
     private void leaveGuilds() {
-        if (!this.discordConfig.getBotConfig().isLeaveServers()) return;
+        if (!this.botConfig.isLeaveServers()) return;
         for (final Guild guild1 : this.jda.getGuilds()) {
             if (guild1 != this.guild) {
                 String inviteLink = "";
@@ -461,6 +472,28 @@ public class DiscordJDA {
                 (throwable == null ? "" : "\n```" + MessageUtil.getStackTraceAsString(throwable) + "```"), footer);
     }
 
+    public void log(final String title, final String message, final List<Field> fields, final Footer footer) {
+        if (this.jda != null && this.logChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
+            if (title.isEmpty() || message.isEmpty()) return;
+            final EmbedBuilder embed = new EmbedBuilder()
+                    .setTitle(title)
+                    .setDescription(message.replaceAll("<owner>", this.getOwnerMention()))
+                    .setColor(Color.BLUE)
+                    .setFooter(footer.text(), footer.imageURL());
+
+            if (fields != null && !fields.isEmpty()) {
+                for (final Field field : fields) {
+                    embed.addField(field.name(), field.value(), field.inline());
+                }
+            }
+            this.logChannel.sendMessageEmbeds(embed.build()).queue();
+        }
+    }
+
+    public void log(final String title, final String message, final Footer footer) {
+        this.log(title, message, (List<Field>) null, footer);
+    }
+
     public void writeConsole(final String message) {
         if (this.jda != null && this.consoleChannel != null && this.jda.getStatus() == JDA.Status.CONNECTED) {
             if (message.isEmpty()) return;
@@ -570,18 +603,6 @@ public class DiscordJDA {
 
     public JDA getJda() {
         return this.jda;
-    }
-
-    public long getServerID() {
-        return this.serverID;
-    }
-
-    public long getChannelID() {
-        return this.channelID;
-    }
-
-    public long getConsoleID() {
-        return this.consoleID;
     }
 
     public Guild getGuild() {

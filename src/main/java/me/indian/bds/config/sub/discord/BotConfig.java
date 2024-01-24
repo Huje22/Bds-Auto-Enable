@@ -46,6 +46,10 @@ public class BotConfig extends OkaeriConfig {
     private long channelID = 1L;
 
     @Comment({""})
+    @Comment({"ID kanału z logami"})
+    private long logID = 1L;
+
+    @Comment({""})
     @Comment({"Kanał na który zostaną wysyłane wiadomości z konsoli minecraft , Zostaw puste aby nie uruchamiać "})
     private long consoleID = 1L;
 
@@ -111,6 +115,10 @@ public class BotConfig extends OkaeriConfig {
 
     public long getChannelID() {
         return this.channelID;
+    }
+
+    public long getLogID() {
+        return this.logID;
     }
 
     public long getConsoleID() {
