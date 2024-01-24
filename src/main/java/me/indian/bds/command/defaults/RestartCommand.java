@@ -9,7 +9,9 @@ public class RestartCommand extends Command {
 
     public RestartCommand(final BDSAutoEnable bdsAutoEnable) {
         super("restart", "restartuje server");
-        this.bdsAutoEnable= bdsAutoEnable;
+        this.bdsAutoEnable = bdsAutoEnable;
+
+        this.addOption("[seconds]");
     }
 
     @Override

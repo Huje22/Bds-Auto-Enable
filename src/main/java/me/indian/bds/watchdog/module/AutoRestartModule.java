@@ -120,10 +120,10 @@ public class AutoRestartModule {
         this.lastRestartMillis = System.currentTimeMillis();
     }
 
-    private void restartAlert(int seconds) {
+    private void restartAlert(final int seconds) {
         for (int i = seconds; i >= 0; i--) {
             AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                    "&aZa&1 " + i + "&a sekund zostanie zrestartowany server!", LogState.INFO);
+                    "&aZa&1 " + i + "&a sekund server zostanie zrestartowany!", LogState.INFO);
             ThreadUtil.sleep(1);
         }
     }

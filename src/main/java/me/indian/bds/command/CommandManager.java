@@ -7,6 +7,7 @@ import me.indian.bds.command.defaults.BackupCommand;
 import me.indian.bds.command.defaults.ChatFormatCommand;
 import me.indian.bds.command.defaults.DeathsCommand;
 import me.indian.bds.command.defaults.DiscordCommand;
+import me.indian.bds.command.defaults.EndCommand;
 import me.indian.bds.command.defaults.HelpCommand;
 import me.indian.bds.command.defaults.LinkCommand;
 import me.indian.bds.command.defaults.MuteCommand;
@@ -27,13 +28,17 @@ public class CommandManager {
     private final BDSAutoEnable bdsAutoEnable;
     private final ServerProcess serverProcess;
     private final List<Command> commandList;
+    private final boolean botEnabled;
 
     public CommandManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.commandList = new ArrayList<>();
+        this.botEnabled = this.bdsAutoEnable.getDiscordHelper().isBotEnabled();
+
         this.registerCommand(new HelpCommand(this.commandList));
         this.registerCommand(new TPSCommand(this.bdsAutoEnable));
+        this.registerCommand(new EndCommand(this.bdsAutoEnable));
         this.registerCommand(new RestartCommand(this.bdsAutoEnable));
         this.registerCommand(new BackupCommand(this.bdsAutoEnable));
         this.registerCommand(new PlaytimeCommand(this.bdsAutoEnable));
@@ -49,7 +54,7 @@ public class CommandManager {
             this.registerCommand(new TestCommand(this.bdsAutoEnable));
         }
 
-        if (this.bdsAutoEnable.getDiscordHelper().isBotEnabled()) {
+        if (this.botEnabled) {
             this.registerCommand(new DiscordCommand(this.bdsAutoEnable));
             this.registerCommand(new LinkCommand(this.bdsAutoEnable));
             this.registerCommand(new UnlinkCommand(this.bdsAutoEnable));
@@ -65,7 +70,7 @@ public class CommandManager {
         command.init(this.bdsAutoEnable);
     }
 
-    public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, boolean isOp) {
+    public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, final boolean isOp) {
         for (final Command command : this.commandList) {
             if (command.getName().equalsIgnoreCase(commandName)) {
                 command.setCommandSender(sender);
@@ -91,7 +96,7 @@ public class CommandManager {
     private boolean isOp(final CommandSender sender, final String name) {
         //Ta metoda jest do czasu aż mojang nie naprawi w scriptAPI metody `isOp()`
         if (sender == CommandSender.CONSOLE) return true;
-        return this.bdsAutoEnable.getDiscordHelper().getDiscordJDA()
-                .getLinkingManager().hasPermissions(name, Permission.ADMINISTRATOR);
+        return (this.botEnabled && this.bdsAutoEnable.getDiscordHelper().getDiscordJDA()
+                .getLinkingManager().hasPermissions(name, Permission.ADMINISTRATOR));
     }
 }
