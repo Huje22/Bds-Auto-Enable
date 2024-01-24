@@ -20,7 +20,7 @@ public class LinkingConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Wiadomość która zostanie wysłana na pv do użytkownika bez połączonych kont"})
-    private String cantTypeMessage = "Aby wysyłać wiadomości na tym kanale musisz mieć połączone konta discord i Minecraft ";
+    private String cantTypeMessage = "Aby wysyłać wiadomości na tym kanale musisz mieć połączone konta Discord i Minecraft ";
 
     @Comment({""})
     @Comment({"Czy użytkownik może sam rozłączyć swoje konto Discord z kontem Minecraft?"})

@@ -641,7 +641,6 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
         if (query.online()) {
             final Gamemode gamemode = query.gamemode();
 
-            embedBuilder.addField("Edycja", query.edition(), true);
             embedBuilder.addField("Wersja Minecraft", query.minecraftVersion(), true);
             embedBuilder.addField("Protokół", String.valueOf(query.protocol()), true);
             embedBuilder.addField("MOTD", query.motd(), true);
@@ -650,6 +649,7 @@ public class CommandListener extends ListenerAdapter implements JDAListener {
             embedBuilder.addField("Maksymalna ilość graczy", String.valueOf(query.maxPlayers()), true);
             embedBuilder.addField("Tryb Gry", gamemode.getName().toUpperCase() + " (" + gamemode.getId() + ")",
                     true);
+            embedBuilder.addField("Edycja", query.edition(), true);
         } else {
             embedBuilder.setDescription("Nie można uzyskać informacji o serwerze ``" + adres + ":" + port + "``");
         }

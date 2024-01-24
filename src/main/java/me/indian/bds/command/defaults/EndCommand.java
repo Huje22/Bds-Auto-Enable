@@ -8,14 +8,12 @@ import me.indian.bds.util.ThreadUtil;
 
 public class EndCommand extends Command {
 
-    private final BDSAutoEnable bdsAutoEnable;
     private final ServerProcess serverProcess;
     private boolean canStop;
 
     public EndCommand(final BDSAutoEnable bdsAutoEnable) {
         super("end", "Kończy działanie servera i aplikacji");
-        this.bdsAutoEnable = bdsAutoEnable;
-        this.serverProcess = this.bdsAutoEnable.getServerProcess();
+        this.serverProcess = bdsAutoEnable.getServerProcess();
         this.canStop = true;
 
         this.addOption("[seconds]");
