@@ -33,7 +33,7 @@ public class PlayerInfoPostRequest implements Request {
     public void init() {
         this.app.post("/playerInfo/{api-key}", ctx -> {
             this.restWebsite.addRateLimit(ctx);
-            if (!this.restWebsite.checkApiKey(ctx)) return;
+            if (!this.restWebsite.isCorrectApiKey(ctx)) return;
 
             final String ip = ctx.ip();
             final String requestBody = ctx.body();

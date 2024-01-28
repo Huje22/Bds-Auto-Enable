@@ -38,7 +38,7 @@ public class BackupRequest implements Request {
     public void init() {
         this.app.get("/api/{api-key}/backup/{filename}", ctx -> {
             this.restWebsite.addRateLimit(ctx);
-            if (!this.restWebsite.checkApiKey(ctx)) return;
+            if (!this.restWebsite.isCorrectApiKey(ctx)) return;
 
             final String filename = ctx.pathParam("filename");
             final String ip = ctx.ip();

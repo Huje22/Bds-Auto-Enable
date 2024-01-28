@@ -74,7 +74,7 @@ public class RestWebsite {
         }
     }
 
-    public boolean checkApiKey(final Context ctx) {
+    public boolean isCorrectApiKey(final Context ctx) {
         final String apiKey = ctx.pathParam("api-key");
         final String ip = ctx.ip();
 
