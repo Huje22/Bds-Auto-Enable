@@ -1,11 +1,12 @@
 package me.indian.bds.command;
 
 
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.sub.CommandConfig;
+import me.indian.bds.server.ServerProcess;
+
 import java.util.HashMap;
 import java.util.Map;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.sub.CommandsConfig;
-import me.indian.bds.server.ServerProcess;
 
 public abstract class Command {
 
@@ -13,7 +14,7 @@ public abstract class Command {
     private final Map<String, String> commandOptions;
     protected String playerName;
     protected CommandSender commandSender;
-    protected CommandsConfig commandsConfig;
+    protected CommandConfig commandConfig;
     private BDSAutoEnable bdsAutoEnable;
 
     public Command(final String name, final String description) {
@@ -79,7 +80,7 @@ public abstract class Command {
 
     public final void init(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
-        this.commandsConfig = bdsAutoEnable.getAppConfigManager().getCommandsConfig();
+        this.commandConfig = bdsAutoEnable.getAppConfigManager().getCommandsConfig();
     }
 
     @Override

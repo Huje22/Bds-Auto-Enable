@@ -10,7 +10,7 @@ import eu.okaeri.configs.annotation.Header;
 @Header("#                  Tych z !                                    #")
 @Header("################################################################")
 
-public class CommandsConfig extends OkaeriConfig {
+public class CommandConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Czy !setting ma być dla każdego"})

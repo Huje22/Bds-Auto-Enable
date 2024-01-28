@@ -2,9 +2,8 @@ package me.indian.bds.config;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
-import java.io.File;
 import me.indian.bds.config.sub.AutoMessagesConfig;
-import me.indian.bds.config.sub.CommandsConfig;
+import me.indian.bds.config.sub.CommandConfig;
 import me.indian.bds.config.sub.EventsConfig;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.config.sub.log.LogConfig;
@@ -12,6 +11,8 @@ import me.indian.bds.config.sub.rest.RestApiConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.util.DefaultsVariables;
+
+import java.io.File;
 
 public class AppConfigManager {
 
@@ -22,7 +23,7 @@ public class AppConfigManager {
     private final VersionManagerConfig versionManagerConfig;
     private final WatchDogConfig watchDogConfig;
     private final AutoMessagesConfig autoMessagesConfig;
-    private final CommandsConfig commandsConfig;
+    private final CommandConfig commandConfig;
     private final EventsConfig eventsConfig;
 
     public AppConfigManager() {
@@ -84,7 +85,7 @@ public class AppConfigManager {
             it.load(true);
         });
 
-        this.commandsConfig = ConfigManager.create(CommandsConfig.class, (it) -> {
+        this.commandConfig = ConfigManager.create(CommandConfig.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
             it.withBindFile(appDir + "Commands.yml");
             it.withRemoveOrphans(true);
@@ -149,8 +150,8 @@ public class AppConfigManager {
         return this.autoMessagesConfig;
     }
 
-    public CommandsConfig getCommandsConfig() {
-        return this.commandsConfig;
+    public CommandConfig getCommandsConfig() {
+        return this.commandConfig;
     }
 
     public EventsConfig getEventsConfig() {
