@@ -1,7 +1,5 @@
 package me.indian.bds.discord.jda.listener;
 
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.config.sub.discord.LinkingConfig;
@@ -26,6 +24,9 @@ import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.events.message.MessageUpdateEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class MessageListener extends ListenerAdapter implements JDAListener {
 
@@ -91,6 +92,7 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
             if (this.discordJDA.isCacheFlagEnabled(CacheFlag.ONLINE_STATUS)) {
                 final OnlineStatus memberStatus = member.getOnlineStatus();
                 if (memberStatus == OnlineStatus.OFFLINE || memberStatus == OnlineStatus.INVISIBLE) {
+                    this.discordJDA.mute(member, 10, TimeUnit.SECONDS);
                     message.delete().queue();
 
                     this.discordJDA.log("Status aktywności offline",
@@ -100,7 +102,6 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
 
                     this.discordJDA.sendPrivateMessage(author, "Nie możesz wysyłać wiadomość na tym kanale " +
                             "gdy twój status aktywności to `" + memberStatus + "`");
-                    this.discordJDA.mute(member, 10, TimeUnit.SECONDS);
                     return;
                 }
             }
@@ -127,8 +128,12 @@ public class MessageListener extends ListenerAdapter implements JDAListener {
                 }
 
                 if (serverManager.isMuted(linkingManager.getNameByID(id))) {
-                    this.discordJDA.mute(member, 1, TimeUnit.MINUTES);
+                    this.discordJDA.mute(member, 10, TimeUnit.SECONDS);
                     message.delete().queue();
+                    this.discordJDA.log("Wyciszenie w Minecraft",
+                            "Wiadomość została usunięta z powodu wyciszenia w minecraft, jej treść to\n```" +
+                                    rawMessage + "```",
+                            new Footer(this.discordJDA.getUserName(member, author), member.getEffectiveAvatarUrl()));
                     this.discordJDA.sendPrivateMessage(author, "Jesteś wyciszony!");
                     return;
                 }
