@@ -1,12 +1,5 @@
 package me.indian.bds.server.manager;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandSender;
 import me.indian.bds.config.AppConfigManager;
@@ -21,6 +14,14 @@ import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.module.PackModule;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class ServerManager {
@@ -133,6 +134,11 @@ public class ServerManager {
                 final String message = MessageUtil.fixMessage(matcher.group(2));
                 if (this.handleChatMessage(playerChat, message)) {
                     this.discordJDA.sendPlayerMessage(playerChat, message);
+                } else{
+                    this.discordJDA.log("Wyciszenie w Minecraft",
+                            "Wiadomość minecraft nie została wysłana z powodu wyciszenia, jej treść to\n```" +
+                                    message + "```",
+                            new Footer(playerChat));
                 }
             }
         } catch (final Exception exception) {
