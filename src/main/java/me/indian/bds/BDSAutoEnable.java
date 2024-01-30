@@ -1,16 +1,11 @@
 package me.indian.bds;
 
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.DiscordHelper;
 import me.indian.bds.exception.MissingDllException;
+import me.indian.bds.extension.ExtensionLoader;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.rest.RestWebsite;
 import me.indian.bds.server.ServerProcess;
@@ -29,6 +24,13 @@ import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
 
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Scanner;
+import java.util.UUID;
+
 public class BDSAutoEnable {
 
     private final Thread mainThread;
@@ -44,6 +46,7 @@ public class BDSAutoEnable {
     private final ServerManager serverManager;
     private final VersionManager versionManager;
     private final DiscordHelper discordHelper;
+    private final ExtensionLoader extensionLoader;
     private CommandManager commandManager;
     private WatchDog watchDog;
 
@@ -73,6 +76,7 @@ public class BDSAutoEnable {
         this.serverManager = new ServerManager(this);
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
+        this.extensionLoader = new ExtensionLoader(this);
         this.serverManager.init();
         StatusUtil.init(this);
         ZipUtil.init(this);
@@ -98,12 +102,17 @@ public class BDSAutoEnable {
 
         this.discordHelper.init();
         this.serverManager.getStatsManager().startCountServerTime(this.serverProcess);
+        this.extensionLoader.loadExtensions();
         this.serverProcess.startProcess();
         this.versionManager.getVersionUpdater().checkForUpdate();
         this.commandManager = new CommandManager(this);
+
+
         new ConsoleInput(this.mainScanner, this);
         new AutoMessages(this).start();
         new Metrics(this);
+
+        this.extensionLoader.enableExtensions();
     }
 
     public void isJavaVersionLessThan17() {
@@ -274,5 +283,9 @@ public class BDSAutoEnable {
 
     public WatchDog getWatchDog() {
         return this.watchDog;
+    }
+
+    public ExtensionLoader getExtensionLoader() {
+        return this.extensionLoader;
     }
 }

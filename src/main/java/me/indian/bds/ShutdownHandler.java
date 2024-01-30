@@ -26,6 +26,7 @@ public class ShutdownHandler {
     private void shutdownHook() {
         final Thread shutdown = new Thread(() -> {
             try {
+                this.bdsAutoEnable.getExtensionLoader().disableExtensions();
                 this.serverProcess.instantShutdown();
             } catch (final Exception exception) {
                 this.logger.critical("Wystąpił błąd podczas próby uruchomienia shutdown hooku ", exception);

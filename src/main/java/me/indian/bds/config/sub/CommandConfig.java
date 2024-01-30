@@ -17,7 +17,16 @@ public class CommandConfig extends OkaeriConfig {
     @CustomKey("SettingsForAll")
     private boolean settingsForAll = true;
 
+    @Comment({""})
+    @Comment({"Czy !extensions ma być dla każdego"})
+    @CustomKey("ExtensionsForAll")
+    private boolean extensionsForAll = true;
+
     public boolean isSettingsForAll() {
         return this.settingsForAll;
+    }
+
+    public boolean isExtensionsForAll() {
+        return this.extensionsForAll;
     }
 }

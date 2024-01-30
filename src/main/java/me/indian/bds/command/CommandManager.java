@@ -6,6 +6,7 @@ import me.indian.bds.command.defaults.ChatFormatCommand;
 import me.indian.bds.command.defaults.DeathsCommand;
 import me.indian.bds.command.defaults.DiscordCommand;
 import me.indian.bds.command.defaults.EndCommand;
+import me.indian.bds.command.defaults.ExtensionCommand;
 import me.indian.bds.command.defaults.HelpCommand;
 import me.indian.bds.command.defaults.LinkCommand;
 import me.indian.bds.command.defaults.MuteCommand;
@@ -39,6 +40,7 @@ public class CommandManager {
 
         this.registerCommand(new HelpCommand(this.commandList));
         this.registerCommand(new TPSCommand(this.bdsAutoEnable));
+        this.registerCommand(new ExtensionCommand(this.bdsAutoEnable));
         this.registerCommand(new EndCommand(this.bdsAutoEnable));
         this.registerCommand(new RestartCommand(this.bdsAutoEnable));
         this.registerCommand(new BackupCommand(this.bdsAutoEnable));
