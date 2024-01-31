@@ -1,5 +1,8 @@
 package me.indian.bds.extension;
 
+import eu.okaeri.configs.ConfigManager;
+import eu.okaeri.configs.OkaeriConfig;
+import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import me.indian.bds.BDSAutoEnable;
 
 import java.io.File;
@@ -48,12 +51,21 @@ public abstract class Extension {
         this.description = description.description();
         this.authors = description.authors();
 
-
-        final String extensionDir = loader.getExtensionsDir() + File.separator + this.name;
+        final String extensionDir = loader.getExtensionsDir() + File.separator + this.name + File.separator;
         this.dataFolder = new File(extensionDir);
 
         Files.createDirectories(Paths.get(extensionDir));
 
+    }
+
+    protected final <T extends OkaeriConfig> T createConfig(final Class<T> configClassType, final String configName) {
+        return ConfigManager.create(configClassType, (it) -> {
+            it.withConfigurer(new YamlSnakeYamlConfigurer());
+            it.withBindFile(this.getDataFolder() + File.separator + configName + ".yml");
+            it.withRemoveOrphans(true);
+            it.saveDefaults();
+            it.load(true);
+        });
     }
 
     protected final BDSAutoEnable getBdsAutoEnable() {

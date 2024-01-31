@@ -37,11 +37,6 @@ public class AppConfig extends OkaeriConfig {
     private String filesPath = "./";
 
     @Comment({""})
-    @Comment({"Czy zamknąć aplikacje gdy wystąpi niezłapany wyjątek?"})
-    @CustomKey("CloseOnException")
-    private boolean closeOnException = true;
-
-    @Comment({""})
     @Comment({"UUID aplikacji"})
     @CustomKey("UUID")
     private String uuid = "";
@@ -81,14 +76,6 @@ public class AppConfig extends OkaeriConfig {
 
     public void setFilesPath(final String filesPath) {
         this.filesPath = filesPath;
-    }
-
-    public boolean isCloseOnException() {
-        return this.closeOnException;
-    }
-
-    public void setCloseOnException(final boolean closeOnException) {
-        this.closeOnException = closeOnException;
     }
 
     public String getUuid() {

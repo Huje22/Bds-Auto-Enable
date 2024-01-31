@@ -6,8 +6,15 @@ import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.EventsConfig;
 import me.indian.bds.discord.embed.component.Footer;
 import me.indian.bds.discord.jda.DiscordJDA;
-import me.indian.bds.discord.jda.manager.LinkingManager;
 import me.indian.bds.discord.jda.manager.StatsChannelsManager;
+import me.indian.bds.event.EventManager;
+import me.indian.bds.event.player.PlayerChatEvent;
+import me.indian.bds.event.player.PlayerDeathEvent;
+import me.indian.bds.event.player.PlayerJoinEvent;
+import me.indian.bds.event.player.PlayerSpawnEvent;
+import me.indian.bds.event.player.response.PlayerChatResponse;
+import me.indian.bds.event.server.ServerStartEvent;
+import me.indian.bds.event.server.TPSChangeEvent;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
@@ -35,6 +42,7 @@ public class ServerManager {
     private final List<String> onlinePlayers, offlinePlayers, muted;
     private final StatsManager statsManager;
     private final ReentrantLock chatLock;
+    private final EventManager eventManager;
     private ServerProcess serverProcess;
     private VersionManager versionManager;
     private int lastTPS;
@@ -53,6 +61,7 @@ public class ServerManager {
         this.muted = new ArrayList<>();
         this.statsManager = new StatsManager(this.bdsAutoEnable, this);
         this.chatLock = new ReentrantLock();
+        this.eventManager = this.bdsAutoEnable.getEventManager();
         this.lastTPS = 20;
     }
 
@@ -107,6 +116,8 @@ public class ServerManager {
             this.offlinePlayers.remove(playerName);
             this.discordJDA.sendJoinMessage(playerName);
             this.eventService.execute(() -> this.eventsConfig.getOnJoin().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
+
+            this.eventManager.callEvent(new PlayerJoinEvent(playerName));
         }
     }
 
@@ -118,6 +129,7 @@ public class ServerManager {
         if (matcher.find()) {
             final String playerName = matcher.group(1);
             this.eventService.execute(() -> this.eventsConfig.getOnSpawn().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
+            this.eventManager.callEvent(new PlayerSpawnEvent(playerName));
         }
     }
 
@@ -132,13 +144,20 @@ public class ServerManager {
             if (matcher.find()) {
                 final String playerChat = matcher.group(1);
                 final String message = MessageUtil.fixMessage(matcher.group(2));
-                if (this.handleChatMessage(playerChat, message)) {
-                    this.discordJDA.sendPlayerMessage(playerChat, message);
-                } else{
-                    this.discordJDA.log("Wyciszenie w Minecraft",
-                            "Wiadomość minecraft nie została wysłana z powodu wyciszenia, jej treść to\n```" +
-                                    message + "```",
-                            new Footer(playerChat));
+                final boolean appHandled = this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages();
+                final boolean muted = this.isMuted(playerChat);
+
+                final PlayerChatResponse response = (PlayerChatResponse) this.eventManager.callEventWithResponse(new PlayerChatEvent(playerChat, message, muted, appHandled));
+
+                if (appHandled) {
+                    String format = playerChat + " »» " + message;
+                    if (response != null) format = response.getFormat();
+
+                    if (muted) {
+                        this.serverProcess.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
+                        return;
+                    }
+                    this.serverProcess.tellrawToAll(format);
                 }
             }
         } catch (final Exception exception) {
@@ -170,10 +189,12 @@ public class ServerManager {
             final String playerDeath = MessageUtil.fixMessage(matcher.group(1));
             final String deathMessage = MessageUtil.fixMessage(matcher.group(2));
             this.discordJDA.sendDeathMessage(playerDeath, deathMessage
-                    .replaceAll("§l" , "**")
-                    .replaceAll("§r" , "")
+                    .replaceAll("§l", "**")
+                    .replaceAll("§r", "")
             );
             this.statsManager.addDeaths(playerDeath, 1);
+
+            this.eventManager.callEvent(new PlayerDeathEvent(playerDeath, deathMessage));
         }
     }
 
@@ -193,6 +214,8 @@ public class ServerManager {
                         + " (Teraz: **" + tps + "** Ostatnie: **" + this.lastTPS + "**)");
                 this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true, 10);
             }
+
+            this.eventManager.callEvent(new TPSChangeEvent(tps, this.lastTPS));
 
             this.lastTPS = tps;
 
@@ -216,6 +239,8 @@ public class ServerManager {
                             .replaceAll("<from>", fromDimension)
                             .replaceAll("<to>", toDimension)
                     )));
+
+            //TODO: Dodać event zmiany wymiaru
         }
     }
 
@@ -223,6 +248,7 @@ public class ServerManager {
         if (logEntry.contains("Server started")) {
             this.discordJDA.sendEnabledMessage();
             this.lastTPS = 20;
+            this.eventManager.callEvent(new ServerStartEvent());
         }
     }
 
@@ -277,31 +303,6 @@ public class ServerManager {
 
         final String[] newArgs = MessageUtil.removeFirstArgs(args);
         this.bdsAutoEnable.getCommandManager().runCommands(CommandSender.PLAYER, playerCommand, args[0], newArgs, isOp);
-    }
-
-    private boolean handleChatMessage(final String playerChat, final String message) {
-        //Robione jest to w ten sposób aby nie wysyłać na discord wiadomości gracza który jest wyciszony
-        if (!this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages()) return true;
-        String role = "";
-
-        if (this.isMuted(playerChat)) {
-            this.serverProcess.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
-            return false;
-        }
-
-        final LinkingManager linkingManager = this.discordJDA.getLinkingManager();
-        if (linkingManager != null && linkingManager.isLinked(playerChat)) {
-            role = this.discordJDA.getColoredRole(this.discordJDA.getHighestRole(linkingManager.getIdByName(playerChat))) + " ";
-
-        }
-
-        this.serverProcess.tellrawToAll(
-                this.appConfigManager.getWatchDogConfig().getPackModuleConfig().getChatMessageFormat()
-                        .replaceAll("<player>", playerChat)
-                        .replaceAll("<message>", message)
-                        .replaceAll("<role>", role)
-        );
-        return true;
     }
 
     public StatsManager getStatsManager() {
