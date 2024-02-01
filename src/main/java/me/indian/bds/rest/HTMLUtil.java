@@ -4,6 +4,8 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.server.manager.StatsManager;
 import me.indian.bds.util.DateUtil;
 
+import java.util.List;
+
 public final class HTMLUtil {
 
     private HTMLUtil() {
@@ -41,10 +43,13 @@ public final class HTMLUtil {
     }
 
     public static String getOnlineWithStats(final BDSAutoEnable bdsAutoEnable) {
-        String online = "<b>Brak osób online</b>";
+        String online = "";
         final StatsManager statsManager = bdsAutoEnable.getServerManager().getStatsManager();
+        final List<String> players = bdsAutoEnable.getServerManager().getOnlinePlayers();
 
-        for (final String player : bdsAutoEnable.getServerManager().getOnlinePlayers()) {
+        if (players.size() == 0) return b("Brak osób online");
+
+        for (final String player : players) {
             online += """                      
                     <details>
                       <summary><playerName></summary>
