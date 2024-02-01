@@ -27,15 +27,19 @@ public final class DefaultsVariables {
     }
 
     public static String getDefaultFileName() {
-       return switch (SystemUtil.getSystem()) {
+        return switch (SystemUtil.getSystem()) {
             case LINUX -> "bedrock_server";
-            case WINDOWS ->  "bedrock_server.exe";
+            case WINDOWS -> "bedrock_server.exe";
             default -> "";
         };
     }
 
     public static String getJarDir() {
         return System.getProperty("user.dir");
+    }
+
+    public static String getUserHome() {
+        return System.getProperty("user.home");
     }
 
     public static String getAppDir() {
@@ -67,6 +71,9 @@ public final class DefaultsVariables {
             }
             if (!process.waitFor(30, TimeUnit.MILLISECONDS)) process.destroy();
         } catch (final Exception exception) {
+            final File file = new File(getUserHome() + File.separator + ".wine");
+            if (file.exists()) return true;
+
             LOGGER.debug("Nie znaleziono&1 WINE&r (Nie potrzebujesz go)");
         }
         return false;
