@@ -14,11 +14,9 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 * Zaleca się używać integracji z Discord
   * Dla wygodniejszego zarządzania serwerem</details>
 * Program wspiera użycie [**WINE**](https://github.com/wine-mirror/wine)
-* Program wspiera proste rozszerzenia 
 
 # Program zawiera
 
-* Dosyć proste rozszerzenia: [ExampleExtension](https://github.com/Huje22/ExampleExtension)
 * Automatyczne włączenie servera po crashu
 * Łatwe załadowanie innej wersji
 * Tworzenie backupów świata co dany czas i manualnie
