@@ -73,6 +73,7 @@ public class RestWebsite {
                         .result(this.htmlFileContent
                                 .replaceAll("<online>", String.valueOf(this.bdsAutoEnable.getServerManager().getOnlinePlayers().size()))
                                 .replaceAll("<max>", String.valueOf(this.bdsAutoEnable.getServerProperties().getMaxPlayers()))
+                                .replaceAll("<online-with-stats>", HTMLUtil.getOnlineWithStats(this.bdsAutoEnable))
                         );
             });
 
@@ -126,35 +127,7 @@ public class RestWebsite {
 
             if (Files.size(this.htmlFile.toPath()) == 0) {
                 try (final FileWriter writer = new FileWriter(this.htmlFile)) {
-                    writer.write("""                         
-                             <!DOCTYPE html>
-                            <html lang="pl">
-                            <meta name="theme-color" content="#38761d">
-                            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                            <meta charset="utf-8">
-                             <body>
-                                                       
-                            <a target="_blank" class="guzik" href="https://github.com/Huje22/Bds-Auto-Enable/blob/main/RestAPI.MD">Dostępne EndPointy</a><br>
-                            <a target="_blank" class="guzik" href="minecraft://?addExternalServer=Huje22|127.0.0.1:19132">Kliknij aby dołączyć na server!</a><br>
-                                    
-                                    Ta Strona odświeża się co 1min<br>
-                                    <br>
-                                    Tak możesz uzyskać osoby online na serwerze <br>
-                                    <online> / <max><br>
-                                                     
-                             <style>
-                             a { text-decoration: none; }
-                                                     
-                             .guzik:hover { box-shadow: 0px 4px 8px rgb(45 35 66 / 40%), 0px 7px 13px -3px rgb(45 35 66 / 30%), inset 0px -3px 0px #d6d6e7;
-                               transform: translateY(-2px);}
-                                                     
-                             .guzik:active { box-shadow: inset 0px 3px 7px #d6d6e7;
-                               transform: translateY(2px);}                 
-                             </style>
-                             </body>
-                             </html>
-                                                     
-                             """);
+                    writer.write(HTMLUtil.getExampleBody());
                 }
             }
         } catch (final Exception exception) {
