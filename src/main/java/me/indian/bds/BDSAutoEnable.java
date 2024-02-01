@@ -4,10 +4,10 @@ import me.indian.bds.command.CommandManager;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.discord.DiscordHelper;
-import me.indian.bds.event.EventManager;
 import me.indian.bds.exception.MissingDllException;
 import me.indian.bds.extension.ExtensionLoader;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.rest.RestWebsite;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.server.properties.ServerProperties;
@@ -46,7 +46,6 @@ public class BDSAutoEnable {
     private final ServerManager serverManager;
     private final VersionManager versionManager;
     private final DiscordHelper discordHelper;
-    private final EventManager eventManager;
     private final ExtensionLoader extensionLoader;
     private CommandManager commandManager;
     private WatchDog watchDog;
@@ -74,7 +73,6 @@ public class BDSAutoEnable {
         this.discordHelper = new DiscordHelper(this);
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
-        this.eventManager = new EventManager(this);
         this.serverManager = new ServerManager(this);
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
@@ -100,11 +98,12 @@ public class BDSAutoEnable {
         this.versionManager.loadVersion();
         this.checkExecutable();
         this.watchDog.getPackModule().initPackModule();
+        new RestWebsite(this).init();
 
         this.discordHelper.init();
         this.serverManager.getStatsManager().startCountServerTime(this.serverProcess);
         this.extensionLoader.loadExtensions();
-//        this.serverProcess.startProcess();
+        this.serverProcess.startProcess();
         this.versionManager.getVersionUpdater().checkForUpdate();
         this.commandManager = new CommandManager(this);
 
@@ -264,10 +263,6 @@ public class BDSAutoEnable {
 
     public ServerProcess getServerProcess() {
         return this.serverProcess;
-    }
-
-    public EventManager getEventManager() {
-        return this.eventManager;
     }
 
     public ServerManager getServerManager() {

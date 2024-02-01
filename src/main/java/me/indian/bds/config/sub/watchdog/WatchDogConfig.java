@@ -26,6 +26,10 @@ public class WatchDogConfig extends OkaeriConfig {
     @CustomKey("AutoRestart")
     private AutoRestartConfig autoRestartConfig = new AutoRestartConfig();
 
+    @Comment({""})
+    @Comment({"PackModule"})
+    @CustomKey("PackModule")
+    private PackModuleConfig packModuleConfig = new PackModuleConfig();
 
     public BackupConfig getBackupConfig() {
         return this.backupConfig;
@@ -37,5 +41,9 @@ public class WatchDogConfig extends OkaeriConfig {
 
     public AutoRestartConfig getAutoRestartConfig() {
         return this.autoRestartConfig;
+    }
+
+    public PackModuleConfig getPackModuleConfig() {
+        return this.packModuleConfig;
     }
 }
