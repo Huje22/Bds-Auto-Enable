@@ -1,14 +1,15 @@
 package me.indian.bds.logger;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.discord.DiscordLogChannelType;
 import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
 public class Logger {
 
@@ -66,7 +67,7 @@ public class Logger {
 
     public void print(final Object log, final Throwable throwable) {
         this.print(log);
-        this.logThrowableToFile(throwable);
+        this.logThrowable(throwable);
     }
 
     public void print(final Object log, final DiscordJDA DiscordJDA, final DiscordLogChannelType channelType) {
@@ -97,7 +98,7 @@ public class Logger {
 
     public void info(final Object log, final Throwable throwable) {
         this.info(log);
-        this.logThrowableToFile(throwable);
+        this.logThrowable(throwable);
     }
 
     public void warning(final Object log) {
@@ -109,7 +110,7 @@ public class Logger {
 
     public void warning(final Object log, final Throwable throwable) {
         this.warning(log);
-        this.logThrowableToFile(throwable);
+        this.logThrowable(throwable);
     }
 
     public void alert(final Object log) {
@@ -121,7 +122,7 @@ public class Logger {
 
     public void alert(final Object log, final Throwable throwable) {
         this.alert(log);
-        this.logThrowableToFile(throwable);
+        this.logThrowable(throwable);
     }
 
     public void critical(final Object log) {
@@ -133,7 +134,7 @@ public class Logger {
 
     public void critical(final Object log, final Throwable throwable) {
         this.critical(log);
-        this.logThrowableToFile(throwable);
+        this.logThrowable(throwable);
     }
 
     public void error(final Object log) {
@@ -145,7 +146,7 @@ public class Logger {
 
     public void error(final Object log, final Throwable throwable) {
         this.error(log);
-        this.logThrowableToFile(throwable);
+        this.logThrowable(throwable);
     }
 
     public void debug(final Object log) {
@@ -160,7 +161,7 @@ public class Logger {
     public void debug(final Object log, final Throwable throwable) {
         if (this.appConfig.isDebug()) {
             this.debug(log);
-            this.logThrowableToFile(throwable);
+            this.logThrowable(throwable);
         }
     }
 
@@ -192,7 +193,7 @@ public class Logger {
         }
     }
 
-    public void logThrowableToFile(final Throwable throwable) {
+    public void logThrowable(final Throwable throwable) {
         if (this.printStream != null && throwable != null) {
             throwable.printStackTrace();
             throwable.printStackTrace(this.printStream);

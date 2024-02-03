@@ -29,7 +29,7 @@ public class ExtensionCommand extends Command {
 
             int counter = 0;
             for (final Extension extension : extensions) {
-                status += this.statusColor(extension.isEnabled()) + extension.getName() + (counter < extensions.size() - 1 ? "." : "");
+                status += this.statusColor(extension.isEnabled()) + extension.getName() + (counter < extensions.size() - 1 ? ", " : "");
                 counter++;
             }
 
@@ -40,6 +40,6 @@ public class ExtensionCommand extends Command {
     }
 
     private String statusColor(final boolean enabled) {
-        return enabled ? "&a" : "&r";
+        return enabled ? "&a" : "&c";
     }
 }
