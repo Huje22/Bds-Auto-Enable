@@ -1,8 +1,18 @@
-package me.indian.bds;
+package me.indian.bds.metrics;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.MetricsConfig;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ThreadUtil;
+
+import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -16,18 +26,13 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
-import javax.net.ssl.HttpsURLConnection;
-import me.indian.bds.config.MetricsConfig;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.ThreadUtil;
 
 /**
  * bStats collects some data for plugin authors.
@@ -39,7 +44,7 @@ import me.indian.bds.util.ThreadUtil;
  * By: IndianBartonka ,
  */
 @SuppressWarnings({"WeakerAccess", "unused"})
-public class Metrics {
+public class IMetrics {
 
     // The version of this bStats class
     public static final int B_STATS_VERSION = 1;
@@ -67,7 +72,7 @@ public class Metrics {
             final String defaultPackage = new String(new byte[]{'o', 'r', 'g', '.', 'b', 's', 't', 'a', 't', 's', '.', 'n', 'u', 'k', 'k', 'i', 't'});
             final String examplePackage = new String(new byte[]{'y', 'o', 'u', 'r', '.', 'p', 'a', 'c', 'k', 'a', 'g', 'e'});
             // We want to make sure nobody just copy & pastes the example and use the wrong package names
-            if (Metrics.class.getPackage().getName().equals(defaultPackage) || Metrics.class.getPackage().getName().equals(examplePackage)) {
+            if (IMetrics.class.getPackage().getName().equals(defaultPackage) || IMetrics.class.getPackage().getName().equals(examplePackage)) {
                 throw new IllegalStateException("bStats Metrics class has not been relocated correctly!");
             }
         }
@@ -78,12 +83,12 @@ public class Metrics {
     // Is bStats enabled on this server?
     private boolean enabled;
 
-    public Metrics(final BDSAutoEnable bdsAutoEnable) {
+    public IMetrics(final BDSAutoEnable bdsAutoEnable) {
         if (bdsAutoEnable == null) throw new IllegalArgumentException("Instancjia aplikacji jest nullem!");
 
-        Metrics.bdsAutoEnable = bdsAutoEnable;
-        Metrics.server = bdsAutoEnable.getServerProcess();
-        Metrics.random = new Random();
+        IMetrics.bdsAutoEnable = bdsAutoEnable;
+        IMetrics.server = bdsAutoEnable.getServerProcess();
+        IMetrics.random = new Random();
         try {
             this.loadConfig();
         } catch (final IOException exception) {
@@ -185,7 +190,7 @@ public class Metrics {
         final TimerTask submitTask = new TimerTask() {
             @Override
             public void run() {
-                if (server.isEnabled()) Metrics.this.submitData();
+                if (server.isEnabled()) IMetrics.this.submitData();
             }
         };
 
@@ -197,7 +202,8 @@ public class Metrics {
         final int randomMinutes = 3 + random.nextInt(6);
         final int secondRandomMinutes = 3 + random.nextInt(10);
 
-        timer.scheduleAtFixedRate(submitTask, MathUtil.minutesTo(randomMinutes + secondRandomMinutes, TimeUnit.MILLISECONDS), MathUtil.minutesTo(30, TimeUnit.MILLISECONDS));
+        timer.scheduleAtFixedRate(submitTask, MathUtil.minutesTo(randomMinutes + secondRandomMinutes, TimeUnit.MILLISECONDS),
+                MathUtil.minutesTo(30, TimeUnit.MILLISECONDS));
     }
 
     /**
@@ -348,9 +354,6 @@ public class Metrics {
         }
     }
 
-//TODO: Dodać info o rozszerzeniach
-
-
     /**
      * Represents a custom chart.
      */
@@ -381,9 +384,9 @@ public class Metrics {
                     return null;
                 }
                 chart.add("data", data);
-            } catch (final Throwable t) {
+            } catch (final Throwable throwable) {
                 if (logFailedRequests) {
-                    server.getLogger().warning("Failed to get data for custom chart with id " + this.chartId, t);
+                    bdsAutoEnable.getLogger().warning("Failed to get data for custom chart with id " + this.chartId, throwable);
                 }
                 return null;
             }

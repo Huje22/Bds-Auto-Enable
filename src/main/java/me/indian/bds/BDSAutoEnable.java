@@ -7,6 +7,7 @@ import me.indian.bds.event.EventManager;
 import me.indian.bds.exception.MissingDllException;
 import me.indian.bds.extension.ExtensionLoader;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.metrics.AppMetrics;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.server.properties.ServerProperties;
@@ -105,7 +106,7 @@ public class BDSAutoEnable {
 
 
         new ConsoleInput(this.mainScanner, this);
-        new Metrics(this);
+        new AppMetrics(this);
 
         this.extensionLoader.enableExtensions();
         this.serverProcess.startProcess();
