@@ -4,13 +4,17 @@ package me.indian.bds.command;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.CommandConfig;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.MessageUtil;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public abstract class Command {
 
     private final String name, description;
+    private final List<String> alliases;
     private final Map<String, String> commandOptions;
     protected String playerName;
     protected CommandSender commandSender;
@@ -20,35 +24,47 @@ public abstract class Command {
     public Command(final String name, final String description) {
         this.name = "!" + name;
         this.description = description;
+        this.alliases = new ArrayList<>();
         this.commandOptions = new HashMap<>();
     }
 
     public abstract boolean onExecute(String[] args, boolean isOp);
 
-    public String getName() {
+    public final String getName() {
         return this.name;
     }
 
-    public String getDescription() {
+    public final String getDescription() {
         return this.description;
     }
 
-    protected void addOption(final String option) {
+    public boolean isAlias(final String command) {
+        return this.alliases.stream().anyMatch(alias -> alias.equalsIgnoreCase(command));
+    }
+
+    public final void addAlliases(final List<String> alliases) {
+        alliases.forEach(alias -> this.alliases.add("!" + alias));
+    }
+
+    protected final void addOption(final String option) {
         this.commandOptions.put(option, "");
     }
 
-    protected void addOption(final String option, final String description) {
+    protected final void addOption(final String option, final String description) {
         this.commandOptions.put(option, description);
     }
 
-    protected void buildHelp() {
+    protected final void buildHelp() {
+        if (!this.alliases.isEmpty()) {
+            this.sendMessage("&aAlliasy:&b " + MessageUtil.stringListToString(this.alliases, "&a,&b "));
+        }
         for (final Map.Entry<String, String> option : this.commandOptions.entrySet()) {
             this.sendMessage("&a" + option.getKey() + "&4 - &b" + option.getValue());
         }
         this.sendMessage("&b[]&4 -&a Opcjonalne &e<>&4 -&a Wymagane");
     }
 
-    public String getUsage() {
+    public final String getUsage() {
         String usage = "";
         int counter = 0;
         for (final Map.Entry<String, String> option : this.commandOptions.entrySet()) {
@@ -61,7 +77,7 @@ public abstract class Command {
         return "&a" + this.name + "&4 -&b " + usage;
     }
 
-    public void setPlayerName(final String playerName) {
+    public final void setPlayerName(final String playerName) {
         this.playerName = playerName;
     }
 
@@ -84,12 +100,13 @@ public abstract class Command {
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "Command(name=" + this.name +
                 ", description=" + this.description +
                 ", playerName= " + this.playerName +
                 ", commandSender= " + this.commandSender +
-                ", commandOptions= "+ this.commandOptions +
+                ", alliases= " + this.alliases +
+                ", commandOptions= " + this.commandOptions +
                 ")";
     }
 }

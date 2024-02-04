@@ -64,7 +64,7 @@ public class CommandManager {
 
     public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, final boolean isOp) {
         for (final Command command : this.commandList) {
-            if (command.getName().equalsIgnoreCase(commandName)) {
+            if (command.getName().equalsIgnoreCase(commandName) || command.isAlias(commandName)) {
                 command.setCommandSender(sender);
                 command.setPlayerName(playerName);
 

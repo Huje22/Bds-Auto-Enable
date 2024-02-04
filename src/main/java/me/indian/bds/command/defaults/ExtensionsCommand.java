@@ -15,6 +15,7 @@ public class ExtensionsCommand extends Command {
         super("extension", "Pokazuje wgrane rozszerzenia");
         this.bdsAutoEnable = bdsAutoEnable;
 
+        this.addAlliases(List.of("ex"));
         this.addOption("[extension name]", "informacje o danej wtyczce");
     }
 
