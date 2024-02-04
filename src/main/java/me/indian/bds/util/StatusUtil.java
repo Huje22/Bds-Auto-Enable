@@ -1,13 +1,6 @@
 package me.indian.bds.util;
 
 import com.sun.management.OperatingSystemMXBean;
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryUsage;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.Logger;
@@ -16,6 +9,14 @@ import me.indian.bds.server.ServerStats;
 import me.indian.bds.server.manager.StatsManager;
 import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.watchdog.WatchDog;
+
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public final class StatusUtil {
 
@@ -74,17 +75,17 @@ public final class StatusUtil {
         STATUS.add("Ostatnie TPS: `" + BDSAUTOENABLE.getServerManager().getLastTPS() + "`");
         STATUS.add("Pamięć RAM: `" + usedServerMemory + "`");
         if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
-            STATUS.add("Następny restart za za: `" + DateUtil.formatTime(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart(), "days hours minutes seconds millis ") + "`");
+            STATUS.add("Następny restart za za: `" + DateUtil.formatTime(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart(), List.of('d', 'h', 'm', 's', 'i')) + "`");
         }
         if (APPCONFIGMANAGER.getWatchDogConfig().getBackupConfig().isEnabled()) {
-            STATUS.add("Następny backup za: `" + DateUtil.formatTime(watchDog.getBackupModule().calculateMillisUntilNextBackup(), "days hours minutes seconds millis ") + "`");
+            STATUS.add("Następny backup za: `" + DateUtil.formatTime(watchDog.getBackupModule().calculateMillisUntilNextBackup(), List.of('d', 'h', 'm', 's', 'i')) + "`");
         }
-        STATUS.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - SERVERPROCESS.getStartTime(), "days hours minutes seconds millis ") + "`");
-        STATUS.add("Łączny czas działania servera: `" + DateUtil.formatTime(serverStats.getTotalUpTime(), "days hours minutes seconds ") + "`");
+        STATUS.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - SERVERPROCESS.getStartTime(), List.of('d', 'h', 'm', 's', 'i')) + "`");
+        STATUS.add("Łączny czas działania servera: `" + DateUtil.formatTime(serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's')) + "`");
 
         STATUS.add("");
         STATUS.add("> **Statystyki aplikacji**");
-        STATUS.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - BDSAUTOENABLE.getStartTime(), "days hours minutes seconds millis ") + "`");
+        STATUS.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - BDSAUTOENABLE.getStartTime(), List.of('d', 'h', 'm', 's', 'i')) + "`");
         STATUS.add("Pamięć RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
         STATUS.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
         STATUS.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
@@ -105,7 +106,7 @@ public final class StatusUtil {
 
         int place = 1;
         for (final Map.Entry<String, Long> entry : sortedEntries) {
-            topPlayTime.add(place + ". **" + entry.getKey() + "**: `" + DateUtil.formatTime(entry.getValue(), "days hours minutes seconds") + "`");
+            topPlayTime.add(place + ". **" + entry.getKey() + "**: `" + DateUtil.formatTime(entry.getValue(), List.of('d', 'h', 'm', 's')) + "`");
             place++;
         }
 

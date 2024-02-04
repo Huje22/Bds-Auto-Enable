@@ -4,10 +4,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public final class DateUtil {
 
     public static final ZoneId POLISH_ZONE = ZoneId.of("Europe/Warsaw");
+    private static final Map<Character, String> UNIT_MAP = new HashMap<>();
 
     private DateUtil() {
     }
@@ -67,15 +71,26 @@ public final class DateUtil {
         return (millis / 1000) % 60;
     }
 
-    public static String formatTime(final long millis, final String times) {
-        String formattedTime = "";
+    public static String formatTime(final long millis, final List<Character> unitsPatern) {
+        final StringBuilder formattedTime = new StringBuilder();
+        final Map<Character, String> unitMap = getUnitMap(millis);
 
-        if (times.toLowerCase().contains("days".toLowerCase())) formattedTime += formatDays(millis) + " dni ";
-        if (times.toLowerCase().contains("hours".toLowerCase())) formattedTime += formatHours(millis) + " godzin ";
-        if (times.toLowerCase().contains("minutes".toLowerCase())) formattedTime += formatMinutes(millis) + " minut ";
-        if (times.toLowerCase().contains("seconds".toLowerCase())) formattedTime += formatSeconds(millis) + " sekund ";
-        if (times.toLowerCase().contains("millis".toLowerCase())) formattedTime += millis % 1000 + " milisekund";
+        for (final char unit : unitsPatern) {
+            if (unitMap.containsKey(unit)) {
+                formattedTime.append(unitMap.get(unit)).append(" ");
+            }
+        }
 
-        return formattedTime;
+        return formattedTime.toString().trim();
+    }
+
+    private static Map<Character, String> getUnitMap(final long millis) {
+        UNIT_MAP.clear();
+        UNIT_MAP.put('d', formatDays(millis) + " dni ");
+        UNIT_MAP.put('h', formatHours(millis) + " godzin ");
+        UNIT_MAP.put('m', formatMinutes(millis) + " minut ");
+        UNIT_MAP.put('s', formatSeconds(millis) + " sekund ");
+        UNIT_MAP.put('i', millis % 1000 + " milisekund");
+        return UNIT_MAP;
     }
 }

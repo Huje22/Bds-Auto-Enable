@@ -7,6 +7,8 @@ import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.module.PackModule;
 
+import java.util.List;
+
 public class PlaytimeCommand extends Command {
 
     private final ServerStats serverStats;
@@ -31,7 +33,7 @@ public class PlaytimeCommand extends Command {
         }
 
         this.sendMessage("&aŁączny czas działania servera: &b"
-                + DateUtil.formatTime(this.serverStats.getTotalUpTime(), "days hours minutes seconds "));
+                + DateUtil.formatTime(this.serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's' )));
         this.sendMessage("&a---------------------");
         return true;
     }
