@@ -1,24 +1,10 @@
 package me.indian.bds.watchdog.module;
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.DirectoryStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
-import me.indian.bds.discord.embed.component.Footer;
-import me.indian.bds.discord.jda.DiscordJDA;
+import me.indian.bds.event.watchdog.BackupDoneEvent;
+import me.indian.bds.event.watchdog.BackupFailEvent;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
@@ -33,6 +19,21 @@ import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.ZipUtil;
 import me.indian.bds.watchdog.WatchDog;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
 public class BackupModule {
 
     private final BDSAutoEnable bdsAutoEnable;
@@ -44,7 +45,6 @@ public class BackupModule {
     private final List<Path> backups;
     private final ServerProperties serverProperties;
     private final File worldFile;
-    private final DiscordJDA discordJDA;
     private final WatchDog watchDog;
     private final String prefix;
     private final boolean enabled;
@@ -71,7 +71,6 @@ public class BackupModule {
         this.worldFile = new File(this.worldPath);
         this.createWorldFile();
         this.prefix = this.watchDog.getWatchDogPrefix();
-        this.discordJDA = bdsAutoEnable.getDiscordHelper().getDiscordJDA();
         this.enabled = this.watchDogConfig.getBackupConfig().isEnabled();
         this.serverManager = this.bdsAutoEnable.getServerManager();
 
@@ -157,20 +156,17 @@ public class BackupModule {
                         "&aDostępne jest&d " + this.backups.size() + "&a kopi zapasowych",
                         LogState.INFO);
 
-                this.discordJDA.sendBackupDoneMessage();
                 this.status = "Utworzono backup";
+                this.bdsAutoEnable.getEventManager().callEvent(new BackupDoneEvent());
             } catch (final Exception exception) {
                 this.status = "Nie udało sie utworzyć kopij zapasowej";
-                if (this.appConfigManager.getDiscordConfig().getDiscordMessagesOptionsConfig().isSendBackupFailMessage()) {
-                    this.bdsAutoEnable.getDiscordHelper().getWebHook()
-                            .sendEmbedMessage("Backup", this.status, exception, new Footer(exception.getMessage()));
-                }
                 this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4" + this.status, exception, LogState.CRITICAL);
                 if (backup.delete()) {
                     this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUsunięto błędny backup", LogState.INFO);
                 } else {
                     this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można usunąć błędnego backupa", LogState.ERROR);
                 }
+                this.bdsAutoEnable.getEventManager().callEvent(new BackupFailEvent(exception));
             } finally {
                 this.backuping = false;
                 this.watchDog.saveResume();

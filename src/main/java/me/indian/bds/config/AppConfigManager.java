@@ -2,10 +2,8 @@ package me.indian.bds.config;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
-import me.indian.bds.config.sub.AutoMessagesConfig;
 import me.indian.bds.config.sub.CommandConfig;
 import me.indian.bds.config.sub.EventsConfig;
-import me.indian.bds.config.sub.discord.DiscordConfig;
 import me.indian.bds.config.sub.log.LogConfig;
 import me.indian.bds.config.sub.rest.RestApiConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
@@ -17,12 +15,10 @@ import java.io.File;
 public class AppConfigManager {
 
     private final AppConfig appConfig;
-    private final DiscordConfig discordConfig;
     private final LogConfig logConfig;
     private final RestApiConfig restApiConfig;
     private final VersionManagerConfig versionManagerConfig;
     private final WatchDogConfig watchDogConfig;
-    private final AutoMessagesConfig autoMessagesConfig;
     private final CommandConfig commandConfig;
     private final EventsConfig eventsConfig;
 
@@ -32,14 +28,6 @@ public class AppConfigManager {
         this.appConfig = ConfigManager.create(AppConfig.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
             it.withBindFile(appDir + "config.yml");
-            it.withRemoveOrphans(true);
-            it.saveDefaults();
-            it.load(true);
-        });
-
-        this.discordConfig = ConfigManager.create(DiscordConfig.class, (it) -> {
-            it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(appDir + "Discord.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
@@ -77,14 +65,6 @@ public class AppConfigManager {
             it.load(true);
         });
 
-        this.autoMessagesConfig = ConfigManager.create(AutoMessagesConfig.class, (it) -> {
-            it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(appDir + "AutoMessages.yml");
-            it.withRemoveOrphans(true);
-            it.saveDefaults();
-            it.load(true);
-        });
-
         this.commandConfig = ConfigManager.create(CommandConfig.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
             it.withBindFile(appDir + "Commands.yml");
@@ -104,30 +84,22 @@ public class AppConfigManager {
 
     public void load() {
         this.appConfig.load();
-        this.discordConfig.load();
         this.logConfig.load();
         this.restApiConfig.load();
         this.versionManagerConfig.load();
         this.watchDogConfig.load();
-        this.autoMessagesConfig.load();
     }
 
     public void save() {
         this.appConfig.save();
-        this.discordConfig.save();
         this.logConfig.save();
         this.restApiConfig.save();
         this.versionManagerConfig.save();
         this.watchDogConfig.save();
-        this.autoMessagesConfig.save();
     }
 
     public AppConfig getAppConfig() {
         return this.appConfig;
-    }
-
-    public DiscordConfig getDiscordConfig() {
-        return this.discordConfig;
     }
 
     public LogConfig getLogConfig() {
@@ -144,10 +116,6 @@ public class AppConfigManager {
 
     public WatchDogConfig getWatchDogConfig() {
         return this.watchDogConfig;
-    }
-
-    public AutoMessagesConfig getAutoMessagesConfig() {
-        return this.autoMessagesConfig;
     }
 
     public CommandConfig getCommandsConfig() {

@@ -3,14 +3,20 @@ package me.indian.bds;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.discord.DiscordHelper;
+import me.indian.bds.event.EventManager;
 import me.indian.bds.exception.MissingDllException;
+import me.indian.bds.extension.ExtensionLoader;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.rest.RestWebsite;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.server.properties.ServerProperties;
-import me.indian.bds.util.*;
+import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.FileUtil;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.ZipUtil;
 import me.indian.bds.util.system.SystemArch;
 import me.indian.bds.util.system.SystemOS;
 import me.indian.bds.util.system.SystemUtil;
@@ -38,7 +44,8 @@ public class BDSAutoEnable {
     private final ServerProcess serverProcess;
     private final ServerManager serverManager;
     private final VersionManager versionManager;
-    private final DiscordHelper discordHelper;
+    private final EventManager eventManager;
+    private final ExtensionLoader extensionLoader;
     private CommandManager commandManager;
     private WatchDog watchDog;
 
@@ -62,12 +69,13 @@ public class BDSAutoEnable {
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
         this.logger.debug("&aUUID&r aplikacji:&b " + this.getAppUUID());
         DefaultsVariables.init(this);
-        this.discordHelper = new DiscordHelper(this);
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
+        this.eventManager = new EventManager(this);
         this.serverManager = new ServerManager(this);
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
+        this.extensionLoader = new ExtensionLoader(this);
         this.serverManager.init();
         StatusUtil.init(this);
         ZipUtil.init(this);
@@ -84,27 +92,26 @@ public class BDSAutoEnable {
         this.settings.loadSettings(this.mainScanner);
         this.watchDog = new WatchDog(this);
         this.serverProcess.init();
-        this.watchDog.init(this.discordHelper.getDiscordJDA());
+        this.watchDog.init();
         this.watchDog.getRamMonitor().monitRamUsage();
         this.versionManager.loadVersion();
         this.checkExecutable();
         this.watchDog.getPackModule().initPackModule();
-        new RestWebsite(this).init();
 
-        this.discordHelper.init();
         this.serverManager.getStatsManager().startCountServerTime(this.serverProcess);
-        this.serverProcess.startProcess();
+        this.extensionLoader.loadExtensions();
         this.versionManager.getVersionUpdater().checkForUpdate();
         this.commandManager = new CommandManager(this);
 
 
         new ConsoleInput(this.mainScanner, this);
-        new AutoMessages(this).start();
         new Metrics(this);
 
+        this.extensionLoader.enableExtensions();
+        this.serverProcess.startProcess();
     }
 
-    public void isJavaVersionLessThan17() {
+    private void isJavaVersionLessThan17() {
         final String javaVersion = System.getProperty("java.version");
 
         if (DefaultsVariables.isJavaLoverThan17()) {
@@ -254,6 +261,10 @@ public class BDSAutoEnable {
         return this.serverProcess;
     }
 
+    public EventManager getEventManager() {
+        return this.eventManager;
+    }
+
     public ServerManager getServerManager() {
         return this.serverManager;
     }
@@ -262,15 +273,15 @@ public class BDSAutoEnable {
         return this.versionManager;
     }
 
-    public DiscordHelper getDiscordHelper() {
-        return this.discordHelper;
-    }
-
     public CommandManager getCommandManager() {
         return this.commandManager;
     }
 
     public WatchDog getWatchDog() {
         return this.watchDog;
+    }
+
+    public ExtensionLoader getExtensionLoader() {
+        return this.extensionLoader;
     }
 }

@@ -2,7 +2,6 @@ package me.indian.bds.watchdog;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
-import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
@@ -48,10 +47,10 @@ public class WatchDog {
         return this.ramMonitor;
     }
 
-    public void init(final DiscordJDA discordJDA) {
+    public void init() {
         this.backupModule.init();
         this.autoRestartModule.init();
-        this.ramMonitor.init(discordJDA);
+        this.ramMonitor.init();
     }
 
     public void saveWorld() {

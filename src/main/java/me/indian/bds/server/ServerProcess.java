@@ -1,21 +1,10 @@
 package me.indian.bds.server;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.discord.DiscordHelper;
-import me.indian.bds.discord.embed.component.Footer;
-import me.indian.bds.discord.jda.DiscordJDA;
+import me.indian.bds.event.EventManager;
+import me.indian.bds.event.server.ConsoleCommandEvent;
+import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
@@ -27,18 +16,29 @@ import me.indian.bds.util.system.SystemOS;
 import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.watchdog.WatchDog;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 public class ServerProcess {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final AppConfigManager appConfigManager;
-    private final DiscordHelper discordHelper;
-    private final DiscordJDA discordJDA;
     private final ServerManager serverManager;
     private final ExecutorService processService, consoleOutputService;
     private final Lock cmdLock, cmdResponseLock;
     private final String prefix;
     private final SystemOS system;
+    private final EventManager eventManager;
     private String finalFilePath, fileName;
     private ProcessBuilder processBuilder;
     private Process process;
@@ -51,8 +51,6 @@ public class ServerProcess {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
-        this.discordHelper = this.bdsAutoEnable.getDiscordHelper();
-        this.discordJDA = this.discordHelper.getDiscordJDA();
         this.serverManager = this.bdsAutoEnable.getServerManager();
         this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
         this.consoleOutputService = Executors.newScheduledThreadPool(4, new ThreadUtil("Console Output"));
@@ -60,6 +58,7 @@ public class ServerProcess {
         this.cmdResponseLock = new ReentrantLock();
         this.prefix = "&b[&3ServerProcess&b] ";
         this.system = SystemUtil.getSystem();
+        this.eventManager = this.bdsAutoEnable.getEventManager();
         this.canRun = true;
         this.canWriteConsoleOutput = true;
     }
@@ -93,10 +92,6 @@ public class ServerProcess {
             }
         } catch (final IOException | InterruptedException exception) {
             this.logger.critical("Nie można sprawdzić czy proces jest aktywny", exception);
-            this.bdsAutoEnable.getDiscordHelper().getWebHook().sendEmbedMessage("ServerProcess",
-                    "Nie można sprawdzić czy proces jest aktywny",
-                    exception,
-                    new Footer(exception.getLocalizedMessage()));
             System.exit(0);
         }
         return false;
@@ -150,26 +145,20 @@ public class ServerProcess {
                         this.bdsAutoEnable.getSettings().currentSettings(this.bdsAutoEnable.getMainScanner(), false);
                     }
 
-                    this.discordJDA.sendProcessEnabledMessage();
                     this.logger.info("Uruchomiono proces servera ");
                     this.logger.debug("&bPID&r procesu servera to&1 " + this.process.pid());
                     this.consoleOutputService.execute(this::readConsoleOutput);
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
+                    this.eventManager.callEvent(new ServerClosedEvent());
 
                     this.canWriteConsoleOutput = false;
                     this.watchDog.getAutoRestartModule().noteRestart();
                     this.serverManager.clearPlayers();
                     this.serverManager.getStatsManager().saveAllData();
-                    this.discordJDA.sendDisabledMessage();
                     this.startProcess();
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można uruchomić procesu", exception);
-                    this.bdsAutoEnable.getDiscordHelper().getWebHook().sendEmbedMessage("ServerProcess",
-                            "Nie można uruchomić procesu",
-                            exception,
-                            new Footer(exception.getLocalizedMessage()));
-
                     System.exit(0);
                 }
             }
@@ -198,18 +187,9 @@ public class ServerProcess {
                         this.lastLine = line;
                         this.serverManager.initFromLog(line);
                     }
-                    if (!this.containsNotAllowedToDiscordConsoleLog(line)) {
-                        this.consoleOutputService.execute(() -> this.discordJDA.writeConsole(line));
-                    }
                 }
             } catch (final Exception exception) {
                 this.logger.critical("Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
-                this.bdsAutoEnable.getDiscordHelper().getWebHook().sendEmbedMessage("ServerProcess",
-                        "Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji",
-                        exception,
-                        new Footer(exception.getLocalizedMessage()));
-                this.bdsAutoEnable.getDiscordHelper().getWebHook().sendMessage("<owner>");
-
                 System.exit(1);
             } finally {
                 consoleOutput.close();
@@ -322,9 +302,7 @@ public class ServerProcess {
      */
 
     public void instantShutdown()  {
-        this.discordHelper.startShutdown();
         this.logger.alert("Wyłączanie...");
-        this.discordJDA.sendDisablingMessage();
         this.setCanRun(false);
 
         this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
@@ -338,6 +316,7 @@ public class ServerProcess {
             this.logger.alert("Oczekiwanie na zamknięcie servera");
 
             try {
+                this.eventManager.callEvent(new ServerClosedEvent());
                 this.process.waitFor();
                 this.logger.info("&eProces servera zakończył się pomyślnie");
             } catch (final InterruptedException exception) {
@@ -353,6 +332,8 @@ public class ServerProcess {
             this.logger.critical("Nie można zapisać configu", exception);
         }
 
+        this.bdsAutoEnable.getExtensionLoader().disableExtensions();
+
         if (this.processService != null && !this.processService.isTerminated()) {
             this.logger.info("Zatrzymywanie wątków procesu servera");
             try {
@@ -364,8 +345,6 @@ public class ServerProcess {
                 this.logger.error("Nie udało się zatrzymać wątków procesu servera", exception);
             }
         }
-
-        this.discordHelper.shutdown();
     }
 
     public boolean isCanRun() {
@@ -394,9 +373,10 @@ public class ServerProcess {
             this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
             this.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
             if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
-        }
 
-        if (command.startsWith("say")) this.discordJDA.sendPlayerMessage("say", command.substring(3));
+            this.eventManager.callEventWithResponse(new ConsoleCommandEvent(command));
+
+        }
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {

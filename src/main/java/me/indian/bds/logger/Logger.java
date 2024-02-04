@@ -2,8 +2,6 @@ package me.indian.bds.logger;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfig;
-import me.indian.bds.discord.DiscordLogChannelType;
-import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 
@@ -68,25 +66,6 @@ public class Logger {
     public void print(final Object log, final Throwable throwable) {
         this.print(log);
         this.logThrowable(throwable);
-    }
-
-    public void print(final Object log, final DiscordJDA DiscordJDA, final DiscordLogChannelType channelType) {
-        this.print(log, null, DiscordJDA, channelType);
-    }
-
-    public void print(final Object log, final Throwable throwable, final DiscordJDA DiscordJDA, final DiscordLogChannelType channelType) {
-        this.print(log, throwable);
-
-        if (DiscordJDA == null) {
-            this.debug("Podana integracja z discord jest&c nullem!");
-            return;
-        }
-
-        switch (channelType) {
-            case CHAT -> DiscordJDA.sendMessage(log.toString(), throwable);
-            case CONSOLE -> DiscordJDA.writeConsole(log.toString(), throwable);
-            default -> this.debug("Nieznany typ kanału discord&1 " + channelType);
-        }
     }
 
     public void info(final Object log) {

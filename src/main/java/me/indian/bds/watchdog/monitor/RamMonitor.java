@@ -1,18 +1,18 @@
 package me.indian.bds.watchdog.monitor;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryUsage;
-import java.util.Timer;
-import java.util.TimerTask;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.RamMonitorConfig;
-import me.indian.bds.discord.jda.DiscordJDA;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.WatchDog;
+
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryUsage;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class RamMonitor {
 
@@ -21,7 +21,6 @@ public class RamMonitor {
     private final Logger logger;
     private final String prefix;
     private final RamMonitorConfig ramMonitorConfig;
-    private DiscordJDA discordJDA;
     private ServerProcess serverProcess;
     private boolean running;
 
@@ -35,8 +34,7 @@ public class RamMonitor {
 
     }
 
-    public void init(final DiscordJDA discordJDA) {
-        this.discordJDA = discordJDA;
+    public void init() {
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
     }
 
@@ -55,8 +53,6 @@ public class RamMonitor {
                     RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
                             "&cWiększe użycje może to prowadzić do crashy aplikacji a w tym servera&4!!",
                             LogState.CRITICAL);
-
-                    RamMonitor.this.discordJDA.sendAppRamAlert();
                 }
             }
         };
@@ -78,8 +74,6 @@ public class RamMonitor {
                     RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
                             freeComputerMemory + " / " + maxComputerMemory,
                             LogState.ALERT);
-
-                    RamMonitor.this.discordJDA.sendMachineRamAlert();
                 }
             }
         };

@@ -5,6 +5,7 @@ import me.indian.bds.exception.ExtensionException;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.GsonUtil;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,19 +26,20 @@ public class ExtensionLoader {
     private final Logger logger;
     private final List<Extension> extensions;
     private final String extensionsDir;
+    private final File[] jarFiles;
     private final Map<String, Class> classes;
     private final Map<String, ExtensionClassLoader> classLoaders;
+
 
     public ExtensionLoader(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.extensions = new ArrayList<>();
         this.extensionsDir = DefaultsVariables.getAppDir() + "extensions";
+        this.jarFiles = new File(this.extensionsDir).listFiles(pathname -> pathname.getName().endsWith(".jar"));
         this.classes = new HashMap<>();
         this.classLoaders = new HashMap<>();
-    }
 
-    public void loadExtensions() {
 
         try {
             Files.createDirectories(Paths.get(this.extensionsDir));
@@ -45,32 +47,21 @@ public class ExtensionLoader {
             this.logger.critical("Nie można utworzyć katalogu dla rozszerzeń");
             throw new RuntimeException(exception);
         }
-
-        final File[] jarFiles = new File(this.extensionsDir).listFiles(pathname -> pathname.getName().endsWith(".jar"));
-
-        if (jarFiles != null) {
-            for (final File jarFile : jarFiles) {
-                try {
-                    this.loadExtension(jarFile);
-                } catch (final Exception exception) {
-                   exception.printStackTrace();
-                }
-            }
-        }
     }
 
     public Extension loadExtension(final File file) throws Exception {
         final ExtensionDescription extensionDescription = this.getExtensionDescription(file);
         if (extensionDescription == null) {
-            this.logger.critical("(&a" + file.getName() + "&r) Plik &bExtension.json&r ma nieprawidłową składnie albo nie istnieje");
+            this.logger.critical("(&2" + file.getName() + "&r) Plik &bExtension.json&r ma nieprawidłową składnie albo nie istnieje");
             return null;
         }
 
+        if (extensionDescription.name().contains(" ")) {
+            throw new IllegalStateException("'" + file.getName() + "' Nazwa rozszerzenia nie może zawierać spacji");
+        }
+
         final String className = extensionDescription.mainClass();
-
-
         final ExtensionClassLoader classLoader = new ExtensionClassLoader(this, this.getClass().getClassLoader(), file);
-
 
         this.classLoaders.put(extensionDescription.name(), classLoader);
         final Extension extension;
@@ -107,6 +98,18 @@ public class ExtensionLoader {
         return null;
     }
 
+    public void loadExtensions() {
+        if (this.jarFiles != null) {
+            for (final File jarFile : this.jarFiles) {
+                try {
+                    this.loadExtension(jarFile);
+                } catch (final Exception exception) {
+                    exception.printStackTrace();
+                }
+            }
+        }
+    }
+
 
     public void enableExtensions() {
         for (final Extension extension : this.extensions) {
@@ -133,18 +136,34 @@ public class ExtensionLoader {
         }
     }
 
+    @Nullable
+    public Extension getExtension(final String name) {
+        for (final Extension extension : this.getExtensions()) {
+            if (extension.getName().equalsIgnoreCase(name)) return extension;
+        }
+        return null;
+    }
+
     public ExtensionDescription getExtensionDescription(final File file) {
         try (final JarFile jar = new JarFile(file)) {
             final JarEntry entry = jar.getJarEntry("Extension.json");
             if (entry == null) return null;
             try (final InputStreamReader reader = new InputStreamReader(jar.getInputStream(entry))) {
-                return GsonUtil.getGson().fromJson(reader, ExtensionDescription.class);
+                final ExtensionDescription description = GsonUtil.getGson().fromJson(reader, ExtensionDescription.class);
+
+                final String author = description.author();
+                final List<String> authors = description.authors();
+
+
+                if (authors.isEmpty() || !authors.contains(author)) authors.add(author);
+
+                return new ExtensionDescription(description.mainClass(), description.version(), description.name(),
+                        author, authors, description.description());
             }
         } catch (final IOException exception) {
             return null;
         }
     }
-
 
     public String getExtensionsDir() {
         return this.extensionsDir;
@@ -154,7 +173,7 @@ public class ExtensionLoader {
         return this.extensions;
     }
 
-    Class<?> getClassByName(final String name) {
+    public Class<?> getClassByName(final String name) {
         Class<?> cachedClass = this.classes.get(name);
 
         if (cachedClass != null) {
@@ -174,7 +193,7 @@ public class ExtensionLoader {
         return null;
     }
 
-    void setClass(final String name, final Class<?> clazz) {
+    public void setClass(final String name, final Class<?> clazz) {
         if (!this.classes.containsKey(name)) {
             this.classes.put(name, clazz);
         }

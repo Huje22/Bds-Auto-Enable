@@ -1,27 +1,27 @@
 package me.indian.bds.watchdog.module;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.AutoRestartConfig;
-import me.indian.bds.discord.embed.component.Footer;
-import me.indian.bds.discord.jda.DiscordJDA;
+import me.indian.bds.event.server.ServerRestartEvent;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class AutoRestartModule {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final AutoRestartConfig autoRestartConfig;
-    private final DiscordJDA discordJDA;
     private final WatchDog watchDog;
     private final Timer timer;
     private final ExecutorService service;
@@ -38,7 +38,6 @@ public class AutoRestartModule {
         this.watchDog = watchDog;
         this.timer = new Timer("AutoRestart", true);
         this.service = Executors.newSingleThreadExecutor(new ThreadUtil("Restart"));
-        this.discordJDA = bdsAutoEnable.getDiscordHelper().getDiscordJDA();
         this.lastRestartMillis = System.currentTimeMillis();
         this.restarting = false;
 
@@ -71,7 +70,12 @@ public class AutoRestartModule {
         }
     }
 
+
     public void restart(final boolean alert, final int seconds) {
+        this.restart(alert, seconds, null);
+    }
+
+    public void restart(final boolean alert, final int seconds, @Nullable final String reason) {
         if (this.restarting) return;
         this.restarting = true;
         this.service.execute(() -> {
@@ -86,10 +90,9 @@ public class AutoRestartModule {
                 this.watchDog.saveAndResume();
                 if (alert) this.restartAlert(seconds);
 
-                this.discordJDA.sendRestartMessage();
-
                 this.serverProcess.kickAllPlayers(this.prefix + " &aServer jest restartowany....");
                 this.serverProcess.sendToConsole("stop");
+                this.bdsAutoEnable.getEventManager().callEvent(new ServerRestartEvent(reason));
 
                 if (!this.serverProcess.getProcess().waitFor(10, TimeUnit.SECONDS)) {
                     this.watchDog.getBackupModule().backup();
@@ -103,10 +106,6 @@ public class AutoRestartModule {
             } catch (final Exception exception) {
                 this.serverProcess.tellrawToAllAndLogger(this.prefix,
                         "Nie można zrestartować servera!", exception, LogState.ERROR);
-                this.bdsAutoEnable.getDiscordHelper().getWebHook().sendEmbedMessage("Restart",
-                        "Nie można zrestartować servera!",
-                        exception,
-                        new Footer(exception.getLocalizedMessage()));
             } finally {
                 this.restarting = false;
             }

@@ -10,13 +10,14 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 
 * Wymaga Javy 17 bądź wyższej
 * Program wymaga przynajmniej `1GB` RAM do działania
-  * Jeśli chcesz zmieniać coś w `NoDiscordConsole` w `Log.yml` wypisywanie większej ilości tekstu może wymagać więcej ramu z powodu RateLimitu Discord
-* Zaleca się używać integracji z Discord
-  * Dla wygodniejszego zarządzania serwerem</details>
 * Program wspiera użycie [**WINE**](https://github.com/wine-mirror/wine)
+* Program wspiera proste
+  rozszerzenia: [ExampleExtension](https://github.com/Huje22/BDS-AE-Extensions/tree/master/ExampleExtension)
 
 # Program zawiera
 
+* Dosyć proste
+  rozszerzenia: [ExampleExtension](https://github.com/Huje22/BDS-AE-Extensions/tree/master/ExampleExtension)
 * Automatyczne włączenie servera po crashu
 * Łatwe załadowanie innej wersji
 * Tworzenie backupów świata co dany czas i manualnie
@@ -25,11 +26,6 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 * Licznik czasu gry gracza (
   Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
 * Licznik śmierci (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
-* Integracje z Discordem
-  (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack) do obsługi
-  większej
-  ilości funkcji)
-* [**Rest API**](RestAPI.MD) również wymaga paczki
 
 <details>
   <summary>Jak działa to z Paczką?</summary>
@@ -53,7 +49,7 @@ paczka jest najwyżej)**
 
 ### W Bocie
 
-[Poradnik ustawienia integracji z Discord](DiscordInstalation.md)
+[Poradnik ustawienia integracji z Discord](../BDS-AE-Extensions/DiscordExtension/DiscordInstalation.md)
 
 * Wszystkie je jak i także ich opisy znajdziesz po wpisaniu `/` (Wymaga dodania bota z
   ___&scope=bot+applications.commands___ inaczej mogą wystąpić problemy)
@@ -69,9 +65,7 @@ paczka jest najwyżej)**
 
 [Okaeri Configs - Do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
 [Gson - Do plików i samych Json](https://github.com/google/gson)<br>
-[JDA - Integracja z discord](https://github.com/discord-jda/JDA)<br>
-[Javalin - Rest API](https://github.com/javalin/javalin)<br>
-[Logback - Tylko do wyłączenia niektórych wiadomości z Javalin i JDA](https://github.com/qos-ch/logback)<br>
+[Logback - Tylko dla developerów rozszerzeń](https://github.com/qos-ch/logback)<br>
 
   ----
 

@@ -5,6 +5,8 @@ import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
 
+import java.util.List;
+
 
 @Header("################################################################")
 @Header("#                                                              #")
@@ -37,9 +39,9 @@ public class AppConfig extends OkaeriConfig {
     private String filesPath = "./";
 
     @Comment({""})
-    @Comment({"Czy zamknąć aplikacje gdy wystąpi niezłapany wyjątek?"})
-    @CustomKey("CloseOnException")
-    private boolean closeOnException = true;
+    @Comment({"Nazwy graczy którzy mogą wykonywać polecenia typu !format"})
+    @CustomKey("Moderators")
+    private List<String> moderators = List.of("JndjanBartonka");
 
     @Comment({""})
     @Comment({"UUID aplikacji"})
@@ -83,16 +85,12 @@ public class AppConfig extends OkaeriConfig {
         this.filesPath = filesPath;
     }
 
-    public boolean isCloseOnException() {
-        return this.closeOnException;
-    }
-
-    public void setCloseOnException(final boolean closeOnException) {
-        this.closeOnException = closeOnException;
-    }
-
     public String getUuid() {
         return this.uuid;
+    }
+
+    public List<String> getModerators() {
+        return this.moderators;
     }
 
     public void setUuid(final String uuid) {

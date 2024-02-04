@@ -1,14 +1,17 @@
 package me.indian.bds.version;
 
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
+import me.indian.bds.event.server.ServerUpdatedEvent;
+import me.indian.bds.event.server.ServerUpdatingEvent;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
+
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 
 public class VersionUpdater {
 
@@ -76,7 +79,7 @@ public class VersionUpdater {
         try {
             final String version = this.versionManager.getLatestVersion();
             if (this.versionManagerConfig.getVersion().equalsIgnoreCase(version)) return;
-            this.bdsAutoEnable.getDiscordHelper().getDiscordJDA().sendServerUpdateMessage(version);
+            this.bdsAutoEnable.getEventManager().callEvent(new ServerUpdatingEvent(version));
             if (!this.versionManager.hasVersion(version)) {
                 this.versionManager.downloadServerFiles(version);
             }
@@ -100,6 +103,7 @@ public class VersionUpdater {
 
             this.versionManager.loadVersion(version);
             this.serverProcess.setCanRun(true);
+            this.bdsAutoEnable.getEventManager().callEvent(new ServerUpdatedEvent(version));
             this.serverProcess.startProcess();
         } catch (final Exception exception) {
             this.logger.critical("Wystąpił krytyczny błąd przy próbie aktualizacji sevrera do najnowszej wersji", exception);

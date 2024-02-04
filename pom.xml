@@ -6,7 +6,7 @@
 
     <groupId>me.indian.bds</groupId>
     <artifactId>BDS-Auto-Enable</artifactId>
-    <version>1.0</version>
+    <version>0.0.1-Dev</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -25,6 +25,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.jetbrains</groupId>
+            <artifactId>annotations</artifactId>
+            <version>13.0</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>eu.okaeri</groupId>
             <artifactId>okaeri-configs-yaml-snakeyaml</artifactId>
             <version>5.0.0-beta.5</version>
@@ -36,23 +42,12 @@
             <version>2.10.1</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>net.dv8tion</groupId>
-            <artifactId>JDA</artifactId>
-            <version>5.0.0-beta.19</version>
-            <scope>compile</scope>
-        </dependency>
+
         <!--   Używam starszej wersji logback bo w nowej nie rozumiem co sie dzieje     -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
             <version>1.2.8</version>
-            <scope>compile</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.javalin</groupId>
-            <artifactId>javalin</artifactId>
-            <version>6.0.0</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
