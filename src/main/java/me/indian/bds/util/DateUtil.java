@@ -86,10 +86,10 @@ public final class DateUtil {
 
     private static Map<Character, String> getUnitMap(final long millis) {
         UNIT_MAP.clear();
-        UNIT_MAP.put('d', formatDays(millis) + " dni ");
-        UNIT_MAP.put('h', formatHours(millis) + " godzin ");
-        UNIT_MAP.put('m', formatMinutes(millis) + " minut ");
-        UNIT_MAP.put('s', formatSeconds(millis) + " sekund ");
+        UNIT_MAP.put('d', formatDays(millis) + " dni");
+        UNIT_MAP.put('h', formatHours(millis) + " godzin");
+        UNIT_MAP.put('m', formatMinutes(millis) + " minut");
+        UNIT_MAP.put('s', formatSeconds(millis) + " sekund");
         UNIT_MAP.put('i', millis % 1000 + " milisekund");
         return UNIT_MAP;
     }
