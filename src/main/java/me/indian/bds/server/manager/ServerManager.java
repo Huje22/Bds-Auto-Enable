@@ -148,6 +148,7 @@ public class ServerManager {
                 final PlayerChatResponse response = (PlayerChatResponse) this.eventManager.callEventWithResponse(new PlayerChatEvent(playerChat, message, muted, appHandled));
 
                 if (appHandled) {
+                    if (response.isCanceled()) return;
                     String format = playerChat + " »» " + message;
                     if (response != null) format = response.getFormat();
 
