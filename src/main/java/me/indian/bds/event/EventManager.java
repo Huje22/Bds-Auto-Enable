@@ -1,6 +1,8 @@
 package me.indian.bds.event;
 
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.event.player.PlayerBlockBreakEvent;
+import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
@@ -103,6 +105,14 @@ public class EventManager {
 
         if (event instanceof final PlayerDimensionChangeEvent playerDimensionChangeEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerDimensionChange(playerDimensionChangeEvent));
+        }
+
+        if (event instanceof final PlayerBlockBreakEvent playerBlockBreakEvent) {
+            this.listenerList.forEach(listener -> listener.onPlayerBreakBlock(playerBlockBreakEvent));
+        }
+
+        if (event instanceof final PlayerBlockPlaceEvent playerBlockPlaceEvent) {
+            this.listenerList.forEach(listener -> listener.onPlayerPlaceBlock(playerBlockPlaceEvent));
         }
 
 //        if(event instanceof final ){
