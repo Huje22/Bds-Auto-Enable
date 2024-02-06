@@ -98,12 +98,10 @@ public class BDSAutoEnable {
         this.versionManager.loadVersion();
         this.checkExecutable();
         this.watchDog.getPackModule().initPackModule();
-
         this.serverManager.getStatsManager().startCountServerTime(this.serverProcess);
         this.extensionLoader.loadExtensions();
         this.versionManager.getVersionUpdater().checkForUpdate();
         this.commandManager = new CommandManager(this);
-
 
         new ConsoleInput(this.mainScanner, this);
         new AppMetrics(this);
