@@ -41,7 +41,7 @@ public final class MessageUtil {
                 .replaceAll("", "?");
 
         if (!newLines) msg2 = msg2.replaceAll("\\r\\n|\\r|\\n", " ");
-        
+
         return msg2;
     }
 

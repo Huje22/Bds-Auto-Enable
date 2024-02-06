@@ -6,7 +6,7 @@ public class PlayerSpawnEvent extends Event {
 
     private final String playerName;
 
-    public PlayerSpawnEvent(final  String playerName){
+    public PlayerSpawnEvent(final String playerName) {
         this.playerName = playerName;
     }
 

@@ -9,50 +9,46 @@ import java.util.Map;
 import java.util.Set;
 
 public class ExtensionClassLoader extends URLClassLoader {
-//TODO: Fix code style
-    private ExtensionLoader loader;
-
     private final Map<String, Class> classes = new HashMap<>();
 
-    public ExtensionClassLoader(ExtensionLoader loader, ClassLoader parent, File file) throws MalformedURLException {
+    private final ExtensionLoader loader;
+
+    public ExtensionClassLoader(final ExtensionLoader loader, final ClassLoader parent, final File file) throws MalformedURLException {
         super(new URL[]{file.toURI().toURL()}, parent);
         this.loader = loader;
     }
 
     @Override
-    protected Class<?> findClass(String name) throws ClassNotFoundException {
+    protected Class<?> findClass(final String name) throws ClassNotFoundException {
         return this.findClass(name, true);
-
     }
 
-    protected Class<?> findClass(String name, boolean checkGlobal) throws ClassNotFoundException {
+    protected Class<?> findClass(final String name, final boolean checkGlobal) throws ClassNotFoundException {
         if (name.startsWith("cn.nukkit.") || name.startsWith("net.minecraft.")) {
             throw new ClassNotFoundException(name);
         }
-        Class<?> result = classes.get(name);
+        Class<?> result = this.classes.get(name);
 
         if (result == null) {
             if (checkGlobal) {
-                result = loader.getClassByName(name);
+                result = this.loader.getClassByName(name);
             }
 
             if (result == null) {
                 result = super.findClass(name);
 
                 if (result != null) {
-                    loader.setClass(name, result);
+                    this.loader.setClass(name, result);
                 }
             }
 
-            classes.put(name, result);
+            this.classes.put(name, result);
         }
 
         return result;
     }
 
-    Set<String> getClasses() {
-        return classes.keySet();
+    public Set<String> getClasses() {
+        return this.classes.keySet();
     }
-
 }
-

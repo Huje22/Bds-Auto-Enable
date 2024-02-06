@@ -1,7 +1,5 @@
 package me.indian.bds;
 
-import java.util.List;
-import java.util.Scanner;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
@@ -14,6 +12,9 @@ import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ScannerUtil;
 import me.indian.bds.util.system.SystemUtil;
+
+import java.util.List;
+import java.util.Scanner;
 
 public class Settings {
 

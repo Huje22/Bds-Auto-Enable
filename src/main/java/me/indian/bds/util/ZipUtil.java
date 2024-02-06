@@ -1,5 +1,8 @@
 package me.indian.bds.util;
 
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -9,8 +12,6 @@ import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
 
 public final class ZipUtil {
 

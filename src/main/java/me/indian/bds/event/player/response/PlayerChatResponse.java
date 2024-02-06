@@ -7,7 +7,7 @@ public class PlayerChatResponse extends EventResponse {
     private final String format;
     private final boolean cancel;
 
-    public PlayerChatResponse(final String format, final boolean cancel){
+    public PlayerChatResponse(final String format, final boolean cancel) {
         this.format = format;
         this.cancel = cancel;
     }
@@ -16,7 +16,7 @@ public class PlayerChatResponse extends EventResponse {
         return this.format;
     }
 
-    public boolean isCanceled(){
+    public boolean isCanceled() {
         return this.cancel;
     }
 }

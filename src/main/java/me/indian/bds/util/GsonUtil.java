@@ -6,9 +6,9 @@ import com.google.gson.GsonBuilder;
 public final class GsonUtil {
 
     private static final Gson GSON = new GsonBuilder()
-    .setPrettyPrinting().serializeNulls()
-    .disableHtmlEscaping().setLenient()
-    .create();
+            .setPrettyPrinting().serializeNulls()
+            .disableHtmlEscaping().setLenient()
+            .create();
 
     private GsonUtil() {
     }

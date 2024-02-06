@@ -60,11 +60,11 @@ public class EventManager {
             this.listenerList.forEach(listener -> listener.onPlayerDeath(playerDeathEvent));
         }
 
-        if(event instanceof final PlayerMuteEvent playerMuteEvent){
+        if (event instanceof final PlayerMuteEvent playerMuteEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerMute(playerMuteEvent));
         }
 
-        if(event instanceof final PlayerUnMuteEvent playerUnMuteEvent){
+        if (event instanceof final PlayerUnMuteEvent playerUnMuteEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerUnMute(playerUnMuteEvent));
         }
 

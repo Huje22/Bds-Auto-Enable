@@ -4,6 +4,7 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

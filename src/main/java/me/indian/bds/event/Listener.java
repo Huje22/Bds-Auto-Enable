@@ -42,11 +42,11 @@ public abstract class Listener {
         return null;
     }
 
-    public void onPlayerMute(final PlayerMuteEvent event){
+    public void onPlayerMute(final PlayerMuteEvent event) {
 
     }
 
-    public void onPlayerUnMute(final PlayerUnMuteEvent event){
+    public void onPlayerUnMute(final PlayerUnMuteEvent event) {
 
     }
 
@@ -54,7 +54,7 @@ public abstract class Listener {
 
     }
 
-    public void onPlayerDimensionChange(final PlayerDimensionChangeEvent event){
+    public void onPlayerDimensionChange(final PlayerDimensionChangeEvent event) {
 
     }
 
@@ -69,11 +69,11 @@ public abstract class Listener {
 
     }
 
-    public void onServerRestart(final ServerRestartEvent event){
+    public void onServerRestart(final ServerRestartEvent event) {
 
     }
 
-    public void onServerClose(final ServerClosedEvent event){
+    public void onServerClose(final ServerClosedEvent event) {
 
     }
 

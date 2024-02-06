@@ -4,9 +4,9 @@ import me.indian.bds.event.Event;
 
 public class TPSChangeEvent extends Event {
 
-    private final int tps,lastTps;
+    private final int tps, lastTps;
 
-    public TPSChangeEvent(final int tps , final  int lastTps){
+    public TPSChangeEvent(final int tps, final int lastTps) {
         this.tps = tps;
         this.lastTps = lastTps;
 

@@ -89,12 +89,12 @@ public class AppConfig extends OkaeriConfig {
         return this.uuid;
     }
 
-    public List<String> getModerators() {
-        return this.moderators;
-    }
-
     public void setUuid(final String uuid) {
         this.uuid = uuid;
+    }
+
+    public List<String> getModerators() {
+        return this.moderators;
     }
 
     public boolean isDebug() {

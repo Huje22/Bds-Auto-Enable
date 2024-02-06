@@ -23,7 +23,7 @@ public class RestartCommand extends Command {
 
         int seconds = 10;
 
-        if(args.length == 1){
+        if (args.length == 1) {
             try {
                 seconds = Integer.parseInt(args[0]);
             } catch (final NumberFormatException ignored) {

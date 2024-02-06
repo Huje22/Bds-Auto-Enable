@@ -8,7 +8,6 @@
     </appender>
 
 
-
     <!--    <logger name="net.dv8tion.jda" level="OFF"/>-->
     <logger name="net.dv8tion.jda" level="ERROR"/>
     <logger name="net.dv8tion.jda" level="WARN"/>

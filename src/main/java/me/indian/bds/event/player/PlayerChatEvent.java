@@ -7,7 +7,7 @@ public class PlayerChatEvent extends ResponsibleEvent {
     private final String playerName, message;
     private final boolean appHandled, muted;
 
-    public PlayerChatEvent(final String playerName, final String message,final boolean muted, final boolean appHandled) {
+    public PlayerChatEvent(final String playerName, final String message, final boolean muted, final boolean appHandled) {
         this.playerName = playerName;
         this.message = message;
         this.appHandled = appHandled;

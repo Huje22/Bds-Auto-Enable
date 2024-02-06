@@ -56,6 +56,7 @@ paczka jest najwyżej)**
 # Program nie wspiera
 
 * Wtyczek do Minecraft ani czytania pakietów z Minecraft
+
 # Szybkie info
 
 * Paczka sama się pobierze do twojego świata i załaduje , potrzebujesz jedynie włączonych experymentów w tym świecie!

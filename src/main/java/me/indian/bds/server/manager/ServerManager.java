@@ -148,9 +148,11 @@ public class ServerManager {
                 final PlayerChatResponse response = (PlayerChatResponse) this.eventManager.callEventWithResponse(new PlayerChatEvent(playerChat, message, muted, appHandled));
 
                 if (appHandled) {
-                    if (response.isCanceled()) return;
                     String format = playerChat + " »» " + message;
-                    if (response != null) format = response.getFormat();
+                    if (response != null) {
+                        if (response.isCanceled()) return;
+                        format = response.getFormat();
+                    }
 
                     if (muted) {
                         this.serverProcess.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");

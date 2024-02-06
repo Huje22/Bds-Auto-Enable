@@ -2,6 +2,18 @@ package me.indian.bds.version;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfig;
+import me.indian.bds.config.sub.version.VersionManagerConfig;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.properties.ServerProperties;
+import me.indian.bds.server.properties.StoreServerProperties;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.ZipUtil;
+import me.indian.bds.util.system.SystemOS;
+import me.indian.bds.util.system.SystemUtil;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -18,17 +30,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfig;
-import me.indian.bds.config.sub.version.VersionManagerConfig;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.properties.ServerProperties;
-import me.indian.bds.server.properties.StoreServerProperties;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.ZipUtil;
-import me.indian.bds.util.system.SystemOS;
-import me.indian.bds.util.system.SystemUtil;
 
 public class VersionManager {
 

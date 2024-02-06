@@ -4,6 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.ZipUtil;
+import me.indian.bds.watchdog.WatchDog;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,11 +21,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.ZipUtil;
-import me.indian.bds.watchdog.WatchDog;
 
 public class PackModule {
 

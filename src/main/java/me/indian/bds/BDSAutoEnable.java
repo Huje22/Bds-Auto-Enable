@@ -207,8 +207,13 @@ public class BDSAutoEnable {
             final File msvcp = new File("C:\\Windows\\System32\\msvcp140.dll");
 
             if (!vcruntime.exists() || !msvcp.exists()) {
-                if (!vcruntime.exists()) this.logger.critical("Brak&b vcruntime140_1.dll&r bez tego nie możemy uruchomić&e BDS");
-                if (!msvcp.exists()) this.logger.critical("Brak&b msvcp140.dll&r bez tego nie możemy uruchomić&e BDS");
+                if (!vcruntime.exists()) {
+                    this.logger.critical("Brak&b vcruntime140_1.dll&r bez tego nie możemy uruchomić&e BDS");
+                }
+
+                if (!msvcp.exists()) {
+                    this.logger.critical("Brak&b msvcp140.dll&r bez tego nie możemy uruchomić&e BDS");
+                }
                 throw new MissingDllException("Musisz pobrać pakiet redystrybucyjny programu Visual C++ (x64 i x86)");
             }
         }

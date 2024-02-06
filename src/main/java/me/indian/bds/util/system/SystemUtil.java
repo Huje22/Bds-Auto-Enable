@@ -1,9 +1,10 @@
 package me.indian.bds.util.system;
 
+import me.indian.bds.exception.UnSupportedSystemException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import me.indian.bds.exception.UnSupportedSystemException;
 
 public final class SystemUtil {
 

@@ -33,7 +33,7 @@ public class PlaytimeCommand extends Command {
         }
 
         this.sendMessage("&aŁączny czas działania servera: &b"
-                + DateUtil.formatTime(this.serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's' )));
+                + DateUtil.formatTime(this.serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's')));
         this.sendMessage("&a---------------------");
         return true;
     }

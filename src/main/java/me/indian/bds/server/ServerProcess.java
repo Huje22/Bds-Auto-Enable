@@ -106,7 +106,7 @@ public class ServerProcess {
         this.processService.execute(() -> {
             if (this.checkProcesRunning()) {
                 this.logger.info("Proces " + this.fileName + " jest już uruchomiony.");
-               this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera ");
+                this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera ");
                 ThreadUtil.sleep(30);
                 this.startProcess();
             } else {
@@ -301,7 +301,7 @@ public class ServerProcess {
      * Metoda do zatrzymania bezpiecznie servera wywoływana przez shutdown hook
      */
 
-    public void instantShutdown()  {
+    public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
         this.setCanRun(false);
 

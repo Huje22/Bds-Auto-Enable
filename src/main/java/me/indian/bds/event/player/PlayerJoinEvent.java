@@ -6,7 +6,7 @@ public class PlayerJoinEvent extends Event {
 
     private final String playerName;
 
-    public PlayerJoinEvent(final  String playerName){
+    public PlayerJoinEvent(final String playerName) {
         this.playerName = playerName;
     }
 
