@@ -102,6 +102,7 @@ public final class ConsoleColors {
         COLOR_MAP.put("^#e", BRIGHT_YELLOW_BACKGROUND);
         COLOR_MAP.put("^#f", BRIGHT_WHITE_BACKGROUND);
 
+        //TODO: Zniwelować częste występowanie białego 
         // WYMAGA TO WIELKICH USPRAWNIEŃ
         // Układane z pomocą https://minecraft.fandom.com/wiki/Formatting_codes
         COLORS.put(BLACK, new ColorSet(0, 0, 0));
