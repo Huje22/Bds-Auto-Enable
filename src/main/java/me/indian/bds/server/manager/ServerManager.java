@@ -5,6 +5,8 @@ import me.indian.bds.command.CommandSender;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.EventsConfig;
 import me.indian.bds.event.EventManager;
+import me.indian.bds.event.player.PlayerBlockBreakEvent;
+import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
@@ -80,6 +82,8 @@ public class ServerManager {
             this.playerSpawn(logEntry);
             this.deathMessage(logEntry);
             this.dimensionChange(logEntry);
+            this.playerBreakBlock(logEntry);
+            this.playerPlaceBlock(logEntry);
 
             //Dodatkowe metody
             this.serverEnabled(logEntry);
@@ -231,6 +235,35 @@ public class ServerManager {
                     )));
 
             this.eventManager.callEvent(new PlayerDimensionChangeEvent(playerName, fromDimension, toDimension));
+        }
+    }
+
+    private void playerBreakBlock(final String logEntry) {
+        final String patternString = "PlayerBreakBlock:([^,]+) Block:(.+) Position:(.+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerBreakBlock = matcher.group(1);
+            final String blockID = matcher.group(2);
+            final String blockPosition = matcher.group(3);
+
+            this.eventManager.callEvent(new PlayerBlockBreakEvent(playerBreakBlock, blockID, blockPosition));
+
+        }
+    }
+
+    private void playerPlaceBlock(final String logEntry) {
+        final String patternString = "PlayerPlaceBlock:([^,]+) Block:(.+) Position:(.+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerPlaceBlock = matcher.group(1);
+            final String blockID = matcher.group(2);
+            final String blockPosition = matcher.group(3);
+
+            this.eventManager.callEvent(new PlayerBlockPlaceEvent(playerPlaceBlock, blockID, blockPosition));
         }
     }
 

@@ -1,5 +1,7 @@
 package me.indian.bds.event;
 
+import me.indian.bds.event.player.PlayerBlockBreakEvent;
+import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
@@ -57,6 +59,15 @@ public abstract class Listener {
     public void onPlayerDimensionChange(final PlayerDimensionChangeEvent event) {
 
     }
+
+    public void onPlayerBreakBlock(final PlayerBlockBreakEvent event) {
+
+    }
+
+    public void onPlayerPlaceBlock(final PlayerBlockPlaceEvent event) {
+
+    }
+
 
     //Server
     @Nullable
