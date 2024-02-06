@@ -5,8 +5,6 @@ import me.indian.bds.command.CommandSender;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.EventsConfig;
 import me.indian.bds.event.EventManager;
-import me.indian.bds.event.player.PlayerBlockBreakEvent;
-import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
@@ -82,8 +80,6 @@ public class ServerManager {
             this.playerSpawn(logEntry);
             this.deathMessage(logEntry);
             this.dimensionChange(logEntry);
-            this.playerBreakBlock(logEntry);
-            this.playerPlaceBlock(logEntry);
 
             //Dodatkowe metody
             this.serverEnabled(logEntry);
@@ -94,7 +90,7 @@ public class ServerManager {
     }
 
     private void playerQuit(final String logEntry) {
-        final String patternString = "Player disconnected: (.+)";
+        final String patternString = "Player disconnected: ([^,]+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
@@ -108,7 +104,7 @@ public class ServerManager {
     }
 
     private void playerJoin(final String logEntry) {
-        final String patternString = "PlayerJoin:(.+)";
+        final String patternString = "PlayerJoin:([^,]+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
@@ -123,7 +119,7 @@ public class ServerManager {
     }
 
     private void playerSpawn(final String logEntry) {
-        final String patternString = "PlayerSpawn:(.+)";
+        final String patternString = "PlayerSpawn:([^,]+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
@@ -139,7 +135,7 @@ public class ServerManager {
         try {
             this.chatLock.lock();
 
-            final String patternString = "PlayerChat:(.+) Message:(.+)";
+            final String patternString = "PlayerChat:([^,]+) Message:(.+)";
             final Pattern pattern = Pattern.compile(patternString);
             final Matcher matcher = pattern.matcher(logEntry);
 
@@ -173,7 +169,7 @@ public class ServerManager {
     }
 
     private void customCommand(final String logEntry) {
-        final String patternString = "PlayerCommand:(.+) Command:(.+) Op:(.+)";
+        final String patternString = "PlayerCommand:([^,]+) Command:(.+) Op:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
@@ -186,7 +182,7 @@ public class ServerManager {
     }
 
     private void deathMessage(final String logEntry) {
-        final String patternString = "PlayerDeath:(.+) DeathMessage:(.+)";
+        final String patternString = "PlayerDeath:([^,]+) DeathMessage:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
@@ -218,7 +214,7 @@ public class ServerManager {
     }
 
     public void dimensionChange(final String logEntry) {
-        final String patternString = "DimensionChangePlayer:(.+) From:(.+) To:(.+)";
+        final String patternString = "DimensionChangePlayer:([^,]+) From:(.+) To:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
@@ -235,35 +231,6 @@ public class ServerManager {
                     )));
 
             this.eventManager.callEvent(new PlayerDimensionChangeEvent(playerName, fromDimension, toDimension));
-        }
-    }
-
-    private void playerBreakBlock(final String logEntry) {
-        final String patternString = "PlayerBreakBlock:(.+) Block:(.+) Position:(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
-
-        if (matcher.find()) {
-            final String playerBreakBlock = matcher.group(1);
-            final String blockID = matcher.group(2);
-            final String blockPosition = matcher.group(3);
-
-            this.eventManager.callEvent(new PlayerBlockBreakEvent(playerBreakBlock, blockID, blockPosition));
-
-        }
-    }
-
-    private void playerPlaceBlock(final String logEntry) {
-        final String patternString = "PlayerPlaceBlock:(.+) Block:(.+) Position:(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
-
-        if (matcher.find()) {
-            final String playerPlaceBlock = matcher.group(1);
-            final String blockID = matcher.group(2);
-            final String blockPosition = matcher.group(3);
-
-            this.eventManager.callEvent(new PlayerBlockPlaceEvent(playerPlaceBlock, blockID, blockPosition));
         }
     }
 
