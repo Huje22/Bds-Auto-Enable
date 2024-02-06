@@ -25,8 +25,6 @@ import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 public class ServerProcess {
 
@@ -35,7 +33,6 @@ public class ServerProcess {
     private final AppConfigManager appConfigManager;
     private final ServerManager serverManager;
     private final ExecutorService processService, consoleOutputService;
-    private final Lock cmdLock, cmdResponseLock;
     private final String prefix;
     private final SystemOS system;
     private final EventManager eventManager;
@@ -53,9 +50,7 @@ public class ServerProcess {
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.serverManager = this.bdsAutoEnable.getServerManager();
         this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
-        this.consoleOutputService = Executors.newScheduledThreadPool(4, new ThreadUtil("Console Output"));
-        this.cmdLock = new ReentrantLock();
-        this.cmdResponseLock = new ReentrantLock();
+        this.consoleOutputService = Executors.newScheduledThreadPool(4, new ThreadUtil("Console Output"));;
         this.prefix = "&b[&3ServerProcess&b] ";
         this.system = SystemUtil.getSystem();
         this.eventManager = this.bdsAutoEnable.getEventManager();
@@ -203,8 +198,6 @@ public class ServerProcess {
 
     public void sendToConsole(final String command) {
         if (command.isEmpty()) return;
-        this.cmdLock.lock();
-        this.cmdResponseLock.lock();
         try {
             if (!this.isEnabled()) {
                 this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&c nullem&r albo nie jest aktywny");
@@ -227,14 +220,11 @@ public class ServerProcess {
 
         } catch (final Exception exception) {
             this.logger.error("Wystąpił błąd podczas próby wysłania polecenia do konsoli", exception);
-        } finally {
-            this.cmdLock.unlock();
-            this.cmdResponseLock.unlock();
         }
     }
 
     /**
-     * Metoda do wysyłania poleceń do konsoli servera BDS i uzyskania ostatniej linij z konsoli
+     * Metoda do wysyłania poleceń do konsoli servera BDS i uzyskania ostatniej linij z konsoli , może być opuźnione
      */
 
     public String commandAndResponse(final String command) {
@@ -245,10 +235,8 @@ public class ServerProcess {
         if (thread.isInterrupted())
             throw new RuntimeException("Ten wątek (" + thread.getName() + ") został przerwany, nie można na nim wykonać tej metody.");
 
-        this.cmdResponseLock.lock();
         this.sendToConsole(command);
         ThreadUtil.sleep(1);
-        this.cmdResponseLock.unlock();
         return this.lastLine == null ? "null" : this.lastLine;
     }
 
