@@ -112,20 +112,35 @@ public class ExtensionLoader {
             }
         }
     }
+    
+public void enableExtension(final Extension extension){
+try {
+final List<String> dependencies = extension.getExtensionDescription().getDependencies();
 
-
-    public void enableExtensions() {
-        for (final Extension extension : this.extensions) {
-
-            //TODO: Dodać sekwencje włączania pluginow po kolej dzięki 
-            try {
+    for (final String depend : dependencies){
+        final Extension dependency = this.extensionMap.get(depend);
+     if (dependency != null){
+       this.enableExtension(dependency);
+     }else {
+         extension.setEnabled(false);
+                this.logger.error("&cNie znaleziono zależności&b " +depend+"");
+     }
+    }
                 this.logger.info("Włączanie&b " + extension.getName());
                 extension.onEnable();
                 extension.setEnabled(true);
             } catch (final Exception exception) {
                 extension.setEnabled(false);
                 this.logger.error("Nie udało się włączyć&b " + extension.getName(), exception);
-            }
+}
+    
+}
+
+    public void enableExtensions() {
+        for (final Extension extension : this.extensions) {
+
+            //TODO: Dodać sekwencje włączania pluginow po kolej dzięki 
+            this.enableExtension(extension);
         }
     }
 
@@ -143,10 +158,7 @@ public class ExtensionLoader {
 
     @Nullable
     public Extension getExtension(final String name) {
-        for (final Extension extension : this.getExtensions()) {
-            if (extension.getName().equalsIgnoreCase(name)) return extension;
-        }
-        return null;
+      return this.extensionMap.get(name); 
     }
 
     public ExtensionDescription getExtensionDescription(final File file) {
