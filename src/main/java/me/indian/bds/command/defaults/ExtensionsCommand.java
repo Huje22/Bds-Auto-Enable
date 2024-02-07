@@ -6,6 +6,7 @@ import me.indian.bds.extension.Extension;
 import me.indian.bds.util.MessageUtil;
 
 import java.util.List;
+import java.util.Map;
 
 public class ExtensionsCommand extends Command {
 
@@ -26,13 +27,14 @@ public class ExtensionsCommand extends Command {
             return true;
         }
 
-        final List<Extension> extensions = this.bdsAutoEnable.getExtensionLoader().getExtensions();
+        final Map<String, Extension> extensions = this.bdsAutoEnable.getExtensionLoader().getExtensions();
 
         if (args.length == 0) {
             String status = "&a(&r" + extensions.size() + "&a)&r ";
 
             int counter = 0;
-            for (final Extension extension : extensions) {
+            for (final Map.Entry<String, Extension> entry : extensions.entrySet()) {
+                final Extension extension = entry.getValue();
                 status += this.statusColor(extension.isEnabled()) + extension.getName()
                         + " &b" + extension.getVersion() + "&6"
                         + (counter < extensions.size() - 1 ? ", " : "");
@@ -44,20 +46,29 @@ public class ExtensionsCommand extends Command {
         } else if (args.length == 1) {
             final String extensionName = args[0];
 
-            for (final Extension extension : extensions) {
-                if (extension.getName().equalsIgnoreCase(extensionName)) {
-                    this.sendMessage("&aVersia:&b " + extension.getVersion());
-                    this.sendMessage("&aAutorzy&b " + MessageUtil.stringListToString(extension.getAuthors(), "&a,&b "));
-                    this.sendMessage("&aOpis:&b " + extension.getDescription());
-                    this.sendMessage("&aKlasa główna:&6 " + extension.getExtensionDescription().mainClass());
-                    return true;
+            final Extension extension = this.bdsAutoEnable.getExtensionLoader().getExtension(extensionName);
+
+            if (extension != null) {
+                final List<String> dependencies = extension.getExtensionDescription().dependencies();
+                final List<String> softDependencies = extension.getExtensionDescription().softDependencies();
+
+                this.sendMessage("&aVersia:&b " + extension.getVersion());
+                this.sendMessage("&aAutorzy&b " + MessageUtil.stringListToString(extension.getAuthors(), "&a,&b "));
+                this.sendMessage("&aOpis:&b " + extension.getDescription());
+                this.sendMessage("&aKlasa główna:&6 " + extension.getExtensionDescription().mainClass());
+                if (!dependencies.isEmpty()) {
+                    this.sendMessage("&aZależności:&b " + dependencies);
                 }
+
+                if (!softDependencies.isEmpty()) {
+                    this.sendMessage("&aMiękkie Zależności&b " + softDependencies);
+                }
+                return true;
             }
 
             this.sendMessage("&cNie znaleziono rozszerzenia&b " + extensionName);
             return true;
         }
-
         return false;
     }
 

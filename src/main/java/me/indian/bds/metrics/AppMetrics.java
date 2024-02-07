@@ -21,10 +21,8 @@ public class AppMetrics {
     }
 
     private void init() {
-
-
-        for (final Extension extension : this.extensionLoader.getExtensions()) {
-            this.sendExtensionData(extension.getName());
+        for (final Map.Entry<String, Extension> entry : this.extensionLoader.getExtensions().entrySet()) {
+            this.sendExtensionData(entry.getValue().getName());
         }
     }
 
