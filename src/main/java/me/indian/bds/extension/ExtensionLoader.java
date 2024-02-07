@@ -25,6 +25,7 @@ public class ExtensionLoader {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final List<Extension> extensions;
+    private final Map<String, Extensio> extensionMap;
     private final String extensionsDir;
     private final File[] jarFiles;
     private final Map<String, Class> classes;
@@ -35,6 +36,7 @@ public class ExtensionLoader {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.extensions = new ArrayList<>();
+        this.extensionMap = new HashMap<>();
         this.extensionsDir = DefaultsVariables.getAppDir() + "extensions";
         this.jarFiles = new File(this.extensionsDir).listFiles(pathname -> pathname.getName().endsWith(".jar"));
         this.classes = new HashMap<>();
@@ -49,7 +51,7 @@ public class ExtensionLoader {
         }
     }
 
-    public Extension loadExtension(final File file) throws Exception {
+    public Extension loadExtensionFromFile(final File file) throws Exception {
         final ExtensionDescription extensionDescription = this.getExtensionDescription(file);
         if (extensionDescription == null) {
             this.logger.critical("(&2" + file.getName() + "&r) Plik &bExtension.json&r ma nieprawidłową składnie albo nie istnieje");
@@ -82,10 +84,8 @@ public class ExtensionLoader {
                 } catch (final IOException exception) {
                     throw new ExtensionException("Nie udało się zainicjalizować `" + extensionDescription.name() + "`");
                 }
-
-                this.logger.info("Ładowanie&b " + extensionDescription.name() + "&r...");
-                extension.onLoad();
-                this.extensions.add(extension);
+                
+                this.extensionMap.put(extensionDescription.name(), extension);
 
                 return extension;
             } catch (final InstantiationException | IllegalAccessException exception) {
@@ -96,6 +96,10 @@ public class ExtensionLoader {
             throw new ExtensionException("Nie można załadować rozszerzenia `" + extensionDescription.name() + "` główna klasa nie została odnaleziona");
         }
         return null;
+    }
+
+    public Extension loadExtension(final File file){
+  final Extension extension = this.loadExtensionFile(file);
     }
 
     public void loadExtensions() {
