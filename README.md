@@ -1,5 +1,7 @@
 <div align="center">
 
+
+//TODO: Zaktualizować 
 # BDS-Auto-Enable
 
 Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
@@ -45,13 +47,6 @@ paczka jest najwyżej)**
 * `!help` - lista poleceń
 * `!tps` - Ticki na sekunde servera (działa tylko w minecraft)
   **Po resztę użyj `!help`**
-
-### W Bocie
-
-[Poradnik ustawienia integracji z Discord](../BDS-AE-Extensions/DiscordExtension/DiscordInstalation.md)
-
-* Wszystkie je jak i także ich opisy znajdziesz po wpisaniu `/` (Wymaga dodania bota z
-  ___&scope=bot+applications.commands___ inaczej mogą wystąpić problemy)
 
 # Program nie wspiera
 
