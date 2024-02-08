@@ -48,6 +48,12 @@ public class ExtensionLoader {
         }
     }
 
+
+    /**
+     * TODO: Zrobić jakiś "ExtensionLogger"
+     */
+    
+
     public Extension loadExtension(final File file) throws Exception {
         final ExtensionDescription extensionDescription = this.getExtensionDescription(file);
         if (extensionDescription == null) {
