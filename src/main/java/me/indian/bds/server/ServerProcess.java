@@ -39,7 +39,8 @@ public class ServerProcess {
     private String finalFilePath, fileName;
     private ProcessBuilder processBuilder;
     private Process process;
-    private String lastLine;
+    private String lastConsoleLine;
+    private long pid;
     private long startTime;
     private WatchDog watchDog;
     private boolean canRun, canWriteConsoleOutput;
@@ -54,6 +55,8 @@ public class ServerProcess {
         this.prefix = "&b[&3ServerProcess&b] ";
         this.system = SystemUtil.getSystem();
         this.eventManager = this.bdsAutoEnable.getEventManager();
+        this.lastConsoleLine = "";
+        this.pid = -1;
         this.canRun = true;
         this.canWriteConsoleOutput = true;
     }
@@ -140,14 +143,16 @@ public class ServerProcess {
                         this.bdsAutoEnable.getSettings().currentSettings(this.bdsAutoEnable.getMainScanner(), false);
                     }
 
+                    this.pid = this.process.pid();
                     this.logger.info("Uruchomiono proces servera ");
-                    this.logger.debug("&bPID&r procesu servera to&1 " + this.process.pid());
+                    this.logger.debug("&bPID&r procesu servera to&1 " + this.pid);
                     this.consoleOutputService.execute(this::readConsoleOutput);
 
                     this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
                     this.eventManager.callEvent(new ServerClosedEvent());
 
                     this.canWriteConsoleOutput = false;
+                    this.pid = -1;
                     this.watchDog.getAutoRestartModule().noteRestart();
                     this.serverManager.clearPlayers();
                     this.serverManager.getStatsManager().saveAllData();
@@ -179,7 +184,7 @@ public class ServerProcess {
 
                     if (!this.containsNotAllowedToConsoleLog(line)) {
                         this.consoleOutputService.execute(() -> System.out.println(line));
-                        this.lastLine = line;
+                        this.lastConsoleLine = line;
                         this.serverManager.initFromLog(line);
                     }
                 }
@@ -237,7 +242,7 @@ public class ServerProcess {
 
         this.sendToConsole(command);
         ThreadUtil.sleep(1);
-        return this.lastLine == null ? "null" : this.lastLine;
+        return this.lastConsoleLine == null ? "null" : this.lastConsoleLine;
     }
 
     public void kickAllPlayers(final String msg) {
@@ -351,8 +356,28 @@ public class ServerProcess {
         return (this.process != null && this.process.isAlive());
     }
 
-    public Process getProcess() {
-        return this.process;
+    public String getLastConsoleLine() {
+        return this.lastConsoleLine;
+    }
+
+    /**
+     *  Jeśli ktoś użył by 'this.process.getInputStream()' może to popsuć całą konsole
+     */
+
+    public long getPID() {
+        return this.pid;
+    }
+
+    public void waitFor() throws InterruptedException {
+        this.process.waitFor();
+    }
+
+    public boolean waitFor(final long timeout, final TimeUnit unit) throws InterruptedException {
+        return this.process.waitFor(timeout, unit);
+    }
+
+    public void destroyProcess() {
+        this.process.destroy();
     }
 
     private void someChangesForCommands(final String command) {

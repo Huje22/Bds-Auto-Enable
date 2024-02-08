@@ -8,7 +8,6 @@ import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
 
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class ConsoleInput {
@@ -44,10 +43,12 @@ public class ConsoleInput {
                     final boolean done = this.commandManager.runCommands(CommandSender.CONSOLE,
                             "CONSOLE", args[0], newArgs, true);
 
-                    if (done) continue;
+                    if (done) {
+                        continue;
+                    }
 
                     this.bdsAutoEnable.getEventManager()
-                            .callEventWithResponse(new ConsoleCommandEvent(args[0] + " " + Arrays.toString(newArgs)));
+                            .callEventWithResponse(new ConsoleCommandEvent(args[0], newArgs));
                     this.serverProcess.sendToConsole(input);
                 }
                 this.logger.alert("Konsola zakończyła działanie");

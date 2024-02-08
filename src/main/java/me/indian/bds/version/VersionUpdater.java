@@ -95,7 +95,7 @@ public class VersionUpdater {
                 this.serverProcess.kickAllPlayers(this.prefix + " &aAktualizowanie servera....");
                 this.serverProcess.sendToConsole("stop");
                 try {
-                    this.serverProcess.getProcess().waitFor();
+                    this.serverProcess.waitFor();
                 } catch (final InterruptedException exception) {
                     this.logger.error("", exception);
                 }

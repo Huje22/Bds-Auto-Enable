@@ -71,7 +71,7 @@ public abstract class Extension {
         return this.bdsAutoEnable;
     }
 
-    public ExtensionDescription getExtensionDescription() {
+    public final ExtensionDescription getExtensionDescription() {
         return this.extensionDescription;
     }
 
@@ -79,23 +79,23 @@ public abstract class Extension {
         return this.version;
     }
 
-    public String getName() {
+    public final  String getName() {
         return this.name;
     }
 
-    public String getAuthor() {
+    public final  String getAuthor() {
         return this.author;
     }
 
-    public String getDescription() {
+    public final  String getDescription() {
         return this.description;
     }
 
-    public List<String> getAuthors() {
+    public final  List<String> getAuthors() {
         return this.authors;
     }
 
-    public File getDataFolder() {
+    public final  File getDataFolder() {
         return this.dataFolder;
     }
 

@@ -150,7 +150,7 @@ public final class StatusUtil {
     public static long getServerRamUsage() {
         if (!SERVERPROCESS.isEnabled()) return 0;
         try {
-            return SystemUtil.getRamUsageByPid(SERVERPROCESS.getProcess().pid());
+            return SystemUtil.getRamUsageByPid(SERVERPROCESS.getPID());
         } catch (final Exception exception) {
             LOGGER.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + SystemUtil.getSystem(), exception);
         }

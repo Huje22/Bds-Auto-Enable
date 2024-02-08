@@ -94,9 +94,9 @@ public class AutoRestartModule {
                 this.serverProcess.sendToConsole("stop");
                 this.bdsAutoEnable.getEventManager().callEvent(new ServerRestartEvent(reason));
 
-                if (!this.serverProcess.getProcess().waitFor(10, TimeUnit.SECONDS)) {
+                if (!this.serverProcess.waitFor(10, TimeUnit.SECONDS)) {
                     this.watchDog.getBackupModule().backup();
-                    this.serverProcess.getProcess().destroy();
+                    this.serverProcess.destroyProcess();
                 }
 
                 if (!this.serverProcess.isCanRun()) {

@@ -53,7 +53,11 @@ public class EndCommand extends Command {
             ThreadUtil.sleep(1);
         }
         this.serverProcess.sendToConsole("stop");
-        ThreadUtil.sleep(10);
+        try {
+            this.serverProcess.waitFor();
+        } catch (final InterruptedException exception) {
+            ThreadUtil.sleep(10);
+        }
         System.exit(1);
     }
 }
