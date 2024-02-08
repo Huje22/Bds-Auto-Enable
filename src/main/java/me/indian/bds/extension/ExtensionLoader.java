@@ -84,7 +84,7 @@ public class ExtensionLoader {
 
                 this.logger.info("Ładowanie&b " + extensionDescription.name() + "&r...");
                 extension.onLoad();
-                this.extensions.put(extensionDescription.name().toLowerCase(), extension);
+                this.extensions.put(extensionDescription.name(), extension);
 
                 return extension;
             } catch (final InstantiationException | IllegalAccessException exception) {
@@ -124,8 +124,9 @@ public class ExtensionLoader {
         }
     }
 
-    private void enableDependencies(final Extension extension) {
+    private void enableSoftDependencies(final Extension extension) {
         final List<String> softDependencies = extension.getExtensionDescription().softDependencies();
+        if (softDependencies.isEmpty()) return;
 
         for (final String depend : softDependencies) {
             final Extension dependency = this.extensions.get(depend);
@@ -140,8 +141,9 @@ public class ExtensionLoader {
         }
     }
 
-    private void enableSoftDependencies(final Extension extension) {
+    private void enableDependencies(final Extension extension) {
         final List<String> dependencies = extension.getExtensionDescription().dependencies();
+        if (dependencies.isEmpty()) return;
 
         for (final String depend : dependencies) {
             final Extension dependency = this.extensions.get(depend);
@@ -176,7 +178,11 @@ public class ExtensionLoader {
 
     @Nullable
     public Extension getExtension(final String name) {
-        return this.extensions.get(name.toLowerCase());
+        return this.extensions.entrySet().stream()
+                .filter(entry -> entry.getKey().equalsIgnoreCase(name))
+                .map(Map.Entry::getValue)
+                .findFirst()
+                .orElse(null);
     }
 
     public ExtensionDescription getExtensionDescription(final File file) {
