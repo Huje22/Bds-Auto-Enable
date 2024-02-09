@@ -1,12 +1,18 @@
 package me.indian.bds;
 
+import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.time.ZoneId;
+import java.util.List;
+import java.util.Scanner;
+import java.util.UUID;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.exception.MissingDllException;
 import me.indian.bds.extension.ExtensionLoader;
-import me.indian.bds.logger.Logger;
+import me.indian.bds.logger.impl.MainLogger;
 import me.indian.bds.metrics.AppMetrics;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.manager.ServerManager;
@@ -24,20 +30,13 @@ import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
 
-import java.io.File;
-import java.lang.management.ManagementFactory;
-import java.time.ZoneId;
-import java.util.List;
-import java.util.Scanner;
-import java.util.UUID;
-
 public class BDSAutoEnable {
 
     private final Thread mainThread;
     private final long startTime;
     private final String projectVersion, runDate;
     private final Scanner mainScanner;
-    private final Logger logger;
+    private final MainLogger logger;
     private final ServerProperties serverProperties;
     private final AppConfigManager appConfigManager;
     private final AppConfig appConfig;
@@ -58,7 +57,7 @@ public class BDSAutoEnable {
         this.mainScanner = new Scanner(System.in);
         this.appConfigManager = new AppConfigManager();
         this.appConfig = this.appConfigManager.getAppConfig();
-        this.logger = new Logger(this);
+        this.logger = new MainLogger(this);
         this.isJavaVersionLessThan17();
         this.checkSystemSupport();
         this.checkEncoding();
@@ -245,7 +244,7 @@ public class BDSAutoEnable {
         return this.mainScanner;
     }
 
-    public Logger getLogger() {
+    public MainLogger getLogger() {
         return this.logger;
     }
 

@@ -36,6 +36,11 @@ public final class DateUtil {
         return now.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     }
 
+    public static String getTimeHMSMS() {
+        final LocalDateTime now = LocalDateTime.now();
+        return now.format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS"));
+    }
+
     public static long localDateToLong(final LocalDate localDate) {
         return localDate.toEpochDay();
     }

@@ -1,22 +1,21 @@
 package me.indian.bds.logger;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.PrintStream;
-
-public class Logger {
+public abstract class Logger {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final AppConfig appConfig;
-    private File logFile;
-    private String prefix;
-    private LogState logState;
-    private PrintStream printStream;
+    protected File logFile;
+    protected String prefix;
+    protected LogState logState;
+    protected PrintStream printStream;
 
     public Logger(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -26,10 +25,10 @@ public class Logger {
         this.initializeLogFile();
     }
 
-    private void updatePrefix() {
+    public void updatePrefix() {
         final String logStateColor = this.logState.getColorCode();
-        this.prefix = "&8" + DateUtil.getDate() + "&a BDS&1 Auto Enable &a[&7" +
-                Thread.currentThread().getName() + "&r&a] "
+        this.prefix = "&a[" + DateUtil.getTimeHMSMS() + "] &e[&7" +
+                Thread.currentThread().getName() + "&r&e]&r "
                 + logStateColor + this.logState.name().toUpperCase() + " &r";
     }
 
@@ -168,7 +167,7 @@ public class Logger {
 
     private void logToFile(final Object log) {
         if (this.printStream != null) {
-            this.printStream.println(DateUtil.getDate() + " [" + Thread.currentThread().getName() + "] " + this.logState + " " + ConsoleColors.removeColors(log));
+            this.printStream.println(ConsoleColors.removeColors(this.prefix) + ConsoleColors.removeColors(log));
         }
     }
 

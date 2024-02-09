@@ -3,13 +3,14 @@ package me.indian.bds.extension;
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
-import me.indian.bds.BDSAutoEnable;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.logger.impl.ExtensionLogger;
 
 public abstract class Extension {
 
@@ -18,6 +19,7 @@ public abstract class Extension {
     private List<String> authors;
     private boolean enabled;
     private BDSAutoEnable bdsAutoEnable;
+    private Logger logger;
     private File dataFolder;
 
     public void onLoad() {
@@ -42,6 +44,7 @@ public abstract class Extension {
 
     public final void init(final BDSAutoEnable bdsAutoEnable, final ExtensionDescription description, final ExtensionLoader loader) throws IOException {
         this.bdsAutoEnable = bdsAutoEnable;
+        this.logger = new ExtensionLogger(bdsAutoEnable, description.name());
         this.extensionDescription = description;
         this.mainClass = description.mainClass();
         this.version = description.version();
@@ -71,6 +74,10 @@ public abstract class Extension {
         return this.bdsAutoEnable;
     }
 
+    public Logger getLogger() {
+        return this.logger;
+    }
+
     public final ExtensionDescription getExtensionDescription() {
         return this.extensionDescription;
     }
@@ -79,7 +86,7 @@ public abstract class Extension {
         return this.version;
     }
 
-    public final  String getName() {
+    public final String getName() {
         return this.name;
     }
 
