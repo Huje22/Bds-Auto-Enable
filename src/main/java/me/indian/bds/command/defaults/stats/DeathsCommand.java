@@ -1,4 +1,4 @@
-package me.indian.bds.command.defaults;
+package me.indian.bds.command.defaults.stats;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
@@ -8,7 +8,6 @@ import me.indian.bds.watchdog.module.PackModule;
 public class DeathsCommand extends Command {
 
     private final PackModule packModule;
-
     public DeathsCommand(final BDSAutoEnable bdsAutoEnable) {
         super("deaths", "Top 10 graczy z największą ilością śmierci");
         this.packModule = bdsAutoEnable.getWatchDog().getPackModule();

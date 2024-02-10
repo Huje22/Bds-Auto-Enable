@@ -1,4 +1,4 @@
-package me.indian.bds.command.defaults;
+package me.indian.bds.command.defaults.stats;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
