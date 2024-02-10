@@ -1,12 +1,5 @@
 package me.indian.bds.extension;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.exception.ExtensionException;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.GsonUtil;
-import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,6 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.exception.ExtensionException;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.GsonUtil;
+import org.jetbrains.annotations.Nullable;
 
 public class ExtensionLoader {
 
@@ -27,7 +26,7 @@ public class ExtensionLoader {
     private final Map<String, Extension> extensions;
     private final String extensionsDir;
     private final File[] jarFiles;
-    private final Map<String, Class> classes;
+    private final Map<String, Class<?>> classes;
     private final Map<String, ExtensionClassLoader> classLoaders;
 
 
@@ -48,12 +47,6 @@ public class ExtensionLoader {
         }
     }
 
-
-    /**
-     * TODO: Zrobić jakiś "ExtensionLogger"
-     */
-    
-
     public Extension loadExtension(final File file) throws Exception {
         final ExtensionDescription extensionDescription = this.getExtensionDescription(file);
         if (extensionDescription == null) {
@@ -62,7 +55,11 @@ public class ExtensionLoader {
         }
 
         if (extensionDescription.name().contains(" ")) {
-            throw new IllegalStateException("'" + file.getName() + "' Nazwa rozszerzenia nie może zawierać spacji");
+            throw new ExtensionException("'" + file.getName() + "' Nazwa rozszerzenia nie może zawierać spacji");
+        }
+
+        if (this.getExtension(extensionDescription.name()) != null) {
+            throw new ExtensionException("Rozserzenie o nazwie: `" + extensionDescription.name() + "` już istnieje");
         }
 
         final String className = extensionDescription.mainClass();
@@ -78,9 +75,9 @@ public class ExtensionLoader {
             }
 
             try {
-                final Class<Extension> pluginClass = (Class<Extension>) javaClass.asSubclass(Extension.class);
+                final Class<? extends Extension> pluginClass = javaClass.asSubclass(Extension.class);
 
-                extension = pluginClass.newInstance();
+                extension = pluginClass.getDeclaredConstructor().newInstance();
 
                 try {
                     extension.init(this.bdsAutoEnable, extensionDescription, this);

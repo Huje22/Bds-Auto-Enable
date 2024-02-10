@@ -56,7 +56,7 @@ public class CommandManager {
 
     public <T extends Command> void registerCommand(final T command) {
         if (this.commandList.stream().anyMatch(command1 -> command1.getName().equals(command.getName()))) {
-            throw new RuntimeException("Komenda o nazwie " + command.getName() + " już istnieje!");
+            throw new RuntimeException("Komenda o nazwie `" + command.getName() + "` już istnieje!");
         }
 
         this.commandList.add(command);

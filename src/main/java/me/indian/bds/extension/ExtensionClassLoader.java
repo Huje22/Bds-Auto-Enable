@@ -13,7 +13,7 @@ import java.util.Set;
  */
 
 public class ExtensionClassLoader extends URLClassLoader {
-    private final Map<String, Class> classes = new HashMap<>();
+    private final Map<String, Class<?>> classes = new HashMap<>();
     private final ExtensionLoader loader;
 
     public ExtensionClassLoader(final ExtensionLoader loader, final ClassLoader parent, final File file) throws MalformedURLException {

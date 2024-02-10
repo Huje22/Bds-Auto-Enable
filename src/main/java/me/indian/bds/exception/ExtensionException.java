@@ -6,19 +6,19 @@ public class ExtensionException extends RuntimeException {
         super();
     }
 
-    public ExtensionException(String message) {
+    public ExtensionException(final String message) {
         super(message);
     }
 
-    public ExtensionException(String message, Throwable cause) {
+    public ExtensionException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
-    public ExtensionException(Throwable cause) {
+    public ExtensionException(final Throwable cause) {
         super(cause);
     }
 
-    protected ExtensionException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    protected ExtensionException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 }
