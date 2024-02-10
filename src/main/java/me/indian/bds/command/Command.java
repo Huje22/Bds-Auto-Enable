@@ -1,15 +1,14 @@
 package me.indian.bds.command;
 
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.CommandConfig;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public abstract class Command {
 
@@ -25,7 +24,7 @@ public abstract class Command {
         this.name = "!" + name;
         this.description = description;
         this.alliases = new ArrayList<>();
-        this.commandOptions = new HashMap<>();
+        this.commandOptions = new LinkedHashMap<>();
     }
 
     public abstract boolean onExecute(String[] args, boolean isOp);
