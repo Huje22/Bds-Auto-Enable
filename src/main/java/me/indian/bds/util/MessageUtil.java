@@ -9,7 +9,9 @@ import java.util.Random;
 public final class MessageUtil {
 
     private static final Random random = new Random();
-    private static final char[] CHARS = {'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '@', '#', '*'};
+    private static final char[] CHARS = {'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'z',
+            'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', 'Z',
+            '1', '2', '3', '4', '5', '6', '7', '8', '9', '@', '#', '*'};
 
     private MessageUtil() {
     }

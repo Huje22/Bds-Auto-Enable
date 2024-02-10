@@ -1,7 +1,10 @@
 package me.indian.bds.command;
 
+import java.util.ArrayList;
+import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.defaults.BackupCommand;
+import me.indian.bds.command.defaults.BlockCommand;
 import me.indian.bds.command.defaults.ChatFormatCommand;
 import me.indian.bds.command.defaults.DeathsCommand;
 import me.indian.bds.command.defaults.EndCommand;
@@ -17,9 +20,6 @@ import me.indian.bds.command.defaults.TPSCommand;
 import me.indian.bds.command.defaults.TestCommand;
 import me.indian.bds.command.defaults.VersionCommand;
 import me.indian.bds.server.ServerProcess;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class CommandManager {
 
@@ -41,6 +41,7 @@ public class CommandManager {
         this.registerCommand(new BackupCommand(this.bdsAutoEnable));
         this.registerCommand(new PlaytimeCommand(this.bdsAutoEnable));
         this.registerCommand(new DeathsCommand(this.bdsAutoEnable));
+        this.registerCommand(new BlockCommand(this.bdsAutoEnable));
         this.registerCommand(new VersionCommand(this.bdsAutoEnable));
         this.registerCommand(new ChatFormatCommand(this.bdsAutoEnable));
         this.registerCommand(new MuteCommand(this.bdsAutoEnable));

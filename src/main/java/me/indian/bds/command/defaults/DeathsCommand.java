@@ -21,9 +21,7 @@ public class DeathsCommand extends Command {
             return true;
         }
         this.sendMessage("&a---------------------");
-        for (final String s : StatusUtil.getTopDeaths(false, 10)) {
-            this.sendMessage(s);
-        }
+        StatusUtil.getTopDeaths(false, 10).forEach(this::sendMessage);
         this.sendMessage("&a---------------------");
         return true;
     }

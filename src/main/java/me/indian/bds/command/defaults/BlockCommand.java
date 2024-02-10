@@ -2,21 +2,15 @@ package me.indian.bds.command.defaults;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
-import me.indian.bds.server.ServerStats;
-import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.module.PackModule;
 
-import java.util.List;
+public class BlockCommand extends Command {
 
-public class PlaytimeCommand extends Command {
-
-    private final ServerStats serverStats;
     private final PackModule packModule;
 
-    public PlaytimeCommand(final BDSAutoEnable bdsAutoEnable) {
-        super("playtime", "Top 10 graczy z największym czasem gry");
-        this.serverStats = bdsAutoEnable.getServerManager().getStatsManager().getServerStats();
+    public BlockCommand(final BDSAutoEnable bdsAutoEnable) {
+        super("block", "Top 10 graczy z największym wykopaniem i postawieniem bloków");
         this.packModule = bdsAutoEnable.getWatchDog().getPackModule();
     }
 
@@ -28,9 +22,7 @@ public class PlaytimeCommand extends Command {
         }
 
         this.sendMessage("&a---------------------");
-        StatusUtil.getTopPlayTime(false, 10).forEach(this::sendMessage);
-        this.sendMessage("&aŁączny czas działania servera: &b"
-                + DateUtil.formatTime(this.serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's')));
+        StatusUtil.getTopBlock(false, 10).forEach(this::sendMessage);
         this.sendMessage("&a---------------------");
         return true;
     }

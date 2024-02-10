@@ -1,15 +1,6 @@
 package me.indian.bds.util;
 
 import com.sun.management.OperatingSystemMXBean;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.ServerStats;
-import me.indian.bds.server.manager.StatsManager;
-import me.indian.bds.util.system.SystemUtil;
-import me.indian.bds.watchdog.WatchDog;
-
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
@@ -17,6 +8,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.ServerStats;
+import me.indian.bds.server.manager.stats.StatsManager;
+import me.indian.bds.util.system.SystemUtil;
+import me.indian.bds.watchdog.WatchDog;
 
 public final class StatusUtil {
 
@@ -133,6 +132,81 @@ public final class StatusUtil {
         if (!forDiscord) topDeaths.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
 
         return topDeaths;
+    }
+
+    public static List<String> getTopBlockBroken(final boolean forDiscord, final int top) {
+        final Map<String, Long> brokenMap = STATSMANAGER.getBlockBroken();
+        final List<String> topBroken = new ArrayList<>();
+
+        final List<Map.Entry<String, Long>> sortedEntries = brokenMap.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .limit(top)
+                .toList();
+
+        int place = 1;
+        for (final Map.Entry<String, Long> entry : sortedEntries) {
+            topBroken.add(place + ". **" + entry.getKey() + "**: `" + entry.getValue() + "`");
+            place++;
+        }
+
+        if (!forDiscord) topBroken.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+
+        return topBroken;
+    }
+
+    public static List<String> getTopBlockPlaced(final boolean forDiscord, final int top) {
+        final Map<String, Long> placedMap = STATSMANAGER.getBlockPlaced();
+        final List<String> topPlaced = new ArrayList<>();
+
+        final List<Map.Entry<String, Long>> sortedEntries = placedMap.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .limit(top)
+                .toList();
+
+        int place = 1;
+        for (final Map.Entry<String, Long> entry : sortedEntries) {
+            topPlaced.add(place + ". **" + entry.getKey() + "**: `" + entry.getValue() + "`");
+            place++;
+        }
+
+        if (!forDiscord) topPlaced.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+
+        return topPlaced;
+    }
+
+    public static List<String> getTopBlock(final boolean forDiscord, final int top) {
+        final Map<String, Long> brokenMap = STATSMANAGER.getBlockBroken();
+        final Map<String, Long> placedMap = STATSMANAGER.getBlockPlaced();
+
+        final List<String> topBroken = new ArrayList<>();
+
+        final List<Map.Entry<String, Long>> sortedBrokenEntries = brokenMap.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .limit(top)
+                .toList();
+
+        final List<Map.Entry<String, Long>> sortedPlacedEntries = placedMap.entrySet().stream()
+                .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .limit(top)
+                .toList();
+
+
+        topBroken.add(String.format("%-20s  %-12s  %-12s", "NICK", "WYKOPANE", "POSTAWIONE"));
+
+        for (int i = 0; i < top && i < sortedBrokenEntries.size() && i < sortedPlacedEntries.size(); i++) {
+            final Map.Entry<String, Long> brokenEntry = sortedBrokenEntries.get(i);
+            final Map.Entry<String, Long> placedEntry = sortedPlacedEntries.get(i);
+
+            topBroken.add(String.format("%-20s  %-12s  %-12s",
+                    brokenEntry.getKey(), brokenEntry.getValue(), placedEntry.getValue()));
+
+        }
+
+        if (!forDiscord) {
+            topBroken.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+        }
+
+        return topBroken;
     }
 
     public static long availableDiskSpace() {

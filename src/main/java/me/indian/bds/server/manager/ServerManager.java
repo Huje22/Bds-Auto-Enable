@@ -1,5 +1,12 @@
 package me.indian.bds.server.manager;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.locks.ReentrantLock;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandSender;
 import me.indian.bds.config.AppConfigManager;
@@ -18,18 +25,11 @@ import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.manager.stats.StatsManager;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.module.PackModule;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.locks.ReentrantLock;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class ServerManager {
@@ -130,7 +130,7 @@ public class ServerManager {
         if (matcher.find()) {
             final String playerName = matcher.group(1);
             this.eventService.execute(() -> this.eventsConfig.getOnSpawn().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
-
+            this.statsManager.createNewPlayer(playerName);
             this.eventManager.callEvent(new PlayerSpawnEvent(playerName));
         }
     }
@@ -248,8 +248,8 @@ public class ServerManager {
             final String blockID = matcher.group(2);
             final String blockPosition = matcher.group(3);
 
+            this.statsManager.addBlockBroken(playerBreakBlock, 1);
             this.eventManager.callEvent(new PlayerBlockBreakEvent(playerBreakBlock, blockID, blockPosition));
-
         }
     }
 
@@ -263,6 +263,7 @@ public class ServerManager {
             final String blockID = matcher.group(2);
             final String blockPosition = matcher.group(3);
 
+            this.statsManager.addBlockPlaced(playerPlaceBlock, 1);
             this.eventManager.callEvent(new PlayerBlockPlaceEvent(playerPlaceBlock, blockID, blockPosition));
         }
     }

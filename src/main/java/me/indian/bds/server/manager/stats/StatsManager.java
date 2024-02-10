@@ -1,33 +1,37 @@
-package me.indian.bds.server.manager;
+package me.indian.bds.server.manager.stats;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.ServerStats;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MathUtil;
-
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.ServerStats;
+import me.indian.bds.server.manager.ServerManager;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.MathUtil;
+import org.jetbrains.annotations.Nullable;
 
 public class StatsManager {
 
     private final Logger logger;
     private final Timer playerStatsManagerTimer;
-    private final File statsFolder, playTimeJson, deathsJson, serverStatsJson;
-    private final Map<String, Long> playTime, deaths;
+    private final File statsFolder, statsJson, serverStatsJson;
+    private final List<PlayerStatistics> playerStats;
+    private final Map<String, Long> playtime, deaths, blockPlaced, blockBreaked;
     private final ServerManager serverManager;
     private final ServerStats serverStats;
     private final Gson gson;
@@ -36,12 +40,14 @@ public class StatsManager {
         this.logger = bdsAutoEnable.getLogger();
         this.playerStatsManagerTimer = new Timer("PlayerStatsMonitorTimer", true);
         this.statsFolder = new File(DefaultsVariables.getAppDir() + "stats");
-        this.playTimeJson = new File(this.statsFolder.getPath() + File.separator + "playtime.json");
-        this.deathsJson = new File(this.statsFolder.getPath() + File.separator + "deaths.json");
+        this.statsJson = new File(this.statsFolder.getPath() + File.separator + "stats.json");
         this.serverStatsJson = new File(this.statsFolder.getPath() + File.separator + "server.json");
         this.createFiles();
-        this.playTime = this.loadPlayTime();
-        this.deaths = this.loadDeaths();
+        this.playerStats = this.loadPlayerStats();
+        this.playtime = new HashMap<>();
+        this.deaths = new HashMap<>();
+        this.blockPlaced = new HashMap<>();
+        this.blockBreaked = new HashMap<>();
         this.serverManager = serverManager;
         this.serverStats = this.loadServerStats();
         this.gson = GsonUtil.getGson();
@@ -55,7 +61,10 @@ public class StatsManager {
             @Override
             public void run() {
                 for (final String playerName : StatsManager.this.serverManager.getOnlinePlayers()) {
-                    StatsManager.this.playTime.put(playerName, StatsManager.this.getPlayTimeByName(playerName) + second);
+                    final PlayerStatistics player = StatsManager.this.getByName(playerName);
+                    if (player != null) {
+                        player.addPlaytime(second);
+                    }
                 }
             }
         };
@@ -85,51 +94,101 @@ public class StatsManager {
         this.playerStatsManagerTimer.scheduleAtFixedRate(serverTimeTask, 0, second);
     }
 
-    public Map<String, Long> getPlayTime() {
-        return this.playTime;
+    public void createNewPlayer(final String playerName) {
+        if (this.getByName(playerName) == null) {
+            this.playerStats.add(new PlayerStatistics(playerName, 0, 0, 0, 0));
+            this.logger.debug("Utworzono gracza:&b " + playerName);
+        }
     }
 
-    public Map<String, Long> getDeaths() {
-        return this.deaths;
+    @Nullable
+    private PlayerStatistics getByName(final String playerName) {
+        for (final PlayerStatistics player : this.playerStats) {
+            if (player.getPlayerName().equalsIgnoreCase(playerName)) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public long getPlayTimeByName(final String playerName) {
+        final PlayerStatistics player = this.getByName(playerName);
+        return (player != null ? player.getPlaytime() : 0);
+    }
+
+    public long getDeathsByName(final String playerName) {
+        final PlayerStatistics player = this.getByName(playerName);
+        return (player != null ? player.getDeaths() : 0);
+    }
+
+    public void addDeaths(final String playerName, final long deaths) {
+        final PlayerStatistics player = this.getByName(playerName);
+        if (player != null) {
+            player.addDeaths(deaths);
+        }
+    }
+
+    public long getBlockPlacedByName(final String playerName) {
+        final PlayerStatistics player = this.getByName(playerName);
+        return (player != null ? player.getBlockPlaced() : 0);
+    }
+
+    public void addBlockPlaced(final String playerName, final long blockPlaced) {
+        final PlayerStatistics player = this.getByName(playerName);
+        if (player != null) {
+            player.addBlockPlaced(blockPlaced);
+        }
+    }
+
+    public long getBlockBrokenByName(final String playerName) {
+        final PlayerStatistics player = this.getByName(playerName);
+        return (player != null ? player.getBlockBroken() : 0);
+    }
+
+    public void addBlockBroken(final String playerName, final long blockBroken) {
+        final PlayerStatistics player = this.getByName(playerName);
+        if (player != null) {
+            player.addBlockBroken(blockBroken);
+        }
     }
 
     public ServerStats getServerStats() {
         return this.serverStats;
     }
 
-    public long getPlayTimeByName(final String playerName) {
-        return (this.playTime.get(playerName) == null ? 0 : this.playTime.get(playerName));
+    public Map<String, Long> getPlayTime() {
+        this.playerStats.forEach(player -> this.playtime.put(player.getPlayerName(), player.getPlaytime()));
+        return this.playtime;
     }
 
-    public long getDeathsByName(final String playerName) {
-        return (this.deaths.get(playerName) == null ? 0 : this.deaths.get(playerName));
+    public Map<String, Long> getDeaths() {
+        this.playerStats.forEach(player -> {
+            this.deaths.put(player.getPlayerName(), player.getDeaths());
+        });
+        return this.deaths;
     }
 
-    public void addDeaths(final String playerName, final long deaths) {
-        this.deaths.put(playerName, this.getDeathsByName(playerName) + deaths);
+    public Map<String, Long> getBlockPlaced() {
+        this.playerStats.forEach(player -> this.blockPlaced.put(player.getPlayerName(), player.getBlockPlaced()));
+        return this.blockPlaced;
+    }
+
+    public Map<String, Long> getBlockBroken() {
+        this.playerStats.forEach(player -> this.blockBreaked.put(player.getPlayerName(), player.getBlockBroken()));
+        return this.blockBreaked;
     }
 
     public void saveAllData() {
-        this.savePlayTime();
-        this.saveDeaths();
+        this.savePlayerStats();
         this.saveServerStats();
     }
 
-    private void savePlayTime() {
-        try (final FileWriter writer = new FileWriter(this.playTimeJson)) {
-            writer.write(this.gson.toJson(this.playTime));
-            this.logger.info("Pomyślnie zapisano&b czas gry&r graczy");
+    private void savePlayerStats() {
+        try (final FileWriter writer = new FileWriter(this.statsJson)) {
+            writer.write(this.gson.toJson(this.playerStats));
+            this.logger.info("Pomyślnie zapisano&b statystyki&r graczy");
         } catch (final Exception exception) {
-            this.logger.error("Nie udało się zapisać&b czasu gry&r graczy", exception);
-        }
-    }
-
-    private void saveDeaths() {
-        try (final FileWriter writer = new FileWriter(this.deathsJson)) {
-            writer.write(this.gson.toJson(this.deaths));
-            this.logger.info("Pomyślnie zapisano&r liczbe&b śmierci&r graczy");
-        } catch (final Exception exception) {
-            this.logger.error("Nie udało się zapisać liczby&b śmierci&r graczy", exception);
+            this.logger.error("Nie udało się zapisać&b statystyk&r graczy", exception);
         }
     }
 
@@ -142,34 +201,22 @@ public class StatsManager {
         }
     }
 
-    private HashMap<String, Long> loadPlayTime() {
-        try (final FileReader reader = new FileReader(this.playTimeJson)) {
-            final Type type = new TypeToken<HashMap<String, Long>>() {
+    private List<PlayerStatistics> loadPlayerStats() {
+        try (final FileReader reader = new FileReader(this.statsJson)) {
+            final Type type = new TypeToken<List<PlayerStatistics>>() {
             }.getType();
-            final HashMap<String, Long> loadedMap = GsonUtil.getGson().fromJson(reader, type);
-            return (loadedMap == null ? new HashMap<>() : loadedMap);
+            final List<PlayerStatistics> loadedMap = GsonUtil.getGson().fromJson(reader, type);
+            return (loadedMap == null ? new ArrayList<>() : loadedMap);
         } catch (final Exception exception) {
-            this.logger.error("Nie udało się załadować&b czasu gry&r graczy", exception);
+            this.logger.error("Nie udało się załadować&b statystyk&r graczy", exception);
         }
-        return new HashMap<>();
+        return new ArrayList<>();
     }
 
-    private HashMap<String, Long> loadDeaths() {
-        try (final FileReader reader = new FileReader(this.deathsJson)) {
-            final Type type = new TypeToken<HashMap<String, Long>>() {
-            }.getType();
-            final HashMap<String, Long> loadedMap = GsonUtil.getGson().fromJson(reader, type);
-            return (loadedMap == null ? new HashMap<>() : loadedMap);
-        } catch (final Exception exception) {
-            this.logger.error("Nie udało się załadować liczby&b śmierci&r graczy", exception);
-        }
-        return new HashMap<>();
-    }
 
     private ServerStats loadServerStats() {
         try (final FileReader reader = new FileReader(this.serverStatsJson)) {
             final ServerStats loadedStats = GsonUtil.getGson().fromJson(reader, ServerStats.class);
-
             if (loadedStats != null) return loadedStats;
         } catch (final Exception exception) {
             this.logger.error("Nie udało się załadować statystyk serwera", exception);
@@ -201,31 +248,20 @@ public class StatsManager {
             }
         }
 
-        if (!this.playTimeJson.exists()) {
+        if (!this.statsJson.exists()) {
             try {
-                if (!this.playTimeJson.createNewFile()) {
-                    this.logger.error("Nie można utworzyć&b playtime.json");
+                if (!this.statsJson.createNewFile()) {
+                    this.logger.error("Nie można utworzyć&b stats.json");
                 }
             } catch (final Exception exception) {
-                this.logger.error("Nie udało się utworzyć&b playtime.json", exception);
+                this.logger.error("Nie udało się utworzyć&b stats.json", exception);
             }
         }
-
-        if (!this.deathsJson.exists()) {
-            try {
-                if (!this.deathsJson.createNewFile()) {
-                    this.logger.error("Nie udało się  utworzyć&b deaths.json");
-                }
-            } catch (final Exception exception) {
-                this.logger.error("Nie można utworzyć&b deaths.json", exception);
-            }
-        }
-
 
         if (!this.serverStatsJson.exists()) {
             try {
                 if (!this.serverStatsJson.createNewFile()) {
-                    this.logger.error("Nie udało się  utworzyć&b server.json");
+                    this.logger.error("Nie udało się utworzyć&b server.json");
                 }
             } catch (final Exception exception) {
                 this.logger.error("Nie można utworzyć&b server.json", exception);
