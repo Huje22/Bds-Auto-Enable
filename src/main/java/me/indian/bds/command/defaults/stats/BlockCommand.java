@@ -38,7 +38,7 @@ public class BlockCommand extends Command {
         final Map<String, Long> brokenMap = this.statsManager.getBlockBroken();
         final Map<String, Long> placedMap = this.statsManager.getBlockPlaced();
 
-        final List<String> topBroken = new ArrayList<>();
+        final List<String> topBlocks = new ArrayList<>();
 
         final List<Map.Entry<String, Long>> sortedBrokenEntries = brokenMap.entrySet().stream()
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
@@ -51,21 +51,21 @@ public class BlockCommand extends Command {
                 .toList();
 
 
-        topBroken.add(String.format("%-20s  %-12s  %-12s", "NICK", "WYKOPANE", "POSTAWIONE"));
+        topBlocks.add(String.format("%-20s  %-12s  %-12s", "NICK", "WYKOPANE", "POSTAWIONE"));
 
         for (int i = 0; i < top && i < sortedBrokenEntries.size() && i < sortedPlacedEntries.size(); i++) {
             final Map.Entry<String, Long> brokenEntry = sortedBrokenEntries.get(i);
             final Map.Entry<String, Long> placedEntry = sortedPlacedEntries.get(i);
 
-            topBroken.add(String.format("%-20s  %-12s  %-12s",
+            topBlocks.add(String.format("%-20s  %-12s  %-12s",
                     brokenEntry.getKey(), brokenEntry.getValue(), placedEntry.getValue()));
 
         }
 
         if (!forDiscord) {
-            topBroken.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+            topBlocks.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
         }
 
-        return topBroken;
+        return topBlocks;
     }
 }
