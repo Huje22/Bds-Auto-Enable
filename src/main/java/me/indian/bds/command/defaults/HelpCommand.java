@@ -1,22 +1,21 @@
 package me.indian.bds.command.defaults;
 
+import java.util.Set;
 import me.indian.bds.command.Command;
-
-import java.util.List;
 
 public class HelpCommand extends Command {
 
-    private final List<Command> commandList;
+    private final Set<Command> commandSet;
 
-    public HelpCommand(final List<Command> commandsList) {
+    public HelpCommand(final  Set<Command> commandSet) {
         super("help", "Lista pomocnych poleceń");
-        this.commandList = commandsList;
+        this.commandSet = commandSet;
     }
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         this.sendMessage("&a---------------------");
-        this.commandList.forEach(command -> this.sendMessage("&a" + command.getName() + " &4-&b " + command.getDescription()));
+        this.commandSet.forEach(command -> this.sendMessage("&a" + command.getName() + " &4-&b " + command.getDescription()));
         this.sendMessage("&a---------------------");
         return true;
     }

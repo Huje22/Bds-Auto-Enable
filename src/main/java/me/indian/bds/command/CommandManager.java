@@ -1,7 +1,7 @@
 package me.indian.bds.command;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.defaults.BackupCommand;
 import me.indian.bds.command.defaults.ChatFormatCommand;
@@ -23,15 +23,14 @@ public class CommandManager {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final ServerProcess serverProcess;
-    private final List<Command> commandList;
-
+    private final  Set<Command> commandSet ;
 
     public CommandManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
-        this.commandList = new ArrayList<>();
+        this.commandSet = new HashSet<>();
 
-        this.registerCommand(new HelpCommand(this.commandList));
+        this.registerCommand(new HelpCommand(this.commandSet));
         this.registerCommand(new TPSCommand(this.bdsAutoEnable));
         this.registerCommand(new ExtensionsCommand(this.bdsAutoEnable));
         this.registerCommand(new EndCommand(this.bdsAutoEnable));
@@ -55,16 +54,12 @@ public class CommandManager {
     }
 
     public <T extends Command> void registerCommand(final T command) {
-        if (this.commandList.stream().anyMatch(command1 -> command1.getName().equals(command.getName()))) {
-            throw new RuntimeException("Komenda o nazwie `" + command.getName() + "` już istnieje!");
-        }
-
-        this.commandList.add(command);
+        this.commandSet.add(command);
         command.init(this.bdsAutoEnable);
     }
 
     public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, final boolean isOp) {
-        for (final Command command : this.commandList) {
+        for (final Command command : this.commandSet) {
             if (command.getName().equalsIgnoreCase(commandName) || command.isAlias(commandName)) {
                 command.setCommandSender(sender);
                 command.setPlayerName(playerName);
