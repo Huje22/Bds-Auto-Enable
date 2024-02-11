@@ -1,5 +1,8 @@
 package me.indian.bds.version;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.event.server.ServerUpdatedEvent;
@@ -8,10 +11,6 @@ import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
-
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.TimeUnit;
 
 public class VersionUpdater {
 
@@ -94,11 +93,7 @@ public class VersionUpdater {
             if (this.serverProcess.isEnabled()) {
                 this.serverProcess.kickAllPlayers(this.prefix + " &aAktualizowanie servera....");
                 this.serverProcess.sendToConsole("stop");
-                try {
-                    this.serverProcess.waitFor();
-                } catch (final InterruptedException exception) {
-                    this.logger.error("", exception);
-                }
+                this.serverProcess.waitFor();
             }
 
             this.versionManager.loadVersion(version);

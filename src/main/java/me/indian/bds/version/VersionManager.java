@@ -2,18 +2,6 @@ package me.indian.bds.version;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfig;
-import me.indian.bds.config.sub.version.VersionManagerConfig;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.properties.ServerProperties;
-import me.indian.bds.server.properties.StoreServerProperties;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.ZipUtil;
-import me.indian.bds.util.system.SystemOS;
-import me.indian.bds.util.system.SystemUtil;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -30,6 +18,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfig;
+import me.indian.bds.config.sub.version.VersionManagerConfig;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.properties.ServerProperties;
+import me.indian.bds.server.properties.StoreServerProperties;
+import me.indian.bds.util.BedrockQuery;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.ZipUtil;
+import me.indian.bds.util.system.SystemOS;
+import me.indian.bds.util.system.SystemUtil;
 
 public class VersionManager {
 
@@ -44,6 +44,7 @@ public class VersionManager {
     private final VersionUpdater versionUpdater;
     private final SystemOS system;
     private final ServerProperties serverProperties;
+    private int lastKnownProtocol;
 
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -57,6 +58,7 @@ public class VersionManager {
         this.versionUpdater = new VersionUpdater(bdsAutoEnable, this);
         this.system = SystemUtil.getSystem();
         this.serverProperties = this.bdsAutoEnable.getServerProperties();
+        this.lastKnownProtocol = 0;
 
         if (!this.versionFolder.exists()) {
             if (this.versionFolder.mkdirs()) {
@@ -266,5 +268,17 @@ public class VersionManager {
     public void setLoadedVersion(final String version) {
         this.versionManagerConfig.setVersion(version);
         this.versionManagerConfig.save();
+    }
+
+    public int getLastKnownProtocol() {
+        if (this.lastKnownProtocol == 0) {
+            this.setLastKnownProtocol(BedrockQuery.create("localhost", this.serverProperties.getServerPort()).protocol());
+        }
+
+        return this.lastKnownProtocol;
+    }
+
+    public void setLastKnownProtocol(final int lastKnownProtocol) {
+        this.lastKnownProtocol = lastKnownProtocol;
     }
 }

@@ -1,15 +1,18 @@
 package me.indian.bds.server.properties;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.version.VersionManager;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Properties;
+import java.util.stream.Stream;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.version.VersionManager;
 
 public class ServerProperties {
 
@@ -70,7 +73,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("online-mode"));
         } catch (final Exception exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setOnlineMode(true);
             return true;
         }
@@ -85,7 +88,7 @@ public class ServerProperties {
         try {
             return this.properties.getProperty("level-name");
         } catch (final Exception exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setWorldName("Bedrock level");
             return "Bedrock level";
         }
@@ -97,11 +100,27 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
+    public String getRealWorldName() {
+        final String levelNamePatch = DefaultsVariables.getWorldsPath() + this.getWorldName() + File.separator + "levelname.txt";
+        final Path filePath = Paths.get(levelNamePatch);
+        String name = "";
+
+        if (Files.exists(filePath)) {
+            try (final Stream<String> stream = Files.lines(filePath)) {
+                name = stream.findFirst().orElse("");
+            } catch (final IOException exception) {
+                this.logger.logThrowable(exception);
+            }
+        }
+
+        return name;
+    }
+
     public String getMOTD() {
         try {
             return this.properties.getProperty("server-name");
         } catch (final Exception exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setMOTD("BDS-Auto-Enable Server");
             return "BDS-Auto-Enable Server";
         }
@@ -117,7 +136,7 @@ public class ServerProperties {
         try {
             return CompressionAlgorithm.getByName(this.properties.getProperty("compression-algorithm"));
         } catch (final NullPointerException exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setCompressionAlgorithm(CompressionAlgorithm.ZLIB);
         }
         return CompressionAlgorithm.ZLIB;
@@ -137,7 +156,7 @@ public class ServerProperties {
             }
             return Difficulty.getByName(difficulty1);
         } catch (final NullPointerException exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setDifficulty(Difficulty.NORMAL);
         }
         return Difficulty.NORMAL;
@@ -157,7 +176,7 @@ public class ServerProperties {
             }
             return PlayerPermissionLevel.getByName(permissionLevel);
         } catch (final NullPointerException exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setPlayerPermissionLevel(PlayerPermissionLevel.MEMBER);
             return PlayerPermissionLevel.MEMBER;
         }
@@ -172,7 +191,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("server-port"));
         } catch (final NumberFormatException exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setServerPort(19132);
             return 19132;
         }
@@ -187,7 +206,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("server-portv6"));
         } catch (final NumberFormatException exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setServerPortV6(19133);
             return 19133;
         }
@@ -202,7 +221,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("max-threads"));
         } catch (final NumberFormatException exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setMaxThreads(8);
             return 8;
         }
@@ -217,7 +236,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("max-players"));
         } catch (final NumberFormatException exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setMaxPlayers(10);
             return 10;
         }
@@ -232,7 +251,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("view-distance"));
         } catch (final NumberFormatException exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setViewDistance(32);
             return 32;
         }
@@ -247,7 +266,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("tick-distance"));
         } catch (final NumberFormatException exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setTickDistance(4);
             return 4;
         }
@@ -262,7 +281,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("allow-cheats"));
         } catch (final Exception exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setAllowCheats(true);
             return true;
         }
@@ -277,7 +296,7 @@ public class ServerProperties {
         try {
             return Integer.parseInt(this.properties.getProperty("player-idle-timeout"));
         } catch (final NumberFormatException exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setPlayerIdleTimeout(30);
             return 30;
         }
@@ -292,7 +311,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("emit-server-telemetry"));
         } catch (final Exception exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setServerTelemetry(false);
             return false;
         }
@@ -307,7 +326,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("texturepack-required"));
         } catch (final Exception exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setTexturePackRequired(false);
             return false;
         }
@@ -322,7 +341,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("client-side-chunk-generation-enabled"));
         } catch (final Exception exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setClientSideChunkGeneration(true);
             return true;
         }
@@ -355,7 +374,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("server-authoritative-block-breaking"));
         } catch (final Exception exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setServerAuthoritativeBlockBreaking(false);
             return false;
         }
@@ -370,7 +389,7 @@ public class ServerProperties {
         try {
             return ServerMovementAuth.getByName(this.properties.getProperty("server-authoritative-movement"));
         } catch (final Exception exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setServerMovementAuth(ServerMovementAuth.SERVER_AUTH);
             return ServerMovementAuth.SERVER_AUTH;
         }
@@ -385,7 +404,7 @@ public class ServerProperties {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("correct-player-movement"));
         } catch (final Exception exception) {
-            this.logger.debug("", exception);
+            this.logger.logThrowable(exception);
             this.setCorrectPlayerMovement(false);
             return false;
         }

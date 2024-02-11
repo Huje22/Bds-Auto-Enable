@@ -5,11 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f57eb4c-9a7f-418c-afff-b4129e5ac4bd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/ExtensionsCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/ExtensionsCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/extension/ExtensionLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/extension/ExtensionLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/manager/ServerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/manager/ServerManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/properties/ServerProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/properties/ServerProperties.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/version/VersionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/version/VersionManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/version/VersionUpdater.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/version/VersionUpdater.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

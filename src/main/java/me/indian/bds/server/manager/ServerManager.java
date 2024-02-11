@@ -217,7 +217,7 @@ public class ServerManager {
         }
     }
 
-    public void dimensionChange(final String logEntry) {
+    private void dimensionChange(final String logEntry) {
         final String patternString = "DimensionChangePlayer:([^,]+) From:(.+) To:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
