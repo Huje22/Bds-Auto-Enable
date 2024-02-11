@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f57eb4c-9a7f-418c-afff-b4129e5ac4bd" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/codeStyles/Project.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/CommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/CommandManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/ExtensionsCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/ExtensionsCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/extension/Extension.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/extension/Extension.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/extension/ExtensionLoader.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/extension/ExtensionLoader.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -81,10 +81,10 @@
     </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\BDS-Auto-Enable\extensions" />
+      <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\src\main\java\me\indian\bds\extension" />
       <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\BDS-Auto-Enable\extensions\XboxBroadcastExtension" />
       <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\BDS-Auto-Enable\extensions\XboxBroadcastExtension\cache" />
       <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\BDS-Auto-Enable\extensions\DiscordExtension" />
-      <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\BDS-Auto-Enable\extensions\ExampleExtension" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\BDS-Auto-Enable\extensions\XboxBroadcastExtension" />
