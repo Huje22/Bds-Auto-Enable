@@ -195,8 +195,12 @@ public class ExtensionLoader {
 
     public ExtensionDescription getExtensionDescription(final File file) {
         try (final JarFile jar = new JarFile(file)) {
-            final JarEntry entry = jar.getJarEntry("Extension.json");
-            if (entry == null) return null;
+            JarEntry entry = jar.getJarEntry("Extension.json");
+            if (entry == null) {
+                entry = jar.getJarEntry("extension.json");
+
+                if (entry == null) return null;
+            }
             try (final InputStreamReader reader = new InputStreamReader(jar.getInputStream(entry))) {
                 final ExtensionDescription description = GsonUtil.getGson().fromJson(reader, ExtensionDescription.class);
 
