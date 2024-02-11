@@ -1,29 +1,33 @@
 package me.indian.bds.command.defaults;
 
+import java.util.List;
+import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.extension.Extension;
+import me.indian.bds.extension.ExtensionLoader;
 import me.indian.bds.util.MessageUtil;
-
-import java.util.List;
-import java.util.Map;
 
 public class ExtensionsCommand extends Command {
 
     private final BDSAutoEnable bdsAutoEnable;
+    private final ExtensionLoader extensionLoader;
 
     public ExtensionsCommand(final BDSAutoEnable bdsAutoEnable) {
         super("extension", "Pokazuje wgrane rozszerzenia");
         this.bdsAutoEnable = bdsAutoEnable;
+        this.extensionLoader = this.bdsAutoEnable.getExtensionLoader();
 
         this.addAlliases(List.of("ex"));
-        this.addOption("[extension name]", "informacje o danej wtyczce");
+        this.addOption("[extension name]", "Informacje o danym rozserzeniu");
+        this.addOption("enable <extension name>", "Włącza dane rozserzenie &cNIEBEZPIECZNE");
+        this.addOption("disable <extension name>", "Wyłącza dane rozserzenie &cNIEBEZPIECZNE");
     }
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (!this.commandConfig.isExtensionsForAll() && !isOp) {
-            this.sendMessage("&aTylko operatorzy mogą zobaczyć aktualne ustawienia servera");
+            this.sendMessage("&aTylko operatorzy mogą zobaczyć aktualne rozserzenia");
             return true;
         }
 
@@ -43,7 +47,9 @@ public class ExtensionsCommand extends Command {
 
             this.sendMessage(status);
             return true;
-        } else if (args.length == 1) {
+        }
+
+        if (args.length == 1) {
             final String extensionName = args[0];
 
             final Extension extension = this.bdsAutoEnable.getExtensionLoader().getExtension(extensionName);
@@ -68,6 +74,53 @@ public class ExtensionsCommand extends Command {
 
             this.sendMessage("&cNie znaleziono rozszerzenia&b " + extensionName);
             return true;
+        }
+
+        if (args.length == 2) {
+            if (!isOp) {
+                this.sendMessage("&cPotrzebujesz wyższych uprawnień");
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("enable")) {
+                final String extensionName = args[1];
+                final Extension extension = this.extensionLoader.getExtension(extensionName);
+
+                if (extension != null) {
+                    if (extension.isEnabled()) {
+                        this.sendMessage("&cTe rozserzenie jest już włączone");
+                        return true;
+                    }
+
+                    this.extensionLoader.enableExtension(extension);
+                    return true;
+                }
+                this.sendMessage("&cNie znaleziono rozszerzenia&b " + extensionName);
+                return true;
+            }
+
+            if (args[0].equalsIgnoreCase("disable")) {
+                if (!isOp) {
+                    this.sendMessage("&cPotrzebujesz wyższych uprawnień");
+                    return true;
+                }
+
+
+                final String extensionName = args[1];
+                final Extension extension = this.extensionLoader.getExtension(extensionName);
+
+                if (extension != null) {
+                    if (!extension.isEnabled()) {
+                        this.sendMessage("&cTe rozserzenie jest już wyłączone");
+                        return true;
+                    }
+
+                    this.extensionLoader.disableExtension(extension);
+                    return true;
+                }
+                this.sendMessage("&cNie znaleziono rozszerzenia&b " + extensionName);
+                return true;
+            }
         }
         return false;
     }
