@@ -27,9 +27,9 @@ public class ExtensionClassLoader extends URLClassLoader {
     }
 
     protected Class<?> findClass(final String name, final boolean checkGlobal) throws ClassNotFoundException {
-        if (name.startsWith("cn.nukkit.") || name.startsWith("net.minecraft.")) {
-            throw new ClassNotFoundException(name);
-        }
+//       if (name.startsWith("cn.nukkit.") || name.startsWith("net.minecraft.")) {
+//            throw new ClassNotFoundException(name);
+//       }
         Class<?> result = this.classes.get(name);
 
         if (result == null) {
