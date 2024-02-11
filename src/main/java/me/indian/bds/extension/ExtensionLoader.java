@@ -47,6 +47,7 @@ public class ExtensionLoader {
         }
     }
 
+    @Nullable
     public Extension loadExtension(final File file) throws Exception {
         final ExtensionDescription extensionDescription = this.getExtensionDescription(file);
         if (extensionDescription == null) {
@@ -91,13 +92,12 @@ public class ExtensionLoader {
 
                 return extension;
             } catch (final InstantiationException | IllegalAccessException exception) {
-                this.bdsAutoEnable.getLogger().logThrowable(exception);
+                throw new ExtensionException(exception);
             }
 
         } catch (final ClassNotFoundException exception) {
             throw new ExtensionException("Nie można załadować rozszerzenia `" + extensionDescription.name() + "` główna klasa nie została odnaleziona");
         }
-        return null;
     }
 
     public void loadExtensions() {
@@ -167,15 +167,20 @@ public class ExtensionLoader {
         }
     }
 
+    public void disableExtension(final Extension extension) {
+        try {
+            if (!extension.isEnabled()) return;
+            this.logger.info("Wyłączanie&b " + extension.getName());
+            extension.onDisable();
+            extension.setEnabled(false);
+        } catch (final Exception exception) {
+            this.logger.error("Nie udało się wyłączyć&b " + extension.getName(), exception);
+        }
+    }
+
     public void disableExtensions() {
         for (final Map.Entry<String, Extension> entry : this.extensions.entrySet()) {
-            try {
-                this.logger.info("Wyłączanie&b " + entry.getValue().getName());
-                entry.getValue().onDisable();
-                entry.getValue().setEnabled(false);
-            } catch (final Exception exception) {
-                this.logger.error("Nie udało się wyłączyć&b " + entry.getValue().getName(), exception);
-            }
+            this.disableExtension(entry.getValue());
         }
     }
 
