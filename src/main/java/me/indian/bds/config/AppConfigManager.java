@@ -2,21 +2,18 @@ package me.indian.bds.config;
 
 import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
+import java.io.File;
 import me.indian.bds.config.sub.CommandConfig;
 import me.indian.bds.config.sub.EventsConfig;
 import me.indian.bds.config.sub.log.LogConfig;
-import me.indian.bds.config.sub.rest.RestApiConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.util.DefaultsVariables;
-
-import java.io.File;
 
 public class AppConfigManager {
 
     private final AppConfig appConfig;
     private final LogConfig logConfig;
-    private final RestApiConfig restApiConfig;
     private final VersionManagerConfig versionManagerConfig;
     private final WatchDogConfig watchDogConfig;
     private final CommandConfig commandConfig;
@@ -36,14 +33,6 @@ public class AppConfigManager {
         this.logConfig = ConfigManager.create(LogConfig.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
             it.withBindFile(appDir + "Log.yml");
-            it.withRemoveOrphans(true);
-            it.saveDefaults();
-            it.load(true);
-        });
-
-        this.restApiConfig = ConfigManager.create(RestApiConfig.class, (it) -> {
-            it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(appDir + "RestApi.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
@@ -85,7 +74,6 @@ public class AppConfigManager {
     public void load() {
         this.appConfig.load();
         this.logConfig.load();
-        this.restApiConfig.load();
         this.versionManagerConfig.load();
         this.watchDogConfig.load();
     }
@@ -93,7 +81,6 @@ public class AppConfigManager {
     public void save() {
         this.appConfig.save();
         this.logConfig.save();
-        this.restApiConfig.save();
         this.versionManagerConfig.save();
         this.watchDogConfig.save();
     }
@@ -104,10 +91,6 @@ public class AppConfigManager {
 
     public LogConfig getLogConfig() {
         return this.logConfig;
-    }
-
-    public RestApiConfig getRestApiConfig() {
-        return this.restApiConfig;
     }
 
     public VersionManagerConfig getVersionManagerConfig() {
