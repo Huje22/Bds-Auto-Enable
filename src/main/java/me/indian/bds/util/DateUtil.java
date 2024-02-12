@@ -1,5 +1,6 @@
 package me.indian.bds.util;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -45,8 +46,8 @@ public final class DateUtil {
         return localDate.toEpochDay();
     }
 
-    public static LocalDate longToLocalDate(final long days) {
-        return LocalDate.ofEpochDay(days);
+    public static LocalDate longToLocalDate(final long seconds) {
+        return Instant.ofEpochSecond(seconds).atZone(POLISH_ZONE).toLocalDate();
     }
 
     public static long formatDays(final long millis) {
