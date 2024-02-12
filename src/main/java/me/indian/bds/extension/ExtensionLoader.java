@@ -59,9 +59,18 @@ public class ExtensionLoader {
             throw new ExtensionException("'" + file.getName() + "' Nazwa rozszerzenia nie może zawierać spacji");
         }
 
-        if (this.getExtension(extensionDescription.name()) != null) {
+        final Extension ex = this.getExtension(extensionDescription.name());
+
+        if (ex != null) {
+            if (ex.isLoaded()) {
+                this.logger.debug("Rozserzenie&b " + extensionDescription.name() + " jest już załadowane");
+                return ex;
+            }
             throw new ExtensionException("Rozserzenie o nazwie: `" + extensionDescription.name() + "` już istnieje");
         }
+
+        this.loadDependencies(file);
+        this.loadSoftDependencies(file);
 
         final String className = extensionDescription.mainClass();
         final ExtensionClassLoader classLoader = new ExtensionClassLoader(this, this.getClass().getClassLoader(), file);
@@ -88,6 +97,8 @@ public class ExtensionLoader {
 
                 this.logger.info("Ładowanie&b " + extensionDescription.name() + "&r...");
                 extension.onLoad();
+                extension.setLoaded(true);
+
                 this.extensions.put(extensionDescription.name(), extension);
 
                 return extension;
@@ -100,11 +111,47 @@ public class ExtensionLoader {
         }
     }
 
+    /**
+     * To rozwiązanie ładowania i włączania soft dependencies i dependencies
+     * może prowadzić do zapętlenia uruchamiania rozszerzeń, lecz na razie to najlepsze, jakie zrobiłem
+     */
+
+    private void loadSoftDependencies(final File file) throws Exception {
+        final List<String> softDependencies = this.getExtensionDescription(file).softDependencies();
+        if (softDependencies.isEmpty()) return;
+
+        for (final String depend : softDependencies) {
+            final File dependencyFile = this.findJarFileByName(depend);
+            if (dependencyFile != null) {
+                this.loadExtension(dependencyFile);
+            } else {
+                this.logger.error("Nie znaleziono zależności `" + depend + "`");
+            }
+        }
+    }
+
+    private void loadDependencies(final File file) throws Exception {
+        final List<String> dependencies = this.getExtensionDescription(file).dependencies();
+        if (dependencies.isEmpty()) return;
+
+        for (final String depend : dependencies) {
+            final File dependencyFile = this.findJarFileByName(depend);
+            if (dependencyFile != null) {
+                this.loadExtension(dependencyFile);
+            } else {
+                throw new ExtensionException("Nie znaleziono zależności `" + depend + "`");
+            }
+        }
+    }
+
     public void loadExtensions() {
         if (this.jarFiles != null) {
             for (final File jarFile : this.jarFiles) {
                 try {
-                    this.loadExtension(jarFile);
+                    //Robie tak ze względu na zależności
+                    if (!this.isLoaded(jarFile)) {
+                        this.loadExtension(jarFile);
+                    }
                 } catch (final Exception exception) {
                     exception.printStackTrace();
                 }
@@ -112,10 +159,20 @@ public class ExtensionLoader {
         }
     }
 
+    private boolean isLoaded(final File file) {
+        final ExtensionDescription description = this.getExtensionDescription(file);
+
+        if (description == null) {
+            throw new ExtensionException("(" + file.getName() + ") Plik Extension.json ma nieprawidłową składnie albo nie istnieje");
+        }
+
+        final Extension extension = this.getExtension(description.name());
+        return (extension != null && extension.isLoaded());
+    }
+
     public void enableExtension(final Extension extension) {
         if (extension.isEnabled()) return;
         try {
-            //Te rozwiązanie może prowadzić do zapętlenia uruchamiania rozserzen lecz narazie to najlepsze jakie zrobiłem
             this.enableDependencies(extension);
             this.enableSoftDependencies(extension);
             this.logger.info("Włączanie&b " + extension.getName());
@@ -227,6 +284,15 @@ public class ExtensionLoader {
 
     public Map<String, Extension> getExtensions() {
         return this.extensions;
+    }
+
+    private File findJarFileByName(final String fileName) {
+        for (final File file : this.jarFiles) {
+            if (file.getName().contains(fileName)) {
+                return file;
+            }
+        }
+        return null;
     }
 
     public Class<?> getClassByName(final String name) {

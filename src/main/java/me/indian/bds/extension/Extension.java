@@ -17,7 +17,7 @@ public abstract class Extension {
     private ExtensionDescription extensionDescription;
     private String mainClass, version, name, author, description;
     private List<String> authors;
-    private boolean enabled;
+    private boolean loaded, enabled;
     private BDSAutoEnable bdsAutoEnable;
     private Logger logger;
     private File dataFolder;
@@ -36,6 +36,14 @@ public abstract class Extension {
 
     public final void setEnabled(final boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isLoaded() {
+        return this.loaded;
+    }
+
+    public void setLoaded(final boolean loaded) {
+        this.loaded = loaded;
     }
 
     public void onDisable() {
