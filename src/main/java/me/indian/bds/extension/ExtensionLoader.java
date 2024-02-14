@@ -21,6 +21,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class ExtensionLoader {
 
+    //TODO: Zmienic nazwe z Loader na Manager
+
+
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Map<String, Extension> extensions;
@@ -63,7 +66,7 @@ public class ExtensionLoader {
 
         if (ex != null) {
             if (ex.isLoaded()) {
-                this.logger.debug("Rozserzenie&b " + extensionDescription.name() + " jest już załadowane");
+                this.logger.debug("Rozserzenie&b " + extensionDescription.name() + "&r jest już załadowane");
                 return ex;
             }
             throw new ExtensionException("Rozserzenie o nazwie: `" + extensionDescription.name() + "` już istnieje");
