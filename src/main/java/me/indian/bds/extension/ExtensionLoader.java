@@ -65,10 +65,7 @@ public class ExtensionLoader {
         final Extension ex = this.getExtension(extensionDescription.name());
 
         if (ex != null) {
-            if (ex.isLoaded()) {
-                this.logger.debug("Rozserzenie&b " + extensionDescription.name() + "&r jest już załadowane");
-                return ex;
-            }
+            if (ex.isLoaded()) return ex;
             throw new ExtensionException("Rozserzenie o nazwie: `" + extensionDescription.name() + "` już istnieje");
         }
 
@@ -151,12 +148,9 @@ public class ExtensionLoader {
         if (this.jarFiles != null) {
             for (final File jarFile : this.jarFiles) {
                 try {
-                    //Robie tak ze względu na zależności
-                    if (!this.isLoaded(jarFile)) {
                         this.loadExtension(jarFile);
-                    }
                 } catch (final Exception exception) {
-                    exception.printStackTrace();
+                    this.logger.error("&c Nie udało załadować się &b" + jarFile.getName(), exception);
                 }
             }
         }
