@@ -7,4 +7,7 @@ public record ExtensionDescription(String mainClass, String version, String name
                                    List<String> softDependencies
 
 ) {
+
+    //TODO:Dodać "prefix" pod ExtensionLogger
+
 }
