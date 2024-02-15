@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.event.server.ExtensionEnableEvent;
 import me.indian.bds.exception.ExtensionException;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.DefaultsVariables;
@@ -152,6 +153,7 @@ public class ExtensionManager {
             this.enableSoftDependencies(extension);
             extension.onEnable();
             extension.setEnabled(true);
+            this.bdsAutoEnable.getEventManager().callEvent(new ExtensionEnableEvent(extension));
             this.logger.info("Włączono&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)");
         } catch (final Exception | Error throwable) {
             extension.setEnabled(false);
