@@ -1,6 +1,7 @@
 package me.indian.bds.event;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ public class EventManager {
 
     private final Logger logger;
     private final Map<Listener, Extension> listenerMap;
+    private Map<Listener, Extension> listeners;
     private final AtomicReference<PlayerChatResponse> chatResponse;
 
     public EventManager(final BDSAutoEnable bdsAutoEnable) {
@@ -62,48 +64,49 @@ public class EventManager {
     }
 
     public void callEvent(final Event event) {
+        this.listeners = new HashMap<>(this.listenerMap);
         //Player
         if (event instanceof final PlayerJoinEvent playerJoinEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onPlayerJoin(playerJoinEvent));
+            this.listeners.forEach((listener, ex) -> listener.onPlayerJoin(playerJoinEvent));
         } else if (event instanceof final PlayerSpawnEvent playerSpawnEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onPlayerSpawn(playerSpawnEvent));
+            this.listeners.forEach((listener, ex) -> listener.onPlayerSpawn(playerSpawnEvent));
         } else if (event instanceof final PlayerQuitEvent playerQuitEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onPlayerQuit(playerQuitEvent));
+            this.listeners.forEach((listener, ex) -> listener.onPlayerQuit(playerQuitEvent));
         } else if (event instanceof final PlayerDeathEvent playerDeathEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onPlayerDeath(playerDeathEvent));
+            this.listeners.forEach((listener, ex) -> listener.onPlayerDeath(playerDeathEvent));
         } else if (event instanceof final PlayerMuteEvent playerMuteEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onPlayerMute(playerMuteEvent));
+            this.listeners.forEach((listener, ex) -> listener.onPlayerMute(playerMuteEvent));
         } else if (event instanceof final PlayerUnMuteEvent playerUnMuteEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onPlayerUnMute(playerUnMuteEvent));
+            this.listeners.forEach((listener, ex) -> listener.onPlayerUnMute(playerUnMuteEvent));
         }
 
         //Server
         else if (event instanceof final ServerStartEvent serverStartEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onServerStart(serverStartEvent));
+            this.listeners.forEach((listener, ex) -> listener.onServerStart(serverStartEvent));
         } else if (event instanceof final ServerRestartEvent serverRestartEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onServerRestart(serverRestartEvent));
+            this.listeners.forEach((listener, ex) -> listener.onServerRestart(serverRestartEvent));
         } else if (event instanceof final ServerClosedEvent serverClosedEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onServerClose(serverClosedEvent));
+            this.listeners.forEach((listener, ex) -> listener.onServerClose(serverClosedEvent));
         } else if (event instanceof final TPSChangeEvent tpsChangeEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onTpsChange(tpsChangeEvent));
+            this.listeners.forEach((listener, ex) -> listener.onTpsChange(tpsChangeEvent));
         } else if (event instanceof final BackupDoneEvent backupDoneEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onBackupDone(backupDoneEvent));
+            this.listeners.forEach((listener, ex) -> listener.onBackupDone(backupDoneEvent));
         } else if (event instanceof final BackupFailEvent backupFailEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onBackupFail(backupFailEvent));
+            this.listeners.forEach((listener, ex) -> listener.onBackupFail(backupFailEvent));
         } else if (event instanceof final ServerUpdatingEvent serverUpdatingEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onServerUpdating(serverUpdatingEvent));
+            this.listeners.forEach((listener, ex) -> listener.onServerUpdating(serverUpdatingEvent));
         } else if (event instanceof final ServerUpdatedEvent serverUpdatedEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onServerUpdated(serverUpdatedEvent));
+            this.listeners.forEach((listener, ex) -> listener.onServerUpdated(serverUpdatedEvent));
         } else if (event instanceof final PlayerDimensionChangeEvent playerDimensionChangeEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onPlayerDimensionChange(playerDimensionChangeEvent));
+            this.listeners.forEach((listener, ex) -> listener.onPlayerDimensionChange(playerDimensionChangeEvent));
         } else if (event instanceof final PlayerBlockBreakEvent playerBlockBreakEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onPlayerBreakBlock(playerBlockBreakEvent));
+            this.listeners.forEach((listener, ex) -> listener.onPlayerBreakBlock(playerBlockBreakEvent));
         } else if (event instanceof final PlayerBlockPlaceEvent playerBlockPlaceEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onPlayerPlaceBlock(playerBlockPlaceEvent));
+            this.listeners.forEach((listener, ex) -> listener.onPlayerPlaceBlock(playerBlockPlaceEvent));
         } else if (event instanceof final ExtensionEnableEvent extensionEnableEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onExtensionEnable(extensionEnableEvent));
+            this.listeners.forEach((listener, ex) -> listener.onExtensionEnable(extensionEnableEvent));
         } else if (event instanceof final ExtensionDisableEvent extensionDisableEvent) {
-            this.listenerMap.forEach((listener, ex) -> listener.onExtensionDisable(extensionDisableEvent));
+            this.listeners.forEach((listener, ex) -> listener.onExtensionDisable(extensionDisableEvent));
         } else {
             this.logger.error("Wywołano nieznany event&6 " + event.getEventName());
             return;
@@ -112,10 +115,11 @@ public class EventManager {
     }
 
     public EventResponse callEventWithResponse(final ResponsibleEvent event) {
+        this.listeners = new HashMap<>(this.listenerMap);
         this.logger.debug("Wywołano&6 " + event.getEventName());
 
         if (event instanceof final PlayerChatEvent playerChatEvent) {
-            this.listenerMap.forEach((listener, ex) -> {
+            this.listeners.forEach((listener, ex) -> {
                 final PlayerChatResponse chatResponse = listener.onPlayerChat(playerChatEvent);
                 if (chatResponse != null) {
                     this.chatResponse.set(chatResponse);
@@ -124,14 +128,13 @@ public class EventManager {
 
             return this.chatResponse.get();
         } else if (event instanceof final ServerConsoleCommandEvent serverConsoleCommandEvent) {
-            this.listenerMap.forEach((listener, ex) -> {
+            this.listeners.forEach((listener, ex) -> {
                 final ServerConsoleCommandResponse commandResponse = listener.onServerConsoleCommand(serverConsoleCommandEvent);
                 if (commandResponse != null) {
                     commandResponse.getActionToDo().run();
                 }
             });
         }
-
 
         this.logger.error("Wykonano nieznany event&6 " + event.getEventName());
         return null;
