@@ -92,6 +92,7 @@ public class ExtensionsCommand extends Command {
                 final Extension extension = this.extensionManager.getExtension(extensionName);
 
                 if (extension != null) {
+                    this.sendMessage("&aWłączanie&b " + extension.getName() + "&r...");
                     if (extension.isEnabled()) {
                         this.sendMessage("&cTe rozserzenie jest już włączone");
                         return true;
@@ -110,11 +111,11 @@ public class ExtensionsCommand extends Command {
                     return true;
                 }
 
-
                 final String extensionName = args[1];
                 final Extension extension = this.extensionManager.getExtension(extensionName);
 
                 if (extension != null) {
+                    this.sendMessage("&aWyłączanie&b " + extension.getName() + "&r...");
                     if (!extension.isEnabled()) {
                         this.sendMessage("&cTe rozserzenie jest już wyłączone");
                         return true;

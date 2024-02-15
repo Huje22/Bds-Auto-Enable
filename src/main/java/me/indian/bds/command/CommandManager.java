@@ -1,7 +1,9 @@
 package me.indian.bds.command;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.defaults.BackupCommand;
 import me.indian.bds.command.defaults.ChatFormatCommand;
@@ -17,49 +19,69 @@ import me.indian.bds.command.defaults.TPSCommand;
 import me.indian.bds.command.defaults.TestCommand;
 import me.indian.bds.command.defaults.TopCommand;
 import me.indian.bds.command.defaults.VersionCommand;
+import me.indian.bds.extension.Extension;
 import me.indian.bds.server.ServerProcess;
 
 public class CommandManager {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final ServerProcess serverProcess;
-    private final  Set<Command> commandSet ;
+    private final Map<Command, Extension> commandMap;
 
     public CommandManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
-        this.commandSet = new HashSet<>();
+        this.commandMap = new LinkedHashMap<>();
 
-        this.registerCommand(new HelpCommand(this.commandSet));
-        this.registerCommand(new TPSCommand(this.bdsAutoEnable));
-        this.registerCommand(new ExtensionsCommand(this.bdsAutoEnable));
-        this.registerCommand(new EndCommand(this.bdsAutoEnable));
-        this.registerCommand(new RestartCommand(this.bdsAutoEnable));
-        this.registerCommand(new BackupCommand(this.bdsAutoEnable));
+        this.commandMap.put(new HelpCommand(this.commandMap), null);
+        this.commandMap.put(new TPSCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new ExtensionsCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new EndCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new RestartCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new BackupCommand(this.bdsAutoEnable), null);
 
-        if(this.bdsAutoEnable.getWatchDog().getPackModule().isLoaded()) {
-            this.registerCommand(new TopCommand(this.bdsAutoEnable));
+        if (this.bdsAutoEnable.getWatchDog().getPackModule().isLoaded()) {
+            this.commandMap.put(new TopCommand(this.bdsAutoEnable), null);
         }
 
-        this.registerCommand(new VersionCommand(this.bdsAutoEnable));
-        this.registerCommand(new ChatFormatCommand(this.bdsAutoEnable));
-        this.registerCommand(new MuteCommand(this.bdsAutoEnable));
-        this.registerCommand(new SettingInfoCommand(this.bdsAutoEnable));
-        this.registerCommand(new ServerPingCommand(this.bdsAutoEnable));
-        this.registerCommand(new StatsCommand());
+        this.commandMap.put(new VersionCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new ChatFormatCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new MuteCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new SettingInfoCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new ServerPingCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new StatsCommand(), null);
 
         if (this.bdsAutoEnable.getAppConfigManager().getAppConfig().isDebug()) {
-            this.registerCommand(new TestCommand(this.bdsAutoEnable));
+            this.commandMap.put(new TestCommand(this.bdsAutoEnable), null);
+        }
+
+        for (final Map.Entry<Command, Extension> entry : this.commandMap.entrySet()) {
+            final Command command = entry.getKey();
+            command.init(this.bdsAutoEnable);
         }
     }
 
-    public <T extends Command> void registerCommand(final T command) {
-        this.commandSet.add(command);
+    public <T extends Command> void registerCommand(final T command, final Extension extension) {
+        if (extension == null) throw new NullPointerException();
+        this.commandMap.put(command, extension);
         command.init(this.bdsAutoEnable);
     }
 
+    public void unRegister(final Extension extension) {
+        final List<Command> commandsToRemove = new ArrayList<>();
+
+        this.commandMap.forEach((command, ex) -> {
+            if (ex == extension) {
+                commandsToRemove.add(command);
+            }
+        });
+
+        commandsToRemove.forEach(this.commandMap::remove);
+    }
+
     public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, final boolean isOp) {
-        for (final Command command : this.commandSet) {
+        for (final Map.Entry<Command, Extension> entry : this.commandMap.entrySet()) {
+            final Command command = entry.getKey();
             if (command.getName().equalsIgnoreCase(commandName) || command.isAlias(commandName)) {
                 command.setCommandSender(sender);
                 command.setPlayerName(playerName);

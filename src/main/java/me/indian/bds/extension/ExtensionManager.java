@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.event.EventManager;
 import me.indian.bds.event.server.ExtensionDisableEvent;
 import me.indian.bds.event.server.ExtensionEnableEvent;
 import me.indian.bds.exception.ExtensionException;
@@ -25,6 +26,7 @@ public class ExtensionManager {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
+    private final EventManager eventManager;
     private final Map<String, Extension> extensions;
     private final String extensionsDir;
     private final File[] jarFiles;
@@ -35,6 +37,7 @@ public class ExtensionManager {
     public ExtensionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
+        this.eventManager = this.bdsAutoEnable.getEventManager();
         this.extensions = new LinkedHashMap<>();
         this.extensionsDir = this.createExtensionDir();
         this.jarFiles = new File(this.extensionsDir).listFiles(pathname -> pathname.getName().endsWith(".jar"));
@@ -154,7 +157,7 @@ public class ExtensionManager {
             this.enableSoftDependencies(extension);
             extension.onEnable();
             extension.setEnabled(true);
-            this.bdsAutoEnable.getEventManager().callEvent(new ExtensionEnableEvent(extension));
+            this.eventManager.callEvent(new ExtensionEnableEvent(extension));
             this.logger.info("Włączono&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)");
         } catch (final Exception | Error throwable) {
             extension.setEnabled(false);
@@ -206,8 +209,10 @@ public class ExtensionManager {
         try {
             if (!extension.isEnabled()) return;
             extension.onDisable();
+            this.eventManager.unRegister(extension);
+            this.bdsAutoEnable.getCommandManager().unRegister(extension);
             extension.setEnabled(false);
-            this.bdsAutoEnable.getEventManager().callEvent(new ExtensionDisableEvent(extension));
+            this.eventManager.callEvent(new ExtensionDisableEvent(extension));
             this.logger.info("Wyłączono&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)");
         } catch (final Exception exception) {
             this.logger.error("Nie udało się wyłączyć&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)", exception);
