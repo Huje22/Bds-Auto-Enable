@@ -1,4 +1,4 @@
-package me.indian.bds.event.server;
+package me.indian.bds.event.player;
 
 import me.indian.bds.event.Event;
 

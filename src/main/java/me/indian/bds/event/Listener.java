@@ -10,15 +10,15 @@ import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
 import me.indian.bds.event.player.PlayerUnMuteEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
-import me.indian.bds.event.server.ConsoleCommandEvent;
-import me.indian.bds.event.server.PlayerDimensionChangeEvent;
+import me.indian.bds.event.server.ServerConsoleCommandEvent;
+import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
 import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.ServerUpdatedEvent;
 import me.indian.bds.event.server.ServerUpdatingEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
-import me.indian.bds.event.server.response.ConsoleCommandResponse;
+import me.indian.bds.event.server.response.ServerConsoleCommandResponse;
 import me.indian.bds.event.watchdog.BackupDoneEvent;
 import me.indian.bds.event.watchdog.BackupFailEvent;
 import org.jetbrains.annotations.Nullable;
@@ -71,7 +71,7 @@ public abstract class Listener {
 
     //Server
     @Nullable
-    public ConsoleCommandResponse onConsoleCommand(final ConsoleCommandEvent event) {
+    public ServerConsoleCommandResponse onServerConsoleCommand(final ServerConsoleCommandEvent event) {
 
         return null;
     }

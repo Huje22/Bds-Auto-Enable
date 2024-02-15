@@ -1,5 +1,8 @@
 package me.indian.bds.event;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
@@ -11,22 +14,18 @@ import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
 import me.indian.bds.event.player.PlayerUnMuteEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
-import me.indian.bds.event.server.ConsoleCommandEvent;
-import me.indian.bds.event.server.PlayerDimensionChangeEvent;
+import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
+import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
 import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.ServerUpdatedEvent;
 import me.indian.bds.event.server.ServerUpdatingEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
-import me.indian.bds.event.server.response.ConsoleCommandResponse;
+import me.indian.bds.event.server.response.ServerConsoleCommandResponse;
 import me.indian.bds.event.watchdog.BackupDoneEvent;
 import me.indian.bds.event.watchdog.BackupFailEvent;
 import me.indian.bds.logger.Logger;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
 
 public class EventManager {
 
@@ -48,74 +47,46 @@ public class EventManager {
         //Player
         if (event instanceof final PlayerJoinEvent playerJoinEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerJoin(playerJoinEvent));
-        }
-
-        if (event instanceof final PlayerSpawnEvent playerSpawnEvent) {
+        } else if (event instanceof final PlayerSpawnEvent playerSpawnEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerSpawn(playerSpawnEvent));
-        }
-
-        if (event instanceof final PlayerQuitEvent playerQuitEvent) {
+        } else if (event instanceof final PlayerQuitEvent playerQuitEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerQuit(playerQuitEvent));
-        }
-
-        if (event instanceof final PlayerDeathEvent playerDeathEvent) {
+        } else if (event instanceof final PlayerDeathEvent playerDeathEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerDeath(playerDeathEvent));
-        }
-
-        if (event instanceof final PlayerMuteEvent playerMuteEvent) {
+        } else if (event instanceof final PlayerMuteEvent playerMuteEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerMute(playerMuteEvent));
-        }
-
-        if (event instanceof final PlayerUnMuteEvent playerUnMuteEvent) {
+        } else if (event instanceof final PlayerUnMuteEvent playerUnMuteEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerUnMute(playerUnMuteEvent));
         }
 
         //Server
-        if (event instanceof final ServerStartEvent serverStartEvent) {
+        else if (event instanceof final ServerStartEvent serverStartEvent) {
             this.listenerList.forEach(listener -> listener.onServerStart(serverStartEvent));
-        }
-
-        if (event instanceof final ServerRestartEvent serverRestartEvent) {
+        } else if (event instanceof final ServerRestartEvent serverRestartEvent) {
             this.listenerList.forEach(listener -> listener.onServerRestart(serverRestartEvent));
-        }
-
-        if (event instanceof final ServerClosedEvent serverClosedEvent) {
+        } else if (event instanceof final ServerClosedEvent serverClosedEvent) {
             this.listenerList.forEach(listener -> listener.onServerClose(serverClosedEvent));
-        }
-
-        if (event instanceof final TPSChangeEvent tpsChangeEvent) {
+        } else if (event instanceof final TPSChangeEvent tpsChangeEvent) {
             this.listenerList.forEach(listener -> listener.onTpsChange(tpsChangeEvent));
-        }
-
-        if (event instanceof final BackupDoneEvent backupDoneEvent) {
+        } else if (event instanceof final BackupDoneEvent backupDoneEvent) {
             this.listenerList.forEach(listener -> listener.onBackupDone(backupDoneEvent));
-        }
-
-        if (event instanceof final BackupFailEvent backupFailEvent) {
+        } else if (event instanceof final BackupFailEvent backupFailEvent) {
             this.listenerList.forEach(listener -> listener.onBackupFail(backupFailEvent));
-        }
-
-        if (event instanceof final ServerUpdatingEvent serverUpdatingEvent) {
+        } else if (event instanceof final ServerUpdatingEvent serverUpdatingEvent) {
             this.listenerList.forEach(listener -> listener.onServerUpdating(serverUpdatingEvent));
-        }
-
-        if (event instanceof final ServerUpdatedEvent serverUpdatedEvent) {
+        } else if (event instanceof final ServerUpdatedEvent serverUpdatedEvent) {
             this.listenerList.forEach(listener -> listener.onServerUpdated(serverUpdatedEvent));
-        }
-
-        if (event instanceof final PlayerDimensionChangeEvent playerDimensionChangeEvent) {
+        } else if (event instanceof final PlayerDimensionChangeEvent playerDimensionChangeEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerDimensionChange(playerDimensionChangeEvent));
-        }
-
-        if (event instanceof final PlayerBlockBreakEvent playerBlockBreakEvent) {
+        } else if (event instanceof final PlayerBlockBreakEvent playerBlockBreakEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerBreakBlock(playerBlockBreakEvent));
-        }
-
-        if (event instanceof final PlayerBlockPlaceEvent playerBlockPlaceEvent) {
+        } else if (event instanceof final PlayerBlockPlaceEvent playerBlockPlaceEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerPlaceBlock(playerBlockPlaceEvent));
+        } else {
+            this.logger.error("Wykonano nieznany event&6 " + event.getEventName());
         }
 
-//        if(event instanceof final ){
+//        else if(event instanceof final ){
 //            this.listenerList.forEach(listener -> listener.on    );
 //        }
 
@@ -135,9 +106,9 @@ public class EventManager {
 
             return this.chatResponse.get();
         }
-        if (event instanceof final ConsoleCommandEvent consoleCommandEvent) {
+        if (event instanceof final ServerConsoleCommandEvent serverConsoleCommandEvent) {
             this.listenerList.forEach(listener -> {
-                final ConsoleCommandResponse commandResponse = listener.onConsoleCommand(consoleCommandEvent);
+                final ServerConsoleCommandResponse commandResponse = listener.onServerConsoleCommand(serverConsoleCommandEvent);
                 if (commandResponse != null) {
                     commandResponse.getActionToDo().run();
                 }

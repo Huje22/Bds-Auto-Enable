@@ -1,9 +1,18 @@
 package me.indian.bds.server;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.event.EventManager;
-import me.indian.bds.event.server.ConsoleCommandEvent;
+import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
@@ -15,16 +24,6 @@ import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.system.SystemOS;
 import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.watchdog.WatchDog;
-
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.util.Scanner;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class ServerProcess {
 
@@ -103,7 +102,7 @@ public class ServerProcess {
         this.finalFilePath = this.appConfigManager.getAppConfig().getFilesPath() + File.separator + this.fileName;
         this.processService.execute(() -> {
             if (this.checkProcesRunning()) {
-                this.logger.info("Proces " + this.fileName + " jest już uruchomiony.");
+                this.logger.alert("&cProces&b " + this.fileName + "&c jest już uruchomiony.");
                 this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera ");
                 ThreadUtil.sleep(30);
                 this.startProcess();
@@ -128,13 +127,12 @@ public class ServerProcess {
                         }
                         case WINDOWS -> this.processBuilder = new ProcessBuilder(this.finalFilePath);
                         default -> {
-                            this.logger.critical("Musisz podać odpowiedni system");
+                            this.logger.critical("Twój system jest nie wspierany");
                             System.exit(0);
                         }
                     }
 
                     this.canWriteConsoleOutput = true;
-
                     this.watchDog.getPackModule().getPackInfo();
                     this.process = this.processBuilder.start();
                     this.startTime = System.currentTimeMillis();
@@ -221,15 +219,16 @@ public class ServerProcess {
             outputStream.write((command + "\n").getBytes());
             outputStream.flush();
 
-            this.logger.debug("Wysłano &b" + command.replaceAll("\n", "\\\\n"));
 
+            this.eventManager.callEventWithResponse(new ServerConsoleCommandEvent(command));
+            this.logger.debug("Wysłano &b" + command.replaceAll("\n", "\\\\n"));
         } catch (final Exception exception) {
             this.logger.error("Wystąpił błąd podczas próby wysłania polecenia do konsoli", exception);
         }
     }
 
     /**
-     * Metoda do wysyłania poleceń do konsoli servera BDS i uzyskania ostatniej linij z konsoli , może być opuźnione
+     * Metoda do wysyłania poleceń do konsoli servera BDS i uzyskania ostatniej linij z konsoli , może być opóźnione
      */
 
     public String commandAndResponse(final String command) {
@@ -309,8 +308,8 @@ public class ServerProcess {
             this.logger.alert("Oczekiwanie na zamknięcie servera");
 
             try {
-                this.eventManager.callEvent(new ServerClosedEvent());
                 this.process.waitFor();
+                ThreadUtil.sleep(1);
                 this.logger.info("&eProces servera zakończył się pomyślnie");
             } catch (final InterruptedException exception) {
                 this.logger.critical("&4Nie udało się zamknąć procesu servera ,zrób to ręcznie!");
@@ -325,7 +324,7 @@ public class ServerProcess {
             this.logger.critical("Nie można zapisać configu", exception);
         }
 
-        this.bdsAutoEnable.getExtensionLoader().disableExtensions();
+        this.bdsAutoEnable.getExtensionManager().disableExtensions();
 
         if (this.processService != null && !this.processService.isTerminated()) {
             this.logger.info("Zatrzymywanie wątków procesu servera");
@@ -386,9 +385,6 @@ public class ServerProcess {
             this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
             this.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
             if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
-
-            this.eventManager.callEventWithResponse(new ConsoleCommandEvent(command));
-
         }
     }
 
@@ -403,15 +399,6 @@ public class ServerProcess {
 
     private boolean containsNotAllowedToConsoleLog(final String msg) {
         for (final String s : this.appConfigManager.getLogConfig().getNoConsole()) {
-            if (msg.toLowerCase().contains(s.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private boolean containsNotAllowedToDiscordConsoleLog(final String msg) {
-        for (final String s : this.appConfigManager.getLogConfig().getNoDiscordConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
             }

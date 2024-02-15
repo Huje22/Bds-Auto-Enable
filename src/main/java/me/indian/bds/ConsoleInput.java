@@ -1,14 +1,12 @@
 package me.indian.bds;
 
+import java.util.Scanner;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.command.CommandSender;
-import me.indian.bds.event.server.ConsoleCommandEvent;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
-
-import java.util.Scanner;
 
 public class ConsoleInput {
 
@@ -47,8 +45,6 @@ public class ConsoleInput {
                         continue;
                     }
 
-                    this.bdsAutoEnable.getEventManager()
-                            .callEventWithResponse(new ConsoleCommandEvent(args[0], newArgs));
                     this.serverProcess.sendToConsole(input);
                 }
                 this.logger.alert("Konsola zakończyła działanie");

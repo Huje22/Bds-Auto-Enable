@@ -20,7 +20,7 @@ import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
-import me.indian.bds.event.server.PlayerDimensionChangeEvent;
+import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
 import me.indian.bds.logger.Logger;
