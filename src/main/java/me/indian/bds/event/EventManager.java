@@ -8,13 +8,14 @@ import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
+import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerMuteEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
 import me.indian.bds.event.player.PlayerUnMuteEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
-import me.indian.bds.event.player.PlayerDimensionChangeEvent;
+import me.indian.bds.event.server.ExtensionDisableEvent;
 import me.indian.bds.event.server.ExtensionEnableEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
@@ -83,17 +84,14 @@ public class EventManager {
             this.listenerList.forEach(listener -> listener.onPlayerBreakBlock(playerBlockBreakEvent));
         } else if (event instanceof final PlayerBlockPlaceEvent playerBlockPlaceEvent) {
             this.listenerList.forEach(listener -> listener.onPlayerPlaceBlock(playerBlockPlaceEvent));
-        } else if (event instanceof final ExtensionEnableEvent extensionEnableEvent){
+        } else if (event instanceof final ExtensionEnableEvent extensionEnableEvent) {
             this.listenerList.forEach(listener -> listener.onExtensionEnable(extensionEnableEvent));
+        } else if (event instanceof final ExtensionDisableEvent extensionDisableEvent) {
+            this.listenerList.forEach(listener -> listener.onExtensionDisable(extensionDisableEvent));
         } else {
             this.logger.error("Wykonano nieznany event&6 " + event.getEventName());
             return;
         }
-
-//        else if(event instanceof final ){
-//            this.listenerList.forEach(listener -> listener.on    );
-//        }
-
         this.logger.debug("Wywołano&6 " + event.getEventName());
     }
 

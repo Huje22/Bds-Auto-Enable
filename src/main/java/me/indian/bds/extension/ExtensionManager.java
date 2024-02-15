@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.event.server.ExtensionDisableEvent;
 import me.indian.bds.event.server.ExtensionEnableEvent;
 import me.indian.bds.exception.ExtensionException;
 import me.indian.bds.logger.Logger;
@@ -206,6 +207,7 @@ public class ExtensionManager {
             if (!extension.isEnabled()) return;
             extension.onDisable();
             extension.setEnabled(false);
+            this.bdsAutoEnable.getEventManager().callEvent(new ExtensionDisableEvent(extension));
             this.logger.info("Wyłączono&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)");
         } catch (final Exception exception) {
             this.logger.error("Nie udało się wyłączyć&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)", exception);

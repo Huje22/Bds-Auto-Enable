@@ -10,6 +10,7 @@ import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
 import me.indian.bds.event.player.PlayerUnMuteEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
+import me.indian.bds.event.server.ExtensionDisableEvent;
 import me.indian.bds.event.server.ExtensionEnableEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.event.player.PlayerDimensionChangeEvent;
@@ -109,6 +110,10 @@ public abstract class Listener {
     }
 
     public void onExtensionEnable(final ExtensionEnableEvent event){
+
+    }
+
+    public void onExtensionDisable(final ExtensionDisableEvent event){
 
     }
 }
