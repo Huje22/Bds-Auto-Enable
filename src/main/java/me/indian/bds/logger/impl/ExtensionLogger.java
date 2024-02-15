@@ -6,18 +6,18 @@ import me.indian.bds.util.DateUtil;
 
 public class ExtensionLogger extends Logger {
 
-    private final String extensionName;
+    private final String extensionPrefix;
 
-    public ExtensionLogger(final BDSAutoEnable bdsAutoEnable, final String extensionName) {
+    public ExtensionLogger(final BDSAutoEnable bdsAutoEnable, final String extensionPrefix) {
         super(bdsAutoEnable);
-        this.extensionName = extensionName;
+        this.extensionPrefix = extensionPrefix;
     }
 
     @Override
     public void updatePrefix() {
         final String logStateColor = this.logState.getColorCode();
         this.prefix = "&a[" + DateUtil.getTimeHMSMS() + "] &e[&7" +
-                Thread.currentThread().getName() + "&r&e] (&f" + this.extensionName + "&e) "
+                Thread.currentThread().getName() + "&r&e] (&f" + this.extensionPrefix + "&e) "
                 + logStateColor + this.logState.name().toUpperCase() + " &r";
     }
 }

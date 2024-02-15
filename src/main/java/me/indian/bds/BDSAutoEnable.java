@@ -11,7 +11,7 @@ import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.exception.MissingDllException;
-import me.indian.bds.extension.ExtensionLoader;
+import me.indian.bds.extension.ExtensionManager;
 import me.indian.bds.logger.impl.MainLogger;
 import me.indian.bds.metrics.AppMetrics;
 import me.indian.bds.server.ServerProcess;
@@ -45,7 +45,7 @@ public class BDSAutoEnable {
     private final ServerManager serverManager;
     private final VersionManager versionManager;
     private final EventManager eventManager;
-    private final ExtensionLoader extensionLoader;
+    private final ExtensionManager extensionManager;
     private CommandManager commandManager;
     private WatchDog watchDog;
 
@@ -75,7 +75,7 @@ public class BDSAutoEnable {
         this.serverManager = new ServerManager(this);
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
-        this.extensionLoader = new ExtensionLoader(this);
+        this.extensionManager = new ExtensionManager(this);
         this.serverManager.init();
         StatusUtil.init(this);
         ZipUtil.init(this);
@@ -98,14 +98,14 @@ public class BDSAutoEnable {
         this.checkExecutable();
         this.watchDog.getPackModule().initPackModule();
         this.serverManager.getStatsManager().startCountServerTime(this.serverProcess);
-        this.extensionLoader.loadExtensions();
+        this.extensionManager.loadExtensions();
         this.versionManager.getVersionUpdater().checkForUpdate();
         this.commandManager = new CommandManager(this);
 
         new ConsoleInput(this.mainScanner, this);
         new AppMetrics(this);
 
-        this.extensionLoader.enableExtensions();
+        this.extensionManager.enableExtensions();
         this.serverProcess.startProcess();
     }
 
@@ -284,7 +284,7 @@ public class BDSAutoEnable {
         return this.watchDog;
     }
 
-    public ExtensionLoader getExtensionLoader() {
-        return this.extensionLoader;
+    public ExtensionManager getExtensionManager() {
+        return this.extensionManager;
     }
 }

@@ -14,11 +14,11 @@ import java.util.Set;
 
 public class ExtensionClassLoader extends URLClassLoader {
     private final Map<String, Class<?>> classes = new HashMap<>();
-    private final ExtensionLoader loader;
+    private final ExtensionManager manager;
 
-    public ExtensionClassLoader(final ExtensionLoader loader, final ClassLoader parent, final File file) throws MalformedURLException {
+    public ExtensionClassLoader(final ExtensionManager manager, final ClassLoader parent, final File file) throws MalformedURLException {
         super(new URL[]{file.toURI().toURL()}, parent);
-        this.loader = loader;
+        this.manager = manager;
     }
 
     @Override
@@ -27,21 +27,22 @@ public class ExtensionClassLoader extends URLClassLoader {
     }
 
     protected Class<?> findClass(final String name, final boolean checkGlobal) throws ClassNotFoundException {
-//       if (name.startsWith("cn.nukkit.") || name.startsWith("net.minecraft.")) {
-//            throw new ClassNotFoundException(name);
-//       }
+        if (name.startsWith("me.indian.bds")) { //Klasy aplikacji powinny być znane
+            throw new ClassNotFoundException(name);
+        }
+
         Class<?> result = this.classes.get(name);
 
         if (result == null) {
             if (checkGlobal) {
-                result = this.loader.getClassByName(name);
+                result = this.manager.getClassByName(name);
             }
 
             if (result == null) {
                 result = super.findClass(name);
 
                 if (result != null) {
-                    this.loader.setClass(name, result);
+                    this.manager.setClass(name, result);
                 }
             }
 

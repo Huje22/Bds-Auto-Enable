@@ -5,18 +5,18 @@ import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.extension.Extension;
-import me.indian.bds.extension.ExtensionLoader;
+import me.indian.bds.extension.ExtensionManager;
 import me.indian.bds.util.MessageUtil;
 
 public class ExtensionsCommand extends Command {
 
     private final BDSAutoEnable bdsAutoEnable;
-    private final ExtensionLoader extensionLoader;
+    private final ExtensionManager extensionManager;
 
     public ExtensionsCommand(final BDSAutoEnable bdsAutoEnable) {
         super("extension", "Pokazuje wgrane rozszerzenia");
         this.bdsAutoEnable = bdsAutoEnable;
-        this.extensionLoader = this.bdsAutoEnable.getExtensionLoader();
+        this.extensionManager = this.bdsAutoEnable.getExtensionManager();
 
         this.addAlliases(List.of("ex"));
         this.addOption("[extension name]", "Informacje o danym rozserzeniu");
@@ -31,7 +31,7 @@ public class ExtensionsCommand extends Command {
             return true;
         }
 
-        final Map<String, Extension> extensions = this.bdsAutoEnable.getExtensionLoader().getExtensions();
+        final Map<String, Extension> extensions = this.bdsAutoEnable.getExtensionManager().getExtensions();
 
         if (args.length == 0) {
             String status = "&a(&r" + extensions.size() + "&a)&r ";
@@ -52,13 +52,18 @@ public class ExtensionsCommand extends Command {
         if (args.length == 1) {
             final String extensionName = args[0];
 
-            final Extension extension = this.bdsAutoEnable.getExtensionLoader().getExtension(extensionName);
+            final Extension extension = this.bdsAutoEnable.getExtensionManager().getExtension(extensionName);
 
             if (extension != null) {
                 final List<String> dependencies = extension.getExtensionDescription().dependencies();
                 final List<String> softDependencies = extension.getExtensionDescription().softDependencies();
+                final String prefix = extension.getExtensionDescription().prefix();
 
-                this.sendMessage("&aVersia:&b " + extension.getVersion());
+                this.sendMessage("&aNazwa:&b " + extension.getName());
+                if(!prefix.equalsIgnoreCase(extension.getName())){
+                    this.sendMessage("&aPrefix:&b " + prefix);
+                }
+                this.sendMessage("&aWersja:&b " + extension.getVersion());
                 this.sendMessage("&aAutorzy&b " + MessageUtil.stringListToString(extension.getAuthors(), "&a,&b "));
                 this.sendMessage("&aOpis:&b " + extension.getDescription());
                 this.sendMessage("&aKlasa główna:&6 " + extension.getExtensionDescription().mainClass());
@@ -84,7 +89,7 @@ public class ExtensionsCommand extends Command {
 
             if (args[0].equalsIgnoreCase("enable")) {
                 final String extensionName = args[1];
-                final Extension extension = this.extensionLoader.getExtension(extensionName);
+                final Extension extension = this.extensionManager.getExtension(extensionName);
 
                 if (extension != null) {
                     if (extension.isEnabled()) {
@@ -92,7 +97,7 @@ public class ExtensionsCommand extends Command {
                         return true;
                     }
 
-                    this.extensionLoader.enableExtension(extension);
+                    this.extensionManager.enableExtension(extension);
                     return true;
                 }
                 this.sendMessage("&cNie znaleziono rozszerzenia&b " + extensionName);
@@ -107,7 +112,7 @@ public class ExtensionsCommand extends Command {
 
 
                 final String extensionName = args[1];
-                final Extension extension = this.extensionLoader.getExtension(extensionName);
+                final Extension extension = this.extensionManager.getExtension(extensionName);
 
                 if (extension != null) {
                     if (!extension.isEnabled()) {
@@ -115,7 +120,7 @@ public class ExtensionsCommand extends Command {
                         return true;
                     }
 
-                    this.extensionLoader.disableExtension(extension);
+                    this.extensionManager.disableExtension(extension);
                     return true;
                 }
                 this.sendMessage("&cNie znaleziono rozszerzenia&b " + extensionName);

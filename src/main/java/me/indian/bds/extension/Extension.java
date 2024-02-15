@@ -50,9 +50,9 @@ public abstract class Extension {
 
     }
 
-    public final void init(final BDSAutoEnable bdsAutoEnable, final ExtensionDescription description, final ExtensionLoader loader) throws IOException {
+    public final void init(final BDSAutoEnable bdsAutoEnable, final ExtensionDescription description, final ExtensionManager manager) throws IOException {
         this.bdsAutoEnable = bdsAutoEnable;
-        this.logger = new ExtensionLogger(bdsAutoEnable, description.name());
+        this.logger = new ExtensionLogger(bdsAutoEnable, description.prefix());
         this.extensionDescription = description;
         this.mainClass = description.mainClass();
         this.version = description.version();
@@ -61,7 +61,7 @@ public abstract class Extension {
         this.description = description.description();
         this.authors = description.authors();
 
-        final String extensionDir = loader.getExtensionsDir() + File.separator + this.name + File.separator;
+        final String extensionDir = manager.getExtensionsDir() + File.separator + this.name + File.separator;
         this.dataFolder = new File(extensionDir);
 
         Files.createDirectories(Paths.get(extensionDir));
