@@ -42,6 +42,13 @@
             <version>2.10.1</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <version>5.0.0-alpha.12</version>
+            <scope>compile</scope>
+        </dependency>
+
 
         <!--   Używam starszej wersji logback bo w nowej nie rozumiem co sie dzieje     -->
         <dependency>
