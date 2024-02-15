@@ -37,17 +37,12 @@ public class ExtensionLoader {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.extensions = new LinkedHashMap<>();
-        this.extensionsDir = DefaultsVariables.getAppDir() + "extensions";
+        this.extensionsDir = this.getExtensionsDir();
         this.jarFiles = new File(this.extensionsDir).listFiles(pathname -> pathname.getName().endsWith(".jar"));
         this.classes = new HashMap<>();
         this.classLoaders = new HashMap<>();
 
-        try {
-            Files.createDirectories(Paths.get(this.extensionsDir));
-        } catch (final IOException exception) {
-            this.logger.critical("Nie można utworzyć katalogu dla rozszerzeń");
-            throw new RuntimeException(exception);
-        }
+        
     }
 
     @Nullable
@@ -95,10 +90,9 @@ public class ExtensionLoader {
                     throw new ExtensionException("Nie udało się zainicjalizować `" + extensionDescription.name() + "`");
                 }
 
-                this.logger.info("Ładowanie&b " + extensionDescription.name() + "&r...");
                 extension.onLoad();
                 extension.setLoaded(true);
-
+                this.logger.info("Załadowano&b " + extensionDescription.name() + "&r (Wersia:"extensionDescription.version()+" Autor:" + extensionDescription.author+")");
                 this.extensions.put(extensionDescription.name(), extension);
 
                 return extension;
@@ -150,7 +144,7 @@ public class ExtensionLoader {
                 try {
                         this.loadExtension(jarFile);
                 } catch (final Exception exception) {
-                    this.logger.error("&c Nie udało załadować się &b" + jarFile.getName(), exception);
+                    this.logger.error("&cNie udało załadować się &b" + jarFile.getName(), exception);
                 }
             }
         }
@@ -172,12 +166,12 @@ public class ExtensionLoader {
         try {
             this.enableDependencies(extension);
             this.enableSoftDependencies(extension);
-            this.logger.info("Włączanie&b " + extension.getName());
             extension.onEnable();
             extension.setEnabled(true);
+            this.logger.info("Włączono&b " + extension.getName() + "&r (Versia:"extension.getVersion()+" Autor:" + extension.getAuthor+")");
         } catch (final Exception exception) {
             extension.setEnabled(false);
-            this.logger.error("Nie udało się włączyć&b " + extension.getName(), exception);
+            this.logger.error("Nie udało się włączyć&b " + extension.getName()+ "&r (Wersia:"extension.getVersion()+" Autor:" + extension.getAuthor+")", exception);
         }
     }
 
@@ -224,11 +218,11 @@ public class ExtensionLoader {
     public void disableExtension(final Extension extension) {
         try {
             if (!extension.isEnabled()) return;
-            this.logger.info("Wyłączanie&b " + extension.getName());
             extension.onDisable();
             extension.setEnabled(false);
-        } catch (final Exception exception) {
-            this.logger.error("Nie udało się wyłączyć&b " + extension.getName(), exception);
+            this.logger.info("Wyłączono&b " + extension.getName() + "&r (Versia:"extension.getVersion()+" Autor:" + extension.getAuthor+")");
+     } catch (final Exception exception) {
+            this.logger.error("Nie udało się wyłączyć&b " + extension.getName()+ "&r (Wersia:"extension.getVersion()+" Autor:" + extension.getAuthor+")", exception);
         }
     }
 
@@ -276,7 +270,17 @@ public class ExtensionLoader {
     }
 
     public String getExtensionsDir() {
-        return this.extensionsDir;
+       final String extensionsDir = DefaultsVariables.getAppDir() + "extensions";
+
+        
+try {
+            Files.createDirectories(Paths.get(this.extensionsDir));
+        } catch (final IOException exception) {
+            this.logger.critical("Nie można utworzyć katalogu dla rozszerzeń");
+            throw new RuntimeException(""TEST ,exception);
+}
+        
+        return extensionsDir;
     }
 
     public Map<String, Extension> getExtensions() {
@@ -292,6 +296,7 @@ public class ExtensionLoader {
         return null;
     }
 
+    @Nullable
     public Class<?> getClassByName(final String name) {
         Class<?> cachedClass = this.classes.get(name);
 
@@ -301,7 +306,8 @@ public class ExtensionLoader {
             for (final ExtensionClassLoader loader : this.classLoaders.values()) {
                 try {
                     cachedClass = loader.findClass(name, false);
-                } catch (final ClassNotFoundException ignore) {
+                } catch (final ClassNotFoundException e) {
+                    e.printStackTrace();
                 }
                 if (cachedClass != null) {
                     return cachedClass;
