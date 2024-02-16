@@ -10,18 +10,16 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandSender;
-import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.config.sub.EventsConfig;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
+import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
-import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
 import me.indian.bds.logger.Logger;
@@ -37,9 +35,7 @@ public class ServerManager {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
-    private final AppConfigManager appConfigManager;
-    private final EventsConfig eventsConfig;
-    private final ExecutorService mainService, chatService, eventService;
+    private final ExecutorService mainService, chatService;
     private final List<String> onlinePlayers, offlinePlayers, muted;
     private final StatsManager statsManager;
     private final ReentrantLock chatLock;
@@ -51,11 +47,9 @@ public class ServerManager {
     public ServerManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
-        this.eventsConfig = this.appConfigManager.getEventsConfig();
-        this.mainService = Executors.newScheduledThreadPool(2, new ThreadUtil("Player Manager"));
+        this.mainService = Executors.newScheduledThreadPool(2 * Runtime.getRuntime().availableProcessors()
+                , new ThreadUtil("Player Manager"));
         this.chatService = Executors.newScheduledThreadPool(3, new ThreadUtil("Chat Service"));
-        this.eventService = Executors.newScheduledThreadPool(2, new ThreadUtil("Fast Event Service"));
         this.onlinePlayers = new ArrayList<>();
         this.offlinePlayers = new ArrayList<>();
         this.muted = new ArrayList<>();
@@ -117,8 +111,6 @@ public class ServerManager {
             final String playerName = matcher.group(1);
             this.onlinePlayers.add(playerName);
             this.offlinePlayers.remove(playerName);
-            this.eventService.execute(() -> this.eventsConfig.getOnJoin().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
-
             this.eventManager.callEvent(new PlayerJoinEvent(playerName));
         }
     }
@@ -130,7 +122,6 @@ public class ServerManager {
 
         if (matcher.find()) {
             final String playerName = matcher.group(1);
-            this.eventService.execute(() -> this.eventsConfig.getOnSpawn().forEach(command -> this.serverProcess.sendToConsole(command.replaceAll("<player>", playerName))));
             this.statsManager.createNewPlayer(playerName);
             this.eventManager.callEvent(new PlayerSpawnEvent(playerName));
         }
@@ -227,13 +218,6 @@ public class ServerManager {
             final String playerName = matcher.group(1);
             final String fromDimension = matcher.group(2);
             final String toDimension = matcher.group(3);
-
-            this.eventService.execute(() -> this.eventsConfig.getOnDimensionChange().
-                    forEach(command -> this.serverProcess.sendToConsole(command
-                            .replaceAll("<player>", playerName)
-                            .replaceAll("<from>", fromDimension)
-                            .replaceAll("<to>", toDimension)
-                    )));
 
             this.eventManager.callEvent(new PlayerDimensionChangeEvent(playerName, fromDimension, toDimension));
         }

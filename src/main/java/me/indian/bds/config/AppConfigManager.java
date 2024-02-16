@@ -4,7 +4,6 @@ import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import java.io.File;
 import me.indian.bds.config.sub.CommandConfig;
-import me.indian.bds.config.sub.EventsConfig;
 import me.indian.bds.config.sub.log.LogConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
@@ -17,7 +16,6 @@ public class AppConfigManager {
     private final VersionManagerConfig versionManagerConfig;
     private final WatchDogConfig watchDogConfig;
     private final CommandConfig commandConfig;
-    private final EventsConfig eventsConfig;
 
     public AppConfigManager() {
         final String appDir = DefaultsVariables.getAppDir() + File.separator + "config" + File.separator;
@@ -61,14 +59,6 @@ public class AppConfigManager {
             it.saveDefaults();
             it.load(true);
         });
-
-        this.eventsConfig = ConfigManager.create(EventsConfig.class, (it) -> {
-            it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(appDir + "Events.yml");
-            it.withRemoveOrphans(true);
-            it.saveDefaults();
-            it.load(true);
-        });
     }
 
     public void load() {
@@ -103,9 +93,5 @@ public class AppConfigManager {
 
     public CommandConfig getCommandsConfig() {
         return this.commandConfig;
-    }
-
-    public EventsConfig getEventsConfig() {
-        return this.eventsConfig;
     }
 }
