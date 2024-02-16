@@ -312,6 +312,8 @@ public class ServerManager {
             this.logger.alert(badVersion.replaceAll("\n", "")
                     .replaceAll("<version>", Arrays.toString(packModule.getMainPack().version())));
         }
+
+        //TODO: Jeśli wystąpi któryś z tych problemów ustawiać paczke jako nie załadowaną
     }
 
     private void handleCustomCommand(final String playerCommand, final String[] args, final boolean isOp) {
