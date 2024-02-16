@@ -5,7 +5,6 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -203,8 +202,8 @@ public class StatsManager {
 
     private List<PlayerStatistics> loadPlayerStats() {
         try (final FileReader reader = new FileReader(this.statsJson)) {
-            final Type type = new TypeToken<List<PlayerStatistics>>() {
-            }.getType();
+            final TypeToken<List<PlayerStatistics>> type = new TypeToken<>() {
+            };
             final List<PlayerStatistics> loadedMap = GsonUtil.getGson().fromJson(reader, type);
             return (loadedMap == null ? new ArrayList<>() : loadedMap);
         } catch (final Exception exception) {

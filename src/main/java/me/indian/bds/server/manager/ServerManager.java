@@ -1,6 +1,7 @@
 package me.indian.bds.server.manager;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -29,7 +30,7 @@ import me.indian.bds.server.manager.stats.StatsManager;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.version.VersionManager;
-import me.indian.bds.watchdog.module.PackModule;
+import me.indian.bds.watchdog.module.pack.PackModule;
 
 
 public class ServerManager {
@@ -309,7 +310,7 @@ public class ServerManager {
                     """;
 
             this.logger.alert(badVersion.replaceAll("\n", "")
-                    .replaceAll("<version>", packModule.getPackVersion()));
+                    .replaceAll("<version>", Arrays.toString(packModule.getMainPack().version())));
         }
     }
 

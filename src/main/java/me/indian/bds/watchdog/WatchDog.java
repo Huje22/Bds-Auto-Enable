@@ -8,7 +8,7 @@ import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.AutoRestartModule;
 import me.indian.bds.watchdog.module.BackupModule;
-import me.indian.bds.watchdog.module.PackModule;
+import me.indian.bds.watchdog.module.pack.PackModule;
 import me.indian.bds.watchdog.monitor.RamMonitor;
 
 public class WatchDog {

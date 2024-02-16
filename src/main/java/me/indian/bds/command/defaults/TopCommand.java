@@ -11,7 +11,7 @@ import me.indian.bds.server.ServerStats;
 import me.indian.bds.server.manager.stats.StatsManager;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.StatusUtil;
-import me.indian.bds.watchdog.module.PackModule;
+import me.indian.bds.watchdog.module.pack.PackModule;
 
 public class TopCommand extends Command {
 
