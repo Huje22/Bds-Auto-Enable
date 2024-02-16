@@ -21,6 +21,7 @@ import me.indian.bds.event.server.ExtensionDisableEvent;
 import me.indian.bds.event.server.ExtensionEnableEvent;
 import me.indian.bds.exception.ExtensionException;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.GsonUtil;
 import org.jetbrains.annotations.Nullable;
@@ -158,9 +159,13 @@ public class ExtensionManager {
     }
 
     public void enableExtensions() {
+        final long startTime = System.currentTimeMillis();
         for (final Map.Entry<String, Extension> entry : this.extensions.entrySet()) {
             this.enableExtension(entry.getValue());
         }
+
+        final String formattedTime = DateUtil.formatTime((System.currentTimeMillis() - startTime), List.of('s', 'i'), true);
+        this.logger.info("Włączono&b " + this.extensions.size() + " rozszerzeń w czasie&1 " + formattedTime);
     }
 
     public void disableExtension(final Extension extension) {
@@ -178,9 +183,13 @@ public class ExtensionManager {
     }
 
     public void disableExtensions() {
+        final long startTime = System.currentTimeMillis();
         for (final Map.Entry<String, Extension> entry : this.extensions.entrySet()) {
             this.disableExtension(entry.getValue());
         }
+
+        final String formattedTime = DateUtil.formatTime((System.currentTimeMillis() - startTime), List.of('s', 'i'), true);
+        this.logger.info("Wyłączono&b " + this.extensions.size() + "&r rozszerzeń w czasie&1 " + formattedTime);
     }
 
     @Nullable
