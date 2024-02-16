@@ -49,8 +49,8 @@ public class ServerProcess {
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.serverManager = this.bdsAutoEnable.getServerManager();
-        this.processService = Executors.newScheduledThreadPool(2, new ThreadUtil("Server process"));
-        this.consoleOutputService = Executors.newScheduledThreadPool(4, new ThreadUtil("Console Output"));;
+        this.processService = Executors.newFixedThreadPool(2, new ThreadUtil("Server process"));
+        this.consoleOutputService = Executors.newFixedThreadPool(3, new ThreadUtil("Console Output"));;
         this.prefix = "&b[&3ServerProcess&b] ";
         this.system = SystemUtil.getSystem();
         this.eventManager = this.bdsAutoEnable.getEventManager();

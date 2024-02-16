@@ -47,9 +47,9 @@ public class ServerManager {
     public ServerManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.mainService = Executors.newScheduledThreadPool(2 * Runtime.getRuntime().availableProcessors()
+        this.mainService = Executors.newFixedThreadPool(2 * Runtime.getRuntime().availableProcessors()
                 , new ThreadUtil("Player Manager"));
-        this.chatService = Executors.newScheduledThreadPool(3, new ThreadUtil("Chat Service"));
+        this.chatService = Executors.newFixedThreadPool(3, new ThreadUtil("Chat Service"));
         this.onlinePlayers = new ArrayList<>();
         this.offlinePlayers = new ArrayList<>();
         this.muted = new ArrayList<>();
