@@ -8,8 +8,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import me.indian.bds.BDSAutoEnable;
@@ -43,6 +46,7 @@ public class ExtensionManager {
         this.jarFiles = new File(this.extensionsDir).listFiles(pathname -> pathname.getName().endsWith(".jar"));
         this.classes = new HashMap<>();
         this.classLoaders = new HashMap<>();
+
     }
 
     @Nullable
@@ -63,9 +67,6 @@ public class ExtensionManager {
             if (ex.isLoaded()) return ex;
             throw new ExtensionException("Rozszerzenie o nazwie: `" + description.name() + "` już istnieje");
         }
-
-        this.loadDependencies(file);
-        this.loadSoftDependencies(file);
 
         final String className = description.mainClass();
         final ExtensionClassLoader classLoader = new ExtensionClassLoader(this, this.getClass().getClassLoader(), file);
@@ -105,47 +106,40 @@ public class ExtensionManager {
         }
     }
 
-    /**
-     * To rozwiązanie ładowania i włączania soft dependencies i dependencies
-     * może prowadzić do zapętlenia uruchamiania rozszerzeń, lecz na razie to najlepsze, jakie zrobiłem
-     */
-
-    private void loadSoftDependencies(final File file) throws Exception {
-        final List<String> softDependencies = this.getExtensionDescription(file).softDependencies();
-        if (softDependencies.isEmpty()) return;
-
-        for (final String depend : softDependencies) {
-            final File dependencyFile = this.findJarFileByName(depend);
-            if (dependencyFile != null) {
-                this.loadExtension(dependencyFile);
-            } else {
-                this.logger.error("Nie znaleziono zależności `" + depend + "`");
+    public Set<String> dependencyGraph() {
+        final Map<String, List<String>> map = new HashMap<>();
+        for (final File jar : this.jarFiles) {
+            final ExtensionDescription description = this.getExtensionDescription(jar);
+            if (description != null) {
+                final List<String> dependencies = new LinkedList<>();
+                dependencies.addAll(description.dependencies());
+                dependencies.addAll(description.softDependencies());
+                map.put(description.name(), dependencies);
             }
         }
-    }
 
-    private void loadDependencies(final File file) throws Exception {
-        final List<String> dependencies = this.getExtensionDescription(file).dependencies();
-        if (dependencies.isEmpty()) return;
-
-        for (final String depend : dependencies) {
-            final File dependencyFile = this.findJarFileByName(depend);
-            if (dependencyFile != null) {
-                this.loadExtension(dependencyFile);
-            } else {
-                throw new ExtensionException("Nie znaleziono zależności `" + depend + "`");
-            }
+        final Set<String> sorted = new LinkedHashSet<>();
+        for (final Map.Entry<String, List<String>> entry : map.entrySet()) {
+            final String name = entry.getKey();
+            sorted.addAll(entry.getValue());
+            sorted.add(name);
         }
+
+        return sorted;
     }
 
     public void loadExtensions() {
-        if (this.jarFiles != null) {
-            for (final File jarFile : this.jarFiles) {
-                try {
-                    this.loadExtension(jarFile);
-                } catch (final Exception | Error throwable) {
-                    this.logger.error("&cNie udało załadować się &b" + jarFile.getName(), throwable);
-                }
+        for (final String extensionName : this.dependencyGraph()) {
+            final File jarFile = this.findJarFileByName(extensionName);
+            if (jarFile == null) {
+                this.logger.error("&cNie udało się odnaleźć:&b " + extensionName);
+                continue;
+            }
+
+            try {
+                this.loadExtension(jarFile);
+            } catch (final Exception | Error throwable) {
+                this.logger.error("&cNie udało załadować się &b" + jarFile.getName(), throwable);
             }
         }
     }
@@ -153,8 +147,6 @@ public class ExtensionManager {
     public void enableExtension(final Extension extension) {
         if (extension.isEnabled()) return;
         try {
-            this.enableDependencies(extension);
-            this.enableSoftDependencies(extension);
             extension.onEnable();
             extension.setEnabled(true);
             this.eventManager.callEvent(new ExtensionEnableEvent(extension));
@@ -162,40 +154,6 @@ public class ExtensionManager {
         } catch (final Exception | Error throwable) {
             extension.setEnabled(false);
             this.logger.error("Nie udało się włączyć&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)", throwable);
-        }
-    }
-
-    private void enableSoftDependencies(final Extension extension) {
-        final List<String> softDependencies = extension.getExtensionDescription().softDependencies();
-        if (softDependencies.isEmpty()) return;
-
-        for (final String depend : softDependencies) {
-            final Extension dependency = this.extensions.get(depend);
-            if (dependency != null) {
-                if (!dependency.isEnabled()) {
-                    this.enableExtension(dependency);
-                }
-            } else {
-                extension.setEnabled(false);
-                this.logger.error("Nie znaleziono zależności `" + depend + "`");
-            }
-        }
-    }
-
-    private void enableDependencies(final Extension extension) {
-        final List<String> dependencies = extension.getExtensionDescription().dependencies();
-        if (dependencies.isEmpty()) return;
-
-        for (final String depend : dependencies) {
-            final Extension dependency = this.extensions.get(depend);
-            if (dependency != null) {
-                if (!dependency.isEnabled()) {
-                    this.enableExtension(dependency);
-                }
-            } else {
-                extension.setEnabled(false);
-                throw new ExtensionException("Nie znaleziono zależności `" + depend + "`");
-            }
         }
     }
 
@@ -286,8 +244,12 @@ public class ExtensionManager {
         return this.extensions;
     }
 
+    @Nullable
     private File findJarFileByName(final String fileName) {
         for (final File file : this.jarFiles) {
+            final ExtensionDescription description = this.getExtensionDescription(file);
+            if (description != null && description.name().contains(fileName)) return file;
+
             if (file.getName().contains(fileName)) {
                 return file;
             }
