@@ -77,11 +77,11 @@ public final class DateUtil {
         return (millis / 1000) % 60;
     }
 
-    public static String formatTime(final long millis, final List<Character> unitsPatern) {
+    public static String formatTime(final long millis, final List<Character> unitsPattern) {
         final StringBuilder formattedTime = new StringBuilder();
-        final Map<Character, String> unitMap = getUnitMap(millis);
+        final Map<Character, String> unitMap = getUnitMap(millis, false);
 
-        for (final char unit : unitsPatern) {
+        for (final char unit : unitsPattern) {
             if (unitMap.containsKey(unit)) {
                 formattedTime.append(unitMap.get(unit)).append(" ");
             }
@@ -90,13 +90,34 @@ public final class DateUtil {
         return formattedTime.toString().trim();
     }
 
-    private static Map<Character, String> getUnitMap(final long millis) {
+    public static String formatTime(final long millis, final List<Character> unitsPattern, final boolean shortNames) {
+        final StringBuilder formattedTime = new StringBuilder();
+        final Map<Character, String> unitMap = getUnitMap(millis, shortNames);
+
+        for (final char unit : unitsPattern) {
+            if (unitMap.containsKey(unit)) {
+                formattedTime.append(unitMap.get(unit)).append(" ");
+            }
+        }
+
+        return formattedTime.toString().trim();
+    }
+
+    private static Map<Character, String> getUnitMap(final long millis, final boolean shortNames) {
         UNIT_MAP.clear();
-        UNIT_MAP.put('d', formatDays(millis) + " dni");
-        UNIT_MAP.put('h', formatHours(millis) + " godzin");
-        UNIT_MAP.put('m', formatMinutes(millis) + " minut");
-        UNIT_MAP.put('s', formatSeconds(millis) + " sekund");
-        UNIT_MAP.put('i', millis % 1000 + " milisekund");
+        if(shortNames){
+            UNIT_MAP.put('d', formatDays(millis) + "dni");
+            UNIT_MAP.put('h', formatHours(millis) + "godz");
+            UNIT_MAP.put('m', formatMinutes(millis) + "min");
+            UNIT_MAP.put('s', formatSeconds(millis) + "s");
+            UNIT_MAP.put('i', millis % 1000 + "ms");
+        } else {
+            UNIT_MAP.put('d', formatDays(millis) + " dni");
+            UNIT_MAP.put('h', formatHours(millis) + " godzin");
+            UNIT_MAP.put('m', formatMinutes(millis) + " minut");
+            UNIT_MAP.put('s', formatSeconds(millis) + " sekund");
+            UNIT_MAP.put('i', millis % 1000 + " milisekund");
+        }
         return UNIT_MAP;
     }
 }
