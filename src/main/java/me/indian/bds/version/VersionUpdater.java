@@ -43,7 +43,6 @@ public class VersionUpdater {
         this.running = true;
 
         final long hours = MathUtil.hoursTo(this.versionManagerConfig.getVersionCheckFrequency(), TimeUnit.MILLISECONDS);
-        final Timer timer = new Timer("Version Updater", true);
 
         final TimerTask timerTask = new TimerTask() {
             @Override
@@ -66,7 +65,7 @@ public class VersionUpdater {
             }
         };
 
-        timer.scheduleAtFixedRate(timerTask, MathUtil.minutesTo(1, TimeUnit.MILLISECONDS), hours);
+        new Timer("Version Updater", true).scheduleAtFixedRate(timerTask, MathUtil.minutesTo(1, TimeUnit.MILLISECONDS), hours);
     }
 
     public void updateToLatest() {

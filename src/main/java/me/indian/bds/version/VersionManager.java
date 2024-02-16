@@ -101,10 +101,14 @@ public class VersionManager {
             this.logger.info("Nie znaleziono wersji:&1 " + version);
             this.downloadServerFiles(version);
         }
+
+        if(!this.hasVersion(version)){
+            this.downloadServerFiles(version);
+        }
+
         try {
             this.logger.info("Ładowanie wersji:&1 " + version);
-            final int versionSize = this.getSize(version);
-            if (!(versionSize <= -1) && versionSize != Files.size(verFile.toPath())) {
+            if (!this.hasVersion(version)) {
                 this.logger.error("Wielkość wersji nie jest zgodna!");
                 this.downloadServerFiles(version);
             }
