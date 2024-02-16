@@ -253,6 +253,17 @@ public class VersionManager {
     }
 
     public boolean hasVersion(final String version) {
+        final File verFile = new File(this.versionFolder.getPath() + File.separator + version + ".zip");
+        if (verFile.exists()) {
+            try {
+                final int versionSize = this.getSize(version);
+                if (!(versionSize <= -1) && versionSize != Files.size(verFile.toPath())) {
+                    return false;
+                }
+            } catch (final Exception ignored) {
+            }
+        }
+
         return this.availableVersions.contains(version);
     }
 

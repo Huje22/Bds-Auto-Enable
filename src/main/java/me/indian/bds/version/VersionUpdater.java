@@ -101,7 +101,7 @@ public class VersionUpdater {
             this.bdsAutoEnable.getEventManager().callEvent(new ServerUpdatedEvent(version));
             this.serverProcess.startProcess();
         } catch (final Exception exception) {
-            this.logger.critical("Wystąpił krytyczny błąd przy próbie aktualizacji sevrera do najnowszej wersji", exception);
+            this.logger.critical("Wystąpił krytyczny błąd przy próbie aktualizacji servera do najnowszej wersji", exception);
         } finally {
             this.updating = false;
         }
