@@ -43,7 +43,7 @@ public final class DateUtil {
     }
 
     public static long localDateToLong(final LocalDate localDate) {
-        return localDate.toEpochDay();
+        return localDate.atStartOfDay(POLISH_ZONE).toEpochSecond();
     }
 
     public static LocalDate longToLocalDate(final long seconds) {
