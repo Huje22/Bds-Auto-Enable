@@ -30,7 +30,7 @@ public class StatsManager {
     private final Timer playerStatsManagerTimer;
     private final File statsFolder, statsJson, serverStatsJson;
     private final List<PlayerStatistics> playerStats;
-    private final Map<String, Long> playtime, deaths, blockPlaced, blockBreaked;
+    private final Map<String, Long> lastJoin, lastQuit, playtime, deaths, blockPlaced, blockBroken;
     private final ServerManager serverManager;
     private final ServerStats serverStats;
     private final Gson gson;
@@ -43,10 +43,12 @@ public class StatsManager {
         this.serverStatsJson = new File(this.statsFolder.getPath() + File.separator + "server.json");
         this.createFiles();
         this.playerStats = this.loadPlayerStats();
+        this.lastJoin = new HashMap<>();
+        this.lastQuit = new HashMap<>();
         this.playtime = new HashMap<>();
         this.deaths = new HashMap<>();
         this.blockPlaced = new HashMap<>();
-        this.blockBreaked = new HashMap<>();
+        this.blockBroken = new HashMap<>();
         this.serverManager = serverManager;
         this.serverStats = this.loadServerStats();
         this.gson = GsonUtil.getGson();
@@ -95,7 +97,7 @@ public class StatsManager {
 
     public void createNewPlayer(final String playerName) {
         if (this.getByName(playerName) == null) {
-            this.playerStats.add(new PlayerStatistics(playerName, 0, 0, 0, 0));
+            this.playerStats.add(new PlayerStatistics(playerName, 0, 0, 0, 0, 0, 0));
             this.logger.debug("Utworzono gracza:&b " + playerName);
         }
     }
@@ -108,6 +110,30 @@ public class StatsManager {
             }
         }
         return null;
+    }
+
+    public long getLastJoin(final String playerName) {
+        final PlayerStatistics player = this.getByName(playerName);
+        return (player != null ? player.getLastJoin() : 0);
+    }
+
+    public void setLastJoin(final String playerName, final long date) {
+        final PlayerStatistics player = this.getByName(playerName);
+        if (player != null) {
+            player.setLastJoin(date);
+        }
+    }
+
+    public long getLastQuit(final String playerName) {
+        final PlayerStatistics player = this.getByName(playerName);
+        return (player != null ? player.getLastQuit() : 0);
+    }
+
+    public void setLastQuit(final String playerName, final long date) {
+        final PlayerStatistics player = this.getByName(playerName);
+        if (player != null) {
+            player.setLastQuit(date);
+        }
     }
 
     public long getPlayTimeByName(final String playerName) {
@@ -173,8 +199,8 @@ public class StatsManager {
     }
 
     public Map<String, Long> getBlockBroken() {
-        this.playerStats.forEach(player -> this.blockBreaked.put(player.getPlayerName(), player.getBlockBroken()));
-        return this.blockBreaked;
+        this.playerStats.forEach(player -> this.blockBroken.put(player.getPlayerName(), player.getBlockBroken()));
+        return this.blockBroken;
     }
 
     public void saveAllData() {
