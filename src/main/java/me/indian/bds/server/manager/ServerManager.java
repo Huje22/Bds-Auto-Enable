@@ -284,20 +284,22 @@ public class ServerManager {
                     """;
 
             this.logger.alert(noExperiments.replaceAll("`", "").replaceAll("\n", ""));
+            packModule.setLoaded(false);
         }
 
         if (logEntry.contains("BDS Auto Enable") && logEntry.contains("requesting invalid module version")) {
-            final String badVersion = """
+            final String wrongVersion = """
                         Posiadasz złą wersje paczki! (<version>)
                         Usuń a nowa pobierze się sama
                         Ewentualnie twój server lub paczka wymaga aktualizacji
                     """;
 
-            this.logger.alert(badVersion.replaceAll("\n", "")
-                    .replaceAll("<version>", Arrays.toString(packModule.getMainPack().version())));
+            if (packModule.getMainPack() != null) {
+                this.logger.alert(wrongVersion.replaceAll("\n", "")
+                        .replaceAll("<version>", Arrays.toString(packModule.getMainPack().version())));
+            }
+            packModule.setLoaded(false);
         }
-
-        //TODO: Jeśli wystąpi któryś z tych problemów ustawiać paczke jako nie załadowaną
     }
 
     private void handleCustomCommand(final String playerCommand, final String[] args, final boolean isOp) {

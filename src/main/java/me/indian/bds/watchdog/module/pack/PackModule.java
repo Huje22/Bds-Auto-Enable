@@ -255,6 +255,10 @@ public class PackModule {
         return this.loaded;
     }
 
+    public void setLoaded(final boolean loaded) {
+        this.loaded = loaded;
+    }
+
     public String getPackName() {
         return this.packName;
     }
