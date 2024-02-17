@@ -62,7 +62,7 @@ public class StatsManager {
             @Override
             public void run() {
                 for (final String playerName : StatsManager.this.serverManager.getOnlinePlayers()) {
-                    final PlayerStatistics player = StatsManager.this.getByName(playerName);
+                    final PlayerStatistics player = StatsManager.this.getPlayer(playerName);
                     if (player != null) {
                         player.addPlaytime(second);
                     }
@@ -96,14 +96,15 @@ public class StatsManager {
     }
 
     public void createNewPlayer(final String playerName) {
-        if (this.getByName(playerName) == null) {
-            this.playerStats.add(new PlayerStatistics(playerName, 0, 0, 0, 0, 0, 0));
+        if (this.getPlayer(playerName) == null) {
+            this.playerStats.add(new PlayerStatistics(playerName,
+                    0, 0, 0, 0, 0, 0, 0));
             this.logger.debug("Utworzono gracza:&b " + playerName);
         }
     }
 
     @Nullable
-    private PlayerStatistics getByName(final String playerName) {
+    private PlayerStatistics getPlayer(final String playerName) {
         for (final PlayerStatistics player : this.playerStats) {
             if (player.getPlayerName().equalsIgnoreCase(playerName)) {
                 return player;
@@ -112,66 +113,106 @@ public class StatsManager {
         return null;
     }
 
+    @Nullable
+    private PlayerStatistics getPlayer(final long xuid) {
+        for (final PlayerStatistics player : this.playerStats) {
+            if (player.getXuid() == xuid) {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public void setNewName(final long xuid, final String newName) {
+        final PlayerStatistics player = this.getPlayer(xuid);
+        if (player != null) {
+            player.setPlayerName(newName);
+        }
+    }
+
+    public long getXuid(final String playerName) {
+        final PlayerStatistics player = this.getPlayer(playerName);
+        return (player != null ? player.getXuid() : -1);
+    }
+
+    public void setXuid(final String playerName, final long xuid) {
+        final PlayerStatistics player = this.getPlayer(playerName);
+        if (player != null) {
+            player.setXuid(xuid);
+        }
+    }
+
+    @Nullable
+    public String getNameByXuid(final long xuid) {
+        final PlayerStatistics player = this.getPlayer(xuid);
+        return (player != null ? player.getPlayerName() : null);
+    }
+
+    public long getXuidByName(final String name) {
+        final PlayerStatistics player = this.getPlayer(name);
+        return (player != null ? player.getXuid() : -1);
+    }
+
     public long getLastJoin(final String playerName) {
-        final PlayerStatistics player = this.getByName(playerName);
-        return (player != null ? player.getLastJoin() : 0);
+        final PlayerStatistics player = this.getPlayer(playerName);
+        return (player != null ? player.getLastJoin() : -1);
     }
 
     public void setLastJoin(final String playerName, final long date) {
-        final PlayerStatistics player = this.getByName(playerName);
+        final PlayerStatistics player = this.getPlayer(playerName);
         if (player != null) {
             player.setLastJoin(date);
         }
     }
 
     public long getLastQuit(final String playerName) {
-        final PlayerStatistics player = this.getByName(playerName);
-        return (player != null ? player.getLastQuit() : 0);
+        final PlayerStatistics player = this.getPlayer(playerName);
+        return (player != null ? player.getLastQuit() : -1);
     }
 
     public void setLastQuit(final String playerName, final long date) {
-        final PlayerStatistics player = this.getByName(playerName);
+        final PlayerStatistics player = this.getPlayer(playerName);
         if (player != null) {
             player.setLastQuit(date);
         }
     }
 
-    public long getPlayTimeByName(final String playerName) {
-        final PlayerStatistics player = this.getByName(playerName);
-        return (player != null ? player.getPlaytime() : 0);
+    public long getPlayTime(final String playerName) {
+        final PlayerStatistics player = this.getPlayer(playerName);
+        return (player != null ? player.getPlaytime() : -1);
     }
 
-    public long getDeathsByName(final String playerName) {
-        final PlayerStatistics player = this.getByName(playerName);
-        return (player != null ? player.getDeaths() : 0);
+    public long getDeaths(final String playerName) {
+        final PlayerStatistics player = this.getPlayer(playerName);
+        return (player != null ? player.getDeaths() : -1);
     }
 
     public void addDeaths(final String playerName, final long deaths) {
-        final PlayerStatistics player = this.getByName(playerName);
+        final PlayerStatistics player = this.getPlayer(playerName);
         if (player != null) {
             player.addDeaths(deaths);
         }
     }
 
-    public long getBlockPlacedByName(final String playerName) {
-        final PlayerStatistics player = this.getByName(playerName);
-        return (player != null ? player.getBlockPlaced() : 0);
+    public long getBlockPlaced(final String playerName) {
+        final PlayerStatistics player = this.getPlayer(playerName);
+        return (player != null ? player.getBlockPlaced() : -1);
     }
 
     public void addBlockPlaced(final String playerName, final long blockPlaced) {
-        final PlayerStatistics player = this.getByName(playerName);
+        final PlayerStatistics player = this.getPlayer(playerName);
         if (player != null) {
             player.addBlockPlaced(blockPlaced);
         }
     }
 
-    public long getBlockBrokenByName(final String playerName) {
-        final PlayerStatistics player = this.getByName(playerName);
-        return (player != null ? player.getBlockBroken() : 0);
+    public long getBlockBroken(final String playerName) {
+        final PlayerStatistics player = this.getPlayer(playerName);
+        return (player != null ? player.getBlockBroken() : -1);
     }
 
     public void addBlockBroken(final String playerName, final long blockBroken) {
-        final PlayerStatistics player = this.getByName(playerName);
+        final PlayerStatistics player = this.getPlayer(playerName);
         if (player != null) {
             player.addBlockBroken(blockBroken);
         }
@@ -187,9 +228,7 @@ public class StatsManager {
     }
 
     public Map<String, Long> getDeaths() {
-        this.playerStats.forEach(player -> {
-            this.deaths.put(player.getPlayerName(), player.getDeaths());
-        });
+        this.playerStats.forEach(player -> this.deaths.put(player.getPlayerName(), player.getDeaths()));
         return this.deaths;
     }
 

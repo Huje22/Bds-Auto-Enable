@@ -5,11 +5,13 @@ import java.io.Serializable;
 public class PlayerStatistics implements Serializable {
 
     private String playerName;
+    private long xuid;
     private long lastJoin, lastQuit;
     private long playtime, deaths, blockPlaced, blockBroken;
 
-    public PlayerStatistics(final String playerName, final long lastJoin, final long lastQuit, final long playtime, final long deaths, final long blockPlaced, final long blockBroken) {
+    public PlayerStatistics(final String playerName, final long xuid, final long lastJoin, final long lastQuit, final long playtime, final long deaths, final long blockPlaced, final long blockBroken) {
         this.playerName = playerName;
+        this.xuid = xuid;
         this.lastJoin = lastJoin;
         this.lastQuit = lastQuit;
         this.playtime = playtime;
@@ -24,6 +26,14 @@ public class PlayerStatistics implements Serializable {
 
     public void setPlayerName(final String playerName) {
         this.playerName = playerName;
+    }
+
+    public long getXuid() {
+        return this.xuid;
+    }
+
+    public void setXuid(final long xuid) {
+        this.xuid = xuid;
     }
 
     public long getLastJoin() {

@@ -74,6 +74,7 @@ public class ServerManager {
 
         this.mainService.execute(() -> {
             //Metody związane z graczem
+            this.playerConnect(logEntry);
             this.playerJoin(logEntry);
             this.playerQuit(logEntry);
             this.playerSpawn(logEntry);
@@ -88,6 +89,24 @@ public class ServerManager {
             this.tps(logEntry);
             this.version(logEntry);
         });
+    }
+
+    private void playerConnect(final String logEntry) {
+        final Pattern pattern = Pattern.compile("Player connected: ([^,]+), xuid: (\\d+)");
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerName = matcher.group(1);
+            final long xuid = Long.parseLong(matcher.group(2));
+            final String oldPlayerName = this.statsManager.getNameByXuid(xuid);
+
+            if (oldPlayerName != null && !oldPlayerName.equals(playerName)) {
+                //Powinno to działać tak, że gdy gracz zmieni swoją nazwę, nadal zachowuje swoje statystyki
+                // ponieważ jest ustawiany pod nową nazwę za pomocą weryfikacji jego XUID. Lecz nie było to TESTOWANE
+                this.statsManager.setNewName(xuid, playerName);
+            }
+            this.statsManager.setXuid(playerName, xuid);
+        }
     }
 
     private void playerQuit(final String logEntry) {
