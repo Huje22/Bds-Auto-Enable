@@ -205,7 +205,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerDeath = MessageUtil.fixMessage(matcher.group(1));
+            final String playerDeath = matcher.group(1);
             final String deathMessage = MessageUtil.fixMessage(matcher.group(2));
 
             this.statsManager.addDeaths(playerDeath, 1);
