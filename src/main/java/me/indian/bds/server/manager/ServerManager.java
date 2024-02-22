@@ -44,7 +44,7 @@ public class ServerManager {
     private final EventManager eventManager;
     private ServerProcess serverProcess;
     private VersionManager versionManager;
-    private int lastTPS;
+    private double lastTPS;
 
     public ServerManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -220,7 +220,7 @@ public class ServerManager {
 
         if (matcher.find()) {
             final String tpsString = matcher.group(1);
-            final int tps = Integer.parseInt(tpsString);
+            final double tps = Double.parseDouble(tpsString);
             this.eventManager.callEvent(new TPSChangeEvent(tps, this.lastTPS));
 
             if (this.lastTPS <= 8 && tps <= 8) {
