@@ -4,25 +4,19 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Type;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.ZipUtil;
 import me.indian.bds.watchdog.WatchDog;
 import me.indian.bds.watchdog.module.BackupModule;
 import me.indian.bds.watchdog.module.pack.component.PackTemplate;
@@ -33,6 +27,7 @@ public class PackModule {
     private final WatchDog watchDog;
     private final Logger logger;
     private final String packName;
+    private final PackUpdater packUpdater;
     private File behaviorsFolder, packFile, worldBehaviorsJson;
     private List<PackTemplate> loadedBehaviorPacks;
     private PackTemplate mainPack;
@@ -42,12 +37,13 @@ public class PackModule {
         this.watchDog = watchDog;
         this.logger = bdsAutoEnable.getLogger();
         this.packName = "BDS-Auto-Enable-Managment-Pack";
+        this.packUpdater = new PackUpdater(bdsAutoEnable, this);
     }
 
     public void initPackModule() {
         final BackupModule backupModule = this.watchDog.getBackupModule();
         this.behaviorsFolder = new File(backupModule.getWorldFile().getPath() + File.separator + "behavior_packs");
-        this.packFile = new File(this.behaviorsFolder.getPath() + File.separator + "BDS-Auto-Enable-Managment-Pack");
+        this.packFile = new File(this.behaviorsFolder.getPath() + File.separator + "BDS-Auto-Enable-Management-Pack-main");
         this.worldBehaviorsJson = new File(backupModule.getWorldFile().getPath() + File.separator + "world_behavior_packs.json");
         if (!this.behaviorsFolder.exists()) {
             if (!this.behaviorsFolder.mkdirs()) {
@@ -77,9 +73,11 @@ public class PackModule {
     public void getPackInfo() {
         if (!this.packExists()) {
             this.logger.error("Nie można odnaleźć paczki&b " + this.packName);
-            this.downloadPack();
+            this.packUpdater.downloadPack();
+            this.getPackInfo();
             return;
         }
+
         try {
             final JsonObject json = (JsonObject) JsonParser.parseReader(new FileReader(this.packFile.getPath() + File.separator + "manifest.json"));
             final JsonObject header = json.getAsJsonObject("header");
@@ -103,10 +101,11 @@ public class PackModule {
             }
 
             this.mainPack = new PackTemplate(header.get("uuid").getAsString(), null, version);
+            this.packUpdater.updatePack();
             this.packsIsLoaded();
 
             if (!this.loaded) {
-                this.logger.alert("Wykryliśmy paczke ale nie jest ona załadowana!");
+                this.logger.alert("Wykryliśmy paczkę ale nie jest ona załadowana!");
                 this.loadPack();
             }
             this.appHandledMessages = this.getAppHandledMessages();
@@ -169,51 +168,6 @@ public class PackModule {
         } catch (final IOException exception) {
             this.logger.critical("Wystąpił krytyczny błąd z&b world_behavior_packs.json", exception);
             System.exit(0);
-        }
-    }
-
-    private void downloadPack() {
-        try {
-            final long startTime = System.currentTimeMillis();
-            final HttpURLConnection connection = (HttpURLConnection) new URL("https://raw.githubusercontent.com/Huje22/BDS-Auto-Enable-Managment-Pack/main/BDS-Auto-Enable-Managment-Pack.zip").openConnection();
-            final int response = connection.getResponseCode();
-            if (response == HttpURLConnection.HTTP_OK) {
-                this.logger.info("Pobieranie Paczki");
-                final int fileSize = connection.getContentLength();
-
-                try (final InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
-                    try (final FileOutputStream outputStream = new FileOutputStream(this.packFile.getPath() + ".zip")) {
-
-                        final byte[] buffer = new byte[1024];
-                        int bytesRead;
-                        long totalBytesRead = 0;
-
-                        int tempProgres = -1;
-                        while ((bytesRead = inputStream.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
-                            totalBytesRead += bytesRead;
-                            final int progress = Math.toIntExact((totalBytesRead * 100) / fileSize);
-
-                            if (progress != tempProgres) {
-                                if (fileSize <= 0) {
-                                    this.logger.error("Nie można odczytać prawidłowego rozmiaru pliku.");
-                                    continue;
-                                }
-                                tempProgres = progress;
-                                this.logger.info("Pobrano w:&b " + progress + "&a%");
-                            }
-                        }
-                    }
-                }
-                this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
-                ZipUtil.unzipFile(this.packFile.getPath() + ".zip", this.behaviorsFolder.getPath(), true);
-                this.getPackInfo();
-            } else {
-                this.logger.error("Kod odpowiedzi strony: " + response);
-                System.exit(0);
-            }
-        } catch (final Exception ioException) {
-            this.logger.error("Nie można pobrać paczki ", ioException);
         }
     }
 
@@ -298,5 +252,13 @@ public class PackModule {
 
     public boolean packExists() {
         return this.packFile.exists();
+    }
+
+    public File getBehaviorsFolder() {
+        return this.behaviorsFolder;
+    }
+
+    public File getPackFile() {
+        return this.packFile;
     }
 }
