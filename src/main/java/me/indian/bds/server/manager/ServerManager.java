@@ -32,7 +32,6 @@ import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.module.pack.PackModule;
 
-
 public class ServerManager {
 
     private final BDSAutoEnable bdsAutoEnable;
@@ -200,16 +199,17 @@ public class ServerManager {
     }
 
     private void deathMessage(final String logEntry) {
-        final String patternString = "PlayerDeath:([^,]+) DeathMessage:(.+)";
+        final String patternString = "PlayerDeath:([^,]+) DeathMessage:(.+) UsedName:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerDeath = matcher.group(1);
             final String deathMessage = MessageUtil.fixMessage(matcher.group(2));
+            final String usedItemName = matcher.group(3);
 
             this.statsManager.addDeaths(playerDeath, 1);
-            this.eventManager.callEvent(new PlayerDeathEvent(playerDeath, deathMessage));
+            this.eventManager.callEvent(new PlayerDeathEvent(playerDeath, deathMessage, usedItemName));
         }
     }
 
@@ -340,7 +340,7 @@ public class ServerManager {
         this.onlinePlayers.clear();
     }
 
-    public int getLastTPS() {
+    public double getLastTPS() {
         return this.lastTPS;
     }
 
