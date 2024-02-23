@@ -366,13 +366,13 @@ public class Settings {
 
         this.versionManagerConfig.setVersion(scannerUtil.addStringQuestion(
                 (defaultValue) -> {
-                    this.logger.info("&n&lJaką versie załadować?&r (Najnowsza: " + check + ")");
+                    this.logger.info("&n&lJaką wersje załadować?&r (Najnowsza: " + check + ")");
                     if (this.bdsAutoEnable.getVersionManager().getAvailableVersions().isEmpty()) {
                         this.logger.info("Nie znaleziono żadnej wersji");
                     } else {
                         this.logger.info("Pobrane wersje: " + this.bdsAutoEnable.getVersionManager().getAvailableVersions());
                     }
-                    this.logger.info("Aby pobrać jakąś versie wpisz jej numer (niektóre mogą mieć .01 / .02 na końcu)");
+                    this.logger.info("Aby pobrać jakąś wersje wpisz jej numer (niektóre mogą mieć .01 / .02 na końcu)");
                 },
                 (latest.equals("") ? this.bdsAutoEnable.getVersionManager().getLoadedVersion() : latest),
                 (input) -> this.logger.info("Wersja do załadowania ustawiona na:&1 " + input)
@@ -383,7 +383,7 @@ public class Settings {
 
     private void anotherVersionQuestion(final ScannerUtil scannerUtil) {
         scannerUtil.addBooleanQuestion(
-                (defaultValue) -> this.logger.info("&n&lZaładować jakąś inną versie?&r (Domyślnie: " + defaultValue + ")" + this.enter),
+                (defaultValue) -> this.logger.info("&n&lZaładować jakąś inną wersje?&r (Domyślnie: " + defaultValue + ")" + this.enter),
                 false,
                 (input) -> {
                     if (input) {

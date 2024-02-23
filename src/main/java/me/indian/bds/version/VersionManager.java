@@ -125,9 +125,9 @@ public class VersionManager {
             if (this.serverProperties.propertiesExists() && storeServerProperties != null)
                 this.serverProperties.setFromStored(storeServerProperties);
             this.versionManagerConfig.setVersion(version);
-            this.logger.info("Załadowano versie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
+            this.logger.info("Załadowano wersie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final Exception exception) {
-            this.logger.critical("Nie można załadować wersji: " + version, exception);
+            this.logger.critical("Nie można załadować wersji:&1 " + version, exception);
             System.exit(0);
         }
         this.versionManagerConfig.save();
@@ -198,7 +198,7 @@ public class VersionManager {
             if (response.code() != HttpURLConnection.HTTP_OK) return -1;
             return response.body().contentLength();
         } catch (final IOException ioException) {
-            this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version, ioException);
+            this.logger.debug("Wystąpił błąd podczas próby pobrania wielkości wersji:&b " + version, ioException);
         }
         return -1;
     }

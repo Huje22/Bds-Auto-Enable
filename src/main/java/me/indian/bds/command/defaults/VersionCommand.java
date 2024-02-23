@@ -10,7 +10,7 @@ public class VersionCommand extends Command {
     private final AppConfigManager appConfigManager;
 
     public VersionCommand(final BDSAutoEnable bdsAutoEnable) {
-        super("version", "Pokazuje załadowaną versie minecraft + versie oprogramowania");
+        super("version", "Pokazuje załadowaną wersje minecraft + wersje oprogramowania");
         this.bdsAutoEnable = bdsAutoEnable;
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
     }
