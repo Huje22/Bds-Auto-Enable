@@ -34,6 +34,7 @@ public class StatsManager {
     private final ServerManager serverManager;
     private final ServerStats serverStats;
     private final Gson gson;
+    private boolean countingTime;
 
     public StatsManager(final BDSAutoEnable bdsAutoEnable, final ServerManager serverManager) {
         this.logger = bdsAutoEnable.getLogger();
@@ -82,6 +83,9 @@ public class StatsManager {
     }
 
     public void startCountServerTime(final ServerProcess serverProcess) {
+        if (this.countingTime) return;
+
+
         final long second = MathUtil.secondToMillis(1);
         final TimerTask serverTimeTask = new TimerTask() {
             @Override
@@ -93,6 +97,7 @@ public class StatsManager {
         };
 
         this.playerStatsManagerTimer.scheduleAtFixedRate(serverTimeTask, 0, second);
+        this.countingTime = true;
     }
 
     public void createNewPlayer(final String playerName) {
