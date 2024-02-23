@@ -3,15 +3,12 @@ package me.indian.bds.version;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -27,13 +24,18 @@ import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.server.properties.StoreServerProperties;
 import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.HTTPUtil;
 import me.indian.bds.util.ZipUtil;
 import me.indian.bds.util.system.SystemOS;
 import me.indian.bds.util.system.SystemUtil;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class VersionManager {
 
     private final BDSAutoEnable bdsAutoEnable;
+    private final OkHttpClient client;
     private final Logger logger;
     private final AppConfig appConfig;
     private final VersionManagerConfig versionManagerConfig;
@@ -48,6 +50,7 @@ public class VersionManager {
 
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
+        this.client = HTTPUtil.getOkHttpClient();
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfig = this.bdsAutoEnable.getAppConfigManager().getAppConfig();
         this.versionManagerConfig = this.bdsAutoEnable.getAppConfigManager().getVersionManagerConfig();
@@ -139,15 +142,20 @@ public class VersionManager {
     }
 
     public void downloadServerFiles(final String version) {
-        try {
-            final long startTime = System.currentTimeMillis();
-            final HttpURLConnection connection = (HttpURLConnection) new URL(this.getServerDownloadUrl(version)).openConnection();
-            final int response = connection.getResponseCode();
-            if (response == HttpURLConnection.HTTP_OK) {
-                this.logger.info("Pobieranie wersji: &1" + version);
-                final int fileSize = connection.getContentLength();
+        final Request request = new Request.Builder()
+                .url(this.getServerDownloadUrl(version))
+                .get()
+                .build();
 
-                try (final InputStream inputStream = new BufferedInputStream(connection.getInputStream())) {
+        try (final Response response = this.client.newCall(request).execute()) {
+            final long startTime = System.currentTimeMillis();
+            final int responseCode = response.code();
+
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                this.logger.info("Pobieranie wersji: &1" + version);
+                final long fileSize = response.body().contentLength();
+
+                try (final InputStream inputStream = new BufferedInputStream(response.body().byteStream())) {
                     try (final FileOutputStream outputStream = new FileOutputStream(this.versionFolder.getPath() + File.separator + version + ".zip")) {
 
                         final byte[] buffer = new byte[1024];
@@ -171,7 +179,7 @@ public class VersionManager {
                 this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
                 this.loadVersionsInfo();
             } else {
-                this.logger.error("Kod odpowiedzi strony: " + response);
+                this.logger.error("Kod odpowiedzi strony: " + responseCode);
                 this.logger.error("Prawdopodobnie nie ma takiej wersji jak: " + version);
                 System.exit(1);
             }
@@ -180,11 +188,15 @@ public class VersionManager {
         }
     }
 
-    private int getSize(final String version) {
-        try {
-            final HttpURLConnection connection = (HttpURLConnection) new URL(this.getServerDownloadUrl(version)).openConnection();
-            if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) return -1;
-            return connection.getContentLength();
+    private long getSize(final String version) {
+        final Request request = new Request.Builder()
+                .url(this.getServerDownloadUrl(version))
+                .get()
+                .build();
+
+        try (final Response response = this.client.newCall(request).execute()) {
+            if (response.code() != HttpURLConnection.HTTP_OK) return -1;
+            return response.body().contentLength();
         } catch (final IOException ioException) {
             this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version, ioException);
         }
@@ -208,22 +220,15 @@ public class VersionManager {
     }
 
     public String getLatestVersion() {
-        try {
-            final StringBuilder response = new StringBuilder();
-            final URL url = new URL("https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json");
-            final HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod("GET");
-            con.setRequestProperty("Accept", "application/json");
+        final Request request = new Request.Builder()
+                .url("https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json")
+                .get()
+                .build();
 
-            final int responseCode = con.getResponseCode();
+        try (final Response response = this.client.newCall(request).execute()) {
+            final int responseCode = response.code();
             if (responseCode == HttpURLConnection.HTTP_OK) {
-                try (final BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()))) {
-                    String inputLine;
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                }
-                final JsonObject jsonObject = JsonParser.parseString(response.toString()).getAsJsonObject();
+                final JsonObject jsonObject = JsonParser.parseString(response.body().string()).getAsJsonObject();
 
                 switch (this.system) {
                     case WINDOWS -> {
@@ -260,7 +265,7 @@ public class VersionManager {
         final File verFile = new File(this.versionFolder.getPath() + File.separator + version + ".zip");
         if (verFile.exists()) {
             try {
-                final int versionSize = this.getSize(version);
+                final long versionSize = this.getSize(version);
                 if (!(versionSize <= -1) && versionSize != Files.size(verFile.toPath())) {
                     return false;
                 }
