@@ -50,7 +50,16 @@ public class ConsoleInput {
                 this.logger.alert("Konsola zakończyła działanie");
             } catch (final Exception exception) {
                 this.logger.critical("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ");
+                
+                try {
+                    this.serverProcess.setCanRun(false);
+                    this.serverProcess.sendToConsole("stop");
+                    this.serverProcess.waitFor();
+                } catch (final InterruptedException ex) {
+                    throw new RuntimeException(ex);
+                }
 
+                System.exit(1);
                 throw exception;
             }
         }).start();
