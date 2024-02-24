@@ -32,6 +32,11 @@ import me.indian.bds.watchdog.WatchDog;
 
 public class BDSAutoEnable {
 
+
+     /*
+        TODO: Doda zarządzanie allow listą
+      */
+
     private final Thread mainThread;
     private final long startTime;
     private final String projectVersion, runDate;
