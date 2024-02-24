@@ -4,11 +4,12 @@ import me.indian.bds.event.Event;
 
 public class PlayerDeathEvent extends Event {
 
-    private final String playerName, deathMessage, usedItemName;
+    private final String playerName, deathMessage, killerName, usedItemName;
 
-    public PlayerDeathEvent(final String playerName, final String deathMessage, final String usedItemName) {
+    public PlayerDeathEvent(final String playerName, final String deathMessage, final String killerName, final String usedItemName) {
         this.playerName = playerName;
         this.deathMessage = deathMessage;
+        this.killerName = killerName;
         this.usedItemName = usedItemName;
     }
 
@@ -18,6 +19,10 @@ public class PlayerDeathEvent extends Event {
 
     public String getDeathMessage() {
         return this.deathMessage;
+    }
+
+    public String getKillerName() {
+        return this.killerName;
     }
 
     public String getUsedItemName() {

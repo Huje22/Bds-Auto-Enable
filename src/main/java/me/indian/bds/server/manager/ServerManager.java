@@ -199,17 +199,18 @@ public class ServerManager {
     }
 
     private void deathMessage(final String logEntry) {
-        final String patternString = "PlayerDeath:([^,]+) DeathMessage:(.+) UsedName:(.+)";
+        final String patternString = "PlayerDeath:([^,]+) DeathMessage:(.+) Killer:(.+) UsedName:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerDeath = matcher.group(1);
             final String deathMessage = MessageUtil.fixMessage(matcher.group(2));
-            final String usedItemName = matcher.group(3);
+            final String killerName = matcher.group(3);
+            final String usedItemName = matcher.group(4);
 
             this.statsManager.addDeaths(playerDeath, 1);
-            this.eventManager.callEvent(new PlayerDeathEvent(playerDeath, deathMessage, usedItemName));
+            this.eventManager.callEvent(new PlayerDeathEvent(playerDeath, deathMessage, killerName, usedItemName));
         }
     }
 
