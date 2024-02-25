@@ -16,6 +16,7 @@ import me.indian.bds.extension.ExtensionManager;
 import me.indian.bds.logger.impl.MainLogger;
 import me.indian.bds.metrics.AppMetrics;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.server.allowlist.AllowlistManager;
 import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DateUtil;
@@ -33,11 +34,6 @@ import me.indian.bds.watchdog.WatchDog;
 
 public class BDSAutoEnable {
 
-
-     /*
-        TODO: Doda zarządzanie allow listą
-      */
-
     private final Thread mainThread;
     private final long startTime;
     private final String projectVersion, runDate;
@@ -52,6 +48,7 @@ public class BDSAutoEnable {
     private final VersionManager versionManager;
     private final EventManager eventManager;
     private final ExtensionManager extensionManager;
+    private final AllowlistManager allowlistManager;
     private CommandManager commandManager;
     private WatchDog watchDog;
 
@@ -83,6 +80,7 @@ public class BDSAutoEnable {
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
         this.extensionManager = new ExtensionManager(this);
+        this.allowlistManager = new AllowlistManager(this);
         this.serverManager.init();
         StatusUtil.init(this);
         ZipUtil.init(this);
@@ -293,5 +291,9 @@ public class BDSAutoEnable {
 
     public ExtensionManager getExtensionManager() {
         return this.extensionManager;
+    }
+
+    public AllowlistManager getAllowlistManager() {
+        return this.allowlistManager;
     }
 }
