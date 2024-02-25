@@ -44,12 +44,10 @@ paczke [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enab
 paczka jest najwyżej)**
 
 * `!help` - lista poleceń
-* `!tps` - Ticki na sekunde servera (działa tylko w minecraft)
-  **Po resztę użyj `!help`**
 
 # Program nie wspiera
 
-* Wtyczek do Minecraft ani czytania pakietów z Minecraft
+* Wtyczek do Minecraft z czytaniem pakietów i ich wysyłaniem (za to zawiera proste rozszerzenia)
 
 # Szybkie info
 
