@@ -9,6 +9,7 @@ import java.util.UUID;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.config.LogbackConfig;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.exception.MissingDllException;
 import me.indian.bds.extension.ExtensionManager;
@@ -74,6 +75,7 @@ public class BDSAutoEnable {
         this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
         this.logger.debug("&aUUID&r aplikacji:&b " + this.getAppUUID());
         DefaultsVariables.init(this);
+        LogbackConfig.init();
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
         this.eventManager = new EventManager(this);

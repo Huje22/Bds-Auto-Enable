@@ -18,11 +18,11 @@ public class AppConfigManager {
     private final CommandConfig commandConfig;
 
     public AppConfigManager() {
-        final String appDir = DefaultsVariables.getAppDir() + File.separator + "config" + File.separator;
+        final String configDir = DefaultsVariables.getAppDir() + File.separator + "config" + File.separator;
 
         this.appConfig = ConfigManager.create(AppConfig.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(appDir + "config.yml");
+            it.withBindFile(configDir + "config.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
@@ -30,7 +30,7 @@ public class AppConfigManager {
 
         this.logConfig = ConfigManager.create(LogConfig.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(appDir + "Log.yml");
+            it.withBindFile(configDir + "Log.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
@@ -38,7 +38,7 @@ public class AppConfigManager {
 
         this.versionManagerConfig = ConfigManager.create(VersionManagerConfig.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(appDir + "VersionManager.yml");
+            it.withBindFile(configDir + "VersionManager.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
@@ -46,7 +46,7 @@ public class AppConfigManager {
 
         this.watchDogConfig = ConfigManager.create(WatchDogConfig.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(appDir + "WatchDog.yml");
+            it.withBindFile(configDir + "WatchDog.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
@@ -54,7 +54,7 @@ public class AppConfigManager {
 
         this.commandConfig = ConfigManager.create(CommandConfig.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
-            it.withBindFile(appDir + "Commands.yml");
+            it.withBindFile(configDir + "Commands.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
