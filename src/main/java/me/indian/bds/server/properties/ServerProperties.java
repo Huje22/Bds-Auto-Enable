@@ -20,14 +20,12 @@ public class ServerProperties {
     private final Properties properties;
     private final Logger logger;
     private final File propertiesFile;
-    private boolean canReload;
 
     public ServerProperties(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.properties = new Properties();
         this.logger = this.bdsAutoEnable.getLogger();
         this.propertiesFile = new File(this.bdsAutoEnable.getAppConfigManager().getAppConfig().getFilesPath() + File.separator + "server.properties");
-        this.canReload = true;
     }
 
     public void loadProperties() {
@@ -64,7 +62,6 @@ public class ServerProperties {
     }
 
     public void reloadServerProperties() {
-        if (!this.canReload) return;
         this.saveProperties();
         this.loadProperties();
     }
@@ -412,31 +409,6 @@ public class ServerProperties {
 
     public void setCorrectPlayerMovement(final boolean clientSide) {
         this.properties.setProperty("correct-player-movement", String.valueOf(clientSide));
-        this.reloadServerProperties();
-    }
-
-    public void setFromStored(final StoreServerProperties storedProperties) {
-        this.canReload = false;
-        this.setViewDistance(storedProperties.viewDistance());
-        this.setServerPort(storedProperties.serverPort());
-        this.setServerPortV6(storedProperties.serverPortV6());
-        this.setMaxThreads(storedProperties.maxThreads());
-        this.setPlayerIdleTimeout(storedProperties.playerIdleTimeout());
-        this.setMOTD(storedProperties.serverName());
-        this.setServerMovementAuth(storedProperties.serverMovementAuth());
-        this.setServerBuildRadiusRatio(storedProperties.serverBuildRadiusRatio());
-        this.setClientSideChunkGeneration(storedProperties.clientSideChunkGenerationEnabled());
-        this.setTickDistance(storedProperties.tickDistance());
-        this.setTexturePackRequired(storedProperties.texturepackRequired());
-        this.setCompressionAlgorithm(storedProperties.compressionAlgorithm());
-        this.setAllowCheats(storedProperties.allowCheats());
-        this.setDifficulty(storedProperties.difficulty());
-        this.setPlayerPermissionLevel(storedProperties.playerPermissionLevel());
-        this.setCorrectPlayerMovement(storedProperties.correctPlayerMovement());
-        this.setMaxPlayers(storedProperties.maxPlayers());
-        this.setOnlineMode(storedProperties.onlineMode());
-        this.setServerTelemetry(storedProperties.emitServerTelemetry());
-        this.canReload = true;
         this.reloadServerProperties();
     }
 

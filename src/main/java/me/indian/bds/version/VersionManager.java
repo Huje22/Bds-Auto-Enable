@@ -21,7 +21,6 @@ import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.properties.ServerProperties;
-import me.indian.bds.server.properties.StoreServerProperties;
 import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.HTTPUtil;
@@ -75,7 +74,7 @@ public class VersionManager {
         this.loadVersionsInfo();
 
         this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "allowlist.json");
-        //  this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "server.properties");
+        this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "server.properties");
         this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "config" + File.separator + "default" + File.separator + "permissions.json");
         this.importantFiles.add(this.appConfig.getFilesPath() + File.separator + "permissions.json");
     }
@@ -116,14 +115,10 @@ public class VersionManager {
                 this.downloadServerFiles(version);
             }
 
-            final StoreServerProperties storeServerProperties = StoreServerProperties.fromServerProperties(this.serverProperties);
             final long startTime = System.currentTimeMillis();
 
             ZipUtil.unzipFile(verFile.getAbsolutePath(), this.appConfig.getFilesPath(), false, this.importantFiles);
             this.setLoaded(true);
-
-            if (this.serverProperties.propertiesExists() && storeServerProperties != null)
-                this.serverProperties.setFromStored(storeServerProperties);
             this.versionManagerConfig.setVersion(version);
             this.logger.info("Załadowano wersie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final Exception exception) {
