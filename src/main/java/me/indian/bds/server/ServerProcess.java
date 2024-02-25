@@ -12,8 +12,8 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.event.EventManager;
-import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
+import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
@@ -176,6 +176,8 @@ public class ServerProcess {
                     final String line = consoleOutput.nextLine();
                     if (line.isEmpty()) continue;
 
+                    this.serverManager.initFromLog(line);
+
                     if (!this.containsNotAllowedToFileLog(line)) {
                         this.consoleOutputService.execute(() -> this.logger.instantLogToFile(line));
                     }
@@ -183,7 +185,6 @@ public class ServerProcess {
                     if (!this.containsNotAllowedToConsoleLog(line)) {
                         this.consoleOutputService.execute(() -> System.out.println(line));
                         this.lastConsoleLine = line;
-                        this.serverManager.initFromLog(line);
                     }
                 }
             } catch (final Exception exception) {

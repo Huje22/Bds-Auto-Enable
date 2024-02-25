@@ -33,19 +33,21 @@ public abstract class Logger {
     }
 
     private void initializeLogFile() {
-        final File logsDir = new File(DefaultsVariables.getAppDir() + "logs");
-        if (!logsDir.exists()) {
-            if (!logsDir.mkdir()) if (logsDir.mkdirs()) {
-                throw new RuntimeException("Nie można utworzyć miejsca na logi");
+        if (this.appConfig.isLogFile()) {
+            final File logsDir = new File(DefaultsVariables.getAppDir() + "logs");
+            if (!logsDir.exists()) {
+                if (!logsDir.mkdir()) if (logsDir.mkdirs()) {
+                    throw new RuntimeException("Nie można utworzyć miejsca na logi");
+                }
             }
-        }
 
-        try {
-            this.logFile = new File(logsDir, "ServerLog-" + this.bdsAutoEnable.getRunDate() + ".log");
-            final FileOutputStream fileOutputStream = new FileOutputStream(this.logFile, true);
-            this.printStream = new PrintStream(fileOutputStream);
-        } catch (final Exception exception) {
-            this.error("Nie można utworzyć&1 PrintStreamu&r aby zapisywać logi do pliku ", exception);
+            try {
+                this.logFile = new File(logsDir, "ServerLog-" + this.bdsAutoEnable.getRunDate() + ".log");
+                final FileOutputStream fileOutputStream = new FileOutputStream(this.logFile, true);
+                this.printStream = new PrintStream(fileOutputStream);
+            } catch (final Exception exception) {
+                this.error("Nie można utworzyć&1 PrintStreamu&r aby zapisywać logi do pliku ", exception);
+            }
         }
     }
 
@@ -160,21 +162,23 @@ public abstract class Logger {
     }
 
     public void instantLogToFile(final Object log) {
-        if (this.printStream != null) {
+        if (this.appConfig.isLogFile() && this.printStream != null) {
             this.printStream.println(ConsoleColors.removeColors(log));
         }
     }
 
     private void logToFile(final Object log) {
-        if (this.printStream != null) {
+        if (this.appConfig.isLogFile() && this.printStream != null) {
             this.printStream.println(ConsoleColors.removeColors(this.prefix) + ConsoleColors.removeColors(log));
         }
     }
 
     public void logThrowable(final Throwable throwable) {
-        if (this.printStream != null && throwable != null) {
+        if (throwable != null) {
             throwable.printStackTrace();
-            throwable.printStackTrace(this.printStream);
+            if (this.appConfig.isLogFile() && this.printStream != null) {
+                throwable.printStackTrace(this.printStream);
+            }
         }
     }
 

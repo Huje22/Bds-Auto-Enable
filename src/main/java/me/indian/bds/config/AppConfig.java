@@ -4,7 +4,6 @@ import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 import eu.okaeri.configs.annotation.CustomKey;
 import eu.okaeri.configs.annotation.Header;
-
 import java.util.List;
 
 
@@ -32,6 +31,11 @@ public class AppConfig extends OkaeriConfig {
     @Comment({"Aby użyć wine trzeba mieć je pobrane!"})
     @CustomKey("Wine")
     private boolean wine = false;
+
+    @Comment({""})
+    @Comment({"Czy tworzyć pliki z logami servera?"})
+    @CustomKey("LogFile")
+    private boolean logFile = true;
 
     @Comment({""})
     @Comment({"Ścieżka do plików z serverem"})
@@ -77,12 +81,24 @@ public class AppConfig extends OkaeriConfig {
         this.wine = wine;
     }
 
+    public boolean isLogFile() {
+        return this.logFile;
+    }
+
+    public void setLogFile(final boolean logFile) {
+        this.logFile = logFile;
+    }
+
     public String getFilesPath() {
         return this.filesPath;
     }
 
     public void setFilesPath(final String filesPath) {
         this.filesPath = filesPath;
+    }
+
+    public List<String> getModerators() {
+        return this.moderators;
     }
 
     public String getUuid() {
@@ -93,11 +109,11 @@ public class AppConfig extends OkaeriConfig {
         this.uuid = uuid;
     }
 
-    public List<String> getModerators() {
-        return this.moderators;
-    }
-
     public boolean isDebug() {
         return this.debug;
+    }
+
+    public void setDebug(final boolean debug) {
+        this.debug = debug;
     }
 }

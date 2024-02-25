@@ -5,14 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f57eb4c-9a7f-418c-afff-b4129e5ac4bd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/LogbackConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfigManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfigManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/properties/ServerProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/properties/ServerProperties.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/properties/StoreServerProperties.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/version/VersionManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/version/VersionManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/logback.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/sub/log/LogConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/sub/log/LogConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/logger/Logger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/logger/Logger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/logger/impl/MainLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/logger/impl/MainLogger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/ServerProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/ServerProcess.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

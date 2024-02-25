@@ -1,5 +1,7 @@
 package me.indian.bds;
 
+import java.util.List;
+import java.util.Scanner;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
@@ -12,9 +14,6 @@ import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ScannerUtil;
 import me.indian.bds.util.system.SystemUtil;
-
-import java.util.List;
-import java.util.Scanner;
 
 public class Settings {
 
@@ -89,10 +88,22 @@ public class Settings {
                     this.logger.info("&a./&e =&b " + appDir);
                 },
                 appDir,
-                (input) -> this.logger.info("Ścieżke do plików servera ustawiona na: " + input)
+                (input) -> this.logger.info("Ścieżke do plików servera ustawiona na:&1 " + input)
         ).replaceAll("./", appDir));
 
         this.appConfig.save();
+        this.logger.print();
+
+        this.appConfig.setLogFile(
+                scannerUtil.addBooleanQuestion(
+                        (defaultValue) -> {
+                            this.logger.info("&n&lCzy tworzyć pliki z logami servera?&r (Domyślnie: " + defaultValue + ")" + this.enter);
+                            this.logger.info("Zostanie w pełni zastosowane dopiero przy następnym uruchomieniu aplikacji");
+                        },
+                        true,
+                        (input) -> this.logger.info("Tworzenie logów servera ustawione na:&1 " + input)
+                )
+        );
         this.logger.print();
 
         if (!this.versionManagerConfig.isLoaded()) this.versionQuestion(scannerUtil);
