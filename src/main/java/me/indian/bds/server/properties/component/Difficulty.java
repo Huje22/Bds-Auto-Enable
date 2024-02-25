@@ -1,4 +1,4 @@
-package me.indian.bds.server.properties;
+package me.indian.bds.server.properties.component;
 
 public enum Difficulty {
 

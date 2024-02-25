@@ -1,7 +1,5 @@
 package me.indian.bds.util;
 
-import me.indian.bds.server.properties.Gamemode;
-
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.net.DatagramPacket;
@@ -10,6 +8,7 @@ import java.net.InetAddress;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.Random;
+import me.indian.bds.server.properties.component.Gamemode;
 
 /**
  * Kod zaczerpnięty z

@@ -5,14 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f57eb4c-9a7f-418c-afff-b4129e5ac4bd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/allowlist/AllowlistManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/allowlist/component/AllowlistPlayer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/Settings.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/sub/log/LogConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/sub/log/LogConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/logger/Logger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/logger/Logger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/logger/impl/MainLogger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/logger/impl/MainLogger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/ServerProcess.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/ServerProcess.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,8 +23,8 @@
       <list>
         <option value="Enum" />
         <option value="Interface" />
-        <option value="Record" />
         <option value="Class" />
+        <option value="Record" />
       </list>
     </option>
   </component>
@@ -90,11 +86,11 @@
       <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\BDS-Auto-Enable\extensions\DiscordExtension" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\BDS-Auto-Enable\extensions" />
       <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\BDS-Auto-Enable\extensions\XboxBroadcastExtension" />
       <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\BDS-Auto-Enable\extensions\DiscordExtension" />
       <recent name="C:\Users\g.IT\IdeaProjects\BDS-Auto-Enable\BDS-Auto-Enable\extensions\RestWebsite" />
       <recent name="C:\Users\g.IT\IdeaProjects\Bds-autorestart\BDS-Auto-Enable" />
-      <recent name="C:\Users\g.IT\IdeaProjects\Bds-autorestart\test\worlds\Bedrock level" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
       <recent name="me.indian.bds.command.defaults" />
@@ -108,7 +104,7 @@
       <option name="MAIN_CLASS_NAME" value="me.indian.bds.BDSAutoEnable" />
       <module name="BDS-Auto-Enable" />
       <option name="PROGRAM_PARAMETERS" value="-Dfile.encoding=UTF-8" />
-      <option name="VM_PARAMETERS" value="-Xmx1g" />
+      <option name="VM_PARAMETERS" value="-Xmx3g" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="me.indian.bds.util.system.*" />
