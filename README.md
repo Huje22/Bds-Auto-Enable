@@ -9,7 +9,7 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 # Uwaga
 * Wspieramy tylko tą ___[wersje](https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/me/indian/bds/config/sub/version/VersionManagerConfig.java#L17)___
 * Wymaga Javy 17 bądź wyższej
-* Program wymaga przynajmniej `1GB` RAM do działania z rozserzeniami jak `DiscordExtension`
+* Program wymaga przynajmniej `1GB` RAM do działania z rozszerzeniami jak `DiscordExtension`
 * Program wspiera użycie [**WINE**](https://github.com/wine-mirror/wine)
 * Program wspiera proste
   rozszerzenia: [ExampleExtension](https://github.com/Huje22/BDS-AE-Extensions/tree/master/ExampleExtension)
