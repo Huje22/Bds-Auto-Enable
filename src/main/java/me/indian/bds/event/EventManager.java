@@ -5,11 +5,9 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
@@ -124,17 +122,16 @@ public class EventManager {
         });
     }
 
+//    public EventResponse callEventWithResponse(final ResponsibleEvent event) throws ExecutionException, InterruptedException {
+//        return CompletableFuture.supplyAsync(() -> this.getEventResponse(event), this.listenerService)
+//                .exceptionally(ex -> {
+//                    ex.printStackTrace();
+//                    return null;
+//                }).get();
+//    }
+
     public EventResponse callEventWithResponse(final ResponsibleEvent event) {
-        final Callable<EventResponse> callable = () -> this.getEventResponse(event);
-        final Future<EventResponse> future = this.listenerService.submit(callable);
-
-        try {
-            return future.get();
-        } catch (final InterruptedException | ExecutionException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return CompletableFuture.supplyAsync(() -> this.getEventResponse(event), this.listenerService).join();
     }
 
     public EventResponse getEventResponse(final ResponsibleEvent event) {
