@@ -1,5 +1,5 @@
 package me.indian.bds.server.manager;
-
+//TODO: Zmienić troche package 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
