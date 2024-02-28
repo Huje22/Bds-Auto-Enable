@@ -12,8 +12,8 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.ServerStats;
-import me.indian.bds.server.manager.stats.StatsManager;
+import me.indian.bds.server.stats.ServerStats;
+import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.watchdog.WatchDog;
 

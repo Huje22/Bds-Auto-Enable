@@ -15,9 +15,9 @@ import me.indian.bds.exception.MissingDllException;
 import me.indian.bds.extension.ExtensionManager;
 import me.indian.bds.logger.impl.MainLogger;
 import me.indian.bds.metrics.AppMetrics;
+import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.allowlist.AllowlistManager;
-import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
@@ -34,7 +34,6 @@ import me.indian.bds.watchdog.WatchDog;
 
 public class BDSAutoEnable {
 
-    //TODO: Zrobić własny sheduler 
     private final Thread mainThread;
     private final long startTime;
     private final String projectVersion, runDate;

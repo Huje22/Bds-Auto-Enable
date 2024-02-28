@@ -1,4 +1,4 @@
-package me.indian.bds.server;
+package me.indian.bds.server.stats;
 
 public class ServerStats {
 

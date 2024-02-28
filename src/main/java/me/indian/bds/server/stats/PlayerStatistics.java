@@ -1,4 +1,4 @@
-package me.indian.bds.server.manager.stats;
+package me.indian.bds.server.stats;
 
 import java.io.Serializable;
 

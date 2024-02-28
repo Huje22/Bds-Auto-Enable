@@ -4,7 +4,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.event.player.PlayerMuteEvent;
 import me.indian.bds.event.player.PlayerUnMuteEvent;
-import me.indian.bds.server.manager.ServerManager;
+import me.indian.bds.server.ServerManager;
 
 public class MuteCommand extends Command {
 

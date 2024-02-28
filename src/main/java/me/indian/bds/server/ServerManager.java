@@ -1,5 +1,5 @@
-package me.indian.bds.server.manager;
-//TODO: Zmienić troche package 
+package me.indian.bds.server;
+
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,8 +24,7 @@ import me.indian.bds.event.player.response.PlayerChatResponse;
 import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.manager.stats.StatsManager;
+import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;

@@ -1,4 +1,4 @@
-package me.indian.bds.server.manager.stats;
+package me.indian.bds.server.stats;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -16,9 +16,8 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.ServerStats;
-import me.indian.bds.server.manager.ServerManager;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MathUtil;
