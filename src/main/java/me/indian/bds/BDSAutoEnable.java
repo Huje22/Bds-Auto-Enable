@@ -34,6 +34,7 @@ import me.indian.bds.watchdog.WatchDog;
 
 public class BDSAutoEnable {
 
+    //TODO: Zrobić własny sheduler 
     private final Thread mainThread;
     private final long startTime;
     private final String projectVersion, runDate;
