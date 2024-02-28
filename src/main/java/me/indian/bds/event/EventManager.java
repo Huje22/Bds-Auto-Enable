@@ -139,6 +139,7 @@ public class EventManager {
         this.logger.debug("Wywołano&6 " + event.getEventName());
 
         if (event instanceof final PlayerChatEvent playerChatEvent) {
+           // użyć tu CompletableFuture
             this.listeners.forEach((listener, ex) -> {
                 final PlayerChatResponse chatResponse = listener.onPlayerChat(playerChatEvent);
                 if (chatResponse != null) {
