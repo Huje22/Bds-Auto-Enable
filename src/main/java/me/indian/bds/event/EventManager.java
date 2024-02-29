@@ -136,11 +136,15 @@ public class EventManager {
 
     public EventResponse getEventResponse(final ResponsibleEvent event) {
         this.listeners = new HashMap<>(this.listenerMap);
+      
+        Extension extension;
+        try{
         this.logger.debug("Wywołano&6 " + event.getEventName());
 
         if (event instanceof final PlayerChatEvent playerChatEvent) {
            // użyć tu CompletableFuture
             this.listeners.forEach((listener, ex) -> {
+                extension= ex;
                 final PlayerChatResponse chatResponse = listener.onPlayerChat(playerChatEvent);
                 if (chatResponse != null) {
                     this.chatResponse.set(chatResponse);
@@ -150,12 +154,16 @@ public class EventManager {
             return this.chatResponse.get();
         } else if (event instanceof final ServerConsoleCommandEvent serverConsoleCommandEvent) {
             this.listeners.forEach((listener, ex) -> {
+                extension= ex;
                 final ServerConsoleCommandResponse commandResponse = listener.onServerConsoleCommand(serverConsoleCommandEvent);
                 if (commandResponse != null) {
                     commandResponse.getActionToDo().run();
                 }
             });
             return null;
+        }
+        } catch (final Exception exception){
+//TODO: Wypidz jakie rozszerzenie ma problem 
         }
 
         this.logger.error("Wykonano nieznany event&6 " + event.getEventName());
