@@ -25,7 +25,7 @@ public abstract class Logger {
         this.initializeLogFile();
     }
 
-    public void updatePrefix() {
+    protected void updatePrefix() {
         final String logStateColor = this.logState.getColorCode();
         this.prefix = "&a[" + DateUtil.getTimeHMSMS() + "] &e[&7" +
                 Thread.currentThread().getName() + "&r&e]&r "
