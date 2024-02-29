@@ -151,7 +151,6 @@ public class EventManager {
         final AtomicReference<Extension> extension = new AtomicReference<>();
         try {
             if (event instanceof final PlayerChatEvent playerChatEvent) {
-                // użyć tu CompletableFuture
                 this.listeners.forEach((listener, ex) -> {
                     extension.set(ex);
                     final PlayerChatResponse chatResponse = listener.onPlayerChat(playerChatEvent);
