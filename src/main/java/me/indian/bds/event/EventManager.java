@@ -72,53 +72,64 @@ public class EventManager {
     public void callEvent(final Event event) {
         this.listenerService.execute(() -> {
             this.listeners = new HashMap<>(this.listenerMap);
-            //Player
-            if (event instanceof final PlayerJoinEvent playerJoinEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onPlayerJoin(playerJoinEvent));
-            } else if (event instanceof final PlayerSpawnEvent playerSpawnEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onPlayerSpawn(playerSpawnEvent));
-            } else if (event instanceof final PlayerQuitEvent playerQuitEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onPlayerQuit(playerQuitEvent));
-            } else if (event instanceof final PlayerDeathEvent playerDeathEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onPlayerDeath(playerDeathEvent));
-            } else if (event instanceof final PlayerMuteEvent playerMuteEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onPlayerMute(playerMuteEvent));
-            } else if (event instanceof final PlayerUnMuteEvent playerUnMuteEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onPlayerUnMute(playerUnMuteEvent));
-            }
 
-            //Server
-            else if (event instanceof final ServerStartEvent serverStartEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onServerStart(serverStartEvent));
-            } else if (event instanceof final ServerRestartEvent serverRestartEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onServerRestart(serverRestartEvent));
-            } else if (event instanceof final ServerClosedEvent serverClosedEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onServerClose(serverClosedEvent));
-            } else if (event instanceof final TPSChangeEvent tpsChangeEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onTpsChange(tpsChangeEvent));
-            } else if (event instanceof final BackupDoneEvent backupDoneEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onBackupDone(backupDoneEvent));
-            } else if (event instanceof final BackupFailEvent backupFailEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onBackupFail(backupFailEvent));
-            } else if (event instanceof final ServerUpdatingEvent serverUpdatingEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onServerUpdating(serverUpdatingEvent));
-            } else if (event instanceof final ServerUpdatedEvent serverUpdatedEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onServerUpdated(serverUpdatedEvent));
-            } else if (event instanceof final PlayerDimensionChangeEvent playerDimensionChangeEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onPlayerDimensionChange(playerDimensionChangeEvent));
-            } else if (event instanceof final PlayerBlockBreakEvent playerBlockBreakEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onPlayerBreakBlock(playerBlockBreakEvent));
-            } else if (event instanceof final PlayerBlockPlaceEvent playerBlockPlaceEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onPlayerPlaceBlock(playerBlockPlaceEvent));
-            } else if (event instanceof final ExtensionEnableEvent extensionEnableEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onExtensionEnable(extensionEnableEvent));
-            } else if (event instanceof final ExtensionDisableEvent extensionDisableEvent) {
-                this.listeners.forEach((listener, ex) -> listener.onExtensionDisable(extensionDisableEvent));
-            } else {
-                this.logger.error("Wywołano nieznany event&6 " + event.getEventName());
-                return;
+            final AtomicReference<Extension> extension = new AtomicReference<>();
+
+            try {
+                //Player
+                this.listeners.forEach((listener, ex) -> {
+                    extension.set(ex);
+                    if (event instanceof final PlayerJoinEvent playerJoinEvent) {
+                        listener.onPlayerJoin(playerJoinEvent);
+                    } else if (event instanceof final PlayerSpawnEvent playerSpawnEvent) {
+                        listener.onPlayerSpawn(playerSpawnEvent);
+                    } else if (event instanceof final PlayerQuitEvent playerQuitEvent) {
+                        listener.onPlayerQuit(playerQuitEvent);
+                    } else if (event instanceof final PlayerDeathEvent playerDeathEvent) {
+                        listener.onPlayerDeath(playerDeathEvent);
+                    } else if (event instanceof final PlayerMuteEvent playerMuteEvent) {
+                        listener.onPlayerMute(playerMuteEvent);
+                    } else if (event instanceof final PlayerUnMuteEvent playerUnMuteEvent) {
+                        listener.onPlayerUnMute(playerUnMuteEvent);
+                    }
+
+                    //Server
+                    else if (event instanceof final ServerStartEvent serverStartEvent) {
+                        listener.onServerStart(serverStartEvent);
+                    } else if (event instanceof final ServerRestartEvent serverRestartEvent) {
+                        listener.onServerRestart(serverRestartEvent);
+                    } else if (event instanceof final ServerClosedEvent serverClosedEvent) {
+                        listener.onServerClose(serverClosedEvent);
+                    } else if (event instanceof final TPSChangeEvent tpsChangeEvent) {
+                        listener.onTpsChange(tpsChangeEvent);
+                    } else if (event instanceof final BackupDoneEvent backupDoneEvent) {
+                        listener.onBackupDone(backupDoneEvent);
+                    } else if (event instanceof final BackupFailEvent backupFailEvent) {
+                        listener.onBackupFail(backupFailEvent);
+                    } else if (event instanceof final ServerUpdatingEvent serverUpdatingEvent) {
+                        listener.onServerUpdating(serverUpdatingEvent);
+                    } else if (event instanceof final ServerUpdatedEvent serverUpdatedEvent) {
+                        listener.onServerUpdated(serverUpdatedEvent);
+                    } else if (event instanceof final PlayerDimensionChangeEvent playerDimensionChangeEvent) {
+                        listener.onPlayerDimensionChange(playerDimensionChangeEvent);
+                    } else if (event instanceof final PlayerBlockBreakEvent playerBlockBreakEvent) {
+                        listener.onPlayerBreakBlock(playerBlockBreakEvent);
+                    } else if (event instanceof final PlayerBlockPlaceEvent playerBlockPlaceEvent) {
+                        listener.onPlayerPlaceBlock(playerBlockPlaceEvent);
+                    } else if (event instanceof final ExtensionEnableEvent extensionEnableEvent) {
+                        listener.onExtensionEnable(extensionEnableEvent);
+                    } else if (event instanceof final ExtensionDisableEvent extensionDisableEvent) {
+                        listener.onExtensionDisable(extensionDisableEvent);
+                    } else {
+                        this.logger.error("Wywołano nieznany event&6 " + event.getEventName());
+                        return;
+                    }
+                });
+
+                this.logger.debug("Wywołano&6 " + event.getEventName());
+            } catch (final Exception exception) {
+                this.logger.critical("&cNie można wykonać eventu&b " + event.getEventName() + "&c dla rozszerzenia&b " + extension.get().getName(), exception);
             }
-            this.logger.debug("Wywołano&6 " + event.getEventName());
         });
     }
 
@@ -136,34 +147,35 @@ public class EventManager {
 
     public EventResponse getEventResponse(final ResponsibleEvent event) {
         this.listeners = new HashMap<>(this.listenerMap);
-      
-        Extension extension;
-        try{
-        this.logger.debug("Wywołano&6 " + event.getEventName());
 
-        if (event instanceof final PlayerChatEvent playerChatEvent) {
-           // użyć tu CompletableFuture
-            this.listeners.forEach((listener, ex) -> {
-                extension= ex;
-                final PlayerChatResponse chatResponse = listener.onPlayerChat(playerChatEvent);
-                if (chatResponse != null) {
-                    this.chatResponse.set(chatResponse);
-                }
-            });
+        final AtomicReference<Extension> extension = new AtomicReference<>();
+        try {
+            if (event instanceof final PlayerChatEvent playerChatEvent) {
+                // użyć tu CompletableFuture
+                this.listeners.forEach((listener, ex) -> {
+                    extension.set(ex);
+                    final PlayerChatResponse chatResponse = listener.onPlayerChat(playerChatEvent);
+                    if (chatResponse != null) {
+                        this.chatResponse.set(chatResponse);
+                    }
+                });
 
-            return this.chatResponse.get();
-        } else if (event instanceof final ServerConsoleCommandEvent serverConsoleCommandEvent) {
-            this.listeners.forEach((listener, ex) -> {
-                extension= ex;
-                final ServerConsoleCommandResponse commandResponse = listener.onServerConsoleCommand(serverConsoleCommandEvent);
-                if (commandResponse != null) {
-                    commandResponse.getActionToDo().run();
-                }
-            });
-            return null;
-        }
-        } catch (final Exception exception){
-//TODO: Wypidz jakie rozszerzenie ma problem 
+                this.logger.debug("Wywołano&6 " + event.getEventName());
+                return this.chatResponse.get();
+            } else if (event instanceof final ServerConsoleCommandEvent serverConsoleCommandEvent) {
+                this.listeners.forEach((listener, ex) -> {
+                    extension.set(ex);
+                    final ServerConsoleCommandResponse commandResponse = listener.onServerConsoleCommand(serverConsoleCommandEvent);
+                    if (commandResponse != null) {
+                        commandResponse.getActionToDo().run();
+                    }
+                });
+
+                this.logger.debug("Wywołano&6 " + event.getEventName());
+                return null;
+            }
+        } catch (final Exception exception) {
+            this.logger.critical("&cNie można wykonać eventu&b " + event.getEventName() + "&c dla rozszerzenia&b " + extension.get().getName(), exception);
         }
 
         this.logger.error("Wykonano nieznany event&6 " + event.getEventName());
