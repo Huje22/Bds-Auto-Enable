@@ -33,7 +33,7 @@ import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
 
 public class BDSAutoEnable {
-
+//TODO: Dodać info co 5min "Ten server używa BDS-Auto-Enable"
     private final Thread mainThread;
     private final long startTime;
     private final String projectVersion, runDate;
