@@ -94,6 +94,7 @@ public class PackUpdater {
             return;
         }
 
+        this.logger.info("&aSprawdzanie najnowszej wersji paczki...");
         if (Arrays.toString(this.getPackLatestVersion()).equals(Arrays.toString(mainPack.version()))) {
             this.logger.info("&aPosiadasz najnowszą wersje paczki");
         } else {
