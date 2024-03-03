@@ -5,7 +5,10 @@ import java.lang.management.ManagementFactory;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
@@ -33,7 +36,7 @@ import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
 
 public class BDSAutoEnable {
-//TODO: Dodać info co 5min "Ten server używa BDS-Auto-Enable"
+
     private final Thread mainThread;
     private final long startTime;
     private final String projectVersion, runDate;
@@ -112,6 +115,7 @@ public class BDSAutoEnable {
 
         this.extensionManager.enableExtensions();
         this.serverProcess.startProcess();
+        this.runAutoPromotion();
     }
 
     private void isJavaVersionLessThan17() {
@@ -219,6 +223,18 @@ public class BDSAutoEnable {
                 throw new MissingDllException("Musisz pobrać pakiet redystrybucyjny programu Visual C++ (x64 i x86)");
             }
         }
+    }
+
+    private void runAutoPromotion() {
+        final TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                BDSAutoEnable.this.serverProcess.tellrawToAll("&bTen server używa &aBDS-Auto-Enable&3 https://github.com/Huje22/Bds-Auto-Enabl");
+            }
+        };
+
+        new Timer("AutoPromotion", true)
+                .scheduleAtFixedRate(timerTask, 0, MathUtil.minutesTo(5, TimeUnit.MILLISECONDS));
     }
 
     public long getStartTime() {
