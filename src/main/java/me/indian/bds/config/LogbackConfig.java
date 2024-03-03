@@ -5,7 +5,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import me.indian.bds.util.DefaultsVariables;
 
-public class LogbackConfig {
+public final class LogbackConfig {
 
     private static boolean INITED = false;
 
