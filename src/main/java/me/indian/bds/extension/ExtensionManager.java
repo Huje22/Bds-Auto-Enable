@@ -82,9 +82,9 @@ public class ExtensionManager {
             }
 
             try {
-                final Class<? extends Extension> pluginClass = javaClass.asSubclass(Extension.class);
+                final Class<? extends Extension> extensionClass = javaClass.asSubclass(Extension.class);
 
-                extension = pluginClass.getDeclaredConstructor().newInstance();
+                extension = extensionClass.getDeclaredConstructor().newInstance();
 
                 try {
                     extension.init(this.bdsAutoEnable, description, this);
