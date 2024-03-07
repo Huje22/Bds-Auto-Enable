@@ -64,6 +64,10 @@ public class ServerProcess {
         this.fileName = DefaultsVariables.getDefaultFileName();
     }
 
+    /**
+     * Metoda która patrzy czy proces o nazwie pliku servera jest już aktywny
+     * @return Czy proces servera jest aktywny
+     */
     public boolean checkProcesRunning() {
         try {
             String command = "";
@@ -166,7 +170,6 @@ public class ServerProcess {
      * Metoda dzięki której konsola servera BDS wypisywana jest do konsoli aplikacji
      * Metody wykonywane są z consoleOutputService aby nie obciążać jednego wątku wykonywaniem tylu akcji na raz
      */
-
     private void readConsoleOutput() {
         try (final Scanner consoleOutput = new Scanner(this.process.getInputStream())) {
             try {
@@ -196,9 +199,9 @@ public class ServerProcess {
     }
 
     /**
-     * Metoda do wysyłania poleceń do konsoli servera BDS
+     *  Metoda do wysyłania poleceń do konsoli servera BDS
+     * @param command Komenda do serveru
      */
-
     public void sendToConsole(final String command) {
         if (command.isEmpty()) return;
         try {
@@ -210,7 +213,7 @@ public class ServerProcess {
             final OutputStream outputStream = this.process.getOutputStream();
 
             if (outputStream == null) {
-                this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ, OutputStream servera jest&c nullem&r!");
+                this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ,&b OutputStream&r servera jest&c nullem&r!");
                 return;
             }
 
@@ -229,8 +232,9 @@ public class ServerProcess {
 
     /**
      * Metoda do wysyłania poleceń do konsoli servera BDS i uzyskania ostatniej linij z konsoli , może być opóźnione
+     * @param command Komenda do serveru
+     * @return ostatnia linia z konsoli
      */
-
     public String commandAndResponse(final String command) {
         final Thread thread = Thread.currentThread();
 
@@ -292,7 +296,6 @@ public class ServerProcess {
     /**
      * Metoda do zatrzymania bezpiecznie servera wywoływana przez shutdown hook
      */
-
     public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
         this.setCanRun(false);
@@ -360,9 +363,8 @@ public class ServerProcess {
     }
 
     /**
-     *  Jeśli ktoś użył by 'this.process.getInputStream()' może to popsuć całą konsole
+     *  Jeśli ktoś użył by 'this.process.getInputStream()' to może popsuć całą konsole
      */
-
     public long getPID() {
         return this.pid;
     }
