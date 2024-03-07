@@ -5,8 +5,12 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f57eb4c-9a7f-418c-afff-b4129e5ac4bd" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/shutdown/UncaughtExceptionHandler.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/EventManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/EventManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/BDS-Auto-Enable/config/config.yml" beforeDir="false" afterPath="$PROJECT_DIR$/BDS-Auto-Enable/config/config.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/ShutdownHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/shutdown/ShutdownHandler.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,8 +25,8 @@
       <list>
         <option value="Enum" />
         <option value="Interface" />
-        <option value="Class" />
         <option value="Record" />
+        <option value="Class" />
       </list>
     </option>
   </component>

@@ -43,6 +43,11 @@ public class AppConfig extends OkaeriConfig {
     private String filesPath = "./";
 
     @Comment({""})
+    @Comment({"Czy zamknąć aplikacje jeśli wystąpi niezłapany wyjątek?"})
+    @CustomKey("CloseOnException")
+    private boolean closeOnException = true;
+
+    @Comment({""})
     @Comment({"Nazwy graczy którzy mogą wykonywać polecenia typu !format"})
     @CustomKey("Moderators")
     private List<String> moderators = List.of("JndjanBartonka");
@@ -87,6 +92,10 @@ public class AppConfig extends OkaeriConfig {
 
     public void setLogFile(final boolean logFile) {
         this.logFile = logFile;
+    }
+
+    public boolean isCloseOnException() {
+        return this.closeOnException;
     }
 
     public String getFilesPath() {

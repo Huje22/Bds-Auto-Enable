@@ -22,6 +22,7 @@ import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.allowlist.AllowlistManager;
 import me.indian.bds.server.properties.ServerProperties;
+import me.indian.bds.shutdown.ShutdownHandler;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.FileUtil;
@@ -243,6 +244,10 @@ public class BDSAutoEnable {
 
     public boolean isMainThread() {
         return Thread.currentThread() == this.mainThread;
+    }
+
+    public boolean isMainThread(final Thread thread) {
+        return thread == this.mainThread;
     }
 
     public String getAppUUID() {
