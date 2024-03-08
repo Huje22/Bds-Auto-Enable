@@ -17,6 +17,7 @@ import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
 import me.indian.bds.event.server.ServerStartEvent;
+import me.indian.bds.event.server.ServerUncaughtExceptionEvent;
 import me.indian.bds.event.server.ServerUpdatedEvent;
 import me.indian.bds.event.server.ServerUpdatingEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
@@ -99,6 +100,9 @@ public abstract class Listener {
     }
 
     public void onTpsChange(final TPSChangeEvent event) {
+    }
+
+    public void onServerUncaughtException(final ServerUncaughtExceptionEvent serverUncaughtExceptionEvent) {
     }
 
     public void onBackupDone(final BackupDoneEvent event) {

@@ -27,6 +27,7 @@ import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
 import me.indian.bds.event.server.ServerStartEvent;
+import me.indian.bds.event.server.ServerUncaughtExceptionEvent;
 import me.indian.bds.event.server.ServerUpdatedEvent;
 import me.indian.bds.event.server.ServerUpdatingEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
@@ -91,6 +92,12 @@ public class EventManager {
                         listener.onPlayerMute(playerMuteEvent);
                     } else if (event instanceof final PlayerUnMuteEvent playerUnMuteEvent) {
                         listener.onPlayerUnMute(playerUnMuteEvent);
+                    } else if (event instanceof final PlayerDimensionChangeEvent playerDimensionChangeEvent) {
+                        listener.onPlayerDimensionChange(playerDimensionChangeEvent);
+                    } else if (event instanceof final PlayerBlockBreakEvent playerBlockBreakEvent) {
+                        listener.onPlayerBreakBlock(playerBlockBreakEvent);
+                    } else if (event instanceof final PlayerBlockPlaceEvent playerBlockPlaceEvent) {
+                        listener.onPlayerPlaceBlock(playerBlockPlaceEvent);
                     }
 
                     //Server
@@ -110,13 +117,12 @@ public class EventManager {
                         listener.onServerUpdating(serverUpdatingEvent);
                     } else if (event instanceof final ServerUpdatedEvent serverUpdatedEvent) {
                         listener.onServerUpdated(serverUpdatedEvent);
-                    } else if (event instanceof final PlayerDimensionChangeEvent playerDimensionChangeEvent) {
-                        listener.onPlayerDimensionChange(playerDimensionChangeEvent);
-                    } else if (event instanceof final PlayerBlockBreakEvent playerBlockBreakEvent) {
-                        listener.onPlayerBreakBlock(playerBlockBreakEvent);
-                    } else if (event instanceof final PlayerBlockPlaceEvent playerBlockPlaceEvent) {
-                        listener.onPlayerPlaceBlock(playerBlockPlaceEvent);
-                    } else if (event instanceof final ExtensionEnableEvent extensionEnableEvent) {
+                    } else if (event instanceof final ServerUncaughtExceptionEvent serverUncaughtExceptionEvent) {
+                        listener.onServerUncaughtException(serverUncaughtExceptionEvent);
+                    }
+
+                    //Extension
+                    else if (event instanceof final ExtensionEnableEvent extensionEnableEvent) {
                         listener.onExtensionEnable(extensionEnableEvent);
                     } else if (event instanceof final ExtensionDisableEvent extensionDisableEvent) {
                         listener.onExtensionDisable(extensionDisableEvent);

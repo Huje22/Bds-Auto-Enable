@@ -2,6 +2,7 @@ package me.indian.bds.shutdown;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfig;
+import me.indian.bds.event.server.ServerUncaughtExceptionEvent;
 import me.indian.bds.logger.Logger;
 
 public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
@@ -23,6 +24,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
         } else {
             this.logger.critical("Wystąpił niezłapany wyjątek w wątku&b " + thread.getName(), throwable);
         }
+        this.bdsAutoEnable.getEventManager().callEvent(new ServerUncaughtExceptionEvent(thread, throwable));
 
         if (this.appConfig.isCloseOnException()) {
             System.exit(0);
