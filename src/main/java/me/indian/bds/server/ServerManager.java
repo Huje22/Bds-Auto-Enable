@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,6 +41,7 @@ public class ServerManager {
     private final StatsManager statsManager;
     private final ReentrantLock chatLock;
     private final EventManager eventManager;
+    private final Lock playerConnectLock;
     private ServerProcess serverProcess;
     private VersionManager versionManager;
     private double lastTPS;
@@ -56,6 +58,7 @@ public class ServerManager {
         this.statsManager = new StatsManager(this.bdsAutoEnable, this);
         this.chatLock = new ReentrantLock();
         this.eventManager = this.bdsAutoEnable.getEventManager();
+        this.playerConnectLock = new ReentrantLock();
         this.lastTPS = 20;
     }
 
@@ -90,20 +93,28 @@ public class ServerManager {
     }
 
     private void playerConnect(final String logEntry) {
-        final Pattern pattern = Pattern.compile("Player connected: ([^,]+), xuid: (\\d+)");
-        final Matcher matcher = pattern.matcher(logEntry);
+        try {
+            this.playerConnectLock.lock();
 
-        if (matcher.find()) {
-            final String playerName = matcher.group(1);
-            final long xuid = Long.parseLong(matcher.group(2));
-            final String oldPlayerName = this.statsManager.getNameByXuid(xuid);
+            final Pattern pattern = Pattern.compile("Player connected: ([^,]+), xuid: (\\d+)");
+            final Matcher matcher = pattern.matcher(logEntry);
 
-            if (oldPlayerName != null && !oldPlayerName.equals(playerName)) {
-                //Powinno to działać tak, że gdy gracz zmieni swoją nazwę, nadal zachowuje swoje statystyki
-                // ponieważ jest ustawiany pod nową nazwę za pomocą weryfikacji jego XUID. Lecz nie było to TESTOWANE
-                this.statsManager.setNewName(xuid, playerName);
+            if (matcher.find()) {
+                final String playerName = matcher.group(1);
+                final long xuid = Long.parseLong(matcher.group(2));
+                final String oldPlayerName = this.statsManager.getNameByXuid(xuid);
+
+                if (oldPlayerName != null && !oldPlayerName.equals(playerName)) {
+                    //Powinno to działać tak, że gdy gracz zmieni swoją nazwę, nadal zachowuje swoje statystyki
+                    // ponieważ jest ustawiany pod nową nazwę za pomocą weryfikacji jego XUID. Lecz nie było to TESTOWANE
+                    this.statsManager.setNewName(xuid, playerName);
+                }
+                this.statsManager.setXuid(playerName, xuid);
             }
-            this.statsManager.setXuid(playerName, xuid);
+        } catch (final Exception exception) {
+            this.logger.error("&cNie udało się obsłużyć dołączenia gracza z logu&b " + logEntry, exception);
+        } finally {
+            this.playerConnectLock.unlock();
         }
     }
 

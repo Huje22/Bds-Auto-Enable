@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerManager;
@@ -33,6 +35,7 @@ public class StatsManager {
     private final ServerManager serverManager;
     private final ServerStats serverStats;
     private final Gson gson;
+    private final Lock playerCreateLock;
     private boolean countingTime;
 
     public StatsManager(final BDSAutoEnable bdsAutoEnable, final ServerManager serverManager) {
@@ -52,6 +55,7 @@ public class StatsManager {
         this.serverManager = serverManager;
         this.serverStats = this.loadServerStats();
         this.gson = GsonUtil.getGson();
+        this.playerCreateLock = new ReentrantLock();
 
         this.startTasks();
     }
@@ -100,10 +104,17 @@ public class StatsManager {
     }
 
     public void createNewPlayer(final String playerName) {
-        if (this.getPlayer(playerName) == null) {
-            this.playerStats.add(new PlayerStatistics(playerName,
-                    0, 0, 0, 0, 0, 0, 0));
-            this.logger.debug("Utworzono gracza:&b " + playerName);
+        try {
+            this.playerCreateLock.lock();
+            if (this.getPlayer(playerName) == null) {
+                this.playerStats.add(new PlayerStatistics(playerName,
+                        0, 0, 0, 0, 0, 0, 0));
+                this.logger.debug("Utworzono gracza:&b " + playerName);
+            }
+        } catch (final Exception exception) {
+            this.logger.error("&cNie udało się utworzyć gracza&b " + playerName, exception);
+        } finally {
+            this.playerCreateLock.unlock();
         }
     }
 
