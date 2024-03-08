@@ -112,7 +112,7 @@ public class ServerManager {
                 this.statsManager.setXuid(playerName, xuid);
             }
         } catch (final Exception exception) {
-            this.logger.error("&cNie udało się obsłużyć dołączenia gracza z logu&b " + logEntry, exception);
+            this.logger.error("&cNie udało się obsłużyć połączenia gracza z logu&b " + logEntry, exception);
         } finally {
             this.playerConnectLock.unlock();
         }
