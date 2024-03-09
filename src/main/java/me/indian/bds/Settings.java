@@ -199,6 +199,7 @@ public class Settings {
         ));
         this.logger.print();
 
+        //TODO: Patrzeć czy klient generuję chunki
         this.serverProperties.setServerBuildRadiusRatio(scannerUtil.addDoubleQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lUstaw Server Build Radius Ratio&r (Domyślnie&r to: " + defaultValue + ")" + this.enter);
