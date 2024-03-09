@@ -235,7 +235,7 @@ public class BDSAutoEnable {
         };
 
         new Timer("AutoPromotion", true)
-                .scheduleAtFixedRate(timerTask, 0, MathUtil.minutesTo(5, TimeUnit.MILLISECONDS));
+                .scheduleAtFixedRate(timerTask, 0, MathUtil.minutesTo(10, TimeUnit.MILLISECONDS));
     }
 
     public long getStartTime() {
