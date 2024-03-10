@@ -199,23 +199,24 @@ public class Settings {
         ));
         this.logger.print();
 
-        //TODO: Patrzeć czy klient generuję chunki
-        this.serverProperties.setServerBuildRadiusRatio(scannerUtil.addDoubleQuestion(
-                (defaultValue) -> {
-                    this.logger.info("&n&lUstaw Server Build Radius Ratio&r (Domyślnie&r to: " + defaultValue + ")" + this.enter);
-                    this.logger.info("Zakres to od&b 0.0 &rdo&b 1.0");
-                    this.logger.info("Jeśli&1 Disabled&r, serwer dynamicznie obliczy, ile z widoku gracza zostanie wygenerowane, pozostawiając resztę do zbudowania przez klienta.");
-                    this.logger.info("W przeciwnym razie, z nadpisanej proporcji, serwerowi zostanie powiedziane, ile z widoku gracza wygenerować, pomijając zdolności sprzętowe klienta.");
-                    this.logger.info("W skrócie:&e Server generuje czanki dla klienta&r dla słabych urządzeń bedzie to pomocne ale obciąży server ");
-                    this.logger.alert("Aby wyłączyć i zostawić generowanie czank całkowicie po stronie klienta wpisz&b -1.0&r a my ustawimy to dla ciebie na&b Disabled! .");
-                },
-                1.0,
-                (input) -> {
-                    this.logger.info("Server Build Radius Ratio ustawione na:&1 " + input);
-                    this.serverProperties.setClientSideChunkGeneration(true);
-                }
-        ));
-        this.logger.print();
+        if (this.serverProperties.isClientSideChunkGeneration()) {
+            this.serverProperties.setServerBuildRadiusRatio(scannerUtil.addDoubleQuestion(
+                    (defaultValue) -> {
+                        this.logger.info("&n&lUstaw Server Build Radius Ratio&r (Domyślnie&r to: " + defaultValue + ")" + this.enter);
+                        this.logger.info("Zakres to od&b 0.0 &rdo&b 1.0");
+                        this.logger.info("Jeśli&1 Disabled&r, serwer dynamicznie obliczy, ile z widoku gracza zostanie wygenerowane, pozostawiając resztę do zbudowania przez klienta.");
+                        this.logger.info("W przeciwnym razie, z nadpisanej proporcji, serwerowi zostanie powiedziane, ile z widoku gracza wygenerować, pomijając zdolności sprzętowe klienta.");
+                        this.logger.info("W skrócie:&e Server generuje czanki dla klienta&r dla słabych urządzeń bedzie to pomocne ale obciąży server ");
+                        this.logger.alert("Aby wyłączyć i zostawić generowanie czank całkowicie po stronie klienta wpisz&b -1.0&r a my ustawimy to dla ciebie na&b Disabled! .");
+                    },
+                    1.0,
+                    (input) -> {
+                        this.logger.info("Server Build Radius Ratio ustawione na:&1 " + input);
+                        this.serverProperties.setClientSideChunkGeneration(true);
+                    }
+            ));
+            this.logger.print();
+        }
 
         this.serverProperties.setViewDistance(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
