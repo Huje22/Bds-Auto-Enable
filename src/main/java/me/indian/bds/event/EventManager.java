@@ -13,6 +13,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerChatEvent;
+import me.indian.bds.event.player.PlayerCommandEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
@@ -98,6 +99,8 @@ public class EventManager {
                         listener.onPlayerBreakBlock(playerBlockBreakEvent);
                     } else if (event instanceof final PlayerBlockPlaceEvent playerBlockPlaceEvent) {
                         listener.onPlayerPlaceBlock(playerBlockPlaceEvent);
+                    } else if (event instanceof final PlayerCommandEvent playerCommandEvent) {
+                        listener.onPlayerCommandEvent(playerCommandEvent);
                     }
 
                     //Server

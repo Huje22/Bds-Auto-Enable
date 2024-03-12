@@ -3,7 +3,9 @@ package me.indian.bds.event;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerChatEvent;
+import me.indian.bds.event.player.PlayerCommandEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
+import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerMuteEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
@@ -12,9 +14,8 @@ import me.indian.bds.event.player.PlayerUnMuteEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
 import me.indian.bds.event.server.ExtensionDisableEvent;
 import me.indian.bds.event.server.ExtensionEnableEvent;
-import me.indian.bds.event.server.ServerConsoleCommandEvent;
-import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
+import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
 import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.ServerUncaughtExceptionEvent;
@@ -71,6 +72,9 @@ public abstract class Listener {
 
     }
 
+    public void onPlayerCommandEvent(final PlayerCommandEvent playerCommandEvent) {
+
+    }
 
     //Server
     @Nullable
