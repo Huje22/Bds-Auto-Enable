@@ -13,9 +13,11 @@ import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandSender;
 import me.indian.bds.event.EventManager;
+import me.indian.bds.event.Position;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerChatEvent;
+import me.indian.bds.event.player.PlayerCommandEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
@@ -196,15 +198,18 @@ public class ServerManager {
     }
 
     private void customCommand(final String logEntry) {
-        final String patternString = "PlayerCommand:([^,]+) Command:(.+) Op:(.+)";
+        final String patternString = "PlayerCommand:([^,]+) Command:(.+) Position:(.+) Op:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerCommand = matcher.group(1);
-            final String command = MessageUtil.fixMessage(matcher.group(2));
-            final boolean isOp = Boolean.parseBoolean(matcher.group(3));
+            final String command = matcher.group(2);
+            final String position = matcher.group(3);
+            final boolean isOp = Boolean.parseBoolean(matcher.group(4));
             this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command), isOp);
+            this.eventManager.callEvent(new PlayerCommandEvent(playerCommand, command,
+                    Position.parsePosition(position), isOp));
         }
     }
 
@@ -267,7 +272,8 @@ public class ServerManager {
             final String blockPosition = matcher.group(3);
 
             this.statsManager.addBlockBroken(playerBreakBlock, 1);
-            this.eventManager.callEvent(new PlayerBlockBreakEvent(playerBreakBlock, blockID, blockPosition));
+            this.eventManager.callEvent(new PlayerBlockBreakEvent(playerBreakBlock, blockID,
+                    Position.parsePosition(blockPosition)));
         }
     }
 
@@ -282,7 +288,8 @@ public class ServerManager {
             final String blockPosition = matcher.group(3);
 
             this.statsManager.addBlockPlaced(playerPlaceBlock, 1);
-            this.eventManager.callEvent(new PlayerBlockPlaceEvent(playerPlaceBlock, blockID, blockPosition));
+            this.eventManager.callEvent(new PlayerBlockPlaceEvent(playerPlaceBlock, blockID,
+                    Position.parsePosition(blockPosition)));
         }
     }
 

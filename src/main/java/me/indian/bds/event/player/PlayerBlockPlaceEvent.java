@@ -1,12 +1,14 @@
 package me.indian.bds.event.player;
 
 import me.indian.bds.event.Event;
+import me.indian.bds.event.Position;
 
 public class PlayerBlockPlaceEvent extends Event {
 
-    private final String playerName, blockID, blockPosition;
+    private final String playerName, blockID;
+    private final Position blockPosition;
 
-    public PlayerBlockPlaceEvent(final String playerName, final String blockID, final String blockPosition) {
+    public PlayerBlockPlaceEvent(final String playerName, final String blockID, final Position blockPosition) {
         this.playerName = playerName;
         this.blockID = blockID;
         this.blockPosition = blockPosition;
@@ -20,7 +22,7 @@ public class PlayerBlockPlaceEvent extends Event {
         return this.blockID;
     }
 
-    public String getBlockPosition() {
+    public Position getBlockPosition() {
         return this.blockPosition;
     }
 }
