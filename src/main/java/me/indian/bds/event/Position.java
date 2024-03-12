@@ -12,10 +12,9 @@ public record Position(double x, double y, double z) {
         final Matcher matcher = pattern.matcher(positionString);
 
         if (matcher.find()) {
-            final double x = Double.parseDouble(matcher.group(1));
-            final double y = Double.parseDouble(matcher.group(2));
-            final double z = Double.parseDouble(matcher.group(3));
-            return new Position(x, y, z);
+            return new Position(Double.parseDouble(matcher.group(1)),
+                    Double.parseDouble(matcher.group(2)),
+                    Double.parseDouble(matcher.group(3)));
         }
         return null;
     }
