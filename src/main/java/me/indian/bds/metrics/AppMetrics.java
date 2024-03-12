@@ -1,11 +1,10 @@
 package me.indian.bds.metrics;
 
+import java.util.HashMap;
+import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.extension.ExtensionManager;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class AppMetrics {
 
@@ -19,6 +18,7 @@ public class AppMetrics {
         this.metrics = new IMetrics(this.bdsAutoEnable);
         this.init();
     }
+    //Z jakiegoś powodu to nie działa, nie chce mi się nad tym siedzieć
 
     private void init() {
         for (final Map.Entry<String, Extension> entry : this.extensionManager.getExtensions().entrySet()) {

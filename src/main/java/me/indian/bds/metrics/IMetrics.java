@@ -4,15 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.MetricsConfig;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.ThreadUtil;
-
-import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -33,6 +24,14 @@ import java.util.TimerTask;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPOutputStream;
+import javax.net.ssl.HttpsURLConnection;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.MetricsConfig;
+import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.GsonUtil;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ThreadUtil;
 
 /**
  * bStats collects some data for plugin authors.
@@ -277,16 +276,29 @@ public class IMetrics {
      */
     private void submitData() {
         final JsonObject data = this.getServerData();
-        final JsonArray appData = new JsonArray();
+        final JsonArray extensionsData = new JsonArray();
         final JsonObject appObject = new JsonObject();
 
         appObject.addProperty("pluginName", "BDS-Auto-Enable");
         appObject.addProperty("pluginVersion", bdsAutoEnable.getProjectVersion());
         appObject.addProperty("author", "IndianBartonka");
 
-        appData.add(appObject);
+        extensionsData.add(appObject);
 
-        data.add("plugins", appData);
+        if (!bdsAutoEnable.getExtensionManager().getExtensions().isEmpty()) {
+            bdsAutoEnable.getExtensionManager().getExtensions().forEach((s, extension) -> {
+                final JsonObject extensionData = new JsonObject();
+
+                extensionData.addProperty("pluginName", extension.getName());
+                extensionData.addProperty("pluginVersion", extension.getVersion());
+                extensionData.addProperty("author", extension.getAuthor());
+
+                extensionsData.add(extensionData);
+            });
+        }
+
+        data.add("plugins", extensionsData);
+
 
         new ThreadUtil("Data sender Thread", () -> {
             try {
