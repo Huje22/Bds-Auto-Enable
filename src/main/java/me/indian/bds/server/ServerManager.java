@@ -164,17 +164,18 @@ public class ServerManager {
         try {
             this.chatLock.lock();
 
-            final String patternString = "PlayerChat:([^,]+) Message:(.+)";
+            final String patternString = "PlayerChat:([^,]+) Message:(.+) Position:(.+)";
             final Pattern pattern = Pattern.compile(patternString);
             final Matcher matcher = pattern.matcher(logEntry);
 
             if (matcher.find()) {
                 final String playerChat = matcher.group(1);
                 final String message = MessageUtil.fixMessage(matcher.group(2));
+                final Position position = Position.parsePosition(matcher.group(3));
                 final boolean appHandled = this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages();
                 final boolean muted = this.isMuted(playerChat);
 
-                final PlayerChatResponse response = (PlayerChatResponse) this.eventManager.callEventWithResponse(new PlayerChatEvent(playerChat, message, muted, appHandled));
+                final PlayerChatResponse response = (PlayerChatResponse) this.eventManager.callEventWithResponse(new PlayerChatEvent(playerChat, message, position, muted, appHandled));
 
                 if (appHandled) {
                     String format = playerChat + " »» " + message;
@@ -214,18 +215,19 @@ public class ServerManager {
     }
 
     private void deathMessage(final String logEntry) {
-        final String patternString = "PlayerDeath:([^,]+) DeathMessage:(.+) Killer:(.+) UsedName:(.+)";
+        final String patternString = "PlayerDeath:([^,]+) DeathMessage:(.+) Position(.+) Killer:(.+) UsedName:(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerDeath = matcher.group(1);
             final String deathMessage = MessageUtil.fixMessage(matcher.group(2));
-            final String killerName = matcher.group(3);
-            final String usedItemName = matcher.group(4);
+            final Position deathPosition = Position.parsePosition(matcher.group(3));
+            final String killerName = matcher.group(4);
+            final String usedItemName = matcher.group(5);
 
             this.statsManager.addDeaths(playerDeath, 1);
-            this.eventManager.callEvent(new PlayerDeathEvent(playerDeath, deathMessage, killerName, usedItemName));
+            this.eventManager.callEvent(new PlayerDeathEvent(playerDeath, deathMessage, deathPosition, killerName, usedItemName));
         }
     }
 
