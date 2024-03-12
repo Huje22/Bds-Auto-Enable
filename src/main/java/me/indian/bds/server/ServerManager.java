@@ -248,7 +248,7 @@ public class ServerManager {
     }
 
     private void dimensionChange(final String logEntry) {
-        final String patternString = "DimensionChangePlayer:([^,]+) From:(.+) To:(.+)";
+        final String patternString = "DimensionChangePlayer:([^,]+) FromDimension:(.+) ToDimension:(.+) FromPosition(.+) ToPosition(.+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
@@ -256,8 +256,10 @@ public class ServerManager {
             final String playerName = matcher.group(1);
             final String fromDimension = matcher.group(2);
             final String toDimension = matcher.group(3);
+            final Position fromPosition = Position.parsePosition(matcher.group(4));
+            final Position toPosition = Position.parsePosition(matcher.group(5));
 
-            this.eventManager.callEvent(new PlayerDimensionChangeEvent(playerName, fromDimension, toDimension));
+            this.eventManager.callEvent(new PlayerDimensionChangeEvent(playerName, fromDimension, toDimension, fromPosition, toPosition));
         }
     }
 
@@ -272,8 +274,7 @@ public class ServerManager {
             final String blockPosition = matcher.group(3);
 
             this.statsManager.addBlockBroken(playerBreakBlock, 1);
-            this.eventManager.callEvent(new PlayerBlockBreakEvent(playerBreakBlock, blockID,
-                    Position.parsePosition(blockPosition)));
+            this.eventManager.callEvent(new PlayerBlockBreakEvent(playerBreakBlock, blockID, Position.parsePosition(blockPosition)));
         }
     }
 
@@ -288,8 +289,7 @@ public class ServerManager {
             final String blockPosition = matcher.group(3);
 
             this.statsManager.addBlockPlaced(playerPlaceBlock, 1);
-            this.eventManager.callEvent(new PlayerBlockPlaceEvent(playerPlaceBlock, blockID,
-                    Position.parsePosition(blockPosition)));
+            this.eventManager.callEvent(new PlayerBlockPlaceEvent(playerPlaceBlock, blockID, Position.parsePosition(blockPosition)));
         }
     }
 
