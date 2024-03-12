@@ -18,7 +18,7 @@ public class VersionCommand extends Command {
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         final int protocol = this.bdsAutoEnable.getVersionManager().getLastKnownProtocol();
-        this.sendMessage("&aWersja minecraft:&b " + this.appConfigManager.getVersionManagerConfig().getVersion() + "&r (&a"+protocol+"&r)");
+        this.sendMessage("&aWersja minecraft:&b " + this.appConfigManager.getVersionManagerConfig().getVersion() + "&r (&d"+protocol+"&r)");
         this.sendMessage("&aWersja BDS-Auto-Enable:&b " + this.bdsAutoEnable.getProjectVersion());
         return true;
     }
