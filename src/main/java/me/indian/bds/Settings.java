@@ -181,7 +181,7 @@ public class Settings {
                     this.logger.info("&n&lLiczba wątków używana przez server&r ");
                     this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
                     this.logger.alert("Z doświadczenia nie polecam ustawiać na więcej niż 8, i także nie zbyt mało");
-                }, 8,
+                }, 8,//TODO: Dodać tu liczbę rdzeni logicznych brana z klasy Runtime
                 (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + input)
         ));
         this.logger.print();
