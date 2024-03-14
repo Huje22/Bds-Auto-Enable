@@ -249,7 +249,7 @@ public class Settings {
                     (defaultValue) -> {
                         this.logger.info("&n&lUstaw Correct Player Movement&r (Polecamy ustawić na: " + defaultValue + ")" + this.enter);
                         this.logger.info("Jeśli ustawione na&b true&r, pozycja klienta zostanie poprawiona do pozycji serwera, jeśli wynik ruchu przekroczy próg.");
-                        this.logger.info("Najlepiej działa z &b " + ServerMovementAuth.SERVER_AUTH_REWIND.getAuthName());
+                        this.logger.info("Najlepiej działa z&b " + ServerMovementAuth.SERVER_AUTH_REWIND.getAuthName());
                     },
                     true,
                     (input) -> this.logger.info("Correct Player Movement ustawiono na:&1 " + input)
