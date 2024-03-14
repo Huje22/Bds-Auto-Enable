@@ -1,25 +1,16 @@
 package me.indian.bds.watchdog.module.pack;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
-import me.indian.bds.util.GsonUtil;
+import me.indian.bds.pack.component.BehaviorPack;
+import me.indian.bds.pack.loader.BehaviorPackLoader;
 import me.indian.bds.watchdog.WatchDog;
-import me.indian.bds.watchdog.module.BackupModule;
-import me.indian.bds.watchdog.module.pack.component.PackTemplate;
 import org.jetbrains.annotations.Nullable;
 
 public class PackModule {
@@ -27,46 +18,20 @@ public class PackModule {
     private final WatchDog watchDog;
     private final Logger logger;
     private final String packName;
+    private final BehaviorPackLoader behaviorPackLoader;
     private final PackUpdater packUpdater;
-    private File behaviorsFolder, packFile, worldBehaviorsJson;
-    private List<PackTemplate> loadedBehaviorPacks;
-    private PackTemplate mainPack;
+    private final File packFile;
+    private BehaviorPack mainPack;
     private boolean loaded, appHandledMessages;
 
     public PackModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.watchDog = watchDog;
         this.logger = bdsAutoEnable.getLogger();
         this.packName = "BDS-Auto-Enable-Managment-Pack";
+        this.behaviorPackLoader = bdsAutoEnable.getPackManager().getBehaviorPackLoader();
         this.packUpdater = new PackUpdater(bdsAutoEnable, this);
-    }
+        this.packFile = new File(this.behaviorPackLoader.getBehaviorsFolder() + File.separator + "BDS-Auto-Enable-Management-Pack-main");
 
-    public void initPackModule() {
-        final BackupModule backupModule = this.watchDog.getBackupModule();
-        this.behaviorsFolder = new File(backupModule.getWorldFile().getPath() + File.separator + "behavior_packs");
-        this.packFile = new File(this.behaviorsFolder.getPath() + File.separator + "BDS-Auto-Enable-Management-Pack-main");
-        this.worldBehaviorsJson = new File(backupModule.getWorldFile().getPath() + File.separator + "world_behavior_packs.json");
-        if (!this.behaviorsFolder.exists()) {
-            if (!this.behaviorsFolder.mkdirs()) {
-                this.logger.critical("Wystąpił poważny błąd przy tworzeniu&b world_behavior_packs.json");
-                System.exit(0);
-            }
-        }
-
-        if (!this.worldBehaviorsJson.exists()) {
-            this.logger.error("Brak pliku&b world_behavior_packs.json&r utworzymy go dla ciebie!");
-            try {
-                if (!this.worldBehaviorsJson.createNewFile()) {
-                    this.logger.critical("Nie udało się utworzyć pliku&b world_behavior_packs.json");
-                    System.exit(0);
-                } else {
-                    this.makeItArray();
-                }
-            } catch (final Exception exception) {
-                throw new RuntimeException(exception);
-            }
-        }
-
-        this.loadedBehaviorPacks = this.loadPacks();
         this.getPackInfo();
     }
 
@@ -79,69 +44,17 @@ public class PackModule {
         }
 
         try {
-            final JsonObject json = (JsonObject) JsonParser.parseReader(new FileReader(this.packFile.getPath() + File.separator + "manifest.json"));
-            final JsonObject header = json.getAsJsonObject("header");
-            if (!header.has("version")) {
-                this.logger.error("Brak klucza 'version' w pliku JSON paczki.");
-                this.loaded = false;
-                return;
-            }
-
-            if (!header.has("uuid")) {
-                this.logger.error("Brak klucza 'uuid' w pliku JSON paczki.");
-                this.loaded = false;
-                return;
-            }
-
-            final JsonArray versionArray = header.getAsJsonArray("version");
-            final int[] version = new int[versionArray.size()];
-
-            for (int i = 0; i < versionArray.size(); i++) {
-                version[i] = versionArray.get(i).getAsInt();
-            }
-
-            this.mainPack = new PackTemplate(header.get("uuid").getAsString(), null, version);
+            this.mainPack = this.behaviorPackLoader.getPackFromFile(this.packFile);
             this.packUpdater.updatePack();
-            this.packsIsLoaded();
 
-            if (!this.loaded) {
-                this.logger.alert("Wykryliśmy paczkę ale nie jest ona załadowana!");
-                this.loadPack();
+            if (!this.behaviorPackLoader.packIsLoaded(this.mainPack)) {
+                this.behaviorPackLoader.loadPack(this.mainPack, 0);
             }
+
+            this.loaded = true;
             this.appHandledMessages = this.getAppHandledMessages();
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się pozyskać informacji o paczce!", exception);
-            System.exit(0);
-        }
-    }
-
-    private void packsIsLoaded() {
-        this.loaded = false;
-        if (!this.packExists()) this.loaded = false;
-        try {
-            for (final PackTemplate pack : this.loadedBehaviorPacks) {
-                if (pack == null) continue;
-                if (pack.pack_id().equalsIgnoreCase(this.mainPack.pack_id()) && Arrays.toString(this.mainPack.version()).equals(Arrays.toString(pack.version()))) {
-                    this.loaded = true;
-                    return;
-                }
-            }
-
-        } catch (final Exception exception) {
-            this.logger.critical("Nie udało się zobaczyć czy paczka jest załadowana!", exception);
-            System.exit(0);
-        }
-    }
-
-    public void loadPack() {
-        try {
-            this.logger.info("Ładowanie paczki...");
-            this.loadedBehaviorPacks.add(0, this.mainPack);
-            this.savePacks(this.loadedBehaviorPacks);
-            this.loaded = true;
-            this.logger.info("&aZaładowano paczke");
-        } catch (final Exception exception) {
-            this.logger.critical("Nie udało się załadować paczki!", exception);
             System.exit(0);
         }
     }
@@ -160,15 +73,6 @@ public class PackModule {
             this.logger.critical("Wystąpił błąd przy próbie odczytu wartości pliku&a JavaScript", exception);
         }
         return false;
-    }
-
-    private void makeItArray() {
-        try (final FileWriter writer = new FileWriter(this.worldBehaviorsJson.getPath())) {
-            writer.write("[]");
-        } catch (final IOException exception) {
-            this.logger.critical("Wystąpił krytyczny błąd z&b world_behavior_packs.json", exception);
-            System.exit(0);
-        }
     }
 
     public boolean isAppHandledMessages() {
@@ -218,44 +122,12 @@ public class PackModule {
     }
 
     @Nullable
-    public PackTemplate getMainPack() {
+    public BehaviorPack getMainPack() {
         return this.mainPack;
-    }
-
-    public List<PackTemplate> getLoadedBehaviorPacks() {
-        return this.loadedBehaviorPacks;
-    }
-
-    private List<PackTemplate> loadPacks() {
-        try (final FileReader reader = new FileReader(this.worldBehaviorsJson)) {
-            final Type token = new TypeToken<List<PackTemplate>>() {
-            }.getType();
-
-            return GsonUtil.getGson().fromJson(reader, token);
-        } catch (final Exception exception) {
-            throw new RuntimeException("Nie udało załadować się paczek", exception);
-        }
-    }
-
-    private void savePacks(final List<PackTemplate> packs) throws IOException {
-        final List<PackTemplate> nonNullPacks = new ArrayList<>();
-        for (final PackTemplate pack : packs) {
-            if (pack != null) {
-                nonNullPacks.add(pack);
-            }
-        }
-
-        try (final FileWriter writer = new FileWriter(this.worldBehaviorsJson)) {
-            writer.write(GsonUtil.getGson().toJson(nonNullPacks));
-        }
     }
 
     public boolean packExists() {
         return this.packFile.exists();
-    }
-
-    public File getBehaviorsFolder() {
-        return this.behaviorsFolder;
     }
 
     public File getPackFile() {

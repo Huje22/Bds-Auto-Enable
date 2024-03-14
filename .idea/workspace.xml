@@ -5,7 +5,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f57eb4c-9a7f-418c-afff-b4129e5ac4bd" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/ServerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/ServerManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/pack/PackManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/pack/component/TexturePack.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/pack/loader/BehaviorPackLoader.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/pack/loader/ResourcePackLoader.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/Settings.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/Settings.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/watchdog/module/pack/PackModule.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/watchdog/module/pack/PackModule.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/watchdog/module/pack/PackUpdater.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/watchdog/module/pack/PackUpdater.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/watchdog/module/pack/component/PackTemplate.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/pack/component/BehaviorPack.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -93,6 +103,7 @@
       <recent name="C:\Users\g.IT\IdeaProjects\Bds-autorestart\BDS-Auto-Enable" />
     </key>
     <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="me.indian.bds.pack.component" />
       <recent name="me.indian.bds.command.defaults" />
       <recent name="me.indian.bds.event.player" />
       <recent name="me.indian.bds.event.server" />

@@ -18,6 +18,7 @@ import me.indian.bds.exception.MissingDllException;
 import me.indian.bds.extension.ExtensionManager;
 import me.indian.bds.logger.impl.MainLogger;
 import me.indian.bds.metrics.AppMetrics;
+import me.indian.bds.pack.PackManager;
 import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.allowlist.AllowlistManager;
@@ -53,6 +54,7 @@ public class BDSAutoEnable {
     private final EventManager eventManager;
     private final ExtensionManager extensionManager;
     private final AllowlistManager allowlistManager;
+    private PackManager packManager;
     private CommandManager commandManager;
     private WatchDog watchDog;
 
@@ -99,13 +101,13 @@ public class BDSAutoEnable {
     public void init() {
         new ShutdownHandler(this);
         this.settings.loadSettings(this.mainScanner);
+        this.packManager = new PackManager(this);
         this.watchDog = new WatchDog(this);
         this.serverProcess.init();
         this.watchDog.init();
         this.watchDog.getRamMonitor().monitRamUsage();
         this.versionManager.loadVersion();
         this.checkExecutable();
-        this.watchDog.getPackModule().initPackModule();
         this.serverManager.getStatsManager().startCountServerTime(this.serverProcess);
         this.extensionManager.loadExtensions();
         this.versionManager.getVersionUpdater().checkForUpdate();
@@ -316,5 +318,9 @@ public class BDSAutoEnable {
 
     public AllowlistManager getAllowlistManager() {
         return this.allowlistManager;
+    }
+
+    public PackManager getPackManager() {
+        return this.packManager;
     }
 }

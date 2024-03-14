@@ -20,6 +20,7 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
   rozszerzenia: [ExampleExtension](https://github.com/Huje22/BDS-AE-Extensions/tree/master/ExampleExtension)
 * Automatyczne włączenie servera po crashu
 * Łatwe załadowanie innej wersji
+  * Automatyczne ładowanie paczek `zachowań` i `tesktur` z `FOLDER_ŚWIATA/behavior_packs`/`FOLDER_ŚWIATA/resource_packs`
 * Tworzenie backupów świata co dany czas i manualnie
 * Licznik czasu gry gracza (
   Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
@@ -32,7 +33,7 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 Aplikacja odczytuje nick gracza z <code>PlayerChat</code> i wiadomość z <code>Message</code>. Następnie wywołuje event <code>PlayerChatEvent</code> w każdym zarejestrowany listenerze ,
 podobnie z dołączaniem gracza (w tym wypadku <code>PlayerJoin</code>).<br>
   W tym przypadku wywołuje <code>PlayerJoinEvent</code> i on dodaje gracza do listy graczy online, a timer działający co 1s dodaje mu 1s czasu gry.<br>
-  Większość takich akcji odbywa się w klasie <a href="https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/me/indian/bds/server/manager/ServerManager.java">ServerManager.java</a></p>
+  Większość takich akcji odbywa się w klasie <a href="https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/me/indian/bds/server/ServerManager.java">ServerManager.java</a></p>
 </details>
 
 # Polecenia

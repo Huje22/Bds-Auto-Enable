@@ -11,10 +11,11 @@ import java.net.HttpURLConnection;
 import java.util.Arrays;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.pack.component.BehaviorPack;
+import me.indian.bds.pack.loader.BehaviorPackLoader;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.HTTPUtil;
 import me.indian.bds.util.ZipUtil;
-import me.indian.bds.watchdog.module.pack.component.PackTemplate;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -24,11 +25,15 @@ public class PackUpdater {
 
     private final Logger logger;
     private final PackModule packModule;
+    private final BehaviorPackLoader behaviorPackLoader;
+    private final File behaviorsFolder;
     private final OkHttpClient client;
 
     public PackUpdater(final BDSAutoEnable bdsAutoEnable, final PackModule packModule) {
         this.logger = bdsAutoEnable.getLogger();
         this.packModule = packModule;
+        this.behaviorPackLoader = bdsAutoEnable.getPackManager().getBehaviorPackLoader();
+        this.behaviorsFolder = this.behaviorPackLoader.getBehaviorsFolder();
         this.client = HTTPUtil.getOkHttpClient();
     }
 
@@ -76,7 +81,7 @@ public class PackUpdater {
                         }
                     }
                     this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
-                    ZipUtil.unzipFile(zipPatch, this.packModule.getBehaviorsFolder().getPath(), true);
+                    ZipUtil.unzipFile(zipPatch, this.behaviorsFolder.getPath(), true);
                 } else {
                     this.logger.error("Kod odpowiedzi strony:&b " + response);
                     System.exit(0);
@@ -88,7 +93,7 @@ public class PackUpdater {
     }
 
     public void updatePack() {
-        final PackTemplate mainPack = this.packModule.getMainPack();
+        final BehaviorPack mainPack = this.packModule.getMainPack();
         if (mainPack == null) {
             this.logger.error("&cNie udało się pozyskać informacji na temat paczki");
             return;
