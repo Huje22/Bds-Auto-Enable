@@ -13,6 +13,7 @@ import me.indian.bds.server.properties.component.ServerMovementAuth;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ScannerUtil;
+import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.system.SystemUtil;
 
 public class Settings {
@@ -178,10 +179,10 @@ public class Settings {
 
         this.serverProperties.setMaxThreads(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
-                    this.logger.info("&n&lLiczba wątków używana przez server&r ");
+                    this.logger.info("&n&lLiczba wątków używana przez server&r (Dostępna liczba to: " + defaultValue + ")" + this.enter);
                     this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
                     this.logger.alert("Z doświadczenia nie polecam ustawiać na więcej niż 8, i także nie zbyt mało");
-                }, 8,//TODO: Dodać tu liczbę rdzeni logicznych brana z klasy Runtime
+                }, ThreadUtil.getLogicalThreads(),
                 (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + input)
         ));
         this.logger.print();
@@ -341,24 +342,42 @@ public class Settings {
         this.logger.info("Algorytm kompresji:&1 " + this.serverProperties.getCompressionAlgorithm());
         this.logger.print();
 
-        this.logger.info("Liczba wątków używana przez server:&1 " + this.serverProperties.getMaxThreads());
+
+        final int threadsCount = this.serverProperties.getMaxThreads();
+        final int logicalThreadsCount = ThreadUtil.getLogicalThreads();
+        String threadsNote = "";
+
+        if (threadsCount != 0 && threadsCount != logicalThreadsCount) {
+            threadsNote = "&d (&bDostępne jest:&1 " + logicalThreadsCount + "&d)";
+        } else if (threadsCount == 0) {
+            threadsNote = "&d (&bPosiadasz:&1 " + logicalThreadsCount + "&d)";
+        }
+
+        this.logger.info("Liczba wątków używana przez server:&1 " + this.serverProperties.getMaxThreads() + threadsNote);
         this.logger.info("Allow Cheats:&1 " + this.serverProperties.isAllowCheats());
         this.logger.info("Timeout:&1 " + this.serverProperties.getPlayerIdleTimeout() + " &aminut");
         this.logger.print();
 
-        final double serverBuildRadiusRatio = this.serverProperties.getServerBuildRadiusRatio();
-        this.logger.info("Server Build Radius Ratio:&1 " + (serverBuildRadiusRatio == -1.0 ? "Disabled" : serverBuildRadiusRatio));
+        if (this.serverProperties.isClientSideChunkGeneration()) {
+            final double serverBuildRadiusRatio = this.serverProperties.getServerBuildRadiusRatio();
+            this.logger.info("Server Build Radius Ratio:&1 " + (serverBuildRadiusRatio == -1.0 ? "Disabled" : serverBuildRadiusRatio));
+        }
+
         this.logger.info("View Distance:&1 " + this.serverProperties.getViewDistance());
         this.logger.info("Tick Distance:&1 " + this.serverProperties.getTickDistance());
         this.logger.print();
 
         this.logger.info("Default Player Permission Level:&1 " + this.serverProperties.getPlayerPermissionLevel().getPermissionName());
         this.logger.info("Server Authoritative Movement:&1 " + this.serverProperties.getServerMovementAuth().getAuthName());
-        this.logger.info("Server Authoritative Block Breaking:&1 " + this.serverProperties.isServerAuthoritativeBlockBreaking());
-        this.logger.info("Correct Player Movement:&1 " + this.serverProperties.isCorrectPlayerMovement());
+
+        if (this.serverProperties.getServerMovementAuth() != ServerMovementAuth.CLIENT_AUTH) {
+            this.logger.info("Server Authoritative Block Breaking:&1 " + this.serverProperties.isServerAuthoritativeBlockBreaking());
+            this.logger.info("Correct Player Movement:&1 " + this.serverProperties.isCorrectPlayerMovement());
+        }
+
         this.logger.info("Wymug tekstur:&1 " + this.serverProperties.isTexturePackRequired());
         this.logger.info("Allow Cheats:&1 " + this.serverProperties.isAllowCheats());
-        this.logger.info("Emit server telemetry:&1 " + this.serverProperties.isServerTelemetry());
+        this.logger.info("Emitowanie telemetrii:&1 " + this.serverProperties.isServerTelemetry());
         this.logger.print();
 
         if (waitForUser) {
