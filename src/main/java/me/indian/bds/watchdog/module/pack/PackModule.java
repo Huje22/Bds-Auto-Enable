@@ -31,8 +31,6 @@ public class PackModule {
         this.behaviorPackLoader = bdsAutoEnable.getPackManager().getBehaviorPackLoader();
         this.packUpdater = new PackUpdater(bdsAutoEnable, this);
         this.packFile = new File(this.behaviorPackLoader.getBehaviorsFolder() + File.separator + "BDS-Auto-Enable-Management-Pack-main");
-
-        this.getPackInfo();
     }
 
     public void getPackInfo() {
