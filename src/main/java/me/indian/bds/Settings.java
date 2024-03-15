@@ -307,7 +307,7 @@ public class Settings {
                 (defaultValue) -> {
                     this.logger.info("&n&lCzy powtórzyć następnym razem pytania?&r (Domyślnie: " + defaultValue + ")" + this.enter);
                     this.logger.info("&aJeśli ustawisz na&b false&a następnym razem aplikacja uruchomi się bez zadawania żadnych pytań!");
-                    this.logger.info("&aMożesz potem zmienić to w&e config.yml");
+                    this.logger.info("&aMożesz potem zmienić to w:&1 " + this.appConfig.getBindFile().toString().replaceAll("config.yml", "&econfig.yml"));
                 },
                 true,
                 (input) -> {
