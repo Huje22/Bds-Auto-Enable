@@ -215,6 +215,7 @@ public class VersionManager {
     }
 
     public String getLatestVersion() {
+        this.logger.info("&aUzyskiwanie najnowszej wersji...");
         final Request request = new Request.Builder()
                 .url("https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json")
                 .get()
