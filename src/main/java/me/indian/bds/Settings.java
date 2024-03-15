@@ -44,7 +44,7 @@ public class Settings {
                 this.logger.info("Ominięto pytania");
                 return;
             }
-            scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&n&lZastosować wcześniejsze ustawienia?&r (true/false) " + this.enter),
+            scannerUtil.addBooleanQuestion((defaultValue) -> this.logger.info("&n&lZastosować wcześniejsze ustawienia?&r (Domyślnie: true) " + this.enter),
                     true,
                     (settings) -> {
                         if (settings) {
