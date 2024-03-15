@@ -76,7 +76,7 @@ public class ServerProcess {
                 case WINDOWS -> command = "tasklist /NH /FI \"IMAGENAME eq " + this.fileName + "\"";
                 default -> {
                     this.logger.critical("Musisz podać odpowiedni system");
-                    System.exit(0);
+                    System.exit(21);
                 }
             }
 
@@ -92,7 +92,7 @@ public class ServerProcess {
             }
         } catch (final IOException | InterruptedException exception) {
             this.logger.critical("Nie można sprawdzić czy proces jest aktywny", exception);
-            System.exit(0);
+            System.exit(5);
         }
         return false;
     }
@@ -117,7 +117,7 @@ public class ServerProcess {
                             if (this.appConfigManager.getAppConfig().isWine()) {
                                 if (!DefaultsVariables.WINE) {
                                     this.logger.critical("^#cNIE POSIADASZ ^#1WINE^#C!");
-                                    System.exit(0);
+                                    System.exit(-1);
                                     return;
                                 }
 
@@ -131,7 +131,7 @@ public class ServerProcess {
                         case WINDOWS -> this.processBuilder = new ProcessBuilder(this.finalFilePath);
                         default -> {
                             this.logger.critical("Twój system jest nie wspierany");
-                            System.exit(0);
+                            System.exit(21);
                         }
                     }
 
@@ -160,7 +160,7 @@ public class ServerProcess {
                     this.startProcess();
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można uruchomić procesu", exception);
-                    System.exit(0);
+                    System.exit(5);
                 }
             }
         });

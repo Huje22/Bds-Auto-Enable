@@ -58,6 +58,6 @@ public class EndCommand extends Command {
         } catch (final InterruptedException exception) {
             ThreadUtil.sleep(10);
         }
-        System.exit(1);
+        System.exit(0);
     }
 }

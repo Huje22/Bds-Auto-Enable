@@ -43,7 +43,7 @@ public class ResourcePackLoader {
         if (!this.resourcesFolder.exists()) {
             if (!this.resourcesFolder.mkdirs()) {
                 this.logger.critical("Wystąpił poważny błąd przy tworzeniu&b world_resource_packs.json");
-                System.exit(0);
+                System.exit(-1);
             }
         }
 
@@ -52,7 +52,7 @@ public class ResourcePackLoader {
             try {
                 if (!this.worldResourcePackJson.createNewFile()) {
                     this.logger.critical("Nie udało się utworzyć pliku&b world_resource_packs.json");
-                    System.exit(0);
+                    System.exit(-1);
                 } else {
                     this.makeItArray();
                 }
@@ -207,7 +207,7 @@ public class ResourcePackLoader {
             writer.write("[]");
         } catch (final IOException exception) {
             this.logger.critical("Wystąpił krytyczny błąd z&b world_resource_packs.json", exception);
-            System.exit(0);
+            System.exit(5);
         }
     }
 }

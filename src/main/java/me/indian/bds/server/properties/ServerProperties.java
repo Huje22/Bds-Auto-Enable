@@ -39,7 +39,7 @@ public class ServerProperties {
             this.properties.load(Files.newInputStream(this.propertiesFile.toPath()));
         } catch (final IOException exception) {
             this.logger.critical("&cWystąpił krytyczny błąd podczas ładowania &aserver.properties", exception);
-            System.exit(0);
+            System.exit(5);
         }
     }
 
@@ -48,7 +48,7 @@ public class ServerProperties {
             this.properties.store(writer, null);
         } catch (final Exception exception) {
             this.logger.critical("&cWystąpił krytyczny błąd podczas zapisywania&a server.properties", exception);
-            System.exit(0);
+            System.exit(5);
         }
     }
 
@@ -60,7 +60,7 @@ public class ServerProperties {
                 manager.loadVersion();
             } else {
                 this.logger.critical("&cNie można odnaleźć pliku&a server.properties");
-                System.exit(0);
+                System.exit(6);
             }
         }
     }

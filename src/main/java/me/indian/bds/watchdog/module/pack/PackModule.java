@@ -55,7 +55,7 @@ public class PackModule {
             this.appHandledMessages = this.getAppHandledMessages();
         } catch (final Exception exception) {
             this.logger.critical("Nie udało się pozyskać informacji o paczce!", exception);
-            System.exit(0);
+            System.exit(5);
         }
     }
 

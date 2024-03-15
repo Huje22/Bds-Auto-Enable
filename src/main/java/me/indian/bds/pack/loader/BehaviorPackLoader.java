@@ -44,7 +44,7 @@ public class BehaviorPackLoader {
         if (!this.behaviorsFolder.exists()) {
             if (!this.behaviorsFolder.mkdirs()) {
                 this.logger.critical("Wystąpił poważny błąd przy tworzeniu&b world_behavior_packs.json");
-                System.exit(0);
+                System.exit(-1);
             }
         }
 
@@ -53,7 +53,7 @@ public class BehaviorPackLoader {
             try {
                 if (!this.worldBehaviorsJson.createNewFile()) {
                     this.logger.critical("Nie udało się utworzyć pliku&b world_behavior_packs.json");
-                    System.exit(0);
+                    System.exit(-1);
                 } else {
                     this.makeItArray();
                 }
@@ -208,7 +208,7 @@ public class BehaviorPackLoader {
             writer.write("[]");
         } catch (final IOException exception) {
             this.logger.critical("Wystąpił krytyczny błąd z&b world_behavior_packs.json", exception);
-            System.exit(0);
+            System.exit(5);
         }
     }
 }

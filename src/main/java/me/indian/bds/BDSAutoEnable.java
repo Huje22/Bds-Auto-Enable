@@ -133,7 +133,7 @@ public class BDSAutoEnable {
 
             this.logger.critical("Twoja wersja javy &d(&1" + javaVersion
                     + "&d)&r jest zbyt niska! Potrzebujesz javy &117+ ");
-            System.exit(0);
+            System.exit(9);
         }
     }
 
@@ -150,7 +150,7 @@ public class BDSAutoEnable {
             }
             this.logger.critical("&cTwoja architektura systemu nie jest wspierana! Twoja architektura to&b "
                     + SystemArch.getFullyArchCode());
-            System.exit(0);
+            System.exit(9);
         }
 
         if (systemOS == SystemOS.UNSUPPORTED) {
@@ -162,7 +162,7 @@ public class BDSAutoEnable {
             */
 
             this.logger.critical("&cTwój system nie jest wspierany!!&r Twój system to:&1 " + System.getProperty("os.name"));
-            System.exit(0);
+            System.exit(9);
         }
     }
 
@@ -178,7 +178,7 @@ public class BDSAutoEnable {
             if (!this.appConfig.isDebug()) {
                 this.logger.critical("&cTwoje kodowanie to:&b " + encoding + ", &cmy wspieramy tylko&b: UTF-8");
                 this.logger.critical("&cProsimy ustawić swoje kodowanie na&b UTF-8&c abyśmy mogli dalej kontynuować!");
-                System.exit(-2137);
+                System.exit(-10);
             } else {
                 this.logger.warning("&aDebug włączony, omijasz wymóg &bUTF-8&a na własne&c ryzyko&c!");
                 System.setProperty("file.encoding", "UTF-8");
@@ -199,7 +199,7 @@ public class BDSAutoEnable {
         if (!FileUtil.canExecute(serverPath)) {
             if (!FileUtil.addExecutePerm(serverPath)) {
                 this.logger.critical("&cBrak odpowiednich uprawnień!");
-                System.exit(0);
+                System.exit(9);
             }
         }
     }

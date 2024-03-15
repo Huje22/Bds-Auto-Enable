@@ -123,7 +123,7 @@ public class VersionManager {
             this.logger.info("Załadowano wersie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final Exception exception) {
             this.logger.critical("Nie można załadować wersji:&1 " + version, exception);
-            System.exit(0);
+            System.exit(21);
         }
         this.versionManagerConfig.save();
     }

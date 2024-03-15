@@ -83,8 +83,8 @@ public class PackUpdater {
                     this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
                     ZipUtil.unzipFile(zipPatch, this.behaviorsFolder.getPath(), true);
                 } else {
-                    this.logger.error("Kod odpowiedzi strony:&b " + response);
-                    System.exit(0);
+                    this.logger.error("Kod odpowiedzi strony:&b " + responseCode);
+                    System.exit(responseCode);
                 }
             }
         } catch (final Exception ioException) {
