@@ -47,6 +47,10 @@ public final class ThreadUtil implements ThreadFactory {
         }
     }
 
+    public static int getLogicalThreads(){
+        return Runtime.getRuntime().availableProcessors();
+    }
+
     public static int getThreadsCount() {
         int availableThreads = Runtime.getRuntime().availableProcessors();
         try {
