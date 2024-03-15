@@ -181,7 +181,7 @@ public class Settings {
                 (defaultValue) -> {
                     this.logger.info("&n&lLiczba wątków używana przez server&r (Dostępna liczba to: " + defaultValue + ")" + this.enter);
                     this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
-                    this.logger.alert("Z doświadczenia nie polecam ustawiać na więcej niż 8, i także nie zbyt mało");
+               this.logger.alert("&cJeśli stawiasz tylko jeden server polecamy użyć wszystkich&b " + defaultValue + "&c wątków");
                 }, ThreadUtil.getLogicalThreads(),
                 (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + input)
         ));
@@ -208,7 +208,7 @@ public class Settings {
                         this.logger.info("Jeśli&1 Disabled&r, serwer dynamicznie obliczy, ile z widoku gracza zostanie wygenerowane, pozostawiając resztę do zbudowania przez klienta.");
                         this.logger.info("W przeciwnym razie, z nadpisanej proporcji, serwerowi zostanie powiedziane, ile z widoku gracza wygenerować, pomijając zdolności sprzętowe klienta.");
                         this.logger.info("W skrócie:&e Server generuje czanki dla klienta&r dla słabych urządzeń bedzie to pomocne ale obciąży server ");
-                        this.logger.alert("Aby wyłączyć i zostawić generowanie czank całkowicie po stronie klienta wpisz&b -1.0&r a my ustawimy to dla ciebie na&b Disabled! .");
+                        this.logger.alert("Aby wyłączyć i zostawić generowanie czank całkowicie po stronie klienta wpisz&b -1.0&r a my ustawimy to dla ciebie na&b Disabled!");
                     },
                     1.0,
                     (input) -> {
@@ -272,7 +272,7 @@ public class Settings {
         this.serverProperties.setAllowCheats(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lAllow Cheats&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-                    this.logger.alert("Aby integracja z discord działała poprawnie wymagamy tego na&b true&r i włączenie&b experymentów&r!");
+                    this.logger.alert("Aby rozszerzenia działały poprawnie wymagamy tego na&b true&r i włączenie&b experymentów&r!");
                 },
                 this.serverProperties.isAllowCheats(),
                 (input) -> this.logger.info("Allow Cheats ustawione na:&1 " + input)
@@ -443,7 +443,7 @@ public class Settings {
                     scannerUtil.addStringQuestion(
                             (defaultValue) -> {
                                 this.logger.info("&n&lUstaw Algorytm kompresji&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-                                this.logger.info("&b" + CompressionAlgorithm.SNAPPY + "&a Szybki algorytm kompresji z niską latencją, idealny do zastosowań czasu rzeczywistego, choć pliki mogą być nieco większe.");
+                                this.logger.info("&b" + CompressionAlgorithm.SNAPPY + "&a Szybki algorytm kompresji z niską latencją, idealny do zastosowań czasu rzeczywistego, choć pliki mogą być nieco większe. &d(&bMoże się bagować&d)");
                                 this.logger.info("&b" + CompressionAlgorithm.ZLIB + "&a Potężny algorytm, osiągający wysoki stosunek kompresji, nadający się do sytuacji wymagających znaczącej redukcji rozmiaru plików.");
                             },
                             String.valueOf(this.serverProperties.getCompressionAlgorithm()),
