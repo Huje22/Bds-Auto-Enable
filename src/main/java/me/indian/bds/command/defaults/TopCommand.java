@@ -25,9 +25,9 @@ public class TopCommand extends Command {
         this.serverStats = this.statsManager.getServerStats();
         this.packModule = bdsAutoEnable.getWatchDog().getPackModule();
 
-        this.addOption("playtime" , "Top 10 graczy z największą ilością przegranego czasu");
-        this.addOption("deaths" , "Top 10 graczy z największą ilością śmierci");
-        this.addOption("block" , "Top 10 wykopanych i postawionych bloków");
+        this.addOption("playtime", "Top 10 graczy z największą ilością przegranego czasu");
+        this.addOption("deaths", "Top 10 graczy z największą ilością śmierci");
+        this.addOption("block", "Top 10 wykopanych i postawionych bloków");
     }
 
 
@@ -38,12 +38,12 @@ public class TopCommand extends Command {
             return true;
         }
 
-        if(args.length == 0){
+        if (args.length == 0) {
             this.buildHelp();
             return true;
         }
 
-        if(args[0].equalsIgnoreCase("playtime")) {
+        if (args[0].equalsIgnoreCase("playtime")) {
             this.sendMessage("&a---------------------");
             StatusUtil.getTopPlayTime(false, 10).forEach(this::sendMessage);
             this.sendMessage("&aŁączny czas działania servera: &b"
@@ -53,7 +53,7 @@ public class TopCommand extends Command {
             return true;
         }
 
-        if(args[0].equalsIgnoreCase("deaths")) {
+        if (args[0].equalsIgnoreCase("deaths")) {
             this.sendMessage("&a---------------------");
             StatusUtil.getTopDeaths(false, 10).forEach(this::sendMessage);
             this.sendMessage("&a---------------------");
@@ -61,7 +61,7 @@ public class TopCommand extends Command {
         }
 
 
-        if(args[0].equalsIgnoreCase("block")) {
+        if (args[0].equalsIgnoreCase("block")) {
             this.sendMessage("&a---------------------");
             this.getTopBlock(false).forEach(this::sendMessage);
             this.sendMessage("&a---------------------");

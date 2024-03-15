@@ -60,7 +60,7 @@ public class ExtensionsCommand extends Command {
                 final String prefix = extension.getExtensionDescription().prefix();
 
                 this.sendMessage("&aNazwa:&b " + extension.getName());
-                if(!prefix.equalsIgnoreCase(extension.getName())){
+                if (!prefix.equalsIgnoreCase(extension.getName())) {
                     this.sendMessage("&aPrefix:&b " + prefix);
                 }
                 this.sendMessage("&aWersja:&b " + extension.getVersion());

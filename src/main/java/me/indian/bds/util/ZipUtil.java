@@ -64,7 +64,7 @@ public final class ZipUtil {
                 final File outputFile = new File(targetDirectory + File.separator + entryName);
                 if (entryName.contains(File.separator + ".git")) continue;
                 if (outputFile.exists() && skipFiles != null && skipFiles.contains(outputFile.getAbsolutePath())) {
-                    LOGGER.info("Omijam plik " + outputFile.getAbsolutePath());
+                    LOGGER.info("Omijam plik&1 " + outputFile.getAbsolutePath());
                     continue;
                 }
 
