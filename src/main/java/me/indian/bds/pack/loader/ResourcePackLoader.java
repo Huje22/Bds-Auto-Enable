@@ -139,6 +139,18 @@ public class ResourcePackLoader {
                 }
             }
 
+            for (final TexturePack texturePack : this.loadedTexturePacks) {
+                try {
+                    if (texturePack != null && !this.packIsLoaded(texturePack)) {
+                        this.loadPack(texturePack, this.getPackIndex(texturePack));
+                    } else {
+                        texturePacks.set(this.getPackIndex(texturePack), texturePack);
+                    }
+                } catch (final Exception exception) {
+                    this.logger.error("&cNie udało załadować się paczki&b " + texturePack.name(), exception);
+                }
+            }
+
             this.savePacks(texturePacks);
         } catch (final Exception exception) {
             this.logger.error("&cNie udało się przeprowadzić ładowania paczek zachowań");
@@ -161,6 +173,10 @@ public class ResourcePackLoader {
         return this.loadedTexturePacks.stream()
                 .anyMatch(texture -> texture.pack_id().equals(behaviorPack.pack_id()) &&
                         Arrays.toString(texture.version()).equals(Arrays.toString(behaviorPack.version())));
+    }
+
+    public int getPackIndex(final TexturePack texturePack) {
+        return this.loadedTexturePacks.indexOf(texturePack);
     }
 
     public File getResourcesFolder() {

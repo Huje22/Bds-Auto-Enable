@@ -140,6 +140,18 @@ public class BehaviorPackLoader {
                 }
             }
 
+            for (final BehaviorPack behaviorPack : this.loadedBehaviorPacks) {
+                try {
+                    if (behaviorPack != null && !this.packIsLoaded(behaviorPack)) {
+                        this.loadPack(behaviorPack, this.getPackIndex(behaviorPack));
+                    } else {
+                        behaviorPacks.set(this.getPackIndex(behaviorPack), behaviorPack);
+                    }
+                } catch (final Exception exception) {
+                    this.logger.error("&cNie udało załadować się paczki&b " + behaviorPack.name(), exception);
+                }
+            }
+
             this.savePacks(behaviorPacks);
         } catch (final Exception exception) {
             this.logger.error("&cNie udało się przeprowadzić ładowania paczek zachowań");
@@ -162,6 +174,10 @@ public class BehaviorPackLoader {
         return this.loadedBehaviorPacks.stream()
                 .anyMatch(behaviro -> behaviro.pack_id().equals(behaviorPack.pack_id()) &&
                         Arrays.toString(behaviro.version()).equals(Arrays.toString(behaviorPack.version())));
+    }
+
+    public int getPackIndex(final BehaviorPack behaviorPack) {
+        return this.loadedBehaviorPacks.indexOf(behaviorPack);
     }
 
     public File getBehaviorsFolder() {
