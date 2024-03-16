@@ -17,6 +17,7 @@ import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
@@ -49,7 +50,7 @@ public class ServerProcess {
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.serverManager = this.bdsAutoEnable.getServerManager();
         this.processService = Executors.newFixedThreadPool(2, new ThreadUtil("Server process"));
-        this.consoleOutputService = Executors.newFixedThreadPool(3, new ThreadUtil("Console Output"));;
+        this.consoleOutputService = Executors.newFixedThreadPool(3, new ThreadUtil("Console Output"));
         this.prefix = "&b[&3ServerProcess&b] ";
         this.system = SystemUtil.getSystem();
         this.eventManager = this.bdsAutoEnable.getEventManager();
@@ -269,6 +270,22 @@ public class ServerProcess {
             return;
         }
         this.sendToConsole("kick " + who + " " + MessageUtil.colorize(reason));
+    }
+
+    public boolean transferPlayer(final String playerName, final String address, final int port) {
+        final BedrockQuery query = BedrockQuery.create(address, port);
+
+        if (query.online()) {
+            this.sendToConsole("transfer " + playerName + " " + address + " " + port);
+        } else {
+            this.logger.error("&cNie można przenieść gracza&b " + playerName + "&c na server&1 " + address + "&e:&1" + port + "&c ponieważ jest on offline");
+        }
+
+        return query.online();
+    }
+
+    public boolean transferPlayer(final String playerName, final String address) {
+        return this.transferPlayer(playerName, address, 19132);
     }
 
     public void tellrawToAll(final String msg) {
