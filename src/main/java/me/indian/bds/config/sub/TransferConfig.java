@@ -26,7 +26,7 @@ public class TransferConfig extends OkaeriConfig {
     private String transferringMessage = "&aZaraz zostaniesz przeniesiony na server&b lobby";
 
     @Comment({""})
-    @Comment({""})
+    @Comment({"Wiadomość o tym gdy server lobby jest niedostępny"})
     private String serverOffline = "&cServer&b lobby&c jest aktualnie offline!";
 
     public boolean isEnable() {
