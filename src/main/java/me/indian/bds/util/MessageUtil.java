@@ -47,6 +47,13 @@ public final class MessageUtil {
         return msg2;
     }
 
+    public static String fixPlayerName(final String playerName){
+        if(playerName.contains(" ")){
+            return "\"" + playerName + "\"";
+        }
+        return playerName;
+    }
+
     public static String buildMessageFromArgs(final String[] args) {
         return buildMessageFromArgs(args, null);
     }
