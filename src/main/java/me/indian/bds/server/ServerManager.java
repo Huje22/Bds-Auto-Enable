@@ -102,7 +102,7 @@ public class ServerManager {
             final Matcher matcher = pattern.matcher(logEntry);
 
             if (matcher.find()) {
-                final String playerName = matcher.group(1);
+                final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
                 final long xuid = Long.parseLong(matcher.group(2));
                 final String oldPlayerName = this.statsManager.getNameByXuid(xuid);
 
@@ -126,7 +126,8 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = matcher.group(1);
+            final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
+
             this.onlinePlayers.remove(playerName);
             this.offlinePlayers.add(playerName);
             this.statsManager.setLastQuit(playerName, DateUtil.localDateToLong(LocalDate.now()));
@@ -140,7 +141,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = matcher.group(1);
+            final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
             this.onlinePlayers.add(playerName);
             this.offlinePlayers.remove(playerName);
             this.statsManager.setLastJoin(playerName, DateUtil.localDateToLong(LocalDate.now()));
@@ -154,7 +155,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = matcher.group(1);
+            final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
             this.statsManager.createNewPlayer(playerName);
             this.eventManager.callEvent(new PlayerSpawnEvent(playerName));
         }
@@ -169,7 +170,7 @@ public class ServerManager {
             final Matcher matcher = pattern.matcher(logEntry);
 
             if (matcher.find()) {
-                final String playerChat = matcher.group(1);
+                final String playerChat = MessageUtil.fixPlayerName(matcher.group(1));
                 final String message = MessageUtil.fixMessage(matcher.group(2));
                 final Position position = Position.parsePosition(matcher.group(3));
                 final boolean appHandled = this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages();
@@ -204,10 +205,11 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerCommand = matcher.group(1);
+            final String playerCommand = MessageUtil.fixPlayerName(matcher.group(1));
             final String command = matcher.group(2);
             final String position = matcher.group(3);
             final boolean isOp = Boolean.parseBoolean(matcher.group(4));
+
             this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command), isOp);
             this.eventManager.callEvent(new PlayerCommandEvent(playerCommand, command,
                     Position.parsePosition(position), isOp));
@@ -220,7 +222,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerDeath = matcher.group(1);
+            final String playerDeath = MessageUtil.fixPlayerName(matcher.group(1));
             final String deathMessage = MessageUtil.fixMessage(matcher.group(2));
             final Position deathPosition = Position.parsePosition(matcher.group(3));
             final String killerName = matcher.group(4);
@@ -255,7 +257,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = matcher.group(1);
+            final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
             final String fromDimension = matcher.group(2);
             final String toDimension = matcher.group(3);
             final Position fromPosition = Position.parsePosition(matcher.group(4));
@@ -271,7 +273,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerBreakBlock = matcher.group(1);
+            final String playerBreakBlock = MessageUtil.fixPlayerName(matcher.group(1));
             final String blockID = matcher.group(2);
             final String blockPosition = matcher.group(3);
 
@@ -286,7 +288,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerPlaceBlock = matcher.group(1);
+            final String playerPlaceBlock = MessageUtil.fixPlayerName(matcher.group(1));
             final String blockID = matcher.group(2);
             final String blockPosition = matcher.group(3);
 
