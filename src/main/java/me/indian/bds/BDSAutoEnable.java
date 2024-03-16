@@ -232,7 +232,7 @@ public class BDSAutoEnable {
         final TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                BDSAutoEnable.this.serverProcess.tellrawToAll("&bTen server używa &aBDS-Auto-Enable&3 https://github.com/Huje22/Bds-Auto-Enabl");
+                BDSAutoEnable.this.serverProcess.tellrawToAll("&bTen server używa &aBDS-Auto-Enable&3 https://github.com/Huje22/Bds-Auto-Enable");
             }
         };
 
