@@ -86,7 +86,6 @@ public abstract class Command {
 
     protected final void sendMessage(final String message) {
         final ServerProcess serverProcess = this.bdsAutoEnable.getServerProcess();
-        if (message.isEmpty()) return;
         switch (this.commandSender) {
             case CONSOLE -> this.bdsAutoEnable.getLogger().print(message);
             case PLAYER -> serverProcess.tellrawToPlayer(this.playerName, message);
