@@ -5,12 +5,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.config.sub.TransferConfig;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
@@ -272,20 +274,12 @@ public class ServerProcess {
         this.sendToConsole("kick " + who + " " + MessageUtil.colorize(reason));
     }
 
-    public boolean transferPlayer(final String playerName, final String address, final int port) {
-        final BedrockQuery query = BedrockQuery.create(address, port);
-
-        if (query.online()) {
-            this.sendToConsole("transfer " + playerName + " " + address + " " + port);
-        } else {
-            this.logger.error("&cNie można przenieść gracza&b " + playerName + "&c na server&1 " + address + "&e:&1" + port + "&c ponieważ jest on offline");
-        }
-
-        return query.online();
+    public void transferPlayer(final String playerName, final String address, final int port) {
+        this.sendToConsole("transfer " + playerName + " " + address + " " + port);
     }
 
-    public boolean transferPlayer(final String playerName, final String address) {
-        return this.transferPlayer(playerName, address, 19132);
+    public void transferPlayer(final String playerName, final String address) {
+        this.transferPlayer(playerName, address, 19132);
     }
 
     public void tellrawToAll(final String msg) {
@@ -409,7 +403,28 @@ public class ServerProcess {
         if (command.equalsIgnoreCase("stop")) {
             if (!this.isEnabled()) return;
             this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
-            this.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
+
+            final TransferConfig transferConfig = this.appConfigManager.getTransferConfig();
+            if (transferConfig.isEnable()) {
+                final String address = transferConfig.getAddress();
+                final int port = transferConfig.getPort();
+
+                final BedrockQuery query = BedrockQuery.create(address, port);
+
+                for (final String player : new ArrayList<>(this.serverManager.getOnlinePlayers())) {
+                    if (query.online()) {
+                        this.tellrawToPlayer(player, transferConfig.getTransferringMessage());
+                        ThreadUtil.sleep(1);
+                        this.transferPlayer(player, address, port);
+                    } else {
+                        this.kickAllPlayers(transferConfig.getServerOffline());
+                        break;
+                    }
+                }
+            } else {
+                this.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
+            }
+
             if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
         }
     }

@@ -3,6 +3,7 @@
   <component name="EntryPointsManager">
     <writeAnnotations>
       <writeAnnotation name="eu.okaeri.configs.annotation.CustomKey" />
+      <writeAnnotation name="eu.okaeri.configs.annotation.Comment" />
     </writeAnnotations>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />

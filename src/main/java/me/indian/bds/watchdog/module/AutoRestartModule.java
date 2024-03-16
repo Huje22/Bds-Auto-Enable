@@ -1,5 +1,10 @@
 package me.indian.bds.watchdog.module;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.AutoRestartConfig;
 import me.indian.bds.event.server.ServerRestartEvent;
@@ -10,12 +15,6 @@ import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class AutoRestartModule {
 
@@ -90,7 +89,11 @@ public class AutoRestartModule {
                 this.watchDog.saveAndResume();
                 if (alert) this.restartAlert(seconds);
 
-                this.serverProcess.kickAllPlayers(this.prefix + " &aServer jest restartowany....");
+
+                if (!this.bdsAutoEnable.getAppConfigManager().getTransferConfig().isEnable()) {
+                    this.serverProcess.kickAllPlayers(this.prefix + " &aServer jest restartowany....");
+                }
+
                 this.serverProcess.sendToConsole("stop");
                 this.bdsAutoEnable.getEventManager().callEvent(new ServerRestartEvent(reason));
 

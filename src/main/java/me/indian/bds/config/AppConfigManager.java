@@ -4,6 +4,7 @@ import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import java.io.File;
 import me.indian.bds.config.sub.CommandConfig;
+import me.indian.bds.config.sub.TransferConfig;
 import me.indian.bds.config.sub.log.LogConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
@@ -12,6 +13,7 @@ import me.indian.bds.util.DefaultsVariables;
 public class AppConfigManager {
 
     private final AppConfig appConfig;
+    private final TransferConfig transferConfig;
     private final LogConfig logConfig;
     private final VersionManagerConfig versionManagerConfig;
     private final WatchDogConfig watchDogConfig;
@@ -23,6 +25,14 @@ public class AppConfigManager {
         this.appConfig = ConfigManager.create(AppConfig.class, (it) -> {
             it.withConfigurer(new YamlSnakeYamlConfigurer());
             it.withBindFile(configDir + "config.yml");
+            it.withRemoveOrphans(true);
+            it.saveDefaults();
+            it.load(true);
+        });
+
+        this.transferConfig = ConfigManager.create(TransferConfig.class, (it) -> {
+            it.withConfigurer(new YamlSnakeYamlConfigurer());
+            it.withBindFile(configDir + "Transfer.yml");
             it.withRemoveOrphans(true);
             it.saveDefaults();
             it.load(true);
@@ -63,6 +73,7 @@ public class AppConfigManager {
 
     public void load() {
         this.appConfig.load();
+        this.transferConfig.load();
         this.logConfig.load();
         this.versionManagerConfig.load();
         this.watchDogConfig.load();
@@ -70,6 +81,7 @@ public class AppConfigManager {
 
     public void save() {
         this.appConfig.save();
+        this.transferConfig.save();
         this.logConfig.save();
         this.versionManagerConfig.save();
         this.watchDogConfig.save();
@@ -77,6 +89,10 @@ public class AppConfigManager {
 
     public AppConfig getAppConfig() {
         return this.appConfig;
+    }
+
+    public TransferConfig getTransferConfig() {
+        return this.transferConfig;
     }
 
     public LogConfig getLogConfig() {
