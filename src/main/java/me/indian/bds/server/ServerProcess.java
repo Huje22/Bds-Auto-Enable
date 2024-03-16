@@ -263,7 +263,7 @@ public class ServerProcess {
             this.logger.debug("Lista graczy jest pusta");
             return;
         }
-        this.serverManager.getOnlinePlayers().forEach(name -> this.kick(name, msg));
+        this.serverManager.getOnlinePlayers().forEach(name -> this.kick(MessageUtil.fixPlayerName(name), msg));
     }
 
     public void kick(final String who, final String reason) {
@@ -271,11 +271,11 @@ public class ServerProcess {
             this.logger.debug("Lista graczy jest pusta");
             return;
         }
-        this.sendToConsole("kick " + who + " " + MessageUtil.colorize(reason));
+        this.sendToConsole("kick " + MessageUtil.fixPlayerName(who) + " " + MessageUtil.colorize(reason));
     }
 
     public void transferPlayer(final String playerName, final String address, final int port) {
-        this.sendToConsole("transfer " + playerName + " " + address + " " + port);
+        this.sendToConsole("transfer " + MessageUtil.fixPlayerName(playerName) + " " + address + " " + port);
     }
 
     public void transferPlayer(final String playerName, final String address) {
@@ -299,7 +299,7 @@ public class ServerProcess {
 
         final String msg2 = MessageUtil.fixMessage(msg, true).replace("\"", "\\\"");
 
-        this.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + msg2 + "\"}]}"));
+        this.sendToConsole(MessageUtil.colorize("tellraw " + MessageUtil.fixPlayerName(playerName) + " {\"rawtext\":[{\"text\":\"" + msg2 + "\"}]}"));
     }
 
     public void tellrawToAllAndLogger(final String prefix, final String msg, final LogState logState) {
