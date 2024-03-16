@@ -11,7 +11,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -187,7 +186,7 @@ public class BehaviorPackLoader {
     }
 
     private void savePacks(final List<BehaviorPack> packs) {
-        final List<BehaviorPack> nonNullPacks = new ArrayList<>();
+        final LinkedList<BehaviorPack> nonNullPacks = new LinkedList<>();
         for (final BehaviorPack pack : packs) {
             if (pack != null) {
                 nonNullPacks.add(pack);
