@@ -120,12 +120,12 @@ public class VersionManager {
             ZipUtil.unzipFile(verFile.getAbsolutePath(), this.appConfig.getFilesPath(), false, this.importantFiles);
             this.setLoaded(true);
             this.versionManagerConfig.setVersion(version);
+            this.versionManagerConfig.save();
             this.logger.info("Załadowano wersie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final Exception exception) {
             this.logger.critical("Nie można załadować wersji:&1 " + version, exception);
             System.exit(21);
         }
-        this.versionManagerConfig.save();
     }
 
     public void loadVersion() {

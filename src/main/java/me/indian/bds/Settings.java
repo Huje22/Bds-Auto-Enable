@@ -245,19 +245,6 @@ public class Settings {
         this.addServerAuthQuestion(scannerUtil);
         this.logger.print();
 
-        if (this.serverProperties.getServerMovementAuth() != ServerMovementAuth.CLIENT_AUTH) {
-            this.serverProperties.setCorrectPlayerMovement(scannerUtil.addBooleanQuestion(
-                    (defaultValue) -> {
-                        this.logger.info("&n&lUstaw Correct Player Movement&r (Polecamy ustawić na: " + defaultValue + ")" + this.enter);
-                        this.logger.info("Jeśli ustawione na&b true&r, pozycja klienta zostanie poprawiona do pozycji serwera, jeśli wynik ruchu przekroczy próg.");
-                        this.logger.info("Najlepiej działa z&b " + ServerMovementAuth.SERVER_AUTH_REWIND.getAuthName());
-                    },
-                    true,
-                    (input) -> this.logger.info("Correct Player Movement ustawiono na:&1 " + input)
-            ));
-            this.logger.print();
-        }
-
         this.serverProperties.setServerAuthoritativeBlockBreaking(scannerUtil.addBooleanQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lUstaw Server Authoritative Block Breaking&r (Polecamy ustawić na: " + defaultValue + ")" + this.enter);
@@ -372,7 +359,6 @@ public class Settings {
 
         if (this.serverProperties.getServerMovementAuth() != ServerMovementAuth.CLIENT_AUTH) {
             this.logger.info("Server Authoritative Block Breaking:&1 " + this.serverProperties.isServerAuthoritativeBlockBreaking());
-            this.logger.info("Correct Player Movement:&1 " + this.serverProperties.isCorrectPlayerMovement());
         }
 
         this.logger.info("Wymug tekstur:&1 " + this.serverProperties.isTexturePackRequired());

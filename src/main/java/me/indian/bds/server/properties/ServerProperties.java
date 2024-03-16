@@ -401,21 +401,6 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
-    public boolean isCorrectPlayerMovement() {
-        try {
-            return Boolean.parseBoolean(this.properties.getProperty("correct-player-movement"));
-        } catch (final Exception exception) {
-            this.logger.logThrowable(exception);
-            this.setCorrectPlayerMovement(false);
-            return false;
-        }
-    }
-
-    public void setCorrectPlayerMovement(final boolean clientSide) {
-        this.properties.setProperty("correct-player-movement", String.valueOf(clientSide));
-        this.reloadServerProperties();
-    }
-
     public boolean propertiesExists() {
         return this.propertiesFile.exists();
     }
@@ -453,7 +438,6 @@ public class ServerProperties {
                 ", allowCheats=" + this.isAllowCheats() +
                 ", difficulty='" + this.getDifficulty() + '\'' +
                 ", playerPermissionLevel='" + this.getPlayerPermissionLevel() + '\'' +
-                ", correctPlayerMovement=" + this.isCorrectPlayerMovement() +
 //                ", chatRestriction='" + this.getChatRestriction() + '\'' +
                 ", maxPlayers=" + this.getMaxPlayers() +
                 ", onlineMode=" + this.isOnlineMode() +

@@ -36,7 +36,6 @@ public class SettingInfoCommand extends Command {
 
         this.sendMessage("&aAutoryzacja ruchu gracza:&b " + this.properties.getServerMovementAuth().getAuthName());
 
-        this.sendMessage("&aCzy server poprawia ruch gracza:&b " + this.properties.isCorrectPlayerMovement());
         this.sendMessage("&aCzy paczki są wymagane do pobrania:&b " + this.properties.isTexturePackRequired());
         this.sendMessage("&aCzy server emituje telemetrie:&b " + this.properties.isServerTelemetry());
 
