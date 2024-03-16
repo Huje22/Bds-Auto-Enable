@@ -28,7 +28,7 @@ public class BehaviorPackLoader {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private File behaviorsFolder, worldBehaviorsJson;
-    private List<BehaviorPack> loadedBehaviorPacks;
+    private LinkedList<BehaviorPack> loadedBehaviorPacks;
 
     public BehaviorPackLoader(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -173,12 +173,12 @@ public class BehaviorPackLoader {
         return this.loadedBehaviorPacks;
     }
 
-    private List<BehaviorPack> loadExistingPacks() {
+    private LinkedList<BehaviorPack> loadExistingPacks() {
         try (final FileReader reader = new FileReader(this.worldBehaviorsJson)) {
-            final Type token = new TypeToken<List<BehaviorPack>>() {
+            final Type token = new TypeToken<LinkedList<BehaviorPack>>() {
             }.getType();
 
-            final List<BehaviorPack> behaviorPackList = GsonUtil.getGson().fromJson(reader, token);
+            final LinkedList<BehaviorPack> behaviorPackList = GsonUtil.getGson().fromJson(reader, token);
 
             return (behaviorPackList == null ? new LinkedList<>() : behaviorPackList);
         } catch (final Exception exception) {

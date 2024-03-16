@@ -27,7 +27,7 @@ public class ResourcePackLoader {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private File resourcesFolder, worldResourcePackJson;
-    private List<TexturePack> loadedTexturePacks;
+    private LinkedList<TexturePack> loadedTexturePacks;
 
     public ResourcePackLoader(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -172,14 +172,14 @@ public class ResourcePackLoader {
         return this.loadedTexturePacks;
     }
 
-    private List<TexturePack> loadExistingPacks() {
+    private LinkedList<TexturePack> loadExistingPacks() {
         try (final FileReader reader = new FileReader(this.worldResourcePackJson)) {
-            final Type token = new TypeToken<List<TexturePack>>() {
+            final Type token = new TypeToken<LinkedList<TexturePack>>() {
             }.getType();
 
-            final List<TexturePack> behaviorPackList = GsonUtil.getGson().fromJson(reader, token);
+            final LinkedList<TexturePack> texturePacksList = GsonUtil.getGson().fromJson(reader, token);
 
-            return (behaviorPackList == null ? new LinkedList<>() : behaviorPackList);
+            return (texturePacksList == null ? new LinkedList<>() : texturePacksList);
         } catch (final Exception exception) {
             return new LinkedList<>();
         }
