@@ -180,6 +180,13 @@ public class ServerProcess {
 
                     this.serverManager.initFromLog(line);
 
+                    /*
+                     TODO:Dodac event który będzie wysylal info z scytche
+                     if(line.contains("[Scythe]")){
+                     //                        this.eventManager.callEvent(new ScytheFlagEvent());
+                     }
+                     */
+
                     if (!this.containsNotAllowedToFileLog(line)) {
                         this.consoleOutputService.execute(() -> this.logger.instantLogToFile(line));
                     }
@@ -319,13 +326,13 @@ public class ServerProcess {
             }
         }
 
-        this.logger.info("Zapisywanie configu...");
-        try {
-            this.appConfigManager.save();
-            this.logger.info("Zapisano config");
-        } catch (final Exception exception) {
-            this.logger.critical("Nie można zapisać configu", exception);
-        }
+//        this.logger.info("Zapisywanie configu...");
+//        try {
+//            this.appConfigManager.save();
+//            this.logger.info("Zapisano config");
+//        } catch (final Exception exception) {
+//            this.logger.critical("Nie można zapisać configu", exception);
+//        }
 
         this.bdsAutoEnable.getExtensionManager().disableExtensions();
 
