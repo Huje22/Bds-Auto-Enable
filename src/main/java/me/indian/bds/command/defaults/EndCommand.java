@@ -50,7 +50,7 @@ public class EndCommand extends Command {
 
         this.canStop = false;
         this.serverProcess.setCanRun(false);
-        for (int i = seconds; i >= 0; i--) {
+        for (int i = seconds; i >= 1; i--) {
             this.serverProcess.actionBarToAll("&aZa&b " + i + "&a sekund server zostanie zamknięty!");
             this.serverProcess.tellrawToAllAndLogger("",
                     "&aZa&b " + i + "&a sekund server zostanie zamknięty!", LogState.INFO);

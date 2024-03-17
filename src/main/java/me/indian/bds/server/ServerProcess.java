@@ -312,10 +312,12 @@ public class ServerProcess {
     }
 
     public void titleToPlayer(final String playerName, final String message) {
+        if (this.serverManager.getOnlinePlayers().isEmpty()) return;
         this.sendToConsole("title " + playerName + " title " + MessageUtil.colorize(message));
     }
 
     public void titleToPlayer(final String playerName, final String message, final String subTitle) {
+        if (this.serverManager.getOnlinePlayers().isEmpty()) return;
         this.sendToConsole("title " + playerName + " subtitle " + MessageUtil.colorize(subTitle));
         this.titleToPlayer(playerName, message);
     }
@@ -329,6 +331,7 @@ public class ServerProcess {
     }
 
     public void actionBarToPlayer(final String playerName, final String message) {
+        if (this.serverManager.getOnlinePlayers().isEmpty()) return;
         this.sendToConsole("title " + playerName + " actionbar " + MessageUtil.colorize(message));
     }
 
