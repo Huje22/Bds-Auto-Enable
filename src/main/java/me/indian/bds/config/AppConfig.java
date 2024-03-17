@@ -43,6 +43,16 @@ public class AppConfig extends OkaeriConfig {
     private String filesPath = "./";
 
     @Comment({""})
+    @Comment({"Czy ładować automatycznie tekstury które nie są załadowane?"})
+    @CustomKey("LoadTexturePacks")
+    private boolean loadTexturePacks = true;
+
+    @Comment({""})
+    @Comment({"Czy ładować automatycznie paczki zachowań które nie są załadowane?"})
+    @CustomKey("LoadBehaviorPacks")
+    private boolean loadBehaviorPacks = true;
+
+    @Comment({""})
     @Comment({"Czy zamknąć aplikacje jeśli wystąpi niezłapany wyjątek?"})
     @CustomKey("CloseOnException")
     private boolean closeOnException = true;
@@ -100,6 +110,14 @@ public class AppConfig extends OkaeriConfig {
 
     public String getFilesPath() {
         return this.filesPath;
+    }
+
+    public boolean isLoadTexturePacks() {
+        return this.loadTexturePacks;
+    }
+
+    public boolean isLoadBehaviorPacks() {
+        return this.loadBehaviorPacks;
     }
 
     public void setFilesPath(final String filesPath) {

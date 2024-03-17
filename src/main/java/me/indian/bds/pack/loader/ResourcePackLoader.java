@@ -103,6 +103,11 @@ public class ResourcePackLoader {
     }
 
     public void findAllPacks() {
+        if (!this.bdsAutoEnable.getAppConfigManager().getAppConfig().isLoadTexturePacks()) {
+            this.logger.debug("Automatyczne ładowanie paczek tekstur jest&c wyłączone");
+            return;
+        }
+
         try {
             File[] packs = new File(this.resourcesFolder.getPath()).listFiles();
 
