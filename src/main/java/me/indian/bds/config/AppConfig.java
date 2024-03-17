@@ -44,13 +44,14 @@ public class AppConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Czy ładować automatycznie tekstury które nie są załadowane?"})
+    @Comment({"UWAGA: Jest to w fazie beta"})
     @CustomKey("LoadTexturePacks")
     private boolean loadTexturePacks = true;
 
-    @Comment({""})
-    @Comment({"Czy ładować automatycznie paczki zachowań które nie są załadowane?"})
-    @CustomKey("LoadBehaviorPacks")
-    private boolean loadBehaviorPacks = true;
+//    @Comment({""})
+//    @Comment({"Czy ładować automatycznie paczki zachowań które nie są załadowane?"})
+//    @CustomKey("LoadBehaviorPacks")
+//    private boolean loadBehaviorPacks = true;
 
     @Comment({""})
     @Comment({"Czy zamknąć aplikacje jeśli wystąpi niezłapany wyjątek?"})
@@ -115,11 +116,6 @@ public class AppConfig extends OkaeriConfig {
     public boolean isLoadTexturePacks() {
         return this.loadTexturePacks;
     }
-
-    public boolean isLoadBehaviorPacks() {
-        return this.loadBehaviorPacks;
-    }
-
     public void setFilesPath(final String filesPath) {
         this.filesPath = filesPath;
     }

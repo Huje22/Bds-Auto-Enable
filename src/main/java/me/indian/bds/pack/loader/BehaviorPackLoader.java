@@ -105,11 +105,6 @@ public class BehaviorPackLoader {
     }
 
     public void findAllPacks() {
-        if (!this.bdsAutoEnable.getAppConfigManager().getAppConfig().isLoadBehaviorPacks()) {
-            this.logger.debug("Automatyczne ładowanie paczek zachowań jest&c wyłączone");
-            return;
-        }
-
         try {
             File[] packs = new File(this.behaviorsFolder.getPath()).listFiles();
 
