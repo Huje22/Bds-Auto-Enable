@@ -14,6 +14,7 @@ import me.indian.bds.event.player.PlayerUnMuteEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
 import me.indian.bds.event.server.ExtensionDisableEvent;
 import me.indian.bds.event.server.ExtensionEnableEvent;
+import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
@@ -92,6 +93,10 @@ public abstract class Listener {
     }
 
     public void onServerClose(final ServerClosedEvent event) {
+
+    }
+
+    public void onServerAlert(final ServerAlertEvent event){
 
     }
 

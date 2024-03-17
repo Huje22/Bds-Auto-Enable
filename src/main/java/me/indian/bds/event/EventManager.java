@@ -24,6 +24,7 @@ import me.indian.bds.event.player.PlayerUnMuteEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
 import me.indian.bds.event.server.ExtensionDisableEvent;
 import me.indian.bds.event.server.ExtensionEnableEvent;
+import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
@@ -110,6 +111,8 @@ public class EventManager {
                         listener.onServerRestart(serverRestartEvent);
                     } else if (event instanceof final ServerClosedEvent serverClosedEvent) {
                         listener.onServerClose(serverClosedEvent);
+                    } else if (event instanceof final ServerAlertEvent serverAlertEvent) {
+                        listener.onServerAlert(serverAlertEvent);
                     } else if (event instanceof final TPSChangeEvent tpsChangeEvent) {
                         listener.onTpsChange(tpsChangeEvent);
                     } else if (event instanceof final BackupDoneEvent backupDoneEvent) {
