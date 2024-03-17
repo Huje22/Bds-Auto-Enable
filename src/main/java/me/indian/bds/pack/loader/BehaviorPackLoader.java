@@ -145,7 +145,7 @@ public class BehaviorPackLoader {
                     if (behaviorPack != null && !this.packIsLoaded(behaviorPack)) {
                         this.loadPack(behaviorPack, this.getPackIndex(behaviorPack));
                     } else {
-                        behaviorPacks.set(this.getPackIndex(behaviorPack), behaviorPack);
+                        this.setPackIndex(behaviorPack, this.getPackIndex(behaviorPack));
                     }
                 } catch (final Exception exception) {
                     this.logger.error("&cNie udało załadować się paczki&b " + behaviorPack.name(), exception);
@@ -180,11 +180,20 @@ public class BehaviorPackLoader {
         return this.loadedBehaviorPacks.indexOf(behaviorPack);
     }
 
+    public void setPackIndex(final BehaviorPack behaviorPack, int index) {
+        final int size = this.loadedBehaviorPacks.size();
+
+        if (index >= size) index = size - 1;
+
+        this.loadedBehaviorPacks.set(index, behaviorPack);
+        this.savePacks(this.loadedBehaviorPacks);
+    }
+
     public File getBehaviorsFolder() {
         return this.behaviorsFolder;
     }
 
-    public List<BehaviorPack> getLoadedBehaviorPacks() {
+    public LinkedList<BehaviorPack> getLoadedBehaviorPacks() {
         return this.loadedBehaviorPacks;
     }
 

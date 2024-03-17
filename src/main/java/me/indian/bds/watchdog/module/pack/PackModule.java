@@ -36,33 +36,29 @@ public class PackModule {
         this.packFile = new File(this.behaviorPackLoader.getBehaviorsFolder() + File.separator + "BDS-Auto-Enable-Management-Pack-main");
 
         this.getPackInfo();
+
     }
 
     public void getPackInfo() {
-        
-
         try {
             this.resourcePackLoader.findAllPacks();
             this.behaviorPackLoader.findAllPacks();
 
-//TODO: Pierw sprawdzić czy paczka istnieję w pliku jak nie pobierać ją 
 
-if (!this.packExists()) {
-            this.logger.error("Nie można odnaleźć paczki&b " + this.packName);
-            this.packUpdater.downloadPack();
-            this.getPackInfo();
-            return;
-}
+            if (!this.packExists()) {
+                this.logger.error("Nie można odnaleźć paczki&b " + this.packName);
+                this.packUpdater.downloadPack();
+                this.getPackInfo();
+                return;
+            }
 
-
-            
-            
-            
             this.mainPack = this.behaviorPackLoader.getPackFromFile(this.packFile);
             this.packUpdater.updatePack();
 
             if (!this.behaviorPackLoader.packIsLoaded(this.mainPack)) {
                 this.behaviorPackLoader.loadPack(this.mainPack, 0);
+            } else {
+                this.behaviorPackLoader.setPackIndex(this.mainPack, 0);
             }
 
             this.loaded = true;

@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.pack.component.TexturePack;
@@ -144,7 +143,7 @@ public class ResourcePackLoader {
                     if (texturePack != null && !this.packIsLoaded(texturePack)) {
                         this.loadPack(texturePack, this.getPackIndex(texturePack));
                     } else {
-                        texturePacks.set(this.getPackIndex(texturePack), texturePack);
+                        this.setPackIndex(texturePack, this.getPackIndex(texturePack));
                     }
                 } catch (final Exception exception) {
                     this.logger.error("&cNie udało załadować się paczki&b " + texturePack.name(), exception);
@@ -179,11 +178,20 @@ public class ResourcePackLoader {
         return this.loadedTexturePacks.indexOf(texturePack);
     }
 
+    private void setPackIndex(final TexturePack texturePack, int index) {
+        final int size = this.loadedTexturePacks.size();
+
+        if (index >= size) index = size - 1;
+
+        this.loadedTexturePacks.set(index, texturePack);
+        this.savePacks(this.loadedTexturePacks);
+    }
+
     public File getResourcesFolder() {
         return this.resourcesFolder;
     }
 
-    public List<TexturePack> getLoadedTexturePacks() {
+    public LinkedList<TexturePack> getLoadedTexturePacks() {
         return this.loadedTexturePacks;
     }
 

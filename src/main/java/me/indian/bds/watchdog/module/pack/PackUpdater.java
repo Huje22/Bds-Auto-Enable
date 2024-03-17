@@ -9,12 +9,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.pack.component.BehaviorPack;
 import me.indian.bds.pack.loader.BehaviorPackLoader;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.HTTPUtil;
+import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ZipUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -28,6 +32,7 @@ public class PackUpdater {
     private final BehaviorPackLoader behaviorPackLoader;
     private final File behaviorsFolder;
     private final OkHttpClient client;
+    private Response response;
 
     public PackUpdater(final BDSAutoEnable bdsAutoEnable, final PackModule packModule) {
         this.logger = bdsAutoEnable.getLogger();
@@ -35,6 +40,9 @@ public class PackUpdater {
         this.behaviorPackLoader = bdsAutoEnable.getPackManager().getBehaviorPackLoader();
         this.behaviorsFolder = this.behaviorPackLoader.getBehaviorsFolder();
         this.client = HTTPUtil.getOkHttpClient();
+        this.response = null;
+
+        this.removeResponse();
     }
 
     public void downloadPack() {
@@ -134,13 +142,38 @@ public class PackUpdater {
         }
     }
 
+    public Response getPackManifest() throws IOException {
+        if (this.response != null) return this.response;
 
-    private Response getPackManifest() throws IOException {
         final Request request = new Request.Builder()
                 .url("https://raw.githubusercontent.com/Huje22/BDS-Auto-Enable-Management-Pack/main/manifest.json")
                 .get()
                 .build();
 
-        return this.client.newCall(request).execute();
+        final Response newResponse = this.client.newCall(request).execute();
+
+        if (newResponse.isSuccessful()) {
+            this.response = newResponse;
+        }
+
+        return newResponse;
+    }
+
+
+    private void removeResponse() {
+        final TimerTask removeResponseTask = new TimerTask() {
+            @Override
+            public void run() {
+                if (PackUpdater.this.response != null) {
+                    PackUpdater.this.response = null;
+                    PackUpdater.this.logger.debug("Ustawiono response na&b null&r aby następnym razem pozyskać nowe");
+                }
+            }
+        };
+
+        final long fiveMinutes = MathUtil.minutesTo(5, TimeUnit.MINUTES);
+
+        new Timer("Pack Response Remover", true)
+                .scheduleAtFixedRate(removeResponseTask, fiveMinutes, fiveMinutes);
     }
 }
