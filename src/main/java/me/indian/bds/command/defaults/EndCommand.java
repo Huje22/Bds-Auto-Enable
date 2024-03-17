@@ -45,11 +45,15 @@ public class EndCommand extends Command {
             this.sendMessage("&cServer jest już w trakcie zatrzymywania");
             return;
         }
+
+        this.serverProcess.titleToAll("&cServer zostanie zamknięty", "&bZa&a " + seconds + "&e sekund");
+
         this.canStop = false;
         this.serverProcess.setCanRun(false);
         for (int i = seconds; i >= 0; i--) {
+            this.serverProcess.actionBarToAll("&aZa&b " + i + "&a sekund server zostanie zamknięty!");
             this.serverProcess.tellrawToAllAndLogger("",
-                    "&aZa&1 " + i + "&a sekund server zostanie zamknięty!", LogState.INFO);
+                    "&aZa&b " + i + "&a sekund server zostanie zamknięty!", LogState.INFO);
             ThreadUtil.sleep(1);
         }
         this.serverProcess.sendToConsole("stop");

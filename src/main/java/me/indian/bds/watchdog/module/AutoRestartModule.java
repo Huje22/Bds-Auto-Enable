@@ -83,6 +83,8 @@ public class AutoRestartModule {
                     this.logger.error("Nie można zrestartować servera gdy jest on wyłączony!");
                     return;
                 }
+
+                this.serverProcess.titleToAll("&cServer zostanie zrestartowany", "&bZa&a " + seconds + "&e sekund");
                 this.serverProcess.tellrawToAllAndLogger(this.prefix,
                         "&aPrzygotowanie do&b restartu&a servera",
                         LogState.WARNING);
@@ -123,9 +125,10 @@ public class AutoRestartModule {
     }
 
     private void restartAlert(final int seconds) {
-        for (int i = seconds; i >= 0; i--) {
-            AutoRestartModule.this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                    "&aZa&1 " + i + "&a sekund server zostanie zrestartowany!", LogState.INFO);
+        for (int i = seconds; i >= 1; i--) {
+            this.serverProcess.actionBarToAll("&aZa&b " + i + "&a sekund server zostanie zrestartowany!");
+           this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
+                    "&aZa&b " + i + "&a sekund server zostanie zrestartowany!", LogState.INFO);
             ThreadUtil.sleep(1);
         }
     }
