@@ -39,17 +39,25 @@ public class PackModule {
     }
 
     public void getPackInfo() {
-        if (!this.packExists()) {
-            this.logger.error("Nie można odnaleźć paczki&b " + this.packName);
-            this.packUpdater.downloadPack();
-            this.getPackInfo();
-            return;
-        }
+        
 
         try {
             this.resourcePackLoader.findAllPacks();
             this.behaviorPackLoader.findAllPacks();
 
+//TODO: Pierw sprawdzić czy paczka istnieję w pliku jak nie pobierać ją 
+
+if (!this.packExists()) {
+            this.logger.error("Nie można odnaleźć paczki&b " + this.packName);
+            this.packUpdater.downloadPack();
+            this.getPackInfo();
+            return;
+}
+
+
+            
+            
+            
             this.mainPack = this.behaviorPackLoader.getPackFromFile(this.packFile);
             this.packUpdater.updatePack();
 
