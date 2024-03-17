@@ -24,8 +24,10 @@ import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
+import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
+import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.DateUtil;
@@ -121,6 +123,7 @@ public class ServerManager {
             }
         } catch (final Exception exception) {
             this.logger.error("&cNie udało się obsłużyć połączenia gracza z logu&b " + logEntry, exception);
+            this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć połączenia gracza z logu " + logEntry, exception, LogState.ERROR));
         } finally {
             this.playerConnectLock.unlock();
         }
@@ -134,10 +137,16 @@ public class ServerManager {
         if (matcher.find()) {
             final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
 
-            this.onlinePlayers.remove(playerName);
-            this.offlinePlayers.add(playerName);
-            this.statsManager.setLastQuit(playerName, DateUtil.localDateToLong(LocalDate.now()));
-            this.eventManager.callEvent(new PlayerQuitEvent(playerName));
+            try {
+                this.onlinePlayers.remove(playerName);
+                this.offlinePlayers.add(playerName);
+                this.statsManager.setLastQuit(playerName, DateUtil.localDateToLong(LocalDate.now()));
+                this.eventManager.callEvent(new PlayerQuitEvent(playerName));
+            } catch (final Exception exception) {
+                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć opuszczenia gracza " + playerName,
+                        "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
+                throw exception;
+            }
         }
     }
 
@@ -148,10 +157,19 @@ public class ServerManager {
 
         if (matcher.find()) {
             final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
-            this.onlinePlayers.add(playerName);
-            this.offlinePlayers.remove(playerName);
-            this.statsManager.setLastJoin(playerName, DateUtil.localDateToLong(LocalDate.now()));
-            this.eventManager.callEvent(new PlayerJoinEvent(playerName));
+            try {
+                this.onlinePlayers.add(playerName);
+                this.offlinePlayers.remove(playerName);
+                this.statsManager.setLastJoin(playerName, DateUtil.localDateToLong(LocalDate.now()));
+                this.eventManager.callEvent(new PlayerJoinEvent(playerName));
+            } catch (final Exception exception) {
+                this.logger.error("&cNie udało się obsłużyć dołączenia gracza&b " + playerName, exception);
+                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć dołączania dla gracza " + playerName,
+                        "Spróbujemy go przetransferować ponownie na server",
+                        exception, LogState.ERROR));
+                this.serverProcess.transferPlayer(playerName, "127.0.0.1",
+                        this.bdsAutoEnable.getServerProperties().getServerPort());
+            }
         }
     }
 
@@ -162,26 +180,34 @@ public class ServerManager {
 
         if (matcher.find()) {
             final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
-            this.statsManager.createNewPlayer(playerName);
-            this.eventManager.callEvent(new PlayerSpawnEvent(playerName));
+
+            try {
+                this.statsManager.createNewPlayer(playerName);
+                this.eventManager.callEvent(new PlayerSpawnEvent(playerName));
+            } catch (final Exception exception) {
+                this.logger.error("&cNie udało się obsłużyć respawnu gracza " + playerName);
+                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć respawnu gracza " + playerName,
+                        "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
+                throw exception;
+            }
         }
     }
 
     private void chatMessage(final String logEntry) {
-        try {
-            this.chatLock.lock();
+        this.chatLock.lock();
 
-            final String patternString = "PlayerChat:([^,]+) Message:(.+) Position:(.+)";
-            final Pattern pattern = Pattern.compile(patternString);
-            final Matcher matcher = pattern.matcher(logEntry);
+        final String patternString = "PlayerChat:([^,]+) Message:(.+) Position:(.+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
 
-            if (matcher.find()) {
-                final String playerChat = MessageUtil.fixPlayerName(matcher.group(1));
-                final String message = MessageUtil.fixMessage(matcher.group(2));
-                final Position position = Position.parsePosition(matcher.group(3));
-                final boolean appHandled = this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages();
-                final boolean muted = this.isMuted(playerChat);
+        if (matcher.find()) {
+            final String playerChat = MessageUtil.fixPlayerName(matcher.group(1));
+            final String message = MessageUtil.fixMessage(matcher.group(2));
+            final Position position = Position.parsePosition(matcher.group(3));
+            final boolean appHandled = this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages();
+            final boolean muted = this.isMuted(playerChat);
 
+            try {
                 final PlayerChatResponse response = (PlayerChatResponse) this.eventManager.callEventWithResponse(new PlayerChatEvent(playerChat, message, position, muted, appHandled));
 
                 if (appHandled) {
@@ -197,11 +223,14 @@ public class ServerManager {
                     }
                     this.serverProcess.tellrawToAll(format);
                 }
+            } catch (final Exception exception) {
+                this.logger.error("&cWystąpił błąd podczas próby przetworzenia wiadomości gracza&c " + playerChat);
+                this.eventManager.callEvent(new ServerAlertEvent("Wystąpił błąd podczas próby przetworzenia wiadomości gracza " + playerChat,
+                        "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
+                throw exception;
+            } finally {
+                this.chatLock.unlock();
             }
-        } catch (final Exception exception) {
-            this.logger.error("Wystąpił błąd podczas próby przetworzenia wiadomości gracza", exception);
-        } finally {
-            this.chatLock.unlock();
         }
     }
 
@@ -216,9 +245,13 @@ public class ServerManager {
             final String position = matcher.group(3);
             final boolean isOp = Boolean.parseBoolean(matcher.group(4));
 
-            this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command), isOp);
-            this.eventManager.callEvent(new PlayerCommandEvent(playerCommand, command,
-                    Position.parsePosition(position), isOp));
+            try {
+                this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command), isOp);
+                this.eventManager.callEvent(new PlayerCommandEvent(playerCommand, command, Position.parsePosition(position), isOp));
+            } catch (final Exception exception) {
+                this.logger.error("&cWystąpił błąd podczas próby przetworzenia polecenia gracza&c " + playerCommand, exception);
+                this.eventManager.callEvent(new ServerAlertEvent("Wystąpił błąd podczas próby przetworzenia polecenia gracza " + playerCommand, exception, LogState.CRITICAL));
+            }
         }
     }
 
@@ -234,8 +267,15 @@ public class ServerManager {
             final String killerName = matcher.group(4);
             final String usedItemName = matcher.group(5);
 
-            this.statsManager.addDeaths(playerDeath, 1);
-            this.eventManager.callEvent(new PlayerDeathEvent(playerDeath, deathMessage, deathPosition, killerName, usedItemName));
+            try {
+                this.statsManager.addDeaths(playerDeath, 1);
+                this.eventManager.callEvent(new PlayerDeathEvent(playerDeath, deathMessage, deathPosition, killerName, usedItemName));
+            } catch (final Exception exception) {
+                this.logger.error("&cNie udało się obsłużyć śmierci gracza " + playerDeath);
+                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć śmierci gracza " + playerDeath,
+                        "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
+                throw exception;
+            }
         }
     }
 
@@ -269,7 +309,14 @@ public class ServerManager {
             final Position fromPosition = Position.parsePosition(matcher.group(4));
             final Position toPosition = Position.parsePosition(matcher.group(5));
 
-            this.eventManager.callEvent(new PlayerDimensionChangeEvent(playerName, fromDimension, toDimension, fromPosition, toPosition));
+            try {
+                this.eventManager.callEvent(new PlayerDimensionChangeEvent(playerName, fromDimension, toDimension, fromPosition, toPosition));
+            } catch (final Exception exception) {
+                this.logger.error("&cNie udało się obsłużyć zmiany wymiaru gracza " + playerName);
+                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć zmiany wymiaru gracza " + playerName,
+                        "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
+                throw exception;
+            }
         }
     }
 
@@ -283,8 +330,15 @@ public class ServerManager {
             final String blockID = matcher.group(2);
             final String blockPosition = matcher.group(3);
 
-            this.statsManager.addBlockBroken(playerBreakBlock, 1);
-            this.eventManager.callEvent(new PlayerBlockBreakEvent(playerBreakBlock, blockID, Position.parsePosition(blockPosition)));
+            try {
+                this.statsManager.addBlockBroken(playerBreakBlock, 1);
+                this.eventManager.callEvent(new PlayerBlockBreakEvent(playerBreakBlock, blockID, Position.parsePosition(blockPosition)));
+            } catch (final Exception exception) {
+                this.logger.error("&cNie udało się obsłużyć zniszczenia bloku gracza " + playerBreakBlock);
+                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć zniszczenia bloku gracza " + playerBreakBlock,
+                        "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
+                throw exception;
+            }
         }
     }
 
@@ -298,8 +352,15 @@ public class ServerManager {
             final String blockID = matcher.group(2);
             final String blockPosition = matcher.group(3);
 
-            this.statsManager.addBlockPlaced(playerPlaceBlock, 1);
-            this.eventManager.callEvent(new PlayerBlockPlaceEvent(playerPlaceBlock, blockID, Position.parsePosition(blockPosition)));
+            try {
+                this.statsManager.addBlockPlaced(playerPlaceBlock, 1);
+                this.eventManager.callEvent(new PlayerBlockPlaceEvent(playerPlaceBlock, blockID, Position.parsePosition(blockPosition)));
+            } catch (final Exception exception) {
+                this.logger.error("&cNie udało się obsłużyć postawienia bloku gracza " + playerPlaceBlock);
+                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć postawienia bloku gracza " + playerPlaceBlock,
+                        "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
+                throw exception;
+            }
         }
     }
 
