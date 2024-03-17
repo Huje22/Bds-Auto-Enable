@@ -12,6 +12,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandSender;
+import me.indian.bds.config.sub.transfer.MainServerConfig;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.event.Position;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
@@ -30,6 +31,7 @@ import me.indian.bds.event.server.TPSChangeEvent;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.stats.StatsManager;
+import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
@@ -164,11 +166,7 @@ public class ServerManager {
                 this.eventManager.callEvent(new PlayerJoinEvent(playerName));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć dołączenia gracza&b " + playerName, exception);
-                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć dołączania dla gracza " + playerName,
-                        "Spróbujemy go przetransferować ponownie na server",
-                        exception, LogState.ERROR));
-                this.serverProcess.transferPlayer(playerName, "127.0.0.1",
-                        this.bdsAutoEnable.getServerProperties().getServerPort());
+                this.serverJoinException(playerName, exception);
             }
         }
     }
@@ -419,6 +417,31 @@ public class ServerManager {
 
         final String[] newArgs = MessageUtil.removeFirstArgs(args);
         this.bdsAutoEnable.getCommandManager().runCommands(CommandSender.PLAYER, playerCommand, args[0], newArgs, isOp);
+    }
+
+    private void serverJoinException(final String playerName, final Exception exception) {
+        final MainServerConfig mainServerConfig = this.bdsAutoEnable.getAppConfigManager().getTransferConfig().getMainServerConfig();
+        final String additionalMessage;
+        if (mainServerConfig.isTransfer()) {
+            final String ip = mainServerConfig.getIp();
+            final int port = this.bdsAutoEnable.getServerProperties().getServerPort();
+
+            final BedrockQuery query = BedrockQuery.create(ip, port);
+            if (query.online()) {
+                this.serverProcess.transferPlayer(playerName, ip, port);
+                additionalMessage = "Spróbujemy go przetransferować ponownie na server";
+            } else {
+                this.serverProcess.kick(playerName, "Nie udało się obsłużyć nam twojego dołączenia");
+                additionalMessage = "Wyrzuciliśmy go";
+            }
+        } else {
+            this.serverProcess.kick(playerName, "Nie udało się obsłużyć nam twojego dołączenia");
+            additionalMessage = "Wyrzuciliśmy go";
+        }
+
+        this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć dołączania dla gracza " + playerName,
+                additionalMessage,
+                exception, LogState.ERROR));
     }
 
     public StatsManager getStatsManager() {

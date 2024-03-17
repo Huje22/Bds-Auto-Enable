@@ -4,7 +4,7 @@ import eu.okaeri.configs.ConfigManager;
 import eu.okaeri.configs.yaml.snakeyaml.YamlSnakeYamlConfigurer;
 import java.io.File;
 import me.indian.bds.config.sub.CommandConfig;
-import me.indian.bds.config.sub.TransferConfig;
+import me.indian.bds.config.sub.transfer.TransferConfig;
 import me.indian.bds.config.sub.log.LogConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;

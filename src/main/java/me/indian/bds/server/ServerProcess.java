@@ -12,7 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.config.sub.TransferConfig;
+import me.indian.bds.config.sub.transfer.LobbyConfig;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
@@ -404,20 +404,20 @@ public class ServerProcess {
             if (!this.isEnabled()) return;
             this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
 
-            final TransferConfig transferConfig = this.appConfigManager.getTransferConfig();
-            if (transferConfig.isEnable()) {
-                final String address = transferConfig.getAddress();
-                final int port = transferConfig.getPort();
+            final LobbyConfig lobbyConfig = this.appConfigManager.getTransferConfig().getLobbyConfig();
+            if (lobbyConfig.isEnable()) {
+                final String address = lobbyConfig.getAddress();
+                final int port = lobbyConfig.getPort();
 
                 final BedrockQuery query = BedrockQuery.create(address, port);
 
                 for (final String player : new ArrayList<>(this.serverManager.getOnlinePlayers())) {
                     if (query.online()) {
-                        this.tellrawToPlayer(player, transferConfig.getTransferringMessage());
+                        this.tellrawToPlayer(player, lobbyConfig.getTransferringMessage());
                         ThreadUtil.sleep(1);
                         this.transferPlayer(player, address, port);
                     } else {
-                        this.kickAllPlayers(transferConfig.getServerOffline());
+                        this.kickAllPlayers(lobbyConfig.getServerOffline());
                         break;
                     }
                 }

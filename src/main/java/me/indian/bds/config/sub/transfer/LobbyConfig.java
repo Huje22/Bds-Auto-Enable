@@ -1,13 +1,9 @@
-package me.indian.bds.config.sub;
+package me.indian.bds.config.sub.transfer;
 
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
-import eu.okaeri.configs.annotation.Header;
 
-@Header("################################################################")
-@Header("#           Ustawienia Transferowania do lobby                 #")
-@Header("################################################################")
-public class TransferConfig extends OkaeriConfig {
+public class LobbyConfig  extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Czy przenosić graczy na dany server podczas restartu albo wyłączenia servera?"})

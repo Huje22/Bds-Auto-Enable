@@ -90,7 +90,7 @@ public class AutoRestartModule {
                 if (alert) this.restartAlert(seconds);
 
 
-                if (!this.bdsAutoEnable.getAppConfigManager().getTransferConfig().isEnable()) {
+                if (!this.bdsAutoEnable.getAppConfigManager().getTransferConfig().getLobbyConfig().isEnable()) {
                     this.serverProcess.kickAllPlayers(this.prefix + " &aServer jest restartowany....");
                 }
 
