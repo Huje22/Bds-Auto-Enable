@@ -69,6 +69,12 @@ public class ServerManager {
         this.versionManager = this.bdsAutoEnable.getVersionManager();
     }
 
+
+
+//TODO: Jeśli mie uda się obsłużyć czegoś związanego z graczem wyrzucać go bądź transferować spowrotem na server
+
+
+    
     public void initFromLog(final String logEntry) {
         this.chatService.execute(() -> {
             this.chatMessage(logEntry);
