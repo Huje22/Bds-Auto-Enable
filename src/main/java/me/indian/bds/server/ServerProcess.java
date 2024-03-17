@@ -311,6 +311,31 @@ public class ServerProcess {
         if (!this.serverManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
     }
 
+    public void titleToPlayer(final String playerName, final String message) {
+        this.sendToConsole("title " + playerName + " title " + MessageUtil.colorize(message));
+    }
+
+    public void titleToPlayer(final String playerName, final String message, final String subTitle) {
+        this.sendToConsole("title " + playerName + " subtitle " + MessageUtil.colorize(subTitle));
+        this.titleToPlayer(playerName, message);
+    }
+
+    public void titleToAll(final String message) {
+        this.titleToPlayer("@a", message);
+    }
+
+    public void titleToAll(final String message, final String subTitle) {
+        this.titleToPlayer("@a", message, subTitle);
+    }
+
+    public void actionBarToPlayer(final String playerName, final String message) {
+        this.sendToConsole("title " + playerName + " actionbar " + MessageUtil.colorize(message));
+    }
+
+    public void actionBarToAll(final String message) {
+        this.actionBarToPlayer("@a", message);
+    }
+
     /**
      * Metoda do zatrzymania bezpiecznie servera wywoływana przez shutdown hook
      */
