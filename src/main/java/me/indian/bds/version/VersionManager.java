@@ -215,7 +215,7 @@ public class VersionManager {
     }
 
     public String getLatestVersion() {
-        this.logger.info("&aUzyskiwanie najnowszej wersji...");
+        this.logger.debug("&aUzyskiwanie najnowszej wersji...");
         final Request request = new Request.Builder()
                 .url("https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json")
                 .get()
@@ -287,7 +287,7 @@ public class VersionManager {
     }
 
     public int getLastKnownProtocol() {
-        if (this.lastKnownProtocol == 0) {
+        if (this.lastKnownProtocol == 0 || this.lastKnownProtocol == -1) {
             this.setLastKnownProtocol(BedrockQuery.create("localhost", this.serverProperties.getServerPort()).protocol());
         }
 
