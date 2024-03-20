@@ -159,6 +159,7 @@ public class BehaviorPackLoader {
     }
 
     public void loadPack(final BehaviorPack behaviorPack) {
+        //TODO: Nie ładuj paczki napewno jeśli już istnieje 
         this.loadedBehaviorPacks.add(behaviorPack);
         this.savePacks(this.loadedBehaviorPacks);
         this.logger.info("&aZaładowano &dzachowań&b " + behaviorPack.name() + "&a w wersji&1 " + Arrays.toString(behaviorPack.version()));
