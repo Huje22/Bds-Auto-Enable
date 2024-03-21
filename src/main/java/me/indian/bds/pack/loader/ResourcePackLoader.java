@@ -55,6 +55,7 @@ public class ResourcePackLoader {
                     this.makeItArray();
                 }
             } catch (final Exception exception) {
+                this.logger.critical("Nie udało się utworzyć pliku&b world_resource_packs.json");
                 throw new RuntimeException(exception);
             }
         }

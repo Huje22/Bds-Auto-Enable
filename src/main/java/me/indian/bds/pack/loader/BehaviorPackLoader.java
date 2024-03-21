@@ -56,6 +56,7 @@ public class BehaviorPackLoader {
                     this.makeItArray();
                 }
             } catch (final Exception exception) {
+                this.logger.critical("Nie udało się utworzyć pliku&b world_behavior_packs.json");
                 throw new RuntimeException(exception);
             }
         }
