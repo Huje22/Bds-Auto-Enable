@@ -139,6 +139,8 @@ public class BehaviorPackLoader {
                     this.logger.error("&cNie udało załadować się paczki z pliku&b " + file.getName(), exception);
                 }
             }
+            
+            this.savePacks(behaviorPacks);
 
             for (final BehaviorPack behaviorPack : this.loadedBehaviorPacks) {
                 try {
@@ -152,7 +154,6 @@ public class BehaviorPackLoader {
                 }
             }
 
-            this.savePacks(behaviorPacks);
         } catch (final Exception exception) {
             this.logger.error("&cNie udało się przeprowadzić ładowania paczek zachowań");
         }
