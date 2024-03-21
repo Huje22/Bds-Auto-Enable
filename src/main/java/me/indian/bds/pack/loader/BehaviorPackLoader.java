@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.LinkedList;
-import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.pack.component.BehaviorPack;
@@ -127,25 +126,26 @@ public class BehaviorPackLoader {
                 return;
             }
 
-            final List<BehaviorPack> behaviorPacks = new LinkedList<>();
+            final LinkedList<BehaviorPack> cachedPacks = new LinkedList<>(this.loadedBehaviorPacks);
+
             for (final File file : packs) {
                 try {
+                    if (!file.isDirectory()) continue;
                     final BehaviorPack packFromFile = this.getPackFromFile(file);
                     if (packFromFile != null && !this.packIsLoaded(packFromFile)) {
                         this.loadPack(packFromFile);
                     }
-                    behaviorPacks.add(packFromFile);
                 } catch (final Exception exception) {
                     this.logger.error("&cNie udało załadować się paczki z pliku&b " + file.getName(), exception);
                 }
             }
-            
-            this.savePacks(behaviorPacks);
 
-            for (final BehaviorPack behaviorPack : this.loadedBehaviorPacks) {
+            for (final BehaviorPack behaviorPack : cachedPacks) {
                 try {
-                    if (behaviorPack != null && !this.packIsLoaded(behaviorPack)) {
-                        this.loadPack(behaviorPack, this.getPackIndex(behaviorPack));
+                    if (behaviorPack == null) continue;
+
+                    if (!this.packIsLoaded(behaviorPack)) {
+                        this.loadPack(behaviorPack);
                     } else {
                         this.setPackIndex(behaviorPack, this.getPackIndex(behaviorPack));
                     }
@@ -154,21 +154,23 @@ public class BehaviorPackLoader {
                 }
             }
 
+            this.savePacks();
         } catch (final Exception exception) {
             this.logger.error("&cNie udało się przeprowadzić ładowania paczek zachowań");
         }
     }
 
     public void loadPack(final BehaviorPack behaviorPack) {
-        //TODO: Nie ładuj paczki napewno jeśli już istnieje 
+        if (this.packIsLoaded(behaviorPack)) return;
         this.loadedBehaviorPacks.add(behaviorPack);
-        this.savePacks(this.loadedBehaviorPacks);
+        this.savePacks();
         this.logger.info("&aZaładowano &dzachowań&b " + behaviorPack.name() + "&a w wersji&1 " + Arrays.toString(behaviorPack.version()));
     }
 
     public void loadPack(final BehaviorPack behaviorPack, final int index) {
+        if (this.packIsLoaded(behaviorPack)) return;
         this.loadedBehaviorPacks.add(index, behaviorPack);
-        this.savePacks(this.loadedBehaviorPacks);
+        this.savePacks();
         this.logger.info("&aZaładowano paczke&d zachowań&b " + behaviorPack.name() + "&a w wersji&1 " + Arrays.toString(behaviorPack.version()));
     }
 
@@ -188,7 +190,7 @@ public class BehaviorPackLoader {
         if (index >= size) index = size - 1;
 
         this.loadedBehaviorPacks.set(index, behaviorPack);
-        this.savePacks(this.loadedBehaviorPacks);
+        this.savePacks();
     }
 
     public File getBehaviorsFolder() {
@@ -212,9 +214,9 @@ public class BehaviorPackLoader {
         }
     }
 
-    private void savePacks(final List<BehaviorPack> packs) {
+    private void savePacks() {
         final LinkedList<BehaviorPack> nonNullPacks = new LinkedList<>();
-        for (final BehaviorPack pack : packs) {
+        for (final BehaviorPack pack : this.loadedBehaviorPacks) {
             if (pack != null) {
                 nonNullPacks.add(pack);
             }
@@ -228,6 +230,23 @@ public class BehaviorPackLoader {
 
         this.loadedBehaviorPacks = nonNullPacks;
     }
+
+//    private void savePacks(final List<BehaviorPack> packs) {
+//        final LinkedList<BehaviorPack> nonNullPacks = new LinkedList<>();
+//        for (final BehaviorPack pack : packs) {
+//            if (pack != null) {
+//                nonNullPacks.add(pack);
+//            }
+//        }
+//
+//        try (final FileWriter writer = new FileWriter(this.worldBehaviorsJson)) {
+//            writer.write(GsonUtil.getGson().toJson(nonNullPacks));
+//        } catch (final IOException ioException) {
+//            this.logger.error("&cNie udało się zapisać&b paczek zachowań", ioException);
+//        }
+//
+//        this.loadedBehaviorPacks = nonNullPacks;
+//    }
 
     private void makeItArray() {
         try (final FileWriter writer = new FileWriter(this.worldBehaviorsJson.getPath())) {

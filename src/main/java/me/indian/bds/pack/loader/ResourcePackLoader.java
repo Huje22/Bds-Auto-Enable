@@ -130,23 +130,26 @@ public class ResourcePackLoader {
                 return;
             }
 
-            final LinkedList<TexturePack> texturePacks = new LinkedList<>();
+            final LinkedList<TexturePack> cachedPacks = new LinkedList<>(this.loadedTexturePacks);
+
             for (final File file : packs) {
                 try {
+                    if (!file.isDirectory()) continue;
                     final TexturePack packFromFile = this.getPackFromFile(file);
                     if (packFromFile != null && !this.packIsLoaded(packFromFile)) {
                         this.loadPack(packFromFile);
                     }
-                    texturePacks.add(packFromFile);
                 } catch (final Exception exception) {
                     this.logger.error("&cNie udało załadować się paczki z pliku&b " + file.getName(), exception);
                 }
             }
 
-            for (final TexturePack texturePack : this.loadedTexturePacks) {
+            for (final TexturePack texturePack : cachedPacks) {
                 try {
-                    if (texturePack != null && !this.packIsLoaded(texturePack)) {
-                        this.loadPack(texturePack, this.getPackIndex(texturePack));
+                    if (texturePack == null) continue;
+
+                    if (!this.packIsLoaded(texturePack)) {
+                        this.loadPack(texturePack);
                     } else {
                         this.setPackIndex(texturePack, this.getPackIndex(texturePack));
                     }
@@ -155,28 +158,30 @@ public class ResourcePackLoader {
                 }
             }
 
-            this.savePacks(texturePacks);
+            this.savePacks();
         } catch (final Exception exception) {
             this.logger.error("&cNie udało się przeprowadzić ładowania paczek zachowań");
         }
     }
 
-    public void loadPack(final TexturePack behaviorPack) {
-        this.loadedTexturePacks.add(behaviorPack);
-        this.savePacks(this.loadedTexturePacks);
-        this.logger.info("&aZaładowano paczke&d tesktur&b " + behaviorPack.name() + "&a w wersji&1 " + Arrays.toString(behaviorPack.version()));
+    public void loadPack(final TexturePack texturePack) {
+        if (this.packIsLoaded(texturePack)) return;
+        this.loadedTexturePacks.add(texturePack);
+        this.savePacks();
+        this.logger.info("&aZaładowano paczke&d tesktur&b " + texturePack.name() + "&a w wersji&1 " + Arrays.toString(texturePack.version()));
     }
 
-    public void loadPack(final TexturePack behaviorPack, final int index) {
-        this.loadedTexturePacks.add(index, behaviorPack);
-        this.savePacks(this.loadedTexturePacks);
-        this.logger.info("&aZaładowano paczke&d tesktur&b " + behaviorPack.name() + "&a w wersji&1 " + Arrays.toString(behaviorPack.version()));
+    public void loadPack(final TexturePack texturePack, final int index) {
+        if (this.packIsLoaded(texturePack)) return;
+        this.loadedTexturePacks.add(index, texturePack);
+        this.savePacks();
+        this.logger.info("&aZaładowano paczke&d tesktur&b " + texturePack.name() + "&a w wersji&1 " + Arrays.toString(texturePack.version()));
     }
 
-    public boolean packIsLoaded(final TexturePack behaviorPack) {
+    public boolean packIsLoaded(final TexturePack texturePack) {
         return this.loadedTexturePacks.stream()
-                .anyMatch(texture -> texture.pack_id().equals(behaviorPack.pack_id()) &&
-                        Arrays.toString(texture.version()).equals(Arrays.toString(behaviorPack.version())));
+                .anyMatch(texture -> texture.pack_id().equals(texturePack.pack_id()) &&
+                        Arrays.toString(texture.version()).equals(Arrays.toString(texturePack.version())));
     }
 
     public int getPackIndex(final TexturePack texturePack) {
@@ -189,7 +194,7 @@ public class ResourcePackLoader {
         if (index >= size) index = size - 1;
 
         this.loadedTexturePacks.set(index, texturePack);
-        this.savePacks(this.loadedTexturePacks);
+        this.savePacks();
     }
 
     public File getResourcesFolder() {
@@ -213,9 +218,9 @@ public class ResourcePackLoader {
         }
     }
 
-    private void savePacks(final LinkedList<TexturePack> packs) {
+    private void savePacks() {
         final LinkedList<TexturePack> nonNullPacks = new LinkedList<>();
-        for (final TexturePack pack : packs) {
+        for (final TexturePack pack : this.loadedTexturePacks) {
             if (pack != null) {
                 nonNullPacks.add(pack);
             }
