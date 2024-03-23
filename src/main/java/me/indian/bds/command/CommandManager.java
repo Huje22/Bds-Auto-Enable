@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.command.defaults.AlertCommand;
 import me.indian.bds.command.defaults.BackupCommand;
 import me.indian.bds.command.defaults.ChatFormatCommand;
 import me.indian.bds.command.defaults.EndCommand;
@@ -50,6 +51,7 @@ public class CommandManager {
         this.commandMap.put(new VersionCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new ChatFormatCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new MuteCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new AlertCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new SettingInfoCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new ServerPingCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new StatsCommand(), null);
