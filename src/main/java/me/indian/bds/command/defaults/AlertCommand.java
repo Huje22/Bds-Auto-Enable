@@ -8,19 +8,15 @@ import me.indian.bds.util.MessageUtil;
 
 public class AlertCommand extends Command {
 
-    private final BDSAutoEnable bdsAutoEnable;
     private final ServerProcess serverProcess;
 
     public AlertCommand(final BDSAutoEnable bdsAutoEnable) {
         super("alert", "Ważne informacje na czat");
-        this.bdsAutoEnable = bdsAutoEnable;
         this.serverProcess = bdsAutoEnable.getServerProcess();
 
         this.addOption("<message>", "Wiadomość");
         this.addAlliases(List.of("b"));
-
     }
-
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
@@ -33,14 +29,13 @@ public class AlertCommand extends Command {
             final String[] newArgs = MessageUtil.buildMessageFromArgs(args).split("-");
 
             this.serverProcess.tellrawToAll("&a---------&cAlert&a------------");
-            for (int i = 0; i < newArgs.length; i++) {
-                this.serverProcess.tellrawToAll(newArgs[i]);
+            for (final String newArg : newArgs) {
+                this.serverProcess.tellrawToAll(newArg);
             }
             this.serverProcess.tellrawToAll("&a----------------------------");
 
             return true;
         }
-
         return false;
     }
 }
