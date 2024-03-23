@@ -156,6 +156,16 @@ public final class ConsoleColors {
         return input.toString();
     }
 
+    public static String removeAnsiColors(final Object input) {
+        if (input instanceof String in) {
+            for (final Map.Entry<String, String> entry : COLOR_MAP.entrySet()) {
+                in = in.replace(entry.getValue(), "");
+            }
+            return in;
+        }
+        return input.toString();
+    }
+
 
     //Robione na podstawie https://github.com/PetteriM1/DiscordChat/blob/master/src/main/java/me/petterim1/discordchat/DiscordListener.java#L165
     //Nadal wymaga usprawnień

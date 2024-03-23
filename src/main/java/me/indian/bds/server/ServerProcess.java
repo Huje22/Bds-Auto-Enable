@@ -182,7 +182,7 @@ public class ServerProcess {
                     final String line = consoleOutput.nextLine();
                     if (line.isEmpty()) continue;
 
-                    this.serverManager.initFromLog(ConsoleColors.removeColors(line));
+                    this.serverManager.initFromLog(ConsoleColors.removeAnsiColors(line));
 
                     /*
                      TODO:Dodac event który będzie wysylal info z scytche
