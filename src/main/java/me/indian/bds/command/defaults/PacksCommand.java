@@ -12,13 +12,13 @@ public class PacksCommand extends Command {
     private final PackManager packManager;
 
     public PacksCommand(final BDSAutoEnable bdsAutoEnable) {
-        super("packs", "");
+        super("packs", "Pokazuje dostępne paczki");
         this.packManager = bdsAutoEnable.getPackManager();
     }
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        if (!isOp) {
+        if (!this.commandConfig.isPacksForAll() && !isOp) {
             this.sendMessage("&cPotrzebujesz wyższych uprawnień");
             return true;
         }
@@ -34,7 +34,7 @@ public class PacksCommand extends Command {
         this.sendMessage(" ");
         this.sendMessage("&a---&bBehaviory&a---");
         for (final BehaviorPack behaviorPack : this.packManager.getBehaviorPackLoader().getLoadedBehaviorPacks()) {
-            this.sendMessage(counter + ".&b " + behaviorPack.name()+ "&1 " + Arrays.toString(behaviorPack.version()));
+            this.sendMessage(counter + ".&b " + behaviorPack.name() + "&1 " + Arrays.toString(behaviorPack.version()));
             counter++;
         }
         this.sendMessage(" ");

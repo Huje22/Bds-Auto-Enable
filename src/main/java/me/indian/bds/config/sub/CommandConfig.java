@@ -22,11 +22,20 @@ public class CommandConfig extends OkaeriConfig {
     @CustomKey("ExtensionsForAll")
     private boolean extensionsForAll = true;
 
+    @Comment({""})
+    @Comment({"Czy !packs ma być dla każdego"})
+    @CustomKey("PacksForAll")
+    private boolean packsForAll = true;
+
     public boolean isSettingsForAll() {
         return this.settingsForAll;
     }
 
     public boolean isExtensionsForAll() {
         return this.extensionsForAll;
+    }
+
+    public boolean isPacksForAll() {
+        return this.packsForAll;
     }
 }
