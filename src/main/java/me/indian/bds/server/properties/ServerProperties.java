@@ -293,6 +293,21 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
+    public boolean isAllowList(){
+        try {
+            return Boolean.parseBoolean(this.properties.getProperty("allow-list"));
+        } catch (final Exception exception) {
+            this.logger.logThrowable(exception);
+            this.setAllowList(true);
+            return true;
+        }
+    }
+
+    public void setAllowList(final boolean allowCheats) {
+        this.properties.setProperty("allow-list", String.valueOf(allowCheats));
+        this.reloadServerProperties();
+    }
+
     public int getPlayerIdleTimeout() {
         try {
             return Integer.parseInt(this.properties.getProperty("player-idle-timeout"));
