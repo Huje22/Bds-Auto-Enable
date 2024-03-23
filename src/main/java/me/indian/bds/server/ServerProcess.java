@@ -17,6 +17,7 @@ import me.indian.bds.event.EventManager;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.exception.BadThreadException;
+import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.BedrockQuery;
@@ -181,7 +182,7 @@ public class ServerProcess {
                     final String line = consoleOutput.nextLine();
                     if (line.isEmpty()) continue;
 
-                    this.serverManager.initFromLog(line);
+                    this.serverManager.initFromLog(ConsoleColors.removeColors(line));
 
                     /*
                      TODO:Dodac event który będzie wysylal info z scytche

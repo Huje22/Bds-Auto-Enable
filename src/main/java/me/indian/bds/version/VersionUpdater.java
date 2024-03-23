@@ -10,6 +10,7 @@ import me.indian.bds.event.server.ServerUpdatingEvent;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MathUtil;
 
 public class VersionUpdater {
@@ -37,9 +38,8 @@ public class VersionUpdater {
             this.logger.debug("Sprawdzanie najnowszej wersji jest wyłączone");
             return;
         }
-        if (this.running) {
-            return;
-        }
+        if (this.running || DefaultsVariables.isLeviLamina()) return;
+
         this.running = true;
 
         final long hours = MathUtil.hoursTo(this.versionManagerConfig.getVersionCheckFrequency(), TimeUnit.MILLISECONDS);
