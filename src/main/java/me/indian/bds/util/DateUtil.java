@@ -1,7 +1,6 @@
 package me.indian.bds.util;
 
 import java.time.Instant;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -37,12 +36,12 @@ public final class DateUtil {
         return LocalDateTime.now(POLISH_ZONE).format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS"));
     }
 
-    public static long localDateToLong(final LocalDate localDate) {
-        return localDate.atStartOfDay(POLISH_ZONE).toEpochSecond();
+    public static long localDateTimeToLong(final LocalDateTime localDateTime) {
+        return localDateTime.atZone(POLISH_ZONE).toEpochSecond();
     }
 
-    public static LocalDate longToLocalDate(final long seconds) {
-        return Instant.ofEpochSecond(seconds).atZone(POLISH_ZONE).toLocalDate();
+    public static LocalDateTime longToLocalDateTime(final long seconds) {
+        return Instant.ofEpochSecond(seconds).atZone(POLISH_ZONE).toLocalDateTime();
     }
 
     public static long formatDays(final long millis) {

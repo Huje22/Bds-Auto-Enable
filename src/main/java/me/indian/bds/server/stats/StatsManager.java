@@ -7,7 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -110,7 +110,7 @@ public class StatsManager {
             this.playerCreateLock.lock();
             if (this.getPlayer(xuid) == null) {
                 this.playerStats.add(new PlayerStatistics(playerName,
-                        xuid, DateUtil.localDateToLong(LocalDate.now()), 0, 0, 0, 0, 0, 0));
+                        xuid, DateUtil.localDateTimeToLong(LocalDateTime.now()), 0, 0, 0, 0, 0, 0));
                 this.logger.debug("Utworzono gracza:&b " + playerName);
             }
         } catch (final Exception exception) {

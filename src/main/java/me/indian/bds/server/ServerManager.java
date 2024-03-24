@@ -1,6 +1,6 @@
 package me.indian.bds.server;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -140,7 +140,7 @@ public class ServerManager {
             try {
                 this.onlinePlayers.remove(playerName);
                 this.offlinePlayers.add(playerName);
-                this.statsManager.setLastQuit(playerName, DateUtil.localDateToLong(LocalDate.now()));
+                this.statsManager.setLastQuit(playerName, DateUtil.localDateTimeToLong(LocalDateTime.now()));
                 this.eventManager.callEvent(new PlayerQuitEvent(playerName));
             } catch (final Exception exception) {
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć opuszczenia gracza " + playerName,
@@ -160,7 +160,7 @@ public class ServerManager {
             try {
                 this.onlinePlayers.add(playerName);
                 this.offlinePlayers.remove(playerName);
-                this.statsManager.setLastJoin(playerName, DateUtil.localDateToLong(LocalDate.now()));
+                this.statsManager.setLastJoin(playerName,  DateUtil.localDateTimeToLong(LocalDateTime.now()));
                 this.eventManager.callEvent(new PlayerJoinEvent(playerName));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć dołączenia gracza&b " + playerName, exception);
