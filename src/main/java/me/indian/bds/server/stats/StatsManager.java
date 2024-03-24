@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,6 +21,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MathUtil;
@@ -103,16 +105,18 @@ public class StatsManager {
         this.countingTime = true;
     }
 
-    public void createNewPlayer(final String playerName) {
+    public void createNewPlayer(final String playerName, final long xuid) {
         try {
             this.playerCreateLock.lock();
-            if (this.getPlayer(playerName) == null) {
+            if (this.getPlayer(xuid) == null) {
+                System.out.println(DateUtil.localDateToLong(LocalDate.now()));
+                System.out.println(LocalDate.now());
                 this.playerStats.add(new PlayerStatistics(playerName,
-                        0, 0, 0, 0, 0, 0, 0));
+                        xuid, DateUtil.localDateToLong(LocalDate.now()), 0, 0, 0, 0, 0, 0));
                 this.logger.debug("Utworzono gracza:&b " + playerName);
             }
         } catch (final Exception exception) {
-            this.logger.error("&cNie udało się utworzyć gracza&b " + playerName, exception);
+            this.logger.error("&cNie udało się utworzyć gracza&b " + playerName + " &d(&b" + xuid + "&d)", exception);
         } finally {
             this.playerCreateLock.unlock();
         }
@@ -145,6 +149,22 @@ public class StatsManager {
         }
     }
 
+    public void addOldName(final long xuid, final String oldName) {
+        final PlayerStatistics player = this.getPlayer(xuid);
+        if (player != null) {
+            player.getOldNames().add(oldName);
+        }
+    }
+
+    @Nullable
+    public List<String> getOldNames(final String playerName){
+        final PlayerStatistics player = this.getPlayer(playerName);
+        if (player != null) {
+            return player.getOldNames();
+        }
+        return null;
+    }
+
     public long getXuid(final String playerName) {
         final PlayerStatistics player = this.getPlayer(playerName);
         return (player != null ? player.getXuid() : -1);
@@ -166,6 +186,11 @@ public class StatsManager {
     public long getXuidByName(final String name) {
         final PlayerStatistics player = this.getPlayer(name);
         return (player != null ? player.getXuid() : -1);
+    }
+
+    public long getFirstJoin(final String playerName) {
+        final PlayerStatistics player = this.getPlayer(playerName);
+        return (player != null ? player.getFirstJoin() : -1);
     }
 
     public long getLastJoin(final String playerName) {
