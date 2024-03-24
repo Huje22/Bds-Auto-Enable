@@ -347,14 +347,16 @@ public class ServerProcess {
         this.logger.alert("Wyłączanie...");
         this.setCanRun(false);
 
-        this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
+        if(!this.appConfigManager.getTransferConfig().getLobbyConfig().isEnable()){
+            this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
+        }
+
         ThreadUtil.sleep(3);
         this.bdsAutoEnable.getServerManager().getStatsManager().saveAllData();
 
         if (this.isEnabled()) {
             this.watchDog.saveAndResume();
             this.sendToConsole("stop");
-
             this.logger.alert("Oczekiwanie na zamknięcie servera");
 
             try {
