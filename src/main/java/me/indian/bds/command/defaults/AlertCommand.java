@@ -26,13 +26,9 @@ public class AlertCommand extends Command {
         }
 
         if (args.length > 0) {
-            final String[] newArgs = MessageUtil.buildMessageFromArgs(args).split("-");
-
-            this.serverProcess.tellrawToAll("&a---------&cAlert&a------------");
-            for (final String newArg : newArgs) {
+            for (final String newArg :  MessageUtil.buildMessageFromArgs(args).split("-")) {
                 this.serverProcess.tellrawToAll(newArg);
             }
-            this.serverProcess.tellrawToAll("&a----------------------------");
 
             return true;
         }
