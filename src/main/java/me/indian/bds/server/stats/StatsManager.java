@@ -109,8 +109,6 @@ public class StatsManager {
         try {
             this.playerCreateLock.lock();
             if (this.getPlayer(xuid) == null) {
-                System.out.println(DateUtil.localDateToLong(LocalDate.now()));
-                System.out.println(LocalDate.now());
                 this.playerStats.add(new PlayerStatistics(playerName,
                         xuid, DateUtil.localDateToLong(LocalDate.now()), 0, 0, 0, 0, 0, 0));
                 this.logger.debug("Utworzono gracza:&b " + playerName);
