@@ -33,6 +33,11 @@ public class AppConfig extends OkaeriConfig {
     private boolean wine = false;
 
     @Comment({""})
+    @Comment({"Czy restartować server gdy TPS dwa razy pod rząd są mniejsze niż 9?"})
+    @CustomKey("RestartOnLowTPS")
+    private boolean restartOnLowTPS = true;
+
+    @Comment({""})
     @Comment({"Czy tworzyć pliki z logami servera?"})
     @CustomKey("LogFile")
     private boolean logFile = true;
@@ -95,6 +100,10 @@ public class AppConfig extends OkaeriConfig {
 
     public void setWine(final boolean wine) {
         this.wine = wine;
+    }
+
+    public boolean isRestartOnLowTPS() {
+        return this.restartOnLowTPS;
     }
 
     public boolean isLogFile() {

@@ -284,8 +284,10 @@ public class ServerManager {
             final double tps = Double.parseDouble(tpsString);
             this.eventManager.callEvent(new TPSChangeEvent(tps, this.lastTPS));
 
-            if (this.lastTPS <= 8 && tps <= 8) {
-                this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true, 10, "Niska ilość tps");
+            if (this.bdsAutoEnable.getAppConfigManager().getAppConfig().isRestartOnLowTPS()) {
+                if (this.lastTPS <= 8 && tps <= 8) {
+                    this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true, 10, "Niska ilość tps");
+                }
             }
 
             this.lastTPS = tps;
