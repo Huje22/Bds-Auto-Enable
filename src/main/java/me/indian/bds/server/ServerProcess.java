@@ -461,6 +461,10 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {
+        if (!this.appConfigManager.getAppConfig().isDebug()) {
+            if (msg.contains("[Scripting] Player")) return true;
+        }
+
         for (final String s : this.appConfigManager.getLogConfig().getNoFile()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
@@ -470,6 +474,10 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToConsoleLog(final String msg) {
+        if (!this.appConfigManager.getAppConfig().isDebug()) {
+            if (msg.contains("[Scripting] Player")) return true;
+        }
+
         for (final String s : this.appConfigManager.getLogConfig().getNoConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
                 return true;
