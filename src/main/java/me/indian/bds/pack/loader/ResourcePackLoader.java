@@ -161,7 +161,7 @@ public class ResourcePackLoader {
 
             this.savePacks();
         } catch (final Exception exception) {
-            this.logger.error("&cNie udało się przeprowadzić ładowania paczek zachowań");
+            this.logger.error("&cNie udało się przeprowadzić ładowania paczek zachowań", exception);
         }
     }
 
