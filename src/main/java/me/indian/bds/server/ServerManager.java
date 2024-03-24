@@ -108,13 +108,17 @@ public class ServerManager {
             if (matcher.find()) {
                 final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
                 final long xuid = Long.parseLong(matcher.group(2));
+
                 final String oldPlayerName = this.statsManager.getNameByXuid(xuid);
 
                 if (oldPlayerName != null && !oldPlayerName.equals(playerName)) {
                     //Powinno to działać tak, że gdy gracz zmieni swoją nazwę, nadal zachowuje swoje statystyki
-                    // ponieważ jest ustawiany pod nową nazwę za pomocą weryfikacji jego XUID. Lecz nie było to TESTOWANE
+                    // ponieważ jest ustawiany pod nową nazwę za pomocą weryfikacji jego XUID. Było to TESTOWANE ale nie na większą skale
                     this.statsManager.setNewName(xuid, playerName);
+                    this.statsManager.addOldName(xuid, oldPlayerName);
                 }
+
+                this.statsManager.createNewPlayer(playerName, xuid);
                 this.statsManager.setXuid(playerName, xuid);
             }
         } catch (final Exception exception) {
@@ -174,7 +178,6 @@ public class ServerManager {
             final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
 
             try {
-                this.statsManager.createNewPlayer(playerName);
                 this.eventManager.callEvent(new PlayerSpawnEvent(playerName));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć respawnu gracza " + playerName);
