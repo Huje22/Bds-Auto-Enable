@@ -18,28 +18,23 @@ public final class DateUtil {
     }
 
     public static String getFixedDate() {
-        final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
-        return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).replace(":", "-");
+        return LocalDateTime.now(POLISH_ZONE).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).replace(":", "-");
     }
 
     public static String getDate() {
-        final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
-        return now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        return LocalDateTime.now(POLISH_ZONE).format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public static String getTimeHM() {
-        final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
-        return now.format(DateTimeFormatter.ofPattern("HH:mm"));
+        return LocalDateTime.now(POLISH_ZONE).format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
     public static String getTimeHMS() {
-        final LocalDateTime now = LocalDateTime.now(POLISH_ZONE);
-        return now.format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+        return LocalDateTime.now(POLISH_ZONE).format(DateTimeFormatter.ofPattern("HH:mm:ss"));
     }
 
     public static String getTimeHMSMS() {
-        final LocalDateTime now = LocalDateTime.now();
-        return now.format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS"));
+        return LocalDateTime.now(POLISH_ZONE).format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS"));
     }
 
     public static long localDateToLong(final LocalDate localDate) {
