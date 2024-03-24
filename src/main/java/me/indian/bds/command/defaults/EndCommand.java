@@ -8,15 +8,18 @@ import me.indian.bds.util.ThreadUtil;
 
 public class EndCommand extends Command {
 
+   private final BDSAutoEnable bdsAutoEnable;
     private final ServerProcess serverProcess;
     private boolean canStop;
 
     public EndCommand(final BDSAutoEnable bdsAutoEnable) {
         super("end", "Kończy działanie servera i aplikacji");
+        this.bdsAutoEnable = bdsAutoEnable;
         this.serverProcess = bdsAutoEnable.getServerProcess();
         this.canStop = true;
 
         this.addOption("[seconds]");
+
     }
 
     @Override
@@ -56,6 +59,11 @@ public class EndCommand extends Command {
                     "&aZa&b " + i + "&a sekund server zostanie zamknięty!", LogState.INFO);
             ThreadUtil.sleep(1);
         }
+
+        if (!this.bdsAutoEnable.getAppConfigManager().getTransferConfig().getLobbyConfig().isEnable()) {
+            this.serverProcess.kickAllPlayers("&cServer jest wyłączany");
+        }
+
         this.serverProcess.sendToConsole("stop");
         try {
             this.serverProcess.waitFor();
