@@ -477,6 +477,7 @@ public class ServerProcess {
         if (!this.appConfigManager.getAppConfig().isDebug()) {
             if (msg.contains("[Scripting] Player")) return true;
         }
+        //TODO: Usunąć to z tąd i dodać do konfiguracji poprostu 
 
         for (final String s : this.appConfigManager.getLogConfig().getNoConsole()) {
             if (msg.toLowerCase().contains(s.toLowerCase())) {
