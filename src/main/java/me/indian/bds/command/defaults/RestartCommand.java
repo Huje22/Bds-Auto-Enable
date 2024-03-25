@@ -28,10 +28,13 @@ public class RestartCommand extends Command {
                 seconds = Integer.parseInt(args[0]);
             } catch (final NumberFormatException ignored) {
             }
-            this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true, seconds, "Użycie komendy");
-
+            if (!this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true, seconds, "Użycie komendy")) {
+                this.sendMessage("&cServer jest już w trakcje restartu!");
+            }
         } else {
-            this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true, seconds, "Użycie komendy");
+            if (!this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true, seconds, "Użycie komendy")) {
+                this.sendMessage("&cServer jest już w trakcje restartu!");
+            }
         }
         return true;
     }

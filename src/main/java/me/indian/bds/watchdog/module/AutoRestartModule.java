@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.AutoRestartConfig;
+import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
@@ -57,7 +58,10 @@ public class AutoRestartModule {
                     AutoRestartModule.this.logger.error("Nie można zrestartować servera gdy jest on wyłączony!");
                     return;
                 }
-                AutoRestartModule.this.restart(true, 10);
+                if (AutoRestartModule.this.restart(true, 10)) {
+                    AutoRestartModule.this.bdsAutoEnable.getEventManager().callEvent(new ServerAlertEvent("Server jest restartowany",
+                            "Server jest restartowany tak jak co " + restartTime + " godziny", LogState.INFO));
+                }
                 AutoRestartModule.this.lastRestartMillis = System.currentTimeMillis();
             }
         };
@@ -70,12 +74,12 @@ public class AutoRestartModule {
     }
 
 
-    public void restart(final boolean alert, final int seconds) {
-        this.restart(alert, seconds, null);
+    public boolean restart(final boolean alert, final int seconds) {
+        return this.restart(alert, seconds, null);
     }
 
-    public void restart(final boolean alert, final int seconds, @Nullable final String reason) {
-        if (this.restarting) return;
+    public boolean restart(final boolean alert, final int seconds, @Nullable final String reason) {
+        if (this.restarting) return false;
         this.restarting = true;
         this.service.execute(() -> {
             try {
@@ -115,6 +119,7 @@ public class AutoRestartModule {
                 this.restarting = false;
             }
         });
+        return true;
     }
 
     public void noteRestart() {

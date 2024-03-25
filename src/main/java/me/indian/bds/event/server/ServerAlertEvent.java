@@ -25,6 +25,13 @@ public class ServerAlertEvent extends Event {
         this.throwable = throwable;
     }
 
+    public ServerAlertEvent(final String message, final String additionalInfo, final LogState alertState) {
+        this.message = message;
+        this.additionalInfo = additionalInfo;
+        this.alertState = alertState;
+        this.throwable = null;
+    }
+
     public ServerAlertEvent(final String message, final LogState alertState) {
         this.message = message;
         this.additionalInfo = null;

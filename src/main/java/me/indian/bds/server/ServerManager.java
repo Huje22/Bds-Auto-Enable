@@ -286,7 +286,11 @@ public class ServerManager {
 
             if (this.bdsAutoEnable.getAppConfigManager().getAppConfig().isRestartOnLowTPS()) {
                 if (this.lastTPS <= 8 && tps <= 8) {
-                    this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true, 10, "Niska ilość tps");
+                    if (this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true, 10, "Niska ilość tps")) {
+                        this.eventManager.callEvent(new ServerAlertEvent(
+                                "Server jest restartowany z powodu małej ilości TPS (Teraz: " + tps + " Ostatnie: " + this.lastTPS + ")"
+                                , LogState.INFO));
+                    }
                 }
             }
 
