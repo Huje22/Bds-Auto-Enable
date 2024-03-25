@@ -459,16 +459,18 @@ public class ServerManager {
         return this.lastTPS;
     }
 
+    //Robie tak aby uniknąć ConcurrentModificationException
     public List<String> getOnlinePlayers() {
-        return this.onlinePlayers;
+        return new ArrayList<>(this.onlinePlayers);
     }
 
     public boolean isOnline(final String name) {
         return this.onlinePlayers.contains(name);
     }
 
+    //Robie tak aby uniknąć ConcurrentModificationException
     public List<String> getOfflinePlayers() {
-        return this.offlinePlayers;
+        return new ArrayList<>(this.offlinePlayers);
     }
 
     public boolean isMuted(final String name) {
