@@ -60,7 +60,7 @@ public class AutoRestartModule {
                 }
                 if (AutoRestartModule.this.restart(true, 10)) {
                     AutoRestartModule.this.bdsAutoEnable.getEventManager().callEvent(new ServerAlertEvent("Server jest restartowany",
-                            "Server jest restartowany tak jak co " + this.autoRestartConfig.getRestartTime() + " godziny", LogState.INFO));
+                            "Server jest restartowany tak jak co " + AutoRestartModule.this.autoRestartConfig.getRestartTime() + " godziny", LogState.INFO));
                 }
                 AutoRestartModule.this.lastRestartMillis = System.currentTimeMillis();
             }
