@@ -349,6 +349,8 @@ public class ServerProcess {
 
         if(!this.appConfigManager.getTransferConfig().getLobbyConfig().isEnable()){
             this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
+        } else{
+//TODO: Dodać info tu i podczas restart że będzie się przeniesionym na Server lobby 
         }
 
         ThreadUtil.sleep(3);
