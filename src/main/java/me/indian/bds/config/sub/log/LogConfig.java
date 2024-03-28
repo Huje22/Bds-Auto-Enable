@@ -19,13 +19,13 @@ public class LogConfig extends OkaeriConfig {
     @CustomKey("NoFile")
     private List<String> noFile = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]",
             "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
-            " ERROR]", " WARN]",
+            " ERROR]", " WARN]", "[Scripting] Player",
             "\"component_groups\"");
     @Comment({""})
     @Comment("W konsoli")
     @CustomKey("NoConsole")
     private List<String> noConsole = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]",
-            "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
+            "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]","[Scripting] Player",
             "\"component_groups\"");
 
     public List<String> getNoFile() {

@@ -464,12 +464,8 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToFileLog(final String msg) {
-        if (!this.appConfigManager.getAppConfig().isDebug()) {
-            if (msg.contains("[Scripting] Player")) return true;
-        }
-
-        for (final String s : this.appConfigManager.getLogConfig().getNoFile()) {
-            if (msg.toLowerCase().contains(s.toLowerCase())) {
+       for (final String noAllowed : this.appConfigManager.getLogConfig().getNoFile()) {
+            if (msg.toLowerCase().contains(noAllowed.toLowerCase())) {
                 return true;
             }
         }
@@ -477,13 +473,8 @@ public class ServerProcess {
     }
 
     private boolean containsNotAllowedToConsoleLog(final String msg) {
-        if (!this.appConfigManager.getAppConfig().isDebug()) {
-            if (msg.contains("[Scripting] Player")) return true;
-        }
-        //TODO: Usunąć to z tąd i dodać do konfiguracji poprostu 
-
-        for (final String s : this.appConfigManager.getLogConfig().getNoConsole()) {
-            if (msg.toLowerCase().contains(s.toLowerCase())) {
+        for (final String noAllowed : this.appConfigManager.getLogConfig().getNoConsole()) {
+            if (msg.toLowerCase().contains(noAllowed.toLowerCase())) {
                 return true;
             }
         }
