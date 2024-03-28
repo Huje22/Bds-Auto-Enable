@@ -21,6 +21,7 @@ import me.indian.bds.command.defaults.TPSCommand;
 import me.indian.bds.command.defaults.TestCommand;
 import me.indian.bds.command.defaults.TopCommand;
 import me.indian.bds.command.defaults.VersionCommand;
+import me.indian.bds.event.Position;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.server.ServerProcess;
 
@@ -84,12 +85,13 @@ public class CommandManager {
         commandsToRemove.forEach(this.commandMap::remove);
     }
 
-    public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, final boolean isOp) {
+    public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, final Position position, final boolean isOp) {
         for (final Map.Entry<Command, Extension> entry : this.commandMap.entrySet()) {
             final Command command = entry.getKey();
             if (command.getName().equalsIgnoreCase(commandName) || command.isAlias(commandName)) {
                 command.setCommandSender(sender);
                 command.setPlayerName(playerName);
+                command.setPosition(position);
 
                 if (!command.onExecute(args, this.isOp(playerName)) && !command.getUsage().isEmpty()) {
                     switch (sender) {

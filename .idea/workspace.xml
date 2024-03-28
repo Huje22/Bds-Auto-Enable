@@ -5,12 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f57eb4c-9a7f-418c-afff-b4129e5ac4bd" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/Dimension.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/AlertCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/AlertCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/EndCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/EndCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/Position.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/Position.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerDimensionChangeEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerDimensionChangeEvent.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/ConsoleInput.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/ConsoleInput.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/Command.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/CommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/CommandManager.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/ServerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/ServerManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />

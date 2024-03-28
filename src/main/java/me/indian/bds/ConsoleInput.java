@@ -39,7 +39,7 @@ public class ConsoleInput {
                     this.logger.instantLogToFile(input);
 
                     final boolean done = this.commandManager.runCommands(CommandSender.CONSOLE,
-                            "CONSOLE", args[0], newArgs, true);
+                            "CONSOLE", args[0], newArgs, null,true);
 
                     if (done) {
                         continue;

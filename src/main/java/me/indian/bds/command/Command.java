@@ -7,8 +7,10 @@ import java.util.List;
 import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.CommandConfig;
+import me.indian.bds.event.Position;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class Command {
 
@@ -16,6 +18,7 @@ public abstract class Command {
     private final List<String> alliases;
     private final Map<String, String> commandOptions;
     protected String playerName;
+    private Position position;
     protected CommandSender commandSender;
     protected CommandConfig commandConfig;
     private BDSAutoEnable bdsAutoEnable;
@@ -35,6 +38,11 @@ public abstract class Command {
 
     public final String getDescription() {
         return this.description;
+    }
+
+    @Nullable
+    public Position getPosition() {
+        return this.position;
     }
 
     public boolean isAlias(final String command) {
@@ -82,6 +90,10 @@ public abstract class Command {
 
     public final void setCommandSender(final CommandSender commandSender) {
         this.commandSender = commandSender;
+    }
+
+    public final void setPosition(final Position position){
+        this.position = position;
     }
 
     protected final void sendMessage(final String message) {
