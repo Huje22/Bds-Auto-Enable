@@ -5,18 +5,18 @@ import me.indian.bds.event.Position;
 
 public class PlayerInteractEntityWithContainerEvent extends Event {
 
-    private final String playerInteract, entityID;
+    private final String playerName, entityID;
     private final Position blockPosition;
 
-    public PlayerInteractEntityWithContainerEvent(final String playerInteract, final String entityID, final Position blockPosition) {
+    public PlayerInteractEntityWithContainerEvent(final String playerName, final String entityID, final Position blockPosition) {
         super();
-        this.playerInteract = playerInteract;
+        this.playerName = playerName;
         this.entityID = entityID;
         this.blockPosition = blockPosition;
     }
 
-    public String getPlayerInteract() {
-        return this.playerInteract;
+    public String getPlayerName() {
+        return this.playerName;
     }
 
     public String getEntityID() {
