@@ -68,7 +68,7 @@ public class CommandManager {
     }
 
     public <T extends Command> void registerCommand(final T command, final Extension extension) {
-        if (extension == null) throw new NullPointerException();
+        if (extension == null) throw new NullPointerException("Rozszerzenie nie może być null");
         this.commandMap.put(command, extension);
         command.init(this.bdsAutoEnable);
     }

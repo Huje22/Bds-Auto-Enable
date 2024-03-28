@@ -21,7 +21,7 @@ public enum Difficulty {
             case 1 -> Difficulty.EASY;
             case 2 -> Difficulty.NORMAL;
             case 3 -> Difficulty.HARD;
-            default -> throw new NullPointerException();
+            default -> throw new IllegalArgumentException("Unknown difficulty ID: " + difficultyId);
         };
     }
 
@@ -31,7 +31,7 @@ public enum Difficulty {
             case "easy" -> Difficulty.EASY;
             case "normal" -> Difficulty.NORMAL;
             case "hard" -> Difficulty.HARD;
-            default -> throw new NullPointerException();
+            default -> throw new IllegalArgumentException("Unknown difficulty name: " + difficultyName);
         };
     }
 

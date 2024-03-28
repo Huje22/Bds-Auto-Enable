@@ -58,7 +58,7 @@ public class EventManager {
     }
 
     public <T extends Listener> void registerListener(final T listener, final Extension extension) {
-        if (extension == null) throw new NullPointerException();
+        if (extension == null) throw new NullPointerException("Rozszerzenie nie może być null");
         this.listenerMap.put(listener, extension);
     }
 

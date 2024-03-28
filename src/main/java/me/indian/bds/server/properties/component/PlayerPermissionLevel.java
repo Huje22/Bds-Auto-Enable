@@ -19,7 +19,7 @@ public enum PlayerPermissionLevel {
             case "VISITOR" -> PlayerPermissionLevel.VISITOR;
             case "MEMBER" -> PlayerPermissionLevel.MEMBER;
             case "OPERATOR" -> PlayerPermissionLevel.OPERATOR;
-            default -> throw new NullPointerException();
+            default -> throw new IllegalArgumentException("Unknown Player Permission Level name: " + permissionName);
         };
     }
 
@@ -28,7 +28,7 @@ public enum PlayerPermissionLevel {
             case 0 -> PlayerPermissionLevel.VISITOR;
             case 1 -> PlayerPermissionLevel.MEMBER;
             case 2 -> PlayerPermissionLevel.OPERATOR;
-            default -> throw new NullPointerException();
+            default -> throw new IllegalArgumentException("Unknown Player Permission Level: " + permissionLevel);
         };
     }
 

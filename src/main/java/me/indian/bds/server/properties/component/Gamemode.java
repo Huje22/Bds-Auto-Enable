@@ -21,7 +21,7 @@ public enum Gamemode {
             case "creative" -> CREATIVE;
             case "adventure" -> ADVENTURE;
             case "spectator" -> SPECTATOR;
-            default -> throw new NullPointerException();
+            default -> throw new IllegalArgumentException("Unknown gamemode name:" + name);
         };
     }
 
@@ -31,7 +31,7 @@ public enum Gamemode {
             case 1 -> CREATIVE;
             case 2 -> ADVENTURE;
             case 3 -> SPECTATOR;
-            default -> throw new NullPointerException();
+            default -> throw new IllegalArgumentException("Unknown gamemode ID:" + id);
         };
     }
 

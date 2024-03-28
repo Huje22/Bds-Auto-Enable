@@ -11,11 +11,11 @@ public enum CompressionAlgorithm {
         this.algorithmName = algorithmName;
     }
 
-    public static CompressionAlgorithm getByName(final String algorithmName) throws NullPointerException {
+    public static CompressionAlgorithm getByName(final String algorithmName) {
         return switch (algorithmName.toLowerCase()) {
             case "zlib" -> CompressionAlgorithm.ZLIB;
             case "snappy" -> CompressionAlgorithm.SNAPPY;
-            default -> throw new NullPointerException();
+            default -> throw new IllegalArgumentException("Unknown compression algorithm: " + algorithmName);
         };
     }
 

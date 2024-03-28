@@ -17,7 +17,7 @@ public enum ServerMovementAuth {
             case "client-auth" -> ServerMovementAuth.CLIENT_AUTH;
             case "server-auth" -> ServerMovementAuth.SERVER_AUTH;
             case "server-auth-with-rewind" -> ServerMovementAuth.SERVER_AUTH_REWIND;
-            default -> throw new NullPointerException();
+            default -> throw new IllegalArgumentException("Unknown Server Movement Auth name: " + authName);
         };
     }
 
