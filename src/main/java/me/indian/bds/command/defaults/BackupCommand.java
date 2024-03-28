@@ -5,7 +5,6 @@ import java.nio.file.Path;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
-import me.indian.bds.event.Position;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
@@ -20,7 +19,7 @@ public class BackupCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final String[] args, Position position, final boolean isOp) {
+    public boolean onExecute(final String[] args, final boolean isOp) {
         final BackupModule backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
         if (backupModule == null) {
             this.sendMessage("&cNie udało się uzyskać&b Modułu Backupów");

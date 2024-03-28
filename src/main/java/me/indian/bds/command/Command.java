@@ -7,10 +7,8 @@ import java.util.List;
 import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.CommandConfig;
-import me.indian.bds.event.Position;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class Command {
 
@@ -29,7 +27,7 @@ public abstract class Command {
         this.commandOptions = new LinkedHashMap<>();
     }
 
-    public abstract boolean onExecute(String[] args, @Nullable Position position, boolean isOp);
+    public abstract boolean onExecute(String[] args, boolean isOp);
 
     public final String getName() {
         return this.name;

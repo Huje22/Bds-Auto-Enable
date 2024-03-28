@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
-import me.indian.bds.event.Position;
 import me.indian.bds.server.stats.ServerStats;
 import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.DateUtil;
@@ -33,7 +32,7 @@ public class TopCommand extends Command {
 
 
     @Override
-    public boolean onExecute(final String[] args, Position position, final boolean isOp) {
+    public boolean onExecute(final String[] args, final boolean isOp) {
         if (!this.packModule.isLoaded()) {
             this.sendMessage("&cPaczka &b" + this.packModule.getPackName() + "&c nie jest załadowana!");
             return true;

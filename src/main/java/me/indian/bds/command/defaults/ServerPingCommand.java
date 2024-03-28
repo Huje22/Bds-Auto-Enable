@@ -2,7 +2,6 @@ package me.indian.bds.command.defaults;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
-import me.indian.bds.event.Position;
 import me.indian.bds.util.BedrockQuery;
 
 public class ServerPingCommand extends Command {
@@ -17,7 +16,7 @@ public class ServerPingCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final String[] args, Position position, final boolean isOp) {
+    public boolean onExecute(final String[] args, final boolean isOp) {
         if (args.length == 0) return false;
 
         final String adres = args[0];
