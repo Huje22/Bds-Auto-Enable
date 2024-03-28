@@ -2,6 +2,7 @@ package me.indian.bds.command.defaults;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
+import me.indian.bds.event.Position;
 import me.indian.bds.server.ServerProcess;
 
 public class ChatFormatCommand extends Command {
@@ -18,7 +19,7 @@ public class ChatFormatCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final String[] args, final boolean isOp) {
+    public boolean onExecute(final String[] args, Position position, final boolean isOp) {
         if (!isOp) {
             this.sendMessage("&cPotrzebujesz wyższych uprawnień");
             return true;

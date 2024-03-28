@@ -21,8 +21,10 @@ import me.indian.bds.command.defaults.TPSCommand;
 import me.indian.bds.command.defaults.TestCommand;
 import me.indian.bds.command.defaults.TopCommand;
 import me.indian.bds.command.defaults.VersionCommand;
+import me.indian.bds.event.Position;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.server.ServerProcess;
+import org.jetbrains.annotations.Nullable;
 
 public class CommandManager {
 
@@ -84,14 +86,14 @@ public class CommandManager {
         commandsToRemove.forEach(this.commandMap::remove);
     }
 
-    public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, final boolean isOp) {
+    public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, @Nullable final Position position, final boolean isOp) {
         for (final Map.Entry<Command, Extension> entry : this.commandMap.entrySet()) {
             final Command command = entry.getKey();
             if (command.getName().equalsIgnoreCase(commandName) || command.isAlias(commandName)) {
                 command.setCommandSender(sender);
                 command.setPlayerName(playerName);
 
-                if (!command.onExecute(args, this.isOp(playerName)) && !command.getUsage().isEmpty()) {
+                if (!command.onExecute(args,position, this.isOp(playerName)) && !command.getUsage().isEmpty()) {
                     switch (sender) {
                         case CONSOLE -> this.bdsAutoEnable.getLogger().print(command.getUsage());
                         case PLAYER -> this.serverProcess.tellrawToPlayer(playerName, command.getUsage());

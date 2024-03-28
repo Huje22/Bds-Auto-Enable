@@ -6,6 +6,7 @@ import java.lang.management.ThreadMXBean;
 import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
+import me.indian.bds.event.Position;
 import me.indian.bds.util.ThreadUtil;
 
 public class TestCommand extends Command {
@@ -15,7 +16,7 @@ public class TestCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final String[] args, final boolean isOp) {
+    public boolean onExecute(final String[] args, Position position, final boolean isOp) {
         if (!isOp) return false;
 
         final ThreadMXBean threadMXBean = ManagementFactory.getThreadMXBean();

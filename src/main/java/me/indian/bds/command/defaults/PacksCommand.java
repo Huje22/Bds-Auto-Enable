@@ -3,6 +3,7 @@ package me.indian.bds.command.defaults;
 import java.util.Arrays;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
+import me.indian.bds.event.Position;
 import me.indian.bds.pack.PackManager;
 import me.indian.bds.pack.component.BehaviorPack;
 import me.indian.bds.pack.component.TexturePack;
@@ -17,7 +18,7 @@ public class PacksCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final String[] args, final boolean isOp) {
+    public boolean onExecute(final String[] args, Position position, final boolean isOp) {
         if (!this.commandConfig.isPacksForAll() && !isOp) {
             this.sendMessage("&cPotrzebujesz wyższych uprawnień");
             return true;

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
+import me.indian.bds.event.Position;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.extension.ExtensionManager;
 import me.indian.bds.util.MessageUtil;
@@ -25,7 +26,7 @@ public class ExtensionsCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final String[] args, final boolean isOp) {
+    public boolean onExecute(final String[] args, Position position, final boolean isOp) {
         if (!this.commandConfig.isExtensionsForAll() && !isOp) {
             this.sendMessage("&aTylko operatorzy mogą zobaczyć aktualne rozserzenia");
             return true;

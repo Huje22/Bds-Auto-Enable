@@ -246,7 +246,7 @@ public class ServerManager {
             final boolean isOp = Boolean.parseBoolean(matcher.group(4));
 
             try {
-                this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command), isOp);
+                this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command),Position.parsePosition(position), isOp);
                 this.eventManager.callEvent(new PlayerCommandEvent(playerCommand, command, Position.parsePosition(position), isOp));
             } catch (final Exception exception) {
                 this.logger.error("&cWystąpił błąd podczas próby przetworzenia polecenia gracza&c " + playerCommand, exception);
@@ -461,12 +461,12 @@ public class ServerManager {
         }
     }
 
-    private void handleCustomCommand(final String playerCommand, final String[] args, final boolean isOp) {
+    private void handleCustomCommand(final String playerCommand, final String[] args, Position position, final boolean isOp) {
         // !tps jest handlowane w https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack
         // boolean isOp narazie nie działa bo Mojang rozjebało BDS i zawsze zwraca on false
 
         final String[] newArgs = MessageUtil.removeFirstArgs(args);
-        this.bdsAutoEnable.getCommandManager().runCommands(CommandSender.PLAYER, playerCommand, args[0], newArgs, isOp);
+        this.bdsAutoEnable.getCommandManager().runCommands(CommandSender.PLAYER, playerCommand, args[0], newArgs,position, isOp);
     }
 
     private void serverJoinException(final String playerName, final Exception exception) {

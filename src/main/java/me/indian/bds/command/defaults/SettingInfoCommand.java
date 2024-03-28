@@ -2,6 +2,7 @@ package me.indian.bds.command.defaults;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
+import me.indian.bds.event.Position;
 import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.system.SystemArch;
 import me.indian.bds.util.system.SystemUtil;
@@ -16,7 +17,7 @@ public class SettingInfoCommand extends Command {
     }
 
     @Override
-    public boolean onExecute(final String[] args, final boolean isOp) {
+    public boolean onExecute(final String[] args, Position position, final boolean isOp) {
         if (!this.commandConfig.isSettingsForAll() && !isOp) {
             this.sendMessage("&aTylko operatorzy mogą zobaczyć aktualne ustawienia servera");
             return true;
