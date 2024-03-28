@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandSender;
 import me.indian.bds.config.sub.transfer.MainServerConfig;
-import me.indian.bds.event.Dimension;
+import me.indian.bds.util.Dimension;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.event.Position;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;

@@ -2,6 +2,7 @@ package me.indian.bds.event;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import me.indian.bds.util.Dimension;
 import org.jetbrains.annotations.Nullable;
 
 public record Position(double x, double y, double z, Dimension dimension) {

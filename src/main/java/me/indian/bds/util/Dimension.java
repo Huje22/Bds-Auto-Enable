@@ -1,9 +1,9 @@
-package me.indian.bds.event;
+package me.indian.bds.util;
 
 public enum Dimension {
     OVERWORLD("minecraft:overworld"),
     NETHER("minecraft:nether"),
-    END("minecraft:end");
+    END("minecraft:the_end");
 
     private final String dimensionID;
 

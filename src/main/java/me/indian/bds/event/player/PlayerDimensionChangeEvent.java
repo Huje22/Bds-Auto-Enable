@@ -1,6 +1,6 @@
 package me.indian.bds.event.player;
 
-import me.indian.bds.event.Dimension;
+import me.indian.bds.util.Dimension;
 import me.indian.bds.event.Event;
 import me.indian.bds.event.Position;
 
