@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.sub.transfer.LobbyConfig;
 import me.indian.bds.config.sub.watchdog.AutoRestartConfig;
 import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
@@ -88,6 +89,12 @@ public class AutoRestartModule {
                     return;
                 }
 
+                final LobbyConfig lobbyConfig = this.bdsAutoEnable.getAppConfigManager().getTransferConfig().getLobbyConfig();
+
+                if (lobbyConfig.isEnable()) {
+                    this.serverProcess.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
+                }
+
                 this.serverProcess.titleToAll("&cServer zostanie zrestartowany", "&bZa&a " + seconds + "&e sekund");
                 this.serverProcess.tellrawToAllAndLogger(this.prefix,
                         "&aPrzygotowanie do&b restartu&a servera",
@@ -96,7 +103,7 @@ public class AutoRestartModule {
                 if (alert) this.restartAlert(seconds);
 
 
-                if (!this.bdsAutoEnable.getAppConfigManager().getTransferConfig().getLobbyConfig().isEnable()) {
+                if (!lobbyConfig.isEnable()) {
                     this.serverProcess.kickAllPlayers(this.prefix + " &aServer jest restartowany....");
                 }
 

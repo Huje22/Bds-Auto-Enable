@@ -2,6 +2,7 @@ package me.indian.bds.command.defaults;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
+import me.indian.bds.config.sub.transfer.LobbyConfig;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.ThreadUtil;
@@ -49,7 +50,13 @@ public class EndCommand extends Command {
             return;
         }
 
+        final LobbyConfig lobbyConfig = this.bdsAutoEnable.getAppConfigManager().getTransferConfig().getLobbyConfig();
+
         this.serverProcess.titleToAll("&cServer zostanie zamknięty", "&bZa&a " + seconds + "&e sekund");
+
+        if (lobbyConfig.isEnable()) {
+            this.serverProcess.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
+        }
 
         this.canStop = false;
         this.serverProcess.setCanRun(false);
@@ -60,7 +67,7 @@ public class EndCommand extends Command {
             ThreadUtil.sleep(1);
         }
 
-        if (!this.bdsAutoEnable.getAppConfigManager().getTransferConfig().getLobbyConfig().isEnable()) {
+        if (!lobbyConfig.isEnable()) {
             this.serverProcess.kickAllPlayers("&cServer jest wyłączany");
         }
 

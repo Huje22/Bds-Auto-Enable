@@ -347,10 +347,11 @@ public class ServerProcess {
         this.logger.alert("Wyłączanie...");
         this.setCanRun(false);
 
+
         if(!this.appConfigManager.getTransferConfig().getLobbyConfig().isEnable()){
             this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
         } else{
-//TODO: Dodać info tu i podczas restart że będzie się przeniesionym na Server lobby 
+            this.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
         }
 
         ThreadUtil.sleep(3);
