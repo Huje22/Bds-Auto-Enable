@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.CommandSender;
 import me.indian.bds.config.sub.transfer.MainServerConfig;
+import me.indian.bds.event.Dimension;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.event.Position;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
@@ -315,7 +316,7 @@ public class ServerManager {
             final Position toPosition = Position.parsePosition(matcher.group(5));
 
             try {
-                this.eventManager.callEvent(new PlayerDimensionChangeEvent(playerName, fromDimension, toDimension, fromPosition, toPosition));
+                this.eventManager.callEvent(new PlayerDimensionChangeEvent(playerName, Dimension.getByID(fromDimension), Dimension.getByID(toDimension), fromPosition, toPosition));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć zmiany wymiaru gracza " + playerName);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć zmiany wymiaru gracza " + playerName,

@@ -1,14 +1,16 @@
 package me.indian.bds.event.player;
 
+import me.indian.bds.event.Dimension;
 import me.indian.bds.event.Event;
 import me.indian.bds.event.Position;
 
 public class PlayerDimensionChangeEvent extends Event {
 
-    private final String playerName, dimensionFrom, dimensionTo;
+    private final String playerName;
+    private final Dimension dimensionFrom, dimensionTo;
     private final Position fromPosition, toPosition;
 
-    public PlayerDimensionChangeEvent(final String playerName, final String dimensionFrom, final String dimensionTo, final Position fromPosition, final Position toPosition) {
+    public PlayerDimensionChangeEvent(final String playerName, final Dimension dimensionFrom, final Dimension dimensionTo, final Position fromPosition, final Position toPosition) {
         this.playerName = playerName;
         this.dimensionFrom = dimensionFrom;
         this.dimensionTo = dimensionTo;
@@ -20,11 +22,11 @@ public class PlayerDimensionChangeEvent extends Event {
         return this.playerName;
     }
 
-    public String getDimensionFrom() {
+    public Dimension getDimensionFrom() {
         return this.dimensionFrom;
     }
 
-    public String getDimensionTo() {
+    public Dimension getDimensionTo() {
         return this.dimensionTo;
     }
 
