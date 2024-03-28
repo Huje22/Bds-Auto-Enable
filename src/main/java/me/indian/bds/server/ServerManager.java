@@ -21,6 +21,8 @@ import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.PlayerCommandEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerDimensionChangeEvent;
+import me.indian.bds.event.player.PlayerInteractContainerEvent;
+import me.indian.bds.event.player.PlayerInteractEntityWithContainerEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
@@ -87,8 +89,10 @@ public class ServerManager {
             this.playerSpawn(logEntry);
             this.deathMessage(logEntry);
             this.dimensionChange(logEntry);
+            this.playerEntityWithContainerInteract(logEntry);
             this.playerBreakBlock(logEntry);
             this.playerPlaceBlock(logEntry);
+            this.playerContainerInteract(logEntry);
 
             //Dodatkowe metody
             this.serverEnabled(logEntry);
@@ -359,6 +363,48 @@ public class ServerManager {
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć postawienia bloku gracza " + playerPlaceBlock);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć postawienia bloku gracza " + playerPlaceBlock,
+                        "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
+                throw exception;
+            }
+        }
+    }
+
+    private void playerContainerInteract(final String logEntry) {
+        final String patternString = "PlayerContainerInteract:([^,]+) Block:(.+) Position:(.+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerInteract = MessageUtil.fixPlayerName(matcher.group(1));
+            final String blockID = matcher.group(2);
+            final String blockPosition = matcher.group(3);
+
+            try {
+                this.eventManager.callEvent(new PlayerInteractContainerEvent(playerInteract, blockID, Position.parsePosition(blockPosition)));
+            } catch (final Exception exception) {
+                this.logger.error("&cNie udało się obsłużyć interakcji gracza z kontenerem " + playerInteract);
+                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć interakcji gracza z kontenerem " + playerInteract,
+                        "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
+                throw exception;
+            }
+        }
+    }
+
+    private void playerEntityWithContainerInteract(final String logEntry) {
+        final String patternString = "PlayerEntityContainerInteract:([^,]+) EntityID:(.+) EntityPosition:(.+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerInteract = MessageUtil.fixPlayerName(matcher.group(1));
+            final String entityID = matcher.group(2);
+            final String entityPosition = matcher.group(3);
+
+            try {
+                this.eventManager.callEvent(new PlayerInteractEntityWithContainerEvent(playerInteract, entityID, Position.parsePosition(entityPosition)));
+            } catch (final Exception exception) {
+                this.logger.error("&cNie udało się obsłużyć interakcji gracza z bytem który posiada kontener " + playerInteract);
+                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć interakcji gracza z bytem który posiada kontener " + playerInteract,
                         "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
                 throw exception;
             }

@@ -16,6 +16,8 @@ import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.PlayerCommandEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerDimensionChangeEvent;
+import me.indian.bds.event.player.PlayerInteractContainerEvent;
+import me.indian.bds.event.player.PlayerInteractEntityWithContainerEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerMuteEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
@@ -102,6 +104,10 @@ public class EventManager {
                         listener.onPlayerPlaceBlock(playerBlockPlaceEvent);
                     } else if (event instanceof final PlayerCommandEvent playerCommandEvent) {
                         listener.onPlayerCommandEvent(playerCommandEvent);
+                    } else if (event instanceof final PlayerInteractContainerEvent playerInteractContainerEvent) {
+                        listener.onPlayerInteractContainerEvent(playerInteractContainerEvent);
+                    } else if (event instanceof final PlayerInteractEntityWithContainerEvent playerInteractEntityWithContainerEvent) {
+                        listener.onPlayerInteractEntityWithContainerEvent(playerInteractEntityWithContainerEvent);
                     }
 
                     //Server

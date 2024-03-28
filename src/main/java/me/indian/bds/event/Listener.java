@@ -6,6 +6,8 @@ import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.PlayerCommandEvent;
 import me.indian.bds.event.player.PlayerDeathEvent;
 import me.indian.bds.event.player.PlayerDimensionChangeEvent;
+import me.indian.bds.event.player.PlayerInteractContainerEvent;
+import me.indian.bds.event.player.PlayerInteractEntityWithContainerEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
 import me.indian.bds.event.player.PlayerMuteEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
@@ -74,6 +76,14 @@ public abstract class Listener {
     }
 
     public void onPlayerCommandEvent(final PlayerCommandEvent playerCommandEvent) {
+
+    }
+
+    public void onPlayerInteractContainerEvent(final PlayerInteractContainerEvent playerInteractContainerEvent) {
+
+    }
+
+    public void onPlayerInteractEntityWithContainerEvent(final PlayerInteractEntityWithContainerEvent playerInteractEntityWithContainerEvent) {
 
     }
 
