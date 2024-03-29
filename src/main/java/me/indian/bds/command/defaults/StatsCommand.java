@@ -13,7 +13,7 @@ public class StatsCommand extends Command {
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (this.commandSender == CommandSender.PLAYER) {
-            this.sendMessage("&cPolecenie można wykonać tylko z poziomu konsoli albo na discord&b /stats");
+            this.sendMessage("&cPolecenie można wykonać tylko z poziomu konsoli!");
             return true;
         }
 
