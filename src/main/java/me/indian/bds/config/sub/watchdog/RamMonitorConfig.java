@@ -21,7 +21,6 @@ public class RamMonitorConfig extends OkaeriConfig {
     @Comment({"Czas sprawdzania stanu ram maszyny w sekundach"})
     private int checkMachineTime = 60;
 
-
     public boolean isApp() {
         return this.app;
     }
@@ -36,9 +35,5 @@ public class RamMonitorConfig extends OkaeriConfig {
 
     public int getCheckMachineTime() {
         return this.checkMachineTime;
-    }
-
-    public boolean isDiscordAlters() {
-        return this.discordAlters;
     }
 }
