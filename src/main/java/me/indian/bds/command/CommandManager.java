@@ -93,7 +93,7 @@ public class CommandManager {
                 command.setPlayerName(playerName);
                 command.setPosition(position);
 
-                if (!command.onExecute(args, this.isOp(playerName)) && !command.getUsage().isEmpty()) {
+                if (!command.onExecute(args, this.isOp(playerName, isOp)) && !command.getUsage().isEmpty()) {
                     switch (sender) {
                         case CONSOLE -> this.bdsAutoEnable.getLogger().print(command.getUsage());
                         case PLAYER -> this.serverProcess.tellrawToPlayer(playerName, command.getUsage());
@@ -110,8 +110,8 @@ public class CommandManager {
         return false;
     }
 
-    private boolean isOp(final String playerName) {
-        if (playerName.equalsIgnoreCase("CONSOLE")) return true;
+    private boolean isOp(final String playerName, final boolean isOp) {
+        if (isOp || playerName.equalsIgnoreCase("CONSOLE")) return true;
         return this.bdsAutoEnable.getAppConfigManager().getAppConfig().getModerators().contains(playerName);
     }
 }
