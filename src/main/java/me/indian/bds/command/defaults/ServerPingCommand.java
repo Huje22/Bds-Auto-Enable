@@ -38,14 +38,25 @@ public class ServerPingCommand extends Command {
         final BedrockQuery query = BedrockQuery.create(adres, port);
 
         if (query.online()) {
+            this.sendMessage("&aCzas odpowiedzi servera&b " + query.responseTime());
             this.sendMessage("&aMOTD:&b " + query.motd());
-            this.sendMessage("&aProtocol Version:&b " + query.protocol());
-            this.sendMessage("&aMinecraft Version:&b " + query.minecraftVersion());
-            this.sendMessage("&aPlayer Count:&b " + query.playerCount());
-            this.sendMessage("&aMax Players:&b " + query.maxPlayers());
-            this.sendMessage("&aMap Name:&b " + query.mapName());
-            this.sendMessage("&aGamemode:&b " + query.gamemode());
+            this.sendMessage("&aWersja protokołu:&b " + query.protocol());
+            this.sendMessage("&aWersja Minecrafta:&b " + query.minecraftVersion());
+            this.sendMessage("&aLiczba graczy:&b " + query.playerCount());
+            this.sendMessage("&aMaksymalna liczba graczy:&b " + query.maxPlayers());
+            this.sendMessage("&aNazwa mapy:&b " + query.mapName());
+            this.sendMessage("&aTryb gry:&b " + query.gamemode());
             this.sendMessage("&aEdycja:&b " + query.edition());
+
+            final int portV4 = query.portV4();
+            final int portV6 = query.portV6();
+
+            if (portV4 != -1) {
+                this.sendMessage("&aPort v4:&b " + portV4);
+            }
+            if (portV6 != -1) {
+                this.sendMessage("&aPort v6:&b " + portV6);
+            }
         } else {
             this.sendMessage("&cSerwer jest offline lub podane informacje są nieprawidłowe");
         }
