@@ -15,7 +15,6 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.pack.component.BehaviorPack;
-import me.indian.bds.pack.loader.BehaviorPackLoader;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.HTTPUtil;
 import me.indian.bds.util.MathUtil;
@@ -29,7 +28,6 @@ public class PackUpdater {
 
     private final Logger logger;
     private final PackModule packModule;
-    private final BehaviorPackLoader behaviorPackLoader;
     private final File behaviorsFolder;
     private final OkHttpClient client;
     private Response response;
@@ -37,8 +35,7 @@ public class PackUpdater {
     public PackUpdater(final BDSAutoEnable bdsAutoEnable, final PackModule packModule) {
         this.logger = bdsAutoEnable.getLogger();
         this.packModule = packModule;
-        this.behaviorPackLoader = bdsAutoEnable.getPackManager().getBehaviorPackLoader();
-        this.behaviorsFolder = this.behaviorPackLoader.getBehaviorsFolder();
+        this.behaviorsFolder = bdsAutoEnable.getPackManager().getBehaviorPackLoader().getBehaviorsFolder();
         this.client = HTTPUtil.getOkHttpClient();
         this.response = null;
 
@@ -165,8 +162,8 @@ public class PackUpdater {
             @Override
             public void run() {
                 if (PackUpdater.this.response != null) {
+                    PackUpdater.this.logger.debug("Ustawiono " + PackUpdater.this.response + " na&b null&r aby następnym razem pozyskać nowe");
                     PackUpdater.this.response = null;
-                    PackUpdater.this.logger.debug("Ustawiono response na&b null&r aby następnym razem pozyskać nowe");
                 }
             }
         };
