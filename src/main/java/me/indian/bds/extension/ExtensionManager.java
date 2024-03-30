@@ -154,6 +154,7 @@ public class ExtensionManager {
             this.logger.info("Włączono&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)");
         } catch (final Exception | Error throwable) {
             extension.setEnabled(false);
+            extension.onDisable();
             this.logger.error("Nie udało się włączyć&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)", throwable);
         }
     }
@@ -165,7 +166,7 @@ public class ExtensionManager {
         }
 
         final String formattedTime = DateUtil.formatTime((System.currentTimeMillis() - startTime), List.of('s', 'i'), true);
-        this.logger.info("Włączono&b " + this.extensions.size() + " rozszerzeń w czasie&1 " + formattedTime);
+        this.logger.info("Włączono&b " + this.extensions.size() + "&r rozszerzeń w czasie&1 " + formattedTime);
     }
 
     public void disableExtension(final Extension extension) {
@@ -177,8 +178,8 @@ public class ExtensionManager {
             extension.setEnabled(false);
             this.eventManager.callEvent(new ExtensionDisableEvent(extension));
             this.logger.info("Wyłączono&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)");
-        } catch (final Exception exception) {
-            this.logger.error("Nie udało się wyłączyć&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)", exception);
+        } catch (final Exception | Error throwable) {
+            this.logger.error("Nie udało się wyłączyć&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)", throwable);
         }
     }
 
