@@ -15,9 +15,10 @@ import me.indian.bds.server.properties.component.Gamemode;
  * https://github.com/justin-eckenweber/BedrockServerQuery/blob/main/src/main/java/me/justin/bedrockserverquery/data/BedrockQuery.java
  */
 
-public record BedrockQuery(boolean online, String edition, String motd, int protocol, String minecraftVersion,
+public record BedrockQuery(boolean online, long responseTime, String edition, String motd, int protocol,
+                           String minecraftVersion,
                            int playerCount,
-                           int maxPlayers, String mapName, Gamemode gamemode) {
+                           int maxPlayers, String mapName, Gamemode gamemode, int portV4, int portV6) {
 
     private static final byte IDUnconnectedPing = 0x01;
     private static final byte[] unconnectedMessageSequence = {0x00, (byte) 0xff, (byte) 0xff, 0x00, (byte) 0xfe, (byte) 0xfe, (byte) 0xfe, (byte) 0xfe, (byte) 0xfd, (byte) 0xfd, (byte) 0xfd, (byte) 0xfd, 0x12, 0x34, 0x56, 0x78};
@@ -30,6 +31,7 @@ public record BedrockQuery(boolean online, String edition, String motd, int prot
             final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             final DataOutputStream dataOutputStream = new DataOutputStream(outputStream);
 
+            final long startTime = System.currentTimeMillis();
             dataOutputStream.writeByte(IDUnconnectedPing);
             dataOutputStream.writeLong(System.currentTimeMillis() / 1000);
             dataOutputStream.write(unconnectedMessageSequence);
@@ -47,21 +49,30 @@ public record BedrockQuery(boolean online, String edition, String motd, int prot
             socket.receive(responsePacket);
             socket.close();
 
+            final long ping = System.currentTimeMillis() - startTime;
 
             // MCPE;<motd>;<protocol>;<version>;<players>;<max players>;<id>;<sub motd>;<gamemode>;<not limited>;<port>;<port>
             final String[] splittedData = new String(responsePacket.getData(), 35, responsePacket.getLength()).split(";");
 
-            return new BedrockQuery(true,
+            int portV4 = -1;
+            int portV6 = -1;
+
+            if (splittedData.length >= 12) {
+                portV4 = Integer.parseInt(splittedData[10]);
+                portV6 = Integer.parseInt(splittedData[11]);
+            }
+
+            return new BedrockQuery(true, ping,
                     splittedData[0], splittedData[1], Integer.parseInt(splittedData[2]), splittedData[3],
                     Integer.parseInt(splittedData[4]), Integer.parseInt(splittedData[5]),
-                    splittedData[7], Gamemode.getByName(splittedData[8]));
+                    splittedData[7], Gamemode.getByName(splittedData[8]), portV4, portV6);
         } catch (final Exception exception) {
             if (!(exception instanceof UnknownHostException) &&
                     !(exception instanceof SocketTimeoutException)) {
                 exception.printStackTrace();
             }
 
-            return new BedrockQuery(false, "", "", -1, "", 0, 0, "", Gamemode.SURVIVAL);
+            return new BedrockQuery(false, -1, "", "", -1, "", 0, 0, "", Gamemode.SURVIVAL, -1, -1);
         }
     }
 }
