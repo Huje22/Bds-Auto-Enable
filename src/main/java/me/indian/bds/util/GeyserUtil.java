@@ -93,12 +93,12 @@ public class GeyserUtil {
         System.out.println(getBedrockSkin(xuid));
     }
 
-
-    public static String getBedrockSkin(final long xuid) throws IOException {
+//TOOD: Zapisywać ID skina do mapy 
+    public static String getBedrockSkinHead(final long xuid) throws IOException {
         final String geyserAPIResponse = sendHttpGETRequest(xuid);
         if (geyserAPIResponse.equals("")) throw new RuntimeException();
 
-        return "https://textures.minecraft.net/texture/" + GsonUtil.getGson().fromJson(geyserAPIResponse, SkinResponse.class).getTextureId();
+        return "https://mc-heads.net/head/" + GsonUtil.getGson().fromJson(geyserAPIResponse, SkinResponse.class).getTextureId();
     }
 
     private static String sendHttpGETRequest(final long xuid) throws IOException {
