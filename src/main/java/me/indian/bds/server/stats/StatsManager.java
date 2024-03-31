@@ -121,7 +121,7 @@ public class StatsManager {
     }
 
     @Nullable
-    private PlayerStatistics getPlayer(final String playerName) {
+    public PlayerStatistics getPlayer(final String playerName) {
         for (final PlayerStatistics player : this.playerStats) {
             if (player.getPlayerName().equalsIgnoreCase(playerName)) {
                 return player;
@@ -131,7 +131,7 @@ public class StatsManager {
     }
 
     @Nullable
-    private PlayerStatistics getPlayer(final long xuid) {
+    public PlayerStatistics getPlayer(final long xuid) {
         for (final PlayerStatistics player : this.playerStats) {
             if (player.getXuid() == xuid) {
                 return player;
