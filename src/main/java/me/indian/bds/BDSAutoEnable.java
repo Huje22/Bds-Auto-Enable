@@ -31,6 +31,7 @@ import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ZipUtil;
+import me.indian.bds.util.geyser.GeyserUtil;
 import me.indian.bds.util.system.SystemArch;
 import me.indian.bds.util.system.SystemOS;
 import me.indian.bds.util.system.SystemUtil;
@@ -88,6 +89,7 @@ public class BDSAutoEnable {
         this.extensionManager = new ExtensionManager(this);
         this.allowlistManager = new AllowlistManager(this);
         this.serverManager.init();
+        GeyserUtil.init(this);
         StatusUtil.init(this);
         ZipUtil.init(this);
 

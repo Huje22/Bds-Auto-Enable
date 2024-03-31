@@ -5,9 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="6f57eb4c-9a7f-418c-afff-b4129e5ac4bd" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/util/geyser/GeyserUtil.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/CommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/CommandManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/sub/watchdog/RamMonitorConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/sub/watchdog/RamMonitorConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/util/GeyserUtil.java" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -145,8 +146,8 @@
       </method>
     </configuration>
     <configuration name="GeyserUtil" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="me.indian.bds.util.GeyserUtil" />
-      <module name="BDS-Manager" />
+      <option name="MAIN_CLASS_NAME" value="me.indian.bds.util.geyser.GeyserUtil" />
+      <module name="BDS-Auto-Enable" />
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="me.indian.extension.discord.util.*" />
@@ -186,10 +187,10 @@
     <recent_temporary>
       <list>
         <item itemvalue="Application.BDSAutoEnable" />
+        <item itemvalue="Application.GeyserUtil" />
         <item itemvalue="Application.ExtensionLoader" />
         <item itemvalue="Application.ZipUtil" />
         <item itemvalue="Application.CustomEmbed" />
-        <item itemvalue="Application.GeyserUtil" />
       </list>
     </recent_temporary>
   </component>
