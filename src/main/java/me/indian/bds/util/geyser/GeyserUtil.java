@@ -28,10 +28,34 @@ public final class GeyserUtil {
     }
 
     /**
-     * Metoda, która pozwala uzyskać link do głowy gracza Bedrock Edition przy użyciu API Geyser i 'mc-heads.net'.
+     * Metoda, która pozwala uzyskać link do zdjęcia ciało gracza Bedrock Edition przy użyciu API Geyser i 'mc-heads.net'.
      *
      * @param xuid XUID gracza Bedrock Edition
-     * @return Link do głowy gracza Bedrock Edition
+     * @return Link do zdjęcia ciało gracza Bedrock Edition
+     */
+    public static String getBedrockSkinBody(final long xuid) {
+        String playerName = BDS_AUTO_ENABLE.getServerManager().getStatsManager().getNameByXuid(xuid);
+
+        if (playerName == null) playerName = "Steve";
+
+        try {
+            final SkinResponse skinResponse = sendGeyserSkinRequest(xuid);
+            if (skinResponse.textureID() == null) {
+                return "https://mineskin.eu/armor/bust/" + playerName + "/100.png";
+            }
+
+            return "https://mc-heads.net/body/" + skinResponse.textureID;
+        } catch (final IOException ioException) {
+            ioException.printStackTrace();
+            return "https://mineskin.eu/armor/bust/" + playerName + "/100.png";
+        }
+    }
+
+    /**
+     * Metoda, która pozwala uzyskać link do zdjęcia głowy gracza Bedrock Edition przy użyciu API Geyser i 'mc-heads.net'.
+     *
+     * @param xuid XUID gracza Bedrock Edition
+     * @return Link do zdjęcia głowy gracza Bedrock Edition
      */
     public static String getBedrockSkinHead(final long xuid) {
         String playerName = BDS_AUTO_ENABLE.getServerManager().getStatsManager().getNameByXuid(xuid);
