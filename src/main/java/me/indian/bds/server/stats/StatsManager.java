@@ -19,6 +19,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
@@ -307,8 +308,8 @@ public class StatsManager {
         try (final FileReader reader = new FileReader(this.statsJson)) {
             final TypeToken<List<PlayerStatistics>> type = new TypeToken<>() {
             };
-            final List<PlayerStatistics> loadedMap = GsonUtil.getGson().fromJson(reader, type);
-            return (loadedMap == null ? new ArrayList<>() : loadedMap);
+            final List<PlayerStatistics> loadedPlayers = GsonUtil.getGson().fromJson(reader, type);
+            return (loadedPlayers == null ? new ArrayList<>() : loadedPlayers);
         } catch (final Exception exception) {
             this.logger.error("Nie udało się załadować&b statystyk&r graczy", exception);
         }
