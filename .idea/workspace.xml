@@ -6,27 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="6f57eb4c-9a7f-418c-afff-b4129e5ac4bd" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/ConsoleInput.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/ConsoleInput.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/Command.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/Command.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/BDSAutoEnable.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/CommandManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/CommandManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/CommandSender.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/MuteCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/MuteCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/StatsCommand.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/command/defaults/StatsCommand.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerBlockBreakEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerBlockBreakEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerBlockPlaceEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerBlockPlaceEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerChatEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerChatEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerCommandEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerCommandEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerDeathEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerDeathEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerDimensionChangeEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerDimensionChangeEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerInteractContainerEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerInteractContainerEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerInteractEntityWithContainerEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerInteractEntityWithContainerEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerJoinEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerJoinEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerMuteEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerMuteEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerQuitEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerQuitEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerSpawnEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerSpawnEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerUnMuteEvent.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/event/player/PlayerUnMuteEvent.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/ServerManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/ServerManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/stats/StatsManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/server/stats/StatsManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfigManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/me/indian/bds/config/AppConfigManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

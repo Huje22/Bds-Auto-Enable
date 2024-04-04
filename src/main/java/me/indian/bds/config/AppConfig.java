@@ -66,7 +66,7 @@ public class AppConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Nazwy graczy którzy mogą wykonywać polecenia typu !format"})
     @CustomKey("Moderators")
-    private List<String> moderators = List.of("JndjanBartonka");
+    private List<String> admins = List.of("JndjanBartonka");
 
     @Comment({""})
     @Comment({"UUID aplikacji"})
@@ -77,6 +77,7 @@ public class AppConfig extends OkaeriConfig {
     @Comment({"Debug, dodatkowe wiadomości w konsoli dla developerów"})
     @CustomKey("Debug")
     private boolean debug = false;
+
 
     public boolean isFirstRun() {
         return this.firstRun;
@@ -125,12 +126,17 @@ public class AppConfig extends OkaeriConfig {
     public boolean isLoadTexturePacks() {
         return this.loadTexturePacks;
     }
+
     public void setFilesPath(final String filesPath) {
         this.filesPath = filesPath;
     }
 
-    public List<String> getModerators() {
-        return this.moderators;
+    public List<String> getAdmins() {
+        return this.admins;
+    }
+
+    public void setAdmins(final List<String> admins) {
+        this.admins = admins;
     }
 
     public String getUuid() {

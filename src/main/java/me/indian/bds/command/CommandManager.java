@@ -113,6 +113,6 @@ public class CommandManager {
 
     private boolean isOp(final PlayerStatistics playerStatistics, final boolean isOp) {
         if (isOp || playerStatistics.getPlayerName().equalsIgnoreCase("CONSOLE")) return true;
-        return this.bdsAutoEnable.getAppConfigManager().getAppConfig().getModerators().contains(playerStatistics.getPlayerName());
+        return this.bdsAutoEnable.getAppConfigManager().getAppConfig().getAdmins().contains(playerStatistics.getPlayerName());
     }
 }
