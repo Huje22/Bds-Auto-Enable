@@ -134,7 +134,7 @@ public class PackUpdater {
 
             return version;
         } catch (final IOException exception) {
-            this.logger.error("Nie udało się pozyskać najnowszej wersji paczki!", exception);
+            this.logger.error("&cNie udało się pozyskać najnowszej wersji paczki!", exception);
             return null;
         }
     }
