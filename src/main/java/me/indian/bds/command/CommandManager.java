@@ -13,6 +13,7 @@ import me.indian.bds.command.defaults.ExtensionsCommand;
 import me.indian.bds.command.defaults.HelpCommand;
 import me.indian.bds.command.defaults.MuteCommand;
 import me.indian.bds.command.defaults.PacksCommand;
+import me.indian.bds.command.defaults.ReloadCommand;
 import me.indian.bds.command.defaults.RestartCommand;
 import me.indian.bds.command.defaults.ServerPingCommand;
 import me.indian.bds.command.defaults.SettingInfoCommand;
@@ -43,6 +44,7 @@ public class CommandManager {
         this.commandMap.put(new EndCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new RestartCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new BackupCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new ReloadCommand(this.bdsAutoEnable), null);
 
         if (this.bdsAutoEnable.getWatchDog().getPackModule().isLoaded()) {
             this.commandMap.put(new TopCommand(this.bdsAutoEnable), null);
