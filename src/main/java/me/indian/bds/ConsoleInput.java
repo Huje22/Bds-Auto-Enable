@@ -2,7 +2,6 @@ package me.indian.bds;
 
 import java.util.Scanner;
 import me.indian.bds.command.CommandManager;
-import me.indian.bds.command.CommandSender;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
@@ -38,8 +37,7 @@ public class ConsoleInput {
 
                     this.logger.instantLogToFile(input);
 
-                    final boolean done = this.commandManager.runCommands(CommandSender.CONSOLE,
-                            "CONSOLE", args[0], newArgs, null,true);
+                    final boolean done = this.commandManager.runCommands(null, args[0], newArgs, null, true);
 
                     if (done) {
                         continue;

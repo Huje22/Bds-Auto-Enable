@@ -23,6 +23,7 @@ import me.indian.bds.command.defaults.TopCommand;
 import me.indian.bds.command.defaults.VersionCommand;
 import me.indian.bds.event.Position;
 import me.indian.bds.extension.Extension;
+import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.server.ServerProcess;
 
 public class CommandManager {
@@ -85,33 +86,33 @@ public class CommandManager {
         commandsToRemove.forEach(this.commandMap::remove);
     }
 
-    public boolean runCommands(final CommandSender sender, final String playerName, final String commandName, final String[] args, final Position position, final boolean isOp) {
+    public boolean runCommands(final PlayerStatistics player, final String commandName, final String[] args, final Position position, final boolean isOp) {
         for (final Map.Entry<Command, Extension> entry : this.commandMap.entrySet()) {
             final Command command = entry.getKey();
             if (command.getName().equalsIgnoreCase(commandName) || command.isAlias(commandName)) {
-                command.setCommandSender(sender);
-                command.setPlayerName(playerName);
+                command.setPlayer(player);
                 command.setPosition(position);
 
-                if (!command.onExecute(args, this.isOp(playerName, isOp)) && !command.getUsage().isEmpty()) {
-                    switch (sender) {
-                        case CONSOLE -> this.bdsAutoEnable.getLogger().print(command.getUsage());
-                        case PLAYER -> this.serverProcess.tellrawToPlayer(playerName, command.getUsage());
+                if (!command.onExecute(args, this.isOp(player, isOp)) && !command.getUsage().isEmpty()) {
+                    if (player != null) {
+                        this.serverProcess.tellrawToPlayer(player.getPlayerName(), command.getUsage());
+                    } else {
+                        this.bdsAutoEnable.getLogger().print(command.getUsage());
                     }
                 }
                 return true;
             }
         }
 
-        if (sender == CommandSender.PLAYER) {
-            this.serverProcess.tellrawToPlayer(playerName, "&cNie znaleziono takiego polecenia");
+        if (player != null) {
+            this.serverProcess.tellrawToPlayer(player.getPlayerName(), "&cNie znaleziono takiego polecenia");
         }
 
         return false;
     }
 
-    private boolean isOp(final String playerName, final boolean isOp) {
-        if (isOp || playerName.equalsIgnoreCase("CONSOLE")) return true;
-        return this.bdsAutoEnable.getAppConfigManager().getAppConfig().getModerators().contains(playerName);
+    private boolean isOp(final PlayerStatistics playerStatistics, final boolean isOp) {
+        if (isOp || playerStatistics.getPlayerName().equalsIgnoreCase("CONSOLE")) return true;
+        return this.bdsAutoEnable.getAppConfigManager().getAppConfig().getModerators().contains(playerStatistics.getPlayerName());
     }
 }

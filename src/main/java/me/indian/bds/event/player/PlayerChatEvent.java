@@ -2,23 +2,25 @@ package me.indian.bds.event.player;
 
 import me.indian.bds.event.Position;
 import me.indian.bds.event.ResponsibleEvent;
+import me.indian.bds.player.PlayerStatistics;
 
 public class PlayerChatEvent extends ResponsibleEvent {
 
-    private final String playerName, message;
+    private final PlayerStatistics player;
+    private final String message;
     private final Position playerPosition;
     private final boolean appHandled, muted;
 
-    public PlayerChatEvent(final String playerName, final String message, final Position playerPosition, final boolean muted, final boolean appHandled) {
-        this.playerName = playerName;
+    public PlayerChatEvent(final PlayerStatistics player, final String message, final Position playerPosition, final boolean muted, final boolean appHandled) {
+        this.player = player;
         this.message = message;
         this.playerPosition = playerPosition;
         this.appHandled = appHandled;
         this.muted = muted;
     }
 
-    public String getPlayerName() {
-        return this.playerName;
+    public PlayerStatistics getPlayer() {
+        return this.player;
     }
 
     public String getMessage() {

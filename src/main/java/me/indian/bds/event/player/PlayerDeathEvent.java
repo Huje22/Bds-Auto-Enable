@@ -2,22 +2,24 @@ package me.indian.bds.event.player;
 
 import me.indian.bds.event.Event;
 import me.indian.bds.event.Position;
+import me.indian.bds.player.PlayerStatistics;
 
 public class PlayerDeathEvent extends Event {
 
-    private final String playerName, deathMessage, killerName, usedItemName;
+    private final PlayerStatistics player;
+    private final String deathMessage, killerName, usedItemName;
     private final Position deathPosition;
 
-    public PlayerDeathEvent(final String playerName, final String deathMessage, final Position deathPosition, final String killerName, final String usedItemName) {
-        this.playerName = playerName;
+    public PlayerDeathEvent(final PlayerStatistics player, final String deathMessage, final Position deathPosition, final String killerName, final String usedItemName) {
+        this.player = player;
         this.deathMessage = deathMessage;
         this.deathPosition = deathPosition;
         this.killerName = killerName;
         this.usedItemName = usedItemName;
     }
 
-    public String getPlayerName() {
-        return this.playerName;
+    public PlayerStatistics getPlayer() {
+        return this.player;
     }
 
     public String getDeathMessage() {

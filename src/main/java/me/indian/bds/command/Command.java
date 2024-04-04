@@ -8,6 +8,7 @@ import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.CommandConfig;
 import me.indian.bds.event.Position;
+import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
 import org.jetbrains.annotations.Nullable;
@@ -17,9 +18,8 @@ public abstract class Command {
     private final String name, description;
     private final List<String> alliases;
     private final Map<String, String> commandOptions;
-    protected String playerName;
+    protected PlayerStatistics player;
     private Position position;
-    protected CommandSender commandSender;
     protected CommandConfig commandConfig;
     private BDSAutoEnable bdsAutoEnable;
 
@@ -84,23 +84,20 @@ public abstract class Command {
         return "&a" + this.name + "&4 -&b " + usage;
     }
 
-    public final void setPlayerName(final String playerName) {
-        this.playerName = playerName;
+    public final void setPlayer(final PlayerStatistics player) {
+        this.player = player;
     }
 
-    public final void setCommandSender(final CommandSender commandSender) {
-        this.commandSender = commandSender;
-    }
-
-    public final void setPosition(final Position position){
+    public final void setPosition(final Position position) {
         this.position = position;
     }
 
     protected final void sendMessage(final String message) {
         final ServerProcess serverProcess = this.bdsAutoEnable.getServerProcess();
-        switch (this.commandSender) {
-            case CONSOLE -> this.bdsAutoEnable.getLogger().print(message);
-            case PLAYER -> serverProcess.tellrawToPlayer(this.playerName, message);
+        if (this.player != null) {
+            serverProcess.tellrawToPlayer(this.player.getPlayerName(), message);
+        } else {
+            this.bdsAutoEnable.getLogger().print(message);
         }
     }
 
@@ -113,8 +110,7 @@ public abstract class Command {
     public final String toString() {
         return "Command(name=" + this.name +
                 ", description=" + this.description +
-                ", playerName= " + this.playerName +
-                ", commandSender= " + this.commandSender +
+                ", player= " + this.player +
                 ", alliases= " + this.alliases +
                 ", commandOptions= " + this.commandOptions +
                 ")";

@@ -1,7 +1,6 @@
 package me.indian.bds.command.defaults;
 
 import me.indian.bds.command.Command;
-import me.indian.bds.command.CommandSender;
 import me.indian.bds.util.StatusUtil;
 
 public class StatsCommand extends Command {
@@ -12,7 +11,7 @@ public class StatsCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        if (this.commandSender == CommandSender.PLAYER) {
+        if (this.player != null) {
             this.sendMessage("&cPolecenie można wykonać tylko z poziomu konsoli!");
             return true;
         }

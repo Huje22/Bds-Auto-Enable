@@ -1,16 +1,17 @@
 package me.indian.bds.event.player;
 
 import me.indian.bds.event.Event;
+import me.indian.bds.player.PlayerStatistics;
 
 public class PlayerJoinEvent extends Event {
 
-    private final String playerName;
+    private final PlayerStatistics player;
 
-    public PlayerJoinEvent(final String playerName) {
-        this.playerName = playerName;
+    public PlayerJoinEvent(final PlayerStatistics player) {
+        this.player = player;
     }
 
-    public String getPlayerName() {
-        return this.playerName;
+    public PlayerStatistics getPlayer() {
+        return this.player;
     }
 }

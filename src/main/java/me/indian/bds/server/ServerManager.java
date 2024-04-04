@@ -11,9 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.command.CommandSender;
 import me.indian.bds.config.sub.transfer.MainServerConfig;
-import me.indian.bds.util.Dimension;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.event.Position;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
@@ -33,9 +31,11 @@ import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.Dimension;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.version.VersionManager;
@@ -46,7 +46,8 @@ public class ServerManager {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final ExecutorService mainService, chatService;
-    private final List<String> onlinePlayers, offlinePlayers, muted;
+    private final List<String> onlinePlayers, offlinePlayers;
+    private final List<Long> muted;
     private final StatsManager statsManager;
     private final ReentrantLock chatLock;
     private final EventManager eventManager;
@@ -145,8 +146,11 @@ public class ServerManager {
             try {
                 this.onlinePlayers.remove(playerName);
                 this.offlinePlayers.add(playerName);
-                this.statsManager.setLastQuit(playerName, DateUtil.localDateTimeToLong(LocalDateTime.now()));
-                this.eventManager.callEvent(new PlayerQuitEvent(playerName));
+
+                final PlayerStatistics playerStatistics = this.statsManager.getPlayer(playerName);
+
+                playerStatistics.setLastQuit(DateUtil.localDateTimeToLong(LocalDateTime.now()));
+                this.eventManager.callEvent(new PlayerQuitEvent(playerStatistics));
             } catch (final Exception exception) {
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć opuszczenia gracza " + playerName,
                         "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
@@ -165,8 +169,11 @@ public class ServerManager {
             try {
                 this.onlinePlayers.add(playerName);
                 this.offlinePlayers.remove(playerName);
-                this.statsManager.setLastJoin(playerName,  DateUtil.localDateTimeToLong(LocalDateTime.now()));
-                this.eventManager.callEvent(new PlayerJoinEvent(playerName));
+
+                final PlayerStatistics playerStatistics = this.statsManager.getPlayer(playerName);
+
+                playerStatistics.setLastJoin(DateUtil.localDateTimeToLong(LocalDateTime.now()));
+                this.eventManager.callEvent(new PlayerJoinEvent(playerStatistics));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć dołączenia gracza&b " + playerName, exception);
                 this.serverJoinException(playerName, exception);
@@ -183,7 +190,7 @@ public class ServerManager {
             final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
 
             try {
-                this.eventManager.callEvent(new PlayerSpawnEvent(playerName));
+                this.eventManager.callEvent(new PlayerSpawnEvent(this.statsManager.getPlayer(playerName)));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć respawnu gracza " + playerName);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć respawnu gracza " + playerName,
@@ -205,10 +212,12 @@ public class ServerManager {
             final String message = MessageUtil.fixMessage(matcher.group(2));
             final Position position = Position.parsePosition(matcher.group(3));
             final boolean appHandled = this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages();
-            final boolean muted = this.isMuted(playerChat);
 
             try {
-                final PlayerChatResponse response = (PlayerChatResponse) this.eventManager.callEventWithResponse(new PlayerChatEvent(playerChat, message, position, muted, appHandled));
+                final PlayerStatistics playerStatistics = this.statsManager.getPlayer(playerChat);
+                final boolean muted = this.isMuted(playerStatistics.getXuid());
+
+                final PlayerChatResponse response = (PlayerChatResponse) this.eventManager.callEventWithResponse(new PlayerChatEvent(playerStatistics, message, position, muted, appHandled));
 
                 if (appHandled) {
                     String format = playerChat + " »» " + message;
@@ -246,8 +255,10 @@ public class ServerManager {
             final boolean isOp = Boolean.parseBoolean(matcher.group(4));
 
             try {
-                this.handleCustomCommand(playerCommand, MessageUtil.stringToArgs(command), Position.parsePosition(position), isOp);
-                this.eventManager.callEvent(new PlayerCommandEvent(playerCommand, command, Position.parsePosition(position), isOp));
+                final PlayerStatistics playerStatistics = this.getStatsManager().getPlayer(playerCommand);
+
+                this.handleCustomCommand(playerStatistics, MessageUtil.stringToArgs(command), Position.parsePosition(position), isOp);
+                this.eventManager.callEvent(new PlayerCommandEvent(playerStatistics, command, Position.parsePosition(position), isOp));
             } catch (final Exception exception) {
                 this.logger.error("&cWystąpił błąd podczas próby przetworzenia polecenia gracza&c " + playerCommand, exception);
                 this.eventManager.callEvent(new ServerAlertEvent("Wystąpił błąd podczas próby przetworzenia polecenia gracza " + playerCommand, exception, LogState.CRITICAL));
@@ -268,8 +279,9 @@ public class ServerManager {
             final String usedItemName = matcher.group(5);
 
             try {
-                this.statsManager.addDeaths(playerDeath, 1);
-                this.eventManager.callEvent(new PlayerDeathEvent(playerDeath, deathMessage, deathPosition, killerName, usedItemName));
+                final PlayerStatistics playerStatistics = this.statsManager.getPlayer(playerDeath);
+                playerStatistics.addDeaths(1);
+                this.eventManager.callEvent(new PlayerDeathEvent(playerStatistics, deathMessage, deathPosition, killerName, usedItemName));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć śmierci gracza " + playerDeath);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć śmierci gracza " + playerDeath,
@@ -316,7 +328,7 @@ public class ServerManager {
             final Position toPosition = Position.parsePosition(matcher.group(5));
 
             try {
-                this.eventManager.callEvent(new PlayerDimensionChangeEvent(playerName, Dimension.getByID(fromDimension), Dimension.getByID(toDimension), fromPosition, toPosition));
+                this.eventManager.callEvent(new PlayerDimensionChangeEvent(this.getStatsManager().getPlayer(playerName), Dimension.getByID(fromDimension), Dimension.getByID(toDimension), fromPosition, toPosition));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć zmiany wymiaru gracza " + playerName);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć zmiany wymiaru gracza " + playerName,
@@ -337,8 +349,9 @@ public class ServerManager {
             final String blockPosition = matcher.group(3);
 
             try {
-                this.statsManager.addBlockBroken(playerBreakBlock, 1);
-                this.eventManager.callEvent(new PlayerBlockBreakEvent(playerBreakBlock, blockID, Position.parsePosition(blockPosition)));
+                final PlayerStatistics playerStatistics = this.getStatsManager().getPlayer(playerBreakBlock);
+                playerStatistics.addBlockBroken(1);
+                this.eventManager.callEvent(new PlayerBlockBreakEvent(playerStatistics, blockID, Position.parsePosition(blockPosition)));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć zniszczenia bloku gracza " + playerBreakBlock);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć zniszczenia bloku gracza " + playerBreakBlock,
@@ -359,8 +372,9 @@ public class ServerManager {
             final String blockPosition = matcher.group(3);
 
             try {
-                this.statsManager.addBlockPlaced(playerPlaceBlock, 1);
-                this.eventManager.callEvent(new PlayerBlockPlaceEvent(playerPlaceBlock, blockID, Position.parsePosition(blockPosition)));
+                final PlayerStatistics playerStatistics = this.getStatsManager().getPlayer(playerPlaceBlock);
+                playerStatistics.addBlockPlaced(1);
+                this.eventManager.callEvent(new PlayerBlockPlaceEvent(playerStatistics, blockID, Position.parsePosition(blockPosition)));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć postawienia bloku gracza " + playerPlaceBlock);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć postawienia bloku gracza " + playerPlaceBlock,
@@ -381,7 +395,7 @@ public class ServerManager {
             final String blockPosition = matcher.group(3);
 
             try {
-                this.eventManager.callEvent(new PlayerInteractContainerEvent(playerInteract, blockID, Position.parsePosition(blockPosition)));
+                this.eventManager.callEvent(new PlayerInteractContainerEvent(this.getStatsManager().getPlayer(playerInteract), blockID, Position.parsePosition(blockPosition)));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć interakcji gracza z kontenerem " + playerInteract);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć interakcji gracza z kontenerem " + playerInteract,
@@ -402,7 +416,7 @@ public class ServerManager {
             final String entityPosition = matcher.group(3);
 
             try {
-                this.eventManager.callEvent(new PlayerInteractEntityWithContainerEvent(playerInteract, entityID, Position.parsePosition(entityPosition)));
+                this.eventManager.callEvent(new PlayerInteractEntityWithContainerEvent(this.getStatsManager().getPlayer(playerInteract), entityID, Position.parsePosition(entityPosition)));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć interakcji gracza z bytem który posiada kontener " + playerInteract);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć interakcji gracza z bytem który posiada kontener " + playerInteract,
@@ -461,12 +475,12 @@ public class ServerManager {
         }
     }
 
-    private void handleCustomCommand(final String playerCommand, final String[] args, final Position position, final boolean isOp) {
+    private void handleCustomCommand(final PlayerStatistics player, final String[] args, final Position position, final boolean isOp) {
         // !tps jest handlowane w https://github.com/Huje22/BDS-Auto-Enable-Managment-Pack
         // boolean isOp narazie nie działa bo Mojang rozjebało BDS i zawsze zwraca on false
 
         final String[] newArgs = MessageUtil.removeFirstArgs(args);
-        this.bdsAutoEnable.getCommandManager().runCommands(CommandSender.PLAYER, playerCommand, args[0], newArgs, position, isOp);
+        this.bdsAutoEnable.getCommandManager().runCommands(player, args[0], newArgs, position, isOp);
     }
 
     private void serverJoinException(final String playerName, final Exception exception) {
@@ -520,15 +534,15 @@ public class ServerManager {
         return new ArrayList<>(this.offlinePlayers);
     }
 
-    public boolean isMuted(final String name) {
-        return this.muted.contains(name);
+    public boolean isMuted(final long xuid) {
+        return this.muted.contains(xuid);
     }
 
-    public void mute(final String name) {
-        this.muted.add(name);
+    public void mute(final long xuid) {
+        this.muted.add(xuid);
     }
 
-    public void unMute(final String name) {
-        this.muted.remove(name);
+    public void unMute(final long xui) {
+        this.muted.remove(xui);
     }
 }

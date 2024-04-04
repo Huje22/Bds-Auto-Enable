@@ -187,33 +187,9 @@ public class StatsManager {
         return (player != null ? player.getXuid() : -1);
     }
 
-    public long getFirstJoin(final String playerName) {
-        final PlayerStatistics player = this.getPlayer(playerName);
-        return (player != null ? player.getFirstJoin() : -1);
-    }
-
-    public long getLastJoin(final String playerName) {
-        final PlayerStatistics player = this.getPlayer(playerName);
-        return (player != null ? player.getLastJoin() : -1);
-    }
-
-    public void setLastJoin(final String playerName, final long date) {
-        final PlayerStatistics player = this.getPlayer(playerName);
-        if (player != null) {
-            player.setLastJoin(date);
-        }
-    }
-
     public long getLastQuit(final String playerName) {
         final PlayerStatistics player = this.getPlayer(playerName);
         return (player != null ? player.getLastQuit() : -1);
-    }
-
-    public void setLastQuit(final String playerName, final long date) {
-        final PlayerStatistics player = this.getPlayer(playerName);
-        if (player != null) {
-            player.setLastQuit(date);
-        }
     }
 
     public long getPlayTime(final String playerName) {
@@ -226,35 +202,14 @@ public class StatsManager {
         return (player != null ? player.getDeaths() : -1);
     }
 
-    public void addDeaths(final String playerName, final long deaths) {
-        final PlayerStatistics player = this.getPlayer(playerName);
-        if (player != null) {
-            player.addDeaths(deaths);
-        }
-    }
-
     public long getBlockPlaced(final String playerName) {
         final PlayerStatistics player = this.getPlayer(playerName);
         return (player != null ? player.getBlockPlaced() : -1);
     }
 
-    public void addBlockPlaced(final String playerName, final long blockPlaced) {
-        final PlayerStatistics player = this.getPlayer(playerName);
-        if (player != null) {
-            player.addBlockPlaced(blockPlaced);
-        }
-    }
-
     public long getBlockBroken(final String playerName) {
         final PlayerStatistics player = this.getPlayer(playerName);
         return (player != null ? player.getBlockBroken() : -1);
-    }
-
-    public void addBlockBroken(final String playerName, final long blockBroken) {
-        final PlayerStatistics player = this.getPlayer(playerName);
-        if (player != null) {
-            player.addBlockBroken(blockBroken);
-        }
     }
 
     public ServerStats getServerStats() {
