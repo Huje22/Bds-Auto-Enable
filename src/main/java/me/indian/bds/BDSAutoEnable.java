@@ -99,6 +99,7 @@ public class BDSAutoEnable {
     }
 
     public static void main(final String[] args) {
+      //TODO: Zezwolić tylko na jedną instancje aplikacji 
         new BDSAutoEnable();
     }
 
