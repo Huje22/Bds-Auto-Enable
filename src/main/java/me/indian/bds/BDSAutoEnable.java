@@ -68,6 +68,7 @@ public class BDSAutoEnable {
         this.appConfigManager = new AppConfigManager();
         this.appConfig = this.appConfigManager.getAppConfig();
         this.logger = new MainLogger(this);
+        this.logger.print("  ____  _____   _____                 _          ______             _     _      \n |  _ \\|  __ \\ / ____|     /\\        | |        |  ____|           | |   | |     \n | |_) | |  | | (___      /  \\  _   _| |_ ___   | |__   _ __   __ _| |__ | | ___ \n |  _ <| |  | |\\___ \\    / /\\ \\| | | | __/ _ \\  |  __| | '_ \\ / _` | '_ \\| |/ _ \\ \n | |_) | |__| |____) |  / ____ \\ |_| | || (_) | | |____| | | | (_| | |_) | |  __/ \n |____/|_____/|_____/  /_/    \\_\\__,_|\\__\\___/  |______|_| |_|\\__,_|_.__/|_|\\___|");
         this.isJavaVersionLessThan17();
         this.checkSystemSupport();
         this.checkEncoding();
@@ -75,8 +76,7 @@ public class BDSAutoEnable {
         this.checkFlags();
         this.checkMemory();
         this.checkTimeZone();
-        this.logger.print("  ____  _____   _____                 _          ______             _     _      \n |  _ \\|  __ \\ / ____|     /\\        | |        |  ____|           | |   | |     \n | |_) | |  | | (___      /  \\  _   _| |_ ___   | |__   _ __   __ _| |__ | | ___ \n |  _ <| |  | |\\___ \\    / /\\ \\| | | | __/ _ \\  |  __| | '_ \\ / _` | '_ \\| |/ _ \\ \n | |_) | |__| |____) |  / ____ \\ |_| | || (_) | | |____| | | | (_| | |_) | |  __/ \n |____/|_____/|_____/  /_/    \\_\\__,_|\\__\\___/  |______|_| |_|\\__,_|_.__/|_|\\___|");
-        this.logger.alert("&lNumer wersji projektu:&1 &n" + this.projectVersion);
+        this.logger.info("&lNumer wersji projektu:&1 &n" + this.projectVersion);
         this.logger.debug("&aUUID&r aplikacji:&b " + this.getAppUUID());
         DefaultsVariables.init(this);
         LogbackConfig.init();
@@ -137,10 +137,13 @@ public class BDSAutoEnable {
                     + "&d)&r jest zbyt niska! Potrzebujesz javy &117+ ");
             System.exit(9);
         }
+
+        this.logger.info("&aUżyto Java: &b" + System.getProperty("java.vm.name") + " &1" + javaVersion + " &5(&d" + System.getProperty("java.vendor") + "&5)&r na&f "
+                + SystemUtil.getFullyOsName() + " &5(&c" + SystemUtil.getFullyArchCode() + "&5)");
     }
 
     private void checkSystemSupport() {
-        final SystemArch arch = SystemArch.getCurrentArch();
+        final SystemArch arch = SystemUtil.getCurrentArch();
         final SystemOS systemOS = SystemUtil.getSystem();
 
         if (arch == SystemArch.ARM || arch == SystemArch.AMD_X32) {
@@ -151,7 +154,7 @@ public class BDSAutoEnable {
                 return;
             }
             this.logger.critical("&cTwoja architektura systemu nie jest wspierana! Twoja architektura to&b "
-                    + SystemArch.getFullyArchCode());
+                    + SystemUtil.getFullyArchCode());
             System.exit(9);
         }
 
@@ -186,7 +189,7 @@ public class BDSAutoEnable {
                 System.setProperty("file.encoding", "UTF-8");
             }
         } else {
-            this.logger.debug("Wykryto wspierane kodowanie");
+            this.logger.debug("Wykryto wspierane kodowanie: " + System.getProperty("file.encoding"));
         }
     }
 

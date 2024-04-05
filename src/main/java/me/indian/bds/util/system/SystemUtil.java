@@ -29,6 +29,20 @@ public final class SystemUtil {
         return System.getProperty("os.name");
     }
 
+    public static SystemArch getCurrentArch() {
+        final String osArch = System.getProperty("os.arch").toLowerCase();
+
+        if (osArch.contains("amd64") || osArch.contains("x86_64")) return SystemArch.AMD_X64;
+        if (osArch.contains("arm")) return SystemArch.ARM;
+        if (osArch.contains("x86")) return SystemArch.AMD_X32;
+
+        return SystemArch.UNKNOWN;
+    }
+
+    public static String getFullyArchCode() {
+        return System.getProperty("os.arch");
+    }
+
     public static long getRamUsageByPid(final long pid) throws IOException, UnSupportedSystemException {
         return switch (getSystem()) {
             case WINDOWS -> getMemoryUsageWindows(pid);
