@@ -14,6 +14,7 @@ import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ScannerUtil;
 import me.indian.bds.util.ThreadUtil;
+import me.indian.bds.version.VersionManager;
 
 public class Settings {
 
@@ -301,6 +302,7 @@ public class Settings {
     }
 
     public void currentSettings(final Scanner scanner, final boolean waitForUser) {
+        final VersionManager versionManager = this.bdsAutoEnable.getVersionManager();
 
         this.serverProperties.loadProperties();
 
@@ -310,7 +312,7 @@ public class Settings {
         this.logger.info("&e----------&bAplikacja&e----------");
         this.logger.info("Wine:&1 " + this.appConfig.isWine() + (DefaultsVariables.WINE ? " &d(&bPosiadasz&d)" : ""));
         this.logger.info("Ścieżka plików:&1 " + this.appConfig.getFilesPath());
-        this.logger.info("Wersja:&1 " + this.versionManagerConfig.getVersion());
+        this.logger.info("Wersja:&1 " + versionManager.getLoadedVersion() + " &d(&b" + versionManager.getLastKnownProtocol() + "&d)");
 
         final boolean backup = this.watchDogConfig.getBackupConfig().isEnabled();
         this.logger.info("Backup:&1 " + backup);

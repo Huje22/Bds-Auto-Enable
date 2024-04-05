@@ -24,6 +24,7 @@ import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.HTTPUtil;
+import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.ZipUtil;
 import me.indian.bds.util.system.SystemOS;
 import me.indian.bds.util.system.SystemUtil;
@@ -45,6 +46,7 @@ public class VersionManager {
     private final VersionUpdater versionUpdater;
     private final SystemOS system;
     private final ServerProperties serverProperties;
+    private boolean waitingForProtocolInfo;
     private int lastKnownProtocol;
 
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
@@ -60,6 +62,7 @@ public class VersionManager {
         this.versionUpdater = new VersionUpdater(bdsAutoEnable, this);
         this.system = SystemUtil.getSystem();
         this.serverProperties = this.bdsAutoEnable.getServerProperties();
+        this.waitingForProtocolInfo = false;
         this.lastKnownProtocol = 0;
 
         if (!this.versionFolder.exists()) {
@@ -104,7 +107,7 @@ public class VersionManager {
             this.downloadServerFiles(version);
         }
 
-        if(!this.hasVersion(version)){
+        if (!this.hasVersion(version)) {
             this.downloadServerFiles(version);
         }
 
@@ -290,13 +293,31 @@ public class VersionManager {
 
     public int getLastKnownProtocol() {
         if (this.lastKnownProtocol == 0 || this.lastKnownProtocol == -1) {
-            this.setLastKnownProtocol(BedrockQuery.create("localhost", this.serverProperties.getServerPort()).protocol());
+            final int protocol = BedrockQuery.create("localhost", this.serverProperties.getServerPort()).protocol();
+            if (protocol == -1) {
+                this.waitForProtocol();
+            } else {
+                this.setLastKnownProtocol(protocol);
+            }
         }
 
         return this.lastKnownProtocol;
     }
 
-    public void setLastKnownProtocol(final int lastKnownProtocol) {
+    private void waitForProtocol() {
+        if (this.waitingForProtocolInfo) return;
+        this.waitingForProtocolInfo = true;
+
+        new ThreadUtil("waiter").newThread(() -> {
+            int protocol;
+            while ((protocol = BedrockQuery.create("localhost", this.serverProperties.getServerPort()).protocol()) == -1) {
+                ThreadUtil.sleep(10);
+            }
+            this.setLastKnownProtocol(protocol);
+        }).start();
+    }
+
+    private void setLastKnownProtocol(final int lastKnownProtocol) {
         this.lastKnownProtocol = lastKnownProtocol;
     }
 }
