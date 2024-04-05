@@ -52,6 +52,7 @@ public class BDSAutoEnable {
     private final ServerProcess serverProcess;
     private final ServerManager serverManager;
     private final VersionManager versionManager;
+    private final McLog mcLog;
     private final EventManager eventManager;
     private final ExtensionManager extensionManager;
     private final AllowlistManager allowlistManager;
@@ -86,6 +87,7 @@ public class BDSAutoEnable {
         this.serverManager = new ServerManager(this);
         this.serverProcess = new ServerProcess(this);
         this.versionManager = new VersionManager(this);
+        this.mcLog = new McLog(this);
         this.extensionManager = new ExtensionManager(this);
         this.allowlistManager = new AllowlistManager(this);
         this.serverManager.init();
@@ -279,6 +281,10 @@ public class BDSAutoEnable {
 
     public MainLogger getLogger() {
         return this.logger;
+    }
+
+    public McLog getMcLog() {
+        return this.mcLog;
     }
 
     public ServerProperties getServerProperties() {

@@ -48,6 +48,11 @@
             <version>5.0.0-alpha.12</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>gs.mclo</groupId>
+            <artifactId>api</artifactId>
+            <version>3.0.1</version>
+        </dependency>
 
 
         <!--   Używam starszej wersji logback bo w nowej nie rozumiem co sie dzieje     -->
