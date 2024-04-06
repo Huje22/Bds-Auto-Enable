@@ -13,7 +13,7 @@ public class PlayerStatistics implements Serializable {
     private final long firstJoin;
     private long lastJoin, lastQuit;
     private final List<String> oldNames;
-    private long playtime, deaths, blockPlaced, blockBroken;
+    private long playtime, deaths, blockPlaced, blockBroken, loginStreak,longestLoginStreak;
     private DeviceOS lastDevice;
     private Controller lastController;
     private final Map<String, Object> dynamicProperties;
@@ -29,6 +29,8 @@ public class PlayerStatistics implements Serializable {
         this.deaths = deaths;
         this.blockPlaced = blockPlaced;
         this.blockBroken = blockBroken;
+        this.loginStreak = 0;
+        this.longestLoginStreak = 0;
         this.lastDevice = DeviceOS.UNKNOWN;
         this.lastController = Controller.UNKNOWN;
         this.dynamicProperties = new HashMap<>();
@@ -100,6 +102,22 @@ public class PlayerStatistics implements Serializable {
 
     public long getBlockBroken() {
         return this.blockBroken;
+    }
+
+    public long getLoginStreak() {
+        return this.loginStreak;
+    }
+
+    public void setLoginStreak(final long loginStreak) {
+        this.loginStreak = loginStreak;
+    }
+
+    public long getLongestLoginStreak() {
+        return this.longestLoginStreak;
+    }
+
+    public void setLongestLoginStreak(final long longestLoginStreak) {
+        this.longestLoginStreak = longestLoginStreak;
     }
 
     public void addBlockBroken(final long blockBreak) {

@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -210,6 +211,27 @@ public class StatsManager {
     public long getBlockBroken(final String playerName) {
         final PlayerStatistics player = this.getPlayer(playerName);
         return (player != null ? player.getBlockBroken() : -1);
+    }
+
+    public void updateLoginStreak(final PlayerStatistics playerStatistics, final long loginTime) {
+        final LocalDate lastLoginDate = DateUtil.longToLocalDateTime(playerStatistics.getLastJoin()).toLocalDate();
+        final LocalDate loginDate = DateUtil.longToLocalDateTime(loginTime).toLocalDate();
+        final long loginStreak = playerStatistics.getLoginStreak();
+        final long longestLoginStreak = playerStatistics.getLongestLoginStreak();
+
+        if (lastLoginDate.plusDays(1).equals(loginDate)) {
+            playerStatistics.setLoginStreak(loginStreak + 1);
+        } else if (!lastLoginDate.equals(loginDate) && !lastLoginDate.equals(LocalDate.now())) {
+            playerStatistics.setLoginStreak(1);
+            System.out.println("Zresetowano login streak");
+        }
+
+        if (loginStreak > longestLoginStreak) {
+            playerStatistics.setLongestLoginStreak(loginStreak);
+            System.out.println("Nowy streak " + longestLoginStreak);
+        }
+
+        playerStatistics.setLastJoin(loginTime);
     }
 
     public ServerStats getServerStats() {
