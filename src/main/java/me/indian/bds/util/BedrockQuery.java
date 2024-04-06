@@ -5,6 +5,8 @@ import java.io.DataOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.SocketTimeoutException;
+import java.net.UnknownHostException;
 import java.util.Random;
 import me.indian.bds.server.properties.component.Gamemode;
 
@@ -65,8 +67,12 @@ public record BedrockQuery(boolean online, long responseTime, String edition, St
                     Integer.parseInt(splittedData[4]), Integer.parseInt(splittedData[5]),
                     splittedData[7], Gamemode.getByName(splittedData[8]), portV4, portV6);
         } catch (final Exception exception) {
-            exception.printStackTrace();
+            if (!(exception instanceof UnknownHostException) &&
+                    !(exception instanceof SocketTimeoutException)) {
+                exception.printStackTrace();
+            }
+
+            return new BedrockQuery(false, -1, "", "", -1, "", 0, 0, "", Gamemode.SURVIVAL, -1, -1);
         }
-        return new BedrockQuery(false, -1, "", "", -1, "", 0, 0, "", Gamemode.SURVIVAL, -1, -1);
     }
 }
