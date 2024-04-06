@@ -110,7 +110,7 @@ public class ServerProcess {
         this.processService.execute(() -> {
             if (this.checkProcesRunning()) {
                 this.logger.alert("&cProces&b " + this.fileName + "&c jest już uruchomiony.");
-                this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera ");
+                this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera");
                 ThreadUtil.sleep(30);
                 this.startProcess();
             } else {
@@ -149,11 +149,13 @@ public class ServerProcess {
                     }
 
                     this.pid = this.process.pid();
-                    this.logger.info("Uruchomiono proces servera ");
+                    this.logger.info("Uruchomiono proces servera");
                     this.logger.debug("&bPID&r procesu servera to&1 " + this.pid);
                     this.consoleOutputService.execute(this::readConsoleOutput);
 
-                    this.logger.alert("Proces zakończony z kodem: " + this.process.waitFor());
+                    final int exitCode = this.process.waitFor();
+
+                    this.logger.alert("Proces zakończony z kodem: " + exitCode);
                     this.eventManager.callEvent(new ServerClosedEvent());
 
                     this.canWriteConsoleOutput = false;
@@ -161,6 +163,7 @@ public class ServerProcess {
                     this.watchDog.getAutoRestartModule().noteRestart();
                     this.serverManager.clearPlayers();
                     this.serverManager.getStatsManager().saveAllData();
+                    this.handleExitCode(exitCode);
                     this.startProcess();
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można uruchomić procesu", exception);
@@ -463,8 +466,18 @@ public class ServerProcess {
         }
     }
 
+    private void handleExitCode(final int exitCode) {
+        switch (exitCode) {
+            case -1073740791 -> {
+                this.logger.critical("&cKod&b " + exitCode + "&c zazwyczaj występuje gdy jakiś behavior w skryptach ma&1 &nimport \".\"");
+                this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera a ty spróbuj to&l naprawić");
+                ThreadUtil.sleep(30);
+            }
+        }
+    }
+
     private boolean containsNotAllowedToFileLog(final String msg) {
-       for (final String noAllowed : this.appConfigManager.getLogConfig().getNoFile()) {
+        for (final String noAllowed : this.appConfigManager.getLogConfig().getNoFile()) {
             if (msg.toLowerCase().contains(noAllowed.toLowerCase())) {
                 return true;
             }
