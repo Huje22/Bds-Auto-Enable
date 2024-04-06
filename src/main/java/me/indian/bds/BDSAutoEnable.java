@@ -192,7 +192,7 @@ public class BDSAutoEnable {
                 System.setProperty("file.encoding", "UTF-8");
             }
         } else {
-            this.logger.debug("Wykryto wspierane kodowanie: " + System.getProperty("file.encoding"));
+            this.logger.debug("Wykryto wspierane kodowanie:&b " + System.getProperty("file.encoding"));
         }
     }
 
