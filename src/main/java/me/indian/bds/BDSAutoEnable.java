@@ -1,5 +1,6 @@
 package me.indian.bds;
 
+import eu.okaeri.configs.exception.InitializationException;
 import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.time.ZoneId;
@@ -40,6 +41,7 @@ import me.indian.bds.watchdog.WatchDog;
 
 public class BDSAutoEnable {
 
+    private static boolean instanceRuned = false;
     private final Thread mainThread;
     private final long startTime;
     private final String projectVersion, runDate;
@@ -61,6 +63,10 @@ public class BDSAutoEnable {
     private WatchDog watchDog;
 
     public BDSAutoEnable() {
+        if (instanceRuned) {
+            throw new InitializationException("Można utworzyć tylko jedną instancję klasy BDSAutoEnable.");
+        }
+        instanceRuned = true;
         this.mainThread = Thread.currentThread();
         this.startTime = System.currentTimeMillis();
         this.runDate = DateUtil.getFixedDate();
@@ -99,7 +105,6 @@ public class BDSAutoEnable {
     }
 
     public static void main(final String[] args) {
-      //TODO: Zezwolić tylko na jedną instancje aplikacji 
         new BDSAutoEnable();
     }
 
