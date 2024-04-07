@@ -14,6 +14,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.transfer.LobbyConfig;
 import me.indian.bds.event.EventManager;
+import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.exception.BadThreadException;
@@ -187,12 +188,9 @@ public class ServerProcess {
 
                     this.serverManager.initFromLog(ConsoleColors.removeAnsiColors(line));
 
-                    /*
-                     TODO:Dodac event który będzie wysylal info z scytche
-                     if(line.contains("[Scythe]")){
-                     //                        this.eventManager.callEvent(new ScytheFlagEvent());
-                     }
-                     */
+                    if (this.containsAllowedToAlert(line)) {
+                        this.eventManager.callEvent(new ServerAlertEvent(line, LogState.ALERT));
+                    }
 
                     if (!this.containsNotAllowedToFileLog(line)) {
                         this.consoleOutputService.execute(() -> this.logger.instantLogToFile(line));
@@ -488,6 +486,15 @@ public class ServerProcess {
     private boolean containsNotAllowedToConsoleLog(final String msg) {
         for (final String noAllowed : this.appConfigManager.getLogConfig().getNoConsole()) {
             if (msg.toLowerCase().contains(noAllowed.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean containsAllowedToAlert(final String msg) {
+        for (final String allowedForAlert : this.appConfigManager.getLogConfig().getAlertOn()) {
+            if (msg.toLowerCase().contains(allowedForAlert.toLowerCase())) {
                 return true;
             }
         }

@@ -25,8 +25,13 @@ public class LogConfig extends OkaeriConfig {
     @Comment("W konsoli")
     @CustomKey("NoConsole")
     private List<String> noConsole = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]",
-            "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]","[Scripting] Player",
+            "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]", "[Scripting] Player",
             "\"component_groups\"");
+
+    @Comment({""})
+    @Comment({"Wysyła ServerAlertEvent z wiadomością która zawiera coś z poniższych informacji"})
+    @CustomKey("AlertOn")
+    private List<String> alertOn = Arrays.asList("[Scythe]");
 
     public List<String> getNoFile() {
         return this.noFile;
@@ -34,5 +39,9 @@ public class LogConfig extends OkaeriConfig {
 
     public List<String> getNoConsole() {
         return this.noConsole;
+    }
+
+    public List<String> getAlertOn() {
+        return this.alertOn;
     }
 }
