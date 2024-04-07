@@ -26,7 +26,7 @@ public class AlertCommand extends Command {
         }
 
         if (args.length > 0) {
-            for (final String newArg :  MessageUtil.buildMessageFromArgs(args).split("-")) {
+            for (final String newArg : MessageUtil.buildMessageFromArgs(args).split("-")) {
                 this.serverProcess.tellrawToAll(newArg);
             }
 

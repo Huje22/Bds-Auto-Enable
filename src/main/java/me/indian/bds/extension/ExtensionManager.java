@@ -47,7 +47,6 @@ public class ExtensionManager {
         this.jarFiles = new File(this.extensionsDir).listFiles(pathname -> pathname.getName().endsWith(".jar"));
         this.classes = new HashMap<>();
         this.classLoaders = new HashMap<>();
-
     }
 
     @Nullable

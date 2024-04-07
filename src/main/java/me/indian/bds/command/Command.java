@@ -19,8 +19,8 @@ public abstract class Command {
     private final List<String> alliases;
     private final Map<String, String> commandOptions;
     protected PlayerStatistics player;
-    private Position position;
     protected CommandConfig commandConfig;
+    private Position position;
     private BDSAutoEnable bdsAutoEnable;
 
     public Command(final String name, final String description) {
@@ -43,6 +43,10 @@ public abstract class Command {
     @Nullable
     public Position getPosition() {
         return this.position;
+    }
+
+    public final void setPosition(final Position position) {
+        this.position = position;
     }
 
     public boolean isAlias(final String command) {
@@ -86,10 +90,6 @@ public abstract class Command {
 
     public final void setPlayer(final PlayerStatistics player) {
         this.player = player;
-    }
-
-    public final void setPosition(final Position position) {
-        this.position = position;
     }
 
     protected final void sendMessage(final String message) {

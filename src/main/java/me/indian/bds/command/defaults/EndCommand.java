@@ -9,7 +9,7 @@ import me.indian.bds.util.ThreadUtil;
 
 public class EndCommand extends Command {
 
-   private final BDSAutoEnable bdsAutoEnable;
+    private final BDSAutoEnable bdsAutoEnable;
     private final ServerProcess serverProcess;
     private boolean canStop;
 
