@@ -431,7 +431,7 @@ public class ServerManager {
             this.lastTPS = 20;
             this.eventManager.callEvent(new TPSChangeEvent(this.lastTPS, this.lastTPS));
             this.eventManager.callEvent(new ServerStartEvent());
-            this.logger.alert("Uruchomiono server w:&b " + DateUtil.formatSeconds(System.currentTimeMillis() - this.serverProcess.getStartTime()) + "&r sekund");
+            this.logger.info("&eUruchomiono server w:&b " + DateUtil.formatTime(System.currentTimeMillis() - this.serverProcess.getStartTime(), List.of('s', 'i'), true));
         }
     }
 
