@@ -1,10 +1,12 @@
 package me.indian.bds.server;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -54,7 +56,8 @@ public class ServerProcess {
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.serverManager = this.bdsAutoEnable.getServerManager();
         this.processService = Executors.newFixedThreadPool(2, new ThreadUtil("Server process"));
-        this.consoleOutputService = Executors.newFixedThreadPool(3, new ThreadUtil("Console Output"));
+        this.consoleOutputService = Executors.newFixedThreadPool(3 * ThreadUtil.getLogicalThreads(),
+                new ThreadUtil("Console Output"));
         this.prefix = "&b[&3ServerProcess&b] ";
         this.system = SystemUtil.getSystem();
         this.eventManager = this.bdsAutoEnable.getEventManager();
@@ -150,7 +153,7 @@ public class ServerProcess {
                     }
 
                     this.pid = this.process.pid();
-                    this.logger.info("Uruchomiono proces servera");
+                    this.logger.info("Uruchomiono proces servera ");
                     this.logger.debug("&bPID&r procesu servera to&1 " + this.pid);
                     this.consoleOutputService.execute(this::readConsoleOutput);
 
@@ -179,7 +182,7 @@ public class ServerProcess {
      * Metody wykonywane są z consoleOutputService aby nie obciążać jednego wątku wykonywaniem tylu akcji na raz
      */
     private void readConsoleOutput() {
-        try (final Scanner consoleOutput = new Scanner(this.process.getInputStream())) {
+        try (final Scanner consoleOutput = new Scanner(new BufferedInputStream(this.process.getInputStream()), StandardCharsets.UTF_8)/*.useDelimiter("\\A")*/) {
             try {
                 while (this.canWriteConsoleOutput) {
                     if (!consoleOutput.hasNext()) continue;
