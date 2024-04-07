@@ -50,6 +50,10 @@ public final class DefaultsVariables {
         return System.getProperty("user.dir") + File.separator + "BDS-Auto-Enable" + File.separator;
     }
 
+    public static String getLogsDir() {
+        return getAppDir() + "logs";
+    }
+
     public static String getWorldsPath() {
         return APPCONFIG.getFilesPath() + File.separator + "worlds" + File.separator;
     }

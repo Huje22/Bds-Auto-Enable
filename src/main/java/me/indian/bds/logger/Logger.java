@@ -34,7 +34,7 @@ public abstract class Logger {
 
     private void initializeLogFile() {
         if (this.appConfig.isLogFile()) {
-            final File logsDir = new File(DefaultsVariables.getAppDir() + "logs");
+            final File logsDir = new File(DefaultsVariables.getLogsDir());
             if (!logsDir.exists()) {
                 if (!logsDir.mkdir()) if (logsDir.mkdirs()) {
                     throw new RuntimeException("Nie można utworzyć miejsca na logi");
