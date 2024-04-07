@@ -223,12 +223,10 @@ public class StatsManager {
             playerStatistics.setLoginStreak(loginStreak + 1);
         } else if (!lastLoginDate.equals(loginDate) && !lastLoginDate.equals(LocalDate.now())) {
             playerStatistics.setLoginStreak(1);
-            System.out.println("Zresetowano login streak");
         }
 
         if (loginStreak > longestLoginStreak) {
             playerStatistics.setLongestLoginStreak(loginStreak);
-            System.out.println("Nowy streak " + longestLoginStreak);
         }
 
         playerStatistics.setLastJoin(loginTime);
