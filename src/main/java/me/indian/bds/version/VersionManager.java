@@ -293,6 +293,7 @@ public class VersionManager {
 
     public int getLastKnownProtocol() {
         if (this.lastKnownProtocol == 0 || this.lastKnownProtocol == -1) {
+            if(this.getLoadedVersion().contains("1.20.7")) return 662;
             final int protocol = BedrockQuery.create("localhost", this.serverProperties.getServerPort()).protocol();
             if (protocol == -1) {
                 this.waitForProtocol();
