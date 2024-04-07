@@ -14,6 +14,11 @@ import java.util.List;
 public class LogConfig extends OkaeriConfig {
 
     @Comment({""})
+    @Comment({"Czy po zakończeniu procesu aplikacji wysłać logi servera na https://mclo.gs/"})
+    @CustomKey("SendLogs")
+    private boolean sendLogs = true;
+
+    @Comment({""})
     @Comment({"Nie zapisuje tych informacji które zawierają:"})
     @Comment({"W pliku"})
     @CustomKey("NoFile")
@@ -32,6 +37,10 @@ public class LogConfig extends OkaeriConfig {
     @Comment({"Wysyła ServerAlertEvent z wiadomością która zawiera coś z poniższych informacji"})
     @CustomKey("AlertOn")
     private List<String> alertOn = Arrays.asList("[Scythe]");
+
+    public boolean isSendLogs() {
+        return this.sendLogs;
+    }
 
     public List<String> getNoFile() {
         return this.noFile;
