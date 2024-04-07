@@ -172,7 +172,7 @@ public class ServerManager {
 
                 final PlayerStatistics playerStatistics = this.statsManager.getPlayer(playerName);
 
-                this.statsManager.updateLoginStreak(playerStatistics, DateUtil.localDateTimeToLong(LocalDateTime.now().plusDays(1)));
+                this.statsManager.updateLoginStreak(playerStatistics, DateUtil.localDateTimeToLong(LocalDateTime.now(DateUtil.POLISH_ZONE)));
                 this.eventManager.callEvent(new PlayerJoinEvent(playerStatistics));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć dołączenia gracza&b " + playerName, exception);
