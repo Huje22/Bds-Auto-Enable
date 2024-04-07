@@ -75,15 +75,15 @@ public abstract class Listener {
 
     }
 
-    public void onPlayerCommandEvent(final PlayerCommandEvent playerCommandEvent) {
+    public void onPlayerCommandEvent(final PlayerCommandEvent event) {
 
     }
 
-    public void onPlayerInteractContainerEvent(final PlayerInteractContainerEvent playerInteractContainerEvent) {
+    public void onPlayerInteractContainerEvent(final PlayerInteractContainerEvent event) {
 
     }
 
-    public void onPlayerInteractEntityWithContainerEvent(final PlayerInteractEntityWithContainerEvent playerInteractEntityWithContainerEvent) {
+    public void onPlayerInteractEntityWithContainerEvent(final PlayerInteractEntityWithContainerEvent event) {
 
     }
 
@@ -121,7 +121,7 @@ public abstract class Listener {
     public void onTpsChange(final TPSChangeEvent event) {
     }
 
-    public void onServerUncaughtException(final ServerUncaughtExceptionEvent serverUncaughtExceptionEvent) {
+    public void onServerUncaughtException(final ServerUncaughtExceptionEvent event) {
     }
 
     public void onBackupDone(final BackupDoneEvent event) {
