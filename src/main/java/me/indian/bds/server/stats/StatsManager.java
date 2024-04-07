@@ -231,6 +231,7 @@ public class StatsManager {
             System.out.println("Nowy streak " + longestLoginStreak);
         }
 
+        //TODO: Naprawić potencjalne błędy z ustawieniem tego
         playerStatistics.setLastJoin(loginTime);
     }
 
