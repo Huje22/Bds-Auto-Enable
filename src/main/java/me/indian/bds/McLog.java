@@ -18,7 +18,7 @@ public class McLog {
     }
 
     public void sendCurrentLog() {
-        //TODO: Zaktualizować do 4.0.2
+        //TODO: Zaktualizować do 4.0.2 gdy debile zrobią wszytko dobrze XD
         if (this.logConfig.isSendLogs()) {
             try {
                 this.logger.info("&aWysłano logi servera do&b mclo.gs&a link:&1 " + this.mclogsClient.uploadLog(new Log(this.logger.getLogFile().toPath())).getUrl());

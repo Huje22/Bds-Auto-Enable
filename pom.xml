@@ -52,6 +52,7 @@
             <groupId>gs.mclo</groupId>
             <artifactId>api</artifactId>
             <version>3.0.1</version>
+            <scope>compile</scope>
         </dependency>
 
 
