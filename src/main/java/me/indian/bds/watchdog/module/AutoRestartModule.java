@@ -137,10 +137,16 @@ public class AutoRestartModule {
     }
 
     private void restartAlert(final int seconds) {
+        int nextSeconds = seconds;
         for (int i = seconds; i >= 1; i--) {
-            this.serverProcess.actionBarToAll("&aZa&b " + i + "&a sekund server zostanie zrestartowany!");
-           this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
-                    "&aZa&b " + i + "&a sekund server zostanie zrestartowany!", LogState.INFO);
+            if (i < 10 || i == nextSeconds) {
+                nextSeconds = MathUtil.getCorrectNumber((i - 5) , 0, seconds);
+
+                this.serverProcess.actionBarToAll("&aZa&b " + i + "&a sekund server zostanie zrestartowany!");
+                this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
+                        "&aZa&b " + i + "&a sekund server zostanie zrestartowany!", LogState.INFO);
+
+            }
             ThreadUtil.sleep(1);
         }
     }
