@@ -13,7 +13,7 @@ public class MuteCommand extends Command {
     private final ServerManager serverManager;
 
     public MuteCommand(final BDSAutoEnable bdsAutoEnable) {
-        super("mute", "Wycisz/odcisz kogoś na czacie i na discord");
+        super("mute", "Wycisz/odcisz kogoś na czacie");
         this.bdsAutoEnable = bdsAutoEnable;
         this.serverManager = this.bdsAutoEnable.getServerManager();
 
