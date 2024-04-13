@@ -95,18 +95,6 @@ public class Settings {
         this.appConfig.save();
         this.logger.print();
 
-        this.appConfig.setLogFile(
-                scannerUtil.addBooleanQuestion(
-                        (defaultValue) -> {
-                            this.logger.info("&n&lCzy tworzyć pliki z logami servera?&r (Domyślnie: " + defaultValue + ")" + this.enter);
-                            this.logger.info("Zostanie w pełni zastosowane dopiero przy następnym uruchomieniu aplikacji");
-                        },
-                        true,
-                        (input) -> this.logger.info("Tworzenie logów servera ustawione na:&1 " + input)
-                )
-        );
-        this.logger.print();
-
         if (!this.versionManagerConfig.isLoaded()) this.versionQuestion(scannerUtil);
         this.serverProperties.loadProperties();
 

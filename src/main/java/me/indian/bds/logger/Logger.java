@@ -33,7 +33,6 @@ public abstract class Logger {
     }
 
     private void initializeLogFile() {
-        if (this.appConfig.isLogFile()) {
             final File logsDir = new File(DefaultsVariables.getLogsDir());
             if (!logsDir.exists()) {
                 if (!logsDir.mkdir()) if (logsDir.mkdirs()) {
@@ -48,7 +47,6 @@ public abstract class Logger {
             } catch (final Exception exception) {
                 this.error("Nie można utworzyć&1 PrintStreamu&r aby zapisywać logi do pliku ", exception);
             }
-        }
     }
 
     public void print() {
@@ -162,13 +160,13 @@ public abstract class Logger {
     }
 
     public void instantLogToFile(final Object log) {
-        if (this.appConfig.isLogFile() && this.printStream != null) {
+        if (this.printStream != null) {
             this.printStream.println(ConsoleColors.removeColors(log));
         }
     }
 
     private void logToFile(final Object log) {
-        if (this.appConfig.isLogFile() && this.printStream != null) {
+        if (this.printStream != null) {
             this.printStream.println(ConsoleColors.removeColors(this.prefix) + ConsoleColors.removeColors(log));
         }
     }
@@ -176,7 +174,7 @@ public abstract class Logger {
     public void logThrowable(final Throwable throwable) {
         if (throwable != null) {
             throwable.printStackTrace();
-            if (this.appConfig.isLogFile() && this.printStream != null) {
+            if (this.printStream != null) {
                 throwable.printStackTrace(this.printStream);
             }
         }

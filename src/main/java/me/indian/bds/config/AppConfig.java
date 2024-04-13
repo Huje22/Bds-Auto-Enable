@@ -36,12 +36,6 @@ public class AppConfig extends OkaeriConfig {
     @Comment({"Czy restartować server gdy TPS dwa razy pod rząd są mniejsze niż 9?"})
     @CustomKey("RestartOnLowTPS")
     private boolean restartOnLowTPS = true;
-
-    @Comment({""})
-    @Comment({"Czy tworzyć pliki z logami servera?"})
-    @CustomKey("LogFile")
-    private boolean logFile = true;
-
     @Comment({""})
     @Comment({"Ścieżka do plików z serverem"})
     @CustomKey("FilesPath")
@@ -105,14 +99,6 @@ public class AppConfig extends OkaeriConfig {
 
     public boolean isRestartOnLowTPS() {
         return this.restartOnLowTPS;
-    }
-
-    public boolean isLogFile() {
-        return this.logFile;
-    }
-
-    public void setLogFile(final boolean logFile) {
-        this.logFile = logFile;
     }
 
     public boolean isCloseOnException() {
