@@ -411,6 +411,19 @@ public class ServerProperties {
         }
     }
 
+    public int getCompressionThreshold() {
+        try {
+            return Integer.parseInt(this.properties.getProperty("compression-threshold"));
+        } catch (final NullPointerException | NumberFormatException exception) {
+            this.setCompressionThreshold(1);
+            return 1;
+        }
+    }
+
+    public void setCompressionThreshold(final int compressionThreshold) {
+        this.properties.setProperty("compression-threshold", String.valueOf(compressionThreshold));
+    }
+
     public void setServerMovementAuth(final ServerMovementAuth serverAuthoritativeMovement) {
         this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement.getAuthName());
         this.reloadServerProperties();

@@ -177,11 +177,22 @@ public class Settings {
         this.addCompressionAlgorithmQuestion(scannerUtil);
         this.logger.print();
 
+        this.serverProperties.setCompressionThreshold(scannerUtil.addIntQuestion((defaultValue) -> {
+                    this.logger.info("&n&lUstaw Próg kompresji&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
+                    this.logger.alert("Mniejszy próg kompresji = większe użycje internetu ale zmniejsza użycje procesora");
+                    this.logger.alert("Większy próg kompresji = mniejsze użycje internetu ale zwiększa użycje procesora");
+                    this.logger.alert("Ustawienie tego na&1 0&r jest nie zalecane!");
+
+                }, this.serverProperties.getCompressionThreshold(),
+                (input) -> this.logger.info("Próg kompresji ustawiono na:&1 " + input)
+        ));
+        this.logger.print();
+
         this.serverProperties.setMaxThreads(scannerUtil.addIntQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lLiczba wątków używana przez server&r (Dostępna liczba to: " + defaultValue + ")" + this.enter);
                     this.logger.info("Maksymalna liczba wątków, jakie serwer będzie próbował wykorzystać, Jeśli ustawione na&b 0&r wtedy będzie używać najwięcej jak to możliwe.");
-               this.logger.alert("&cJeśli stawiasz tylko jeden server polecamy użyć wszystkich&b " + defaultValue + "&c wątków");
+                    this.logger.alert("&cJeśli stawiasz tylko jeden server polecamy użyć wszystkich&b " + defaultValue + "&c wątków");
                 }, ThreadUtil.getLogicalThreads(),
                 (input) -> this.logger.info("Liczba wątków ustawiona na:&1 " + input)
         ));
@@ -327,6 +338,7 @@ public class Settings {
         this.logger.info("Port v4:&1 " + this.serverProperties.getServerPort());
         this.logger.info("Port v6:&1 " + this.serverProperties.getServerPortV6());
         this.logger.info("Algorytm kompresji:&1 " + this.serverProperties.getCompressionAlgorithm());
+        this.logger.info("Próg kompresji:&1 " + this.serverProperties.getCompressionThreshold());
         this.logger.print();
 
 
