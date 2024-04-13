@@ -10,7 +10,7 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 * Wspieramy tylko tą ___[wersje](https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/me/indian/bds/config/sub/version/VersionManagerConfig.java#L17)___
 * Wymaga Javy 17 bądź wyższej
 * Program wymaga przynajmniej `1GB` RAM do działania z rozszerzeniami jak `DiscordExtension`
-* Program wspiera użycie [**WINE**](https://github.com/wine-mirror/wine)
+* Program wspiera użycie: [**WINE**](https://github.com/wine-mirror/wine), [LeviLamina](https://github.com/LiteLDev/LeviLamina)
 * Program wspiera proste
   rozszerzenia: [ExampleExtension](https://github.com/Huje22/BDS-AE-Extensions/tree/master/ExampleExtension)
 
@@ -56,10 +56,12 @@ paczka jest najwyżej)**
 
 # Użyte biblioteki
 
-[Okaeri Configs - Do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
-[Gson - Do plików i samych Json](https://github.com/google/gson)<br>
-[Logback - Tylko dla developerów rozszerzeń](https://github.com/qos-ch/logback)<br>
-
+[JetBrains Annotations (24.1.0) - Dla lepszego kodu](https://github.com/JetBrains/java-annotations) <br>
+[Okaeri Configs (5.0.1) - Do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
+[Gson (2.10.1) - Do plików i samych Json](https://github.com/google/gson)<br>
+[OkHTTP (5.0.0-alpha.12) - Do wygodnych zapytań HTTP](https://github.com/square/okhttp)<br>
+[Logback (1.2.8) - Tylko dla developerów rozszerzeń](https://github.com/qos-ch/logback)<br>
+[McLogs (3.0.1) - Do łatwego udostępniania logów](https://github.com/aternosorg/mclogs-java)
   ----
 
 <div align="center">
