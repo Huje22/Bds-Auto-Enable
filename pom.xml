@@ -27,13 +27,13 @@
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
-            <version>13.0</version>
+            <version>24.1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>eu.okaeri</groupId>
             <artifactId>okaeri-configs-yaml-snakeyaml</artifactId>
-            <version>5.0.0-beta.5</version>
+            <version>5.0.1</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
