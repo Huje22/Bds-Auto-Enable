@@ -1,5 +1,6 @@
 package me.indian.bds.command.defaults;
 
+import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.server.properties.ServerProperties;
@@ -12,6 +13,8 @@ public class SettingInfoCommand extends Command {
     public SettingInfoCommand(final BDSAutoEnable bdsAutoEnable) {
         super("setting", "Info o aktualnych ustawieniach servera");
         this.properties = bdsAutoEnable.getServerProperties();
+
+        this.addAlliases(List.of("settings"));
     }
 
     @Override
@@ -23,23 +26,24 @@ public class SettingInfoCommand extends Command {
 
         this.properties.loadProperties();
 
-        this.sendMessage("&aSystem:&b " + SystemUtil.getSystem() + " &d(&1" + SystemUtil.getFullyOsName() + "&d)");
-        this.sendMessage("&aSystem arch:&b " + SystemUtil.getFullyArchCode() + " &d(&1" + SystemUtil.getCurrentArch() + "&d)");
+        this.sendMessage("System:&b " + SystemUtil.getSystem() + " &d(&1" + SystemUtil.getFullyOsName() + "&d)");
+        this.sendMessage("System arch:&b " + SystemUtil.getFullyArchCode() + " &d(&1" + SystemUtil.getCurrentArch() + "&d)");
 
         this.sendMessage("&eNie wszystkie wartości muszą być załadowane przez server");
 
-        this.sendMessage("&aMaksymalny zasięg widoku:&b " + this.properties.getViewDistance() + "&e chunk");
-        this.sendMessage("&aMaksymalny zasięg ticków:&b " + this.properties.getTickDistance() + "&e chunk");
-        this.sendMessage("&aMaksymalna ilość wątków których może użyć server:&b " + this.properties.getMaxThreads());
-        this.sendMessage("&aMaksymalny czas bycia AFK:&b " + this.properties.getPlayerIdleTimeout() + "&e minut");
+        this.sendMessage("Maksymalny zasięg widoku:&b " + this.properties.getViewDistance() + "&e chunk");
+        this.sendMessage("Maksymalny zasięg ticków:&b " + this.properties.getTickDistance() + "&e chunk");
+        this.sendMessage("Maksymalna ilość wątków których może użyć server:&b " + this.properties.getMaxThreads());
+        this.sendMessage("Maksymalny czas bycia AFK:&b " + this.properties.getPlayerIdleTimeout() + "&e minut");
 
-        this.sendMessage("&aAutoryzacja ruchu gracza:&b " + this.properties.getServerMovementAuth().getAuthName());
+        this.sendMessage("Autoryzacja ruchu gracza:&b " + this.properties.getServerMovementAuth().getAuthName());
 
-        this.sendMessage("&aCzy paczki są wymagane do pobrania:&b " + this.properties.isTexturePackRequired());
-        this.sendMessage("&aCzy server emituje telemetrie:&b " + this.properties.isServerTelemetry());
+        this.sendMessage("Czy paczki są wymagane do pobrania:&b " + this.properties.isTexturePackRequired());
+        this.sendMessage("Czy server emituje telemetrie:&b " + this.properties.isServerTelemetry());
 
-        this.sendMessage("&aIle procent chunk może wygenerować ci server:&b " + this.calculateBuildRadiusRatio());
-        this.sendMessage("&aAlgorytm kompresji pakietów:&b " + this.properties.getCompressionAlgorithm().getAlgorithmName());
+        this.sendMessage("Ile procent chunk może wygenerować ci server:&b " + this.calculateBuildRadiusRatio());
+        this.sendMessage("Algorytm kompresji pakietów:&b " + this.properties.getCompressionAlgorithm().getAlgorithmName());
+        this.sendMessage("Próg kompresji:&1 " + this.properties.getCompressionThreshold());
 
         this.sendMessage("&eNie wszystkie wartości muszą być załadowane przez server");
 
