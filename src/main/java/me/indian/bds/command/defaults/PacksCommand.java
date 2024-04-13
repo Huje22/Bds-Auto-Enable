@@ -23,7 +23,7 @@ public class PacksCommand extends Command {
             return true;
         }
 
-        this.sendMessage("&a---&bTesktury&a---");
+        this.sendMessage("&a---&bTekstury&a---");
         int counter = 1;
         for (final TexturePack texturePack : this.packManager.getResourcePackLoader().getLoadedTexturePacks()) {
             this.sendMessage(counter + ".&b " + texturePack.name() + "&1 " + Arrays.toString(texturePack.version()));

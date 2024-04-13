@@ -35,7 +35,6 @@ public class BackupCommand extends Command {
             if (backupModule.getBackups().size() == 0) {
                 this.sendMessage("&aBrak backupów");
                 this.sendMessage("&aNastępny backup za:&b " + DateUtil.formatTime(backupModule.calculateMillisUntilNextBackup(), List.of('d', 'h', 'm', 's')));
-
                 return true;
             }
 
@@ -46,6 +45,7 @@ public class BackupCommand extends Command {
             }
             return true;
         }
+
         if (args[0].equals("do")) {
             if (!isOp) {
                 this.sendMessage("&cPotrzebujesz wyższych uprawnień");

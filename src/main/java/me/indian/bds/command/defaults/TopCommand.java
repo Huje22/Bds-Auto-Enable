@@ -30,7 +30,6 @@ public class TopCommand extends Command {
         this.addOption("block", "Top 10 wykopanych i postawionych bloków");
     }
 
-
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (!this.packModule.isLoaded()) {
@@ -72,7 +71,7 @@ public class TopCommand extends Command {
     }
 
 
-    public List<String> getTopBlock(final boolean forDiscord) {
+    public List<String> getTopBlock(final boolean markdown) {
         final Map<String, Long> brokenMap = this.statsManager.getBlockBroken();
         final Map<String, Long> placedMap = this.statsManager.getBlockPlaced();
         final Map<String, Long> combinedMap = new HashMap<>(brokenMap);
@@ -97,7 +96,7 @@ public class TopCommand extends Command {
             place++;
 
         }
-        if (!forDiscord) {
+        if (!markdown) {
             topBlocks.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
         }
 

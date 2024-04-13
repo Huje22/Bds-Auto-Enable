@@ -34,8 +34,8 @@ public class ChatFormatCommand extends Command {
         } else {
             return false;
         }
-        this.serverProcess.sendToConsole("reload");
 
+        this.serverProcess.sendToConsole("reload");
         return true;
     }
 }

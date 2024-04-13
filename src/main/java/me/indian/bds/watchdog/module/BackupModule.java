@@ -189,7 +189,7 @@ public class BackupModule {
         }
     }
 
-    public String getBackupSize(final File backup, final boolean forDiscord) {
+    public String getBackupSize(final File backup, final boolean markdown) {
         long fileSizeBytes;
         try {
             fileSizeBytes = Files.size(backup.toPath());
@@ -200,7 +200,7 @@ public class BackupModule {
         final long mb = MathUtil.getMbFromBytesGb(fileSizeBytes);
         final long kb = MathUtil.getKbFromBytesGb(fileSizeBytes);
 
-        if (forDiscord) {
+        if (markdown) {
             return gb + " GB " + mb + " MB " + kb + " KB";
         } else {
             return "&b" + gb + "&e GB &b" + mb + "&e MB &b" + kb + "&e KB";

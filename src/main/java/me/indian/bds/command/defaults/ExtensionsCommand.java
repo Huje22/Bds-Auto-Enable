@@ -19,15 +19,15 @@ public class ExtensionsCommand extends Command {
         this.extensionManager = this.bdsAutoEnable.getExtensionManager();
 
         this.addAlliases(List.of("ex"));
-        this.addOption("[extension name]", "Informacje o danym rozserzeniu");
-        this.addOption("enable <extension name>", "Włącza dane rozserzenie &cNIEBEZPIECZNE");
-        this.addOption("disable <extension name>", "Wyłącza dane rozserzenie &cNIEBEZPIECZNE");
+        this.addOption("[extension name]", "Informacje o danym rozszerzeniu");
+        this.addOption("enable <extension name>", "Włącza dane rozszerzenie &cNIEBEZPIECZNE");
+        this.addOption("disable <extension name>", "Wyłącza dane rozszerzenie &cNIEBEZPIECZNE");
     }
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (!this.commandConfig.isExtensionsForAll() && !isOp) {
-            this.sendMessage("&aTylko operatorzy mogą zobaczyć aktualne rozserzenia");
+            this.sendMessage("&aTylko operatorzy mogą zobaczyć aktualne rozszerzenia");
             return true;
         }
 
@@ -87,13 +87,13 @@ public class ExtensionsCommand extends Command {
                 return true;
             }
 
-            if (args[0].equalsIgnoreCase("enable")) {
-                final String extensionName = args[1];
-                final Extension extension = this.extensionManager.getExtension(extensionName);
+            final String extensionName = args[1];
+            final Extension extension = this.extensionManager.getExtension(extensionName);
 
+            if (args[0].equalsIgnoreCase("enable")) {
                 if (extension != null) {
                     if (extension.isEnabled()) {
-                        this.sendMessage("&cTe rozserzenie jest już włączone");
+                        this.sendMessage("&cTe rozszerzenie jest już włączone");
                         return true;
                     }
 
@@ -106,17 +106,9 @@ public class ExtensionsCommand extends Command {
             }
 
             if (args[0].equalsIgnoreCase("disable")) {
-                if (!isOp) {
-                    this.sendMessage("&cPotrzebujesz wyższych uprawnień");
-                    return true;
-                }
-
-                final String extensionName = args[1];
-                final Extension extension = this.extensionManager.getExtension(extensionName);
-
                 if (extension != null) {
                     if (!extension.isEnabled()) {
-                        this.sendMessage("&cTe rozserzenie jest już wyłączone");
+                        this.sendMessage("&cTe rozszerzenie jest już wyłączone");
                         return true;
                     }
 

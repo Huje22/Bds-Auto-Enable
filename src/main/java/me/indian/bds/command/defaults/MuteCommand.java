@@ -48,7 +48,6 @@ public class MuteCommand extends Command {
         return true;
     }
 
-
     private void mute(final PlayerStatistics playerStatistics) {
         this.serverManager.mute(playerStatistics.getXuid());
         this.sendMessage("&aGracz&b " + playerStatistics.getPlayerName() + "&a został dodany do listy wyciszonych");

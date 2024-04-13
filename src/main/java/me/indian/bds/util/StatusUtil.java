@@ -39,7 +39,7 @@ public final class StatusUtil {
 
     }
 
-    public static List<String> getMainStats(final boolean forDiscord) {
+    public static List<String> getMainStats(final boolean markdown) {
         STATUS.clear();
 
         final WatchDog watchDog = BDSAUTOENABLE.getWatchDog();
@@ -89,12 +89,12 @@ public final class StatusUtil {
         STATUS.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
         STATUS.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
 
-        if (!forDiscord) STATUS.replaceAll(s -> s.replaceAll("`", "&b").replaceAll("\\*", "&a").replaceAll("> ", "&l"));
+        if (!markdown) STATUS.replaceAll(s -> s.replaceAll("`", "&b").replaceAll("\\*", "&a").replaceAll("> ", "&l"));
 
         return STATUS;
     }
 
-    public static List<String> getTopPlayTime(final boolean forDiscord, final int top) {
+    public static List<String> getTopPlayTime(final boolean markdown, final int top) {
         final Map<String, Long> playTimeMap = STATSMANAGER.getPlayTime();
         final List<String> topPlayTime = new ArrayList<>();
 
@@ -109,12 +109,12 @@ public final class StatusUtil {
             place++;
         }
 
-        if (!forDiscord) topPlayTime.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+        if (!markdown) topPlayTime.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
 
         return topPlayTime;
     }
 
-    public static List<String> getTopDeaths(final boolean forDiscord, final int top) {
+    public static List<String> getTopDeaths(final boolean markdown, final int top) {
         final Map<String, Long> deathsMap = STATSMANAGER.getDeaths();
         final List<String> topDeaths = new ArrayList<>();
 
@@ -129,12 +129,12 @@ public final class StatusUtil {
             place++;
         }
 
-        if (!forDiscord) topDeaths.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+        if (!markdown) topDeaths.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
 
         return topDeaths;
     }
 
-    public static List<String> getTopBlockBroken(final boolean forDiscord, final int top) {
+    public static List<String> getTopBlockBroken(final boolean markdown, final int top) {
         final Map<String, Long> brokenMap = STATSMANAGER.getBlockBroken();
         final List<String> topBroken = new ArrayList<>();
 
@@ -149,12 +149,12 @@ public final class StatusUtil {
             place++;
         }
 
-        if (!forDiscord) topBroken.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+        if (!markdown) topBroken.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
 
         return topBroken;
     }
 
-    public static List<String> getTopBlockPlaced(final boolean forDiscord, final int top) {
+    public static List<String> getTopBlockPlaced(final boolean markdown, final int top) {
         final Map<String, Long> placedMap = STATSMANAGER.getBlockPlaced();
         final List<String> topPlaced = new ArrayList<>();
 
@@ -169,7 +169,7 @@ public final class StatusUtil {
             place++;
         }
 
-        if (!forDiscord) topPlaced.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
+        if (!markdown) topPlaced.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
 
         return topPlaced;
     }
