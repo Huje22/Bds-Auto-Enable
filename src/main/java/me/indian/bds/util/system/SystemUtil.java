@@ -1,6 +1,6 @@
 package me.indian.bds.util.system;
 
-import me.indian.bds.exception.UnSupportedSystemException;
+import me.indian.bds.exception.UnsupportedSystemException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,11 +43,11 @@ public final class SystemUtil {
         return System.getProperty("os.arch");
     }
 
-    public static long getRamUsageByPid(final long pid) throws IOException, UnSupportedSystemException {
+    public static long getRamUsageByPid(final long pid) throws IOException, UnsupportedSystemException {
         return switch (getSystem()) {
             case WINDOWS -> getMemoryUsageWindows(pid);
             case LINUX -> getMemoryUsageLinux(pid);
-            default -> throw new UnSupportedSystemException("Nie można pozyskać ilość ram dla wspieranego systemu");
+            default -> throw new UnsupportedSystemException("Nie można pozyskać ilość ram dla wspieranego systemu");
         };
     }
 

@@ -1,8 +1,8 @@
 package me.indian.bds.exception;
 
-public class UnSupportedSystemException extends RuntimeException {
+public class UnsupportedSystemException extends RuntimeException {
 
-    public UnSupportedSystemException(final String message) {
+    public UnsupportedSystemException(final String message) {
         super(message);
     }
 }
