@@ -1,14 +1,15 @@
 package me.indian.bds.util;
 
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfig;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.system.SystemUtil;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfig;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.system.SystemUtil;
 
 public final class DefaultsVariables {
 
@@ -28,7 +29,7 @@ public final class DefaultsVariables {
     public static String getDefaultFileName() {
         return switch (SystemUtil.getSystem()) {
             case LINUX ->
-                    (WINE ? (isLeviLamina() ? "bedrock_server_mod.exe" : "bedrock_server.exe") : "bedrock_server");
+                    (APPCONFIG.isWine() ? (isLeviLamina() ? "bedrock_server_mod.exe" : "bedrock_server.exe") : "bedrock_server");
             case WINDOWS -> (isLeviLamina() ? "bedrock_server_mod.exe" : "bedrock_server.exe");
             default -> "";
         };
