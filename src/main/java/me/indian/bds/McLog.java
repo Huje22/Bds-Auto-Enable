@@ -26,7 +26,7 @@ public class McLog {
                 this.logger.error("&cNie udało się przekazać logów servera do&b mclo.gs", exception);
             }
         } else {
-            this.logger.debug("Wysyłąnie logów na&b https://mclo.gs/&r jest wyłączone");
+            this.logger.info("&cWysyłąnie logów na&b https://mclo.gs/&c jest wyłączone");
         }
     }
 }
