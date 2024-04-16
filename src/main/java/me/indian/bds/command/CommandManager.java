@@ -11,6 +11,7 @@ import me.indian.bds.command.defaults.ChatFormatCommand;
 import me.indian.bds.command.defaults.EndCommand;
 import me.indian.bds.command.defaults.ExtensionsCommand;
 import me.indian.bds.command.defaults.HelpCommand;
+import me.indian.bds.command.defaults.McLogCommand;
 import me.indian.bds.command.defaults.MuteCommand;
 import me.indian.bds.command.defaults.PacksCommand;
 import me.indian.bds.command.defaults.ReloadCommand;
@@ -51,7 +52,7 @@ public class CommandManager {
         }
 
         this.commandMap.put(new PacksCommand(this.bdsAutoEnable), null);
-
+        this.commandMap.put(new McLogCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new VersionCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new ChatFormatCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new MuteCommand(this.bdsAutoEnable), null);

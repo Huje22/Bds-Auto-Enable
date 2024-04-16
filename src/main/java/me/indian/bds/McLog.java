@@ -18,7 +18,6 @@ public class McLog {
     }
 
     public void sendCurrentLog() {
-        //TODO: Dodać komendę do obsługiwania tego 
         if (this.logConfig.isSendLogs()) {
             try {
                 this.logger.info("&aWysłano logi servera do&b mclo.gs&a link:&1 " + this.mclogsClient.uploadLog(new Log(this.logger.getLogFile().toPath())).getUrl());
