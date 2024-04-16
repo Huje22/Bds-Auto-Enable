@@ -22,9 +22,7 @@ Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
 * Łatwe załadowanie innej wersji
 * Automatyczne ładowanie paczek `zachowań` i `tesktur` z `FOLDER_ŚWIATA/behavior_packs`/`resource_packs`
 * Tworzenie backupów świata co dany czas i manualnie
-* Licznik czasu gry gracza (
-  Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
-* Licznik śmierci (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
+* Statystyki graczy (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
 
 <details>
   <summary>Jak działa to z Paczką?</summary>
