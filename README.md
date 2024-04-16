@@ -60,6 +60,7 @@ paczka jest najwyżej)**
 [OkHTTP (5.0.0-alpha.12) - Do wygodnych zapytań HTTP](https://github.com/square/okhttp)<br>
 [Logback (1.2.8) - Tylko dla developerów rozszerzeń](https://github.com/qos-ch/logback)<br>
 [McLogs (3.0.1) - Do łatwego udostępniania logów](https://github.com/aternosorg/mclogs-java)
+
   ----
 
 <div align="center">
