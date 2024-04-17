@@ -66,6 +66,7 @@ public final class StatusUtil {
 //        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(maxDiskSpace()) + " MB";
 
         STATUS.add("> **Statystyki maszyny**");
+        //TODO: Zrobić użyty/cały (wolny) RAM
         STATUS.add("Pamięć RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
         STATUS.add("Pamięć ROM: `" + usedRom + " / " + rom + "`");
 
