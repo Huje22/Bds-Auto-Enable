@@ -114,6 +114,8 @@ public final class StatusUtil {
         return topPlayTime;
     }
 
+    //TODO: Zrobić PlayerStatsUtil i te metody dodać tam
+    
     public static List<String> getTopDeaths(final boolean markdown, final int top) {
         final Map<String, Long> deathsMap = STATSMANAGER.getDeaths();
         final List<String> topDeaths = new ArrayList<>();
