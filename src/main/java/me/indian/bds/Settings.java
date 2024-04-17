@@ -309,10 +309,10 @@ public class Settings {
         this.logger.info("&n&lAktualne Dane");
         this.logger.print();
         this.logger.info("&e----------&bAplikacja&e----------");
+        this.logger.info("Java:&1 " + System.getProperty("java.version"));
         this.logger.info("Wine:&1 " + this.appConfig.isWine() + (DefaultsVariables.WINE ? " &d(&bPosiadasz&d)" : ""));
         this.logger.info("Ścieżka plików:&1 " + this.appConfig.getFilesPath());
-        this.logger.info("Wersja:&1 " + versionManager.getLoadedVersion() + " &d(&b" + versionManager.getLastKnownProtocol() + "&d)");
-
+        
         final boolean backup = this.watchDogConfig.getBackupConfig().isEnabled();
         this.logger.info("Backup:&1 " + backup);
 
@@ -322,7 +322,8 @@ public class Settings {
 
         this.logger.info("Nazwa świata:&1 " + this.serverProperties.getWorldName());
         this.logger.print();
-        this.logger.info("&e-----------&bserver.properties&e----------");
+        this.logger.info("&e-----------&bServer&e----------");
+        this.logger.info("Wersja:&1 " + versionManager.getLoadedVersion() + " &d(&b" + versionManager.getLastKnownProtocol() + "&d)");
         this.logger.info("Port v4:&1 " + this.serverProperties.getServerPort());
         this.logger.info("Port v6:&1 " + this.serverProperties.getServerPortV6());
         this.logger.info("Algorytm kompresji:&1 " + this.serverProperties.getCompressionAlgorithm());
