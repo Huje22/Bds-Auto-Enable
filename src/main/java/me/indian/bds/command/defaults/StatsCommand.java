@@ -16,6 +16,9 @@ public class StatsCommand extends Command {
             return true;
         }
 
+        //TODO: Dodaj wersję dla gracz gdzie będzie pokazane użycie ramu i servera
+        //np RAM UŻYWANY BDS/WOLNY RAM
+        //np RAM UŻYWANY MASZYNA/WOLNY RAM/CALY RSM
         for (final String stats : StatusUtil.getMainStats(false)) {
             this.sendMessage(stats);
         }
