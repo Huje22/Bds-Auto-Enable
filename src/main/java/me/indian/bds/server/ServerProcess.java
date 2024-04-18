@@ -268,7 +268,7 @@ public class ServerProcess {
             this.logger.debug("Lista graczy jest pusta");
             return;
         }
-        this.serverManager.getOnlinePlayers().forEach(name -> this.kick(name, msg));
+        new ArrayList<>(this.serverManager.getOnlinePlayers()).forEach(name -> this.kick(name, msg));
     }
 
     public void kick(final String who, final String reason) {

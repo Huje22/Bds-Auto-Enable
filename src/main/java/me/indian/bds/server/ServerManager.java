@@ -529,7 +529,6 @@ public class ServerManager {
         return this.onlinePlayers.contains(name);
     }
 
-    todo okkk
     public List<String> getOfflinePlayers() {
         return this.offlinePlayers;
     }
