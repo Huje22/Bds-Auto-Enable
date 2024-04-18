@@ -48,12 +48,15 @@ public final class StatusUtil {
         final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         final OperatingSystemMXBean operatingSystemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
-        final double processCpuLoad = operatingSystemMXBean.getProcessCpuLoad();
+        final double processCpuLoad = operatingSystemMXBean.getCpuLoad();
 
         final long computerRam = getAvailableRam();
         final long computerFreeRam = getFreeRam();
+        final long computerRamUsed = getUsedRam();
 
         final String usedServerMemory = "Użyte " + MathUtil.kilobytesToGb(getServerRamUsage()) + " GB " + MathUtil.getMbFromKilobytesGb(getServerRamUsage()) + " MB";
+
+        final String usedComputerMemory = "Użyte " + MathUtil.bytesToGB(computerRamUsed) + " GB " + MathUtil.getMbFromBytesGb(computerRamUsed) + " MB";
         final String maxComputerMemory = "Całkowity " + MathUtil.bytesToGB(computerRam) + " GB " + MathUtil.getMbFromBytesGb(computerRam) + " MB";
         final String freeComputerMemory = "Wolny " + MathUtil.bytesToGB(computerFreeRam) + " GB " + MathUtil.getMbFromBytesGb(computerFreeRam) + " MB";
 
@@ -66,14 +69,13 @@ public final class StatusUtil {
 //        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(maxDiskSpace()) + " MB";
 
         STATUS.add("> **Statystyki maszyny**");
-        //TODO: Zrobić użyty/cały (wolny) RAM
-        STATUS.add("Pamięć RAM: `" + freeComputerMemory + " / " + maxComputerMemory + "`");
+        STATUS.add("Pamięć RAM: `" + usedComputerMemory + " / " + maxComputerMemory + "` (`" + freeComputerMemory + "`)");
         STATUS.add("Pamięć ROM: `" + usedRom + " / " + rom + "`");
 
         STATUS.add("");
         STATUS.add("> **Statystyki servera**");
         STATUS.add("Ostatnie TPS: `" + BDSAUTOENABLE.getServerManager().getLastTPS() + "`");
-        STATUS.add("Pamięć RAM: `" + usedServerMemory + "`");
+        STATUS.add("Pamięć RAM: `" + usedServerMemory + "` (`" + freeComputerMemory + "`)");
         if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
             STATUS.add("Następny restart za za: `" + DateUtil.formatTime(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart(), List.of('d', 'h', 'm', 's', 'i')) + "`");
         }
@@ -197,6 +199,10 @@ public final class StatusUtil {
             LOGGER.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + SystemUtil.getSystem(), exception);
         }
         return -1;
+    }
+
+    public static long getUsedRam() {
+        return getAvailableRam() - getFreeRam();
     }
 
     public static long getAvailableRam() {
