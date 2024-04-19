@@ -59,6 +59,9 @@ public class AutoRestartModule {
                     AutoRestartModule.this.logger.error("Nie można zrestartować servera gdy jest on wyłączony!");
                     return;
                 }
+                //TODO: Przekładaj restart jeśli podczas ostatniego nie było graczy na serwerze 
+               //TAKŻE dodaj boolena 'lastRestartDoned` czy jakoś tak
+                
                 if (AutoRestartModule.this.restart(true, 10)) {
                     AutoRestartModule.this.bdsAutoEnable.getEventManager().callEvent(new ServerAlertEvent("Server jest restartowany",
                             "Server jest restartowany tak jak co " + AutoRestartModule.this.autoRestartConfig.getRestartTime() + " godziny", LogState.INFO));
