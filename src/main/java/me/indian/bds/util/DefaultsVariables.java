@@ -80,9 +80,6 @@ public final class DefaultsVariables {
             }
             if (!process.waitFor(30, TimeUnit.MILLISECONDS)) process.destroy();
         } catch (final Exception exception) {
-            final File file = new File(getUserHome() + File.separator + ".wine");
-            if (file.exists()) return true;
-
             LOGGER.debug("Nie znaleziono&1 WINE&r (Nie potrzebujesz go)");
         }
         return false;
