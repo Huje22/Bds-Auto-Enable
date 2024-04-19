@@ -10,7 +10,7 @@ import me.indian.bds.command.Command;
 import me.indian.bds.server.stats.ServerStats;
 import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.StatusUtil;
+import me.indian.bds.util.PlayerStatsUtil;
 import me.indian.bds.watchdog.module.pack.PackModule;
 
 public class TopCommand extends Command {
@@ -44,25 +44,23 @@ public class TopCommand extends Command {
 
         if (args[0].equalsIgnoreCase("playtime")) {
             this.sendMessage("&a---------------------");
-            StatusUtil.getTopPlayTime(false, 10).forEach(this::sendMessage);
+            PlayerStatsUtil.getTopPlayTime(false, 10).forEach(this::sendMessage);
             this.sendMessage("&aŁączny czas działania servera: &b"
                     + DateUtil.formatTime(this.serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's')));
             this.sendMessage("&a---------------------");
-
             return true;
         }
 
         if (args[0].equalsIgnoreCase("deaths")) {
             this.sendMessage("&a---------------------");
-            StatusUtil.getTopDeaths(false, 10).forEach(this::sendMessage);
+            PlayerStatsUtil.getTopDeaths(false, 10).forEach(this::sendMessage);
             this.sendMessage("&a---------------------");
             return true;
         }
 
-
         if (args[0].equalsIgnoreCase("block")) {
             this.sendMessage("&a---------------------");
-            this.getTopBlock(false).forEach(this::sendMessage);
+            this.getTopBlock().forEach(this::sendMessage);
             this.sendMessage("&a---------------------");
             return true;
         }
@@ -70,8 +68,7 @@ public class TopCommand extends Command {
         return false;
     }
 
-
-    public List<String> getTopBlock(final boolean markdown) {
+    private List<String> getTopBlock() {
         final Map<String, Long> brokenMap = this.statsManager.getBlockBroken();
         final Map<String, Long> placedMap = this.statsManager.getBlockPlaced();
         final Map<String, Long> combinedMap = new HashMap<>(brokenMap);
@@ -95,9 +92,6 @@ public class TopCommand extends Command {
                     entry.getKey(), brokenMap.getOrDefault(entry.getKey(), 0L), placedMap.getOrDefault(entry.getKey(), 0L)));
             place++;
 
-        }
-        if (!markdown) {
-            topBlocks.replaceAll(s -> s.replaceAll("`", "").replaceAll("\\*", "").replaceAll(">", ""));
         }
 
         return topBlocks;
