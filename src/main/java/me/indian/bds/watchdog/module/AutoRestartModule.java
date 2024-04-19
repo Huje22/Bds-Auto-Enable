@@ -30,7 +30,8 @@ public class AutoRestartModule {
     private String prefix;
     private ServerProcess serverProcess;
     private long lastRestartMillis;
-    private boolean restarting;
+    private boolean restarting, lastRestartDone;
+    private static boolean playersOnRestart = false;
 
     public AutoRestartModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -52,20 +53,31 @@ public class AutoRestartModule {
 
     private void run() {
         final long restartTime = MathUtil.hoursTo(this.autoRestartConfig.getRestartTime(), TimeUnit.MILLISECONDS);
+
         this.task = new TimerTask() {
+
             @Override
             public void run() {
                 if (!AutoRestartModule.this.serverProcess.isEnabled()) {
                     AutoRestartModule.this.logger.error("Nie można zrestartować servera gdy jest on wyłączony!");
                     return;
                 }
-                //TODO: Przekładaj restart jeśli podczas ostatniego nie było graczy na serwerze 
-               //TAKŻE dodaj boolena 'lastRestartDoned` czy jakoś tak
-                
-                if (AutoRestartModule.this.restart(true, 10)) {
-                    AutoRestartModule.this.bdsAutoEnable.getEventManager().callEvent(new ServerAlertEvent("Server jest restartowany",
-                            "Server jest restartowany tak jak co " + AutoRestartModule.this.autoRestartConfig.getRestartTime() + " godziny", LogState.INFO));
+
+                final boolean players = !AutoRestartModule.this.bdsAutoEnable.getServerManager().getOnlinePlayers().isEmpty();
+
+                if (!players && !playersOnRestart) {
+                    AutoRestartModule.this.logger.alert("Brak graczy&c....");
+                    AutoRestartModule.this.lastRestartDone = false;
+                    return;
                 }
+
+                playersOnRestart = players;
+
+                if (AutoRestartModule.this.restart(true, 10)) {
+                    AutoRestartModule.this.bdsAutoEnable.getEventManager().callEvent(new ServerAlertEvent("Server jest restartowany tak jak co " + AutoRestartModule.this.autoRestartConfig.getRestartTime() + " godziny", LogState.INFO));
+                }
+
+                AutoRestartModule.this.lastRestartDone = true;
                 AutoRestartModule.this.lastRestartMillis = System.currentTimeMillis();
             }
         };
@@ -76,7 +88,6 @@ public class AutoRestartModule {
             this.logger.debug("Automatyczny restart servera jest wyłączony");
         }
     }
-
 
     public boolean restart(final boolean alert, final int seconds) {
         return this.restart(alert, seconds, null);
@@ -156,5 +167,9 @@ public class AutoRestartModule {
 
     public long calculateMillisUntilNextRestart() {
         return Math.max(0, (MathUtil.hoursTo(this.autoRestartConfig.getRestartTime(), TimeUnit.MILLISECONDS) + 10) - (System.currentTimeMillis() - this.lastRestartMillis));
+    }
+
+    public boolean isLastRestartDone() {
+        return this.lastRestartDone;
     }
 }
