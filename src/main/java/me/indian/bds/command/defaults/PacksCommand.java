@@ -20,6 +20,7 @@ public class PacksCommand extends Command {
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (!this.commandConfig.isPacksForAll() && !isOp) {
             this.sendMessage("&cPotrzebujesz wyższych uprawnień");
+            this.deniedSound();
             return true;
         }
 

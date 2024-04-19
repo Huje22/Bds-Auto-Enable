@@ -21,6 +21,7 @@ public class SettingInfoCommand extends Command {
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (!this.commandConfig.isSettingsForAll() && !isOp) {
             this.sendMessage("&aTylko operatorzy mogą zobaczyć aktualne ustawienia servera");
+            this.deniedSound();
             return true;
         }
 

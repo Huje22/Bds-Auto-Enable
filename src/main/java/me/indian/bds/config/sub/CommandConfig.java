@@ -13,6 +13,11 @@ import eu.okaeri.configs.annotation.Header;
 public class CommandConfig extends OkaeriConfig {
 
     @Comment({""})
+    @Comment({"Dźwięk gdy gracz wykona polecenie bez permisij"})
+    @CustomKey("DeniedSound")
+    private String deniedSound = "mob.villager.no";
+
+    @Comment({""})
     @Comment({"Czy !setting ma być dla każdego"})
     @CustomKey("SettingsForAll")
     private boolean settingsForAll = true;
@@ -26,6 +31,11 @@ public class CommandConfig extends OkaeriConfig {
     @Comment({"Czy !packs ma być dla każdego"})
     @CustomKey("PacksForAll")
     private boolean packsForAll = true;
+
+
+    public String getDeniedSound() {
+        return this.deniedSound;
+    }
 
     public boolean isSettingsForAll() {
         return this.settingsForAll;

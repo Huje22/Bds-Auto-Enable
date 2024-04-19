@@ -109,6 +109,7 @@ public class CommandManager {
 
         if (player != null) {
             this.serverProcess.tellrawToPlayer(player.getPlayerName(), "&cNie znaleziono takiego polecenia");
+            this.serverProcess.playSoundToPlayer(player.getPlayerName(), "random.break");
         }
 
         return false;

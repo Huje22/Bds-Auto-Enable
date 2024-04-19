@@ -20,8 +20,9 @@ public class AlertCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        if (!isOp) {
+         if (!isOp) {
             this.sendMessage("&cPotrzebujesz wyższych uprawnień");
+            this.deniedSound();
             return true;
         }
 

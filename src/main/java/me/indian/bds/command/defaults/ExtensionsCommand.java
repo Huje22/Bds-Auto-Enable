@@ -28,6 +28,7 @@ public class ExtensionsCommand extends Command {
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (!this.commandConfig.isExtensionsForAll() && !isOp) {
             this.sendMessage("&aTylko operatorzy mogą zobaczyć aktualne rozszerzenia");
+            this.deniedSound();
             return true;
         }
 

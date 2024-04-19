@@ -26,8 +26,9 @@ public class EndCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        if (!isOp) {
+         if (!isOp) {
             this.sendMessage("&cPotrzebujesz wyższych uprawnień");
+            this.deniedSound();
             return true;
         }
 
@@ -54,6 +55,7 @@ public class EndCommand extends Command {
         final LobbyConfig lobbyConfig = this.bdsAutoEnable.getAppConfigManager().getTransferConfig().getLobbyConfig();
 
         this.serverProcess.titleToAll("&cServer zostanie zamknięty", "&bZa&a " + seconds + "&e sekund");
+        this.serverProcess.playSoundToAll("mob.wither.break_block");
 
         if (lobbyConfig.isEnable()) {
             this.serverProcess.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");

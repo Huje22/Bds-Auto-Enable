@@ -110,6 +110,8 @@ public class AutoRestartModule {
                 }
 
                 this.serverProcess.titleToAll("&cServer zostanie zrestartowany", "&bZa&a " + seconds + "&e sekund");
+                this.serverProcess.playSoundToAll("mob.wither.break_block");
+
                 this.serverProcess.tellrawToAllAndLogger(this.prefix,
                         "&aPrzygotowanie do&b restartu&a servera",
                         LogState.WARNING);

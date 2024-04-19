@@ -45,6 +45,10 @@ public abstract class Command {
         return this.position;
     }
 
+    protected void deniedSound() {
+        this.bdsAutoEnable.getServerProcess().playSoundToPlayer(this.player.getPlayerName(), this.commandConfig.getDeniedSound());
+    }
+
     public final void setPosition(final Position position) {
         this.position = position;
     }
