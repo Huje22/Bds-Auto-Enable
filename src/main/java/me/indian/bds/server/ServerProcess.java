@@ -344,6 +344,14 @@ public class ServerProcess {
         this.actionBarToPlayer("@a", message);
     }
 
+    public void playSoundToPlayer(final String playerName, final String soundName) {
+        this.sendToConsole("playsound " + soundName + " " + playerName);
+    }
+
+    public void playSoundToAll( final String soundName) {
+        this.playSoundToPlayer("@a" ,soundName);
+    }
+
     /**
      * Metoda do zatrzymania bezpiecznie servera wywoływana przez shutdown hook
      */
@@ -352,9 +360,9 @@ public class ServerProcess {
         this.setCanRun(false);
 
 
-        if(!this.appConfigManager.getTransferConfig().getLobbyConfig().isEnable()){
+        if (!this.appConfigManager.getTransferConfig().getLobbyConfig().isEnable()) {
             this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
-        } else{
+        } else {
             this.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
         }
 
@@ -468,12 +476,10 @@ public class ServerProcess {
     }
 
     private void handleExitCode(final int exitCode) {
-        switch (exitCode) {
-            case -1073740791 -> {
-                this.logger.critical("&cKod&b " + exitCode + "&c zazwyczaj występuje gdy jakiś behavior w skryptach ma&1 &nimport \".\"");
-                this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera a ty spróbuj to&l naprawić");
-                ThreadUtil.sleep(30);
-            }
+        if (exitCode == -1073740791) {
+            this.logger.critical("&cKod&b " + exitCode + "&c zazwyczaj występuje gdy jakiś behavior w skryptach ma&1 &nimport \".\"");
+            this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera a ty spróbuj to&l naprawić");
+            ThreadUtil.sleep(30);
         }
     }
 
