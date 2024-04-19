@@ -86,11 +86,11 @@ public class Settings {
         this.appConfig.setFilesPath(scannerUtil.addStringQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lPodaj ścieżkę do plików servera&r (Domyślnie: " + defaultValue + ")" + this.enter);
-                    this.logger.info("&a./&e =&b " + appDir);
+                    this.logger.info("&aAPP_DIR&e =&b " + appDir);
                 },
                 appDir,
                 (input) -> this.logger.info("Ścieżke do plików servera ustawiona na:&1 " + input)
-        ).replaceAll("./", appDir));
+        ).replaceAll("APP_DIR", appDir));
 
         this.appConfig.save();
         this.logger.print();
