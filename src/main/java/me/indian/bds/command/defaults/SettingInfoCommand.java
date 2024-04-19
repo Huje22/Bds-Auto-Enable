@@ -4,6 +4,7 @@ import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.server.properties.ServerProperties;
+import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.system.SystemUtil;
 
 public class SettingInfoCommand extends Command {
@@ -34,7 +35,19 @@ public class SettingInfoCommand extends Command {
 
         this.sendMessage("Maksymalny zasięg widoku:&b " + this.properties.getViewDistance() + "&e chunk");
         this.sendMessage("Maksymalny zasięg ticków:&b " + this.properties.getTickDistance() + "&e chunk");
-        this.sendMessage("Maksymalna ilość wątków których może użyć server:&b " + this.properties.getMaxThreads());
+
+        final int threadsCount = this.properties.getMaxThreads();
+        final int logicalThreadsCount = ThreadUtil.getLogicalThreads();
+        String threadsNote = "";
+
+        if (threadsCount != 0 && threadsCount != logicalThreadsCount) {
+            threadsNote = "&d (&bDostępne jest:&1 " + logicalThreadsCount + "&d)";
+        } else if (threadsCount == 0) {
+            threadsNote = "&d (&bPosiadasz:&1 " + logicalThreadsCount + "&d)";
+        }
+
+
+        this.sendMessage("Maksymalna ilość wątków których może użyć server:&b " + threadsCount + threadsNote);
         this.sendMessage("Maksymalny czas bycia AFK:&b " + this.properties.getPlayerIdleTimeout() + "&e minut");
 
         this.sendMessage("Autoryzacja ruchu gracza:&b " + this.properties.getServerMovementAuth().getAuthName());
