@@ -23,6 +23,7 @@ import me.indian.bds.event.player.PlayerDimensionChangeEvent;
 import me.indian.bds.event.player.PlayerInteractContainerEvent;
 import me.indian.bds.event.player.PlayerInteractEntityWithContainerEvent;
 import me.indian.bds.event.player.PlayerJoinEvent;
+import me.indian.bds.event.player.PlayerMovementEvent;
 import me.indian.bds.event.player.PlayerQuitEvent;
 import me.indian.bds.event.player.PlayerSpawnEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
@@ -89,6 +90,7 @@ public class ServerManager {
             this.playerJoin(logEntry);
             this.playerQuit(logEntry);
             this.playerSpawn(logEntry);
+            this.playerMovement(logEntry);
             this.deathMessage(logEntry);
             this.dimensionChange(logEntry);
             this.playerEntityWithContainerInteract(logEntry);
@@ -194,6 +196,27 @@ public class ServerManager {
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć respawnu gracza " + playerName);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć respawnu gracza " + playerName,
+                        "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
+                throw exception;
+            }
+        }
+    }
+
+    private void playerMovement(final String logEntry) {
+        final String patternString = "PlayerMovement:([^,]+) Position:(.+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerMovement = MessageUtil.fixPlayerName(matcher.group(1));
+            final String playerPosition = matcher.group(2);
+
+            try {
+                final PlayerStatistics playerStatistics = this.getStatsManager().getPlayer(playerMovement);
+                this.eventManager.callEvent(new PlayerMovementEvent(playerStatistics, Position.parsePosition(playerPosition)));
+            } catch (final Exception exception) {
+                this.logger.error("&cNie udało się obsłużyć ruchu gracza " + playerMovement);
+                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć ruchu gracza " + playerMovement,
                         "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
                 throw exception;
             }
