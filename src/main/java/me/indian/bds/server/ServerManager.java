@@ -536,10 +536,6 @@ public class ServerManager {
         return this.statsManager;
     }
 
-    public void clearPlayers() {
-        this.onlinePlayers.clear();
-    }
-
     public double getLastTPS() {
         return this.lastTPS;
     }

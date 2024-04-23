@@ -165,7 +165,6 @@ public class ServerProcess {
                     this.canWriteConsoleOutput = false;
                     this.pid = -1;
                     this.watchDog.getAutoRestartModule().noteRestart();
-                    this.serverManager.clearPlayers();
                     this.serverManager.getStatsManager().saveAllData();
                     this.serverManager.restartPlayersList();
                     this.handleExitCode(exitCode);
