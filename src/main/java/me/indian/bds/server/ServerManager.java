@@ -556,6 +556,19 @@ public class ServerManager {
         return this.offlinePlayers;
     }
 
+    public void restartPlayersList() {
+        if (!this.serverProcess.isEnabled()) {
+            //Jeśli server został scrashowany trzeba usunąć graczy online po restarcie
+
+            for (final String player : this.onlinePlayers) {
+                this.eventManager.callEvent(new PlayerQuitEvent(this.getStatsManager().getPlayer(player)));
+            }
+
+            this.offlinePlayers.addAll(this.onlinePlayers);
+            this.onlinePlayers.clear();
+        }
+    }
+
     public boolean isMuted(final long xuid) {
         return this.muted.contains(xuid);
     }

@@ -167,6 +167,7 @@ public class ServerProcess {
                     this.watchDog.getAutoRestartModule().noteRestart();
                     this.serverManager.clearPlayers();
                     this.serverManager.getStatsManager().saveAllData();
+                    this.serverManager.restartPlayersList();
                     this.handleExitCode(exitCode);
                     this.startProcess();
                 } catch (final Exception exception) {
