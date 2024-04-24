@@ -28,6 +28,7 @@ public class ConsoleInput {
     }
 
     private void handleCommands() {
+        //TODO: Wykonywać to przynajmniej na dwóch wątkach 
         new ThreadUtil("ConsoleInput").newThread(() -> {
             try {
                 while (this.mainScanner.hasNext()) {
