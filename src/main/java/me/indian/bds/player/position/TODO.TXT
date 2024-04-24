@@ -1,0 +1,1 @@
+Przenieść tu `Position` i `Dimension`
