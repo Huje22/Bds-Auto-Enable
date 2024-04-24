@@ -74,7 +74,7 @@ public final class StatusUtil {
         STATUS.add("Ostatnie TPS: `" + BDSAUTOENABLE.getServerManager().getLastTPS() + "`");
         STATUS.add("Pamięć RAM: `" + usedServerMemory + "` (`" + freeComputerMemory + "`)");
         if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
-            STATUS.add("Następny restart za za: `" + DateUtil.formatTime(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart(), List.of('d', 'h', 'm', 's', 'i')) + "`");
+            STATUS.add("Następny restart za: `" + DateUtil.formatTime(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart(), List.of('d', 'h', 'm', 's', 'i')) + "`");
         }
         if (APPCONFIGMANAGER.getWatchDogConfig().getBackupConfig().isEnabled()) {
             STATUS.add("Następny backup za: `" + DateUtil.formatTime(watchDog.getBackupModule().calculateMillisUntilNextBackup(), List.of('d', 'h', 'm', 's', 'i')) + "`");
