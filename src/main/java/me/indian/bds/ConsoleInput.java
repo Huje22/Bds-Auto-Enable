@@ -49,7 +49,7 @@ public class ConsoleInput {
                 this.logger.alert("Konsola zakończyła działanie");
             } catch (final Exception exception) {
                 this.logger.critical("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ");
-
+//TODO: Dodać 'ServerAlertEvent:
                 try {
                     this.serverProcess.setCanRun(false);
                     this.serverProcess.sendToConsole("stop");
