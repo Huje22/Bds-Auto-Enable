@@ -2,6 +2,8 @@ package me.indian.bds;
 
 import java.util.Scanner;
 import me.indian.bds.command.CommandManager;
+import me.indian.bds.event.server.ServerAlertEvent;
+import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
@@ -49,7 +51,9 @@ public class ConsoleInput {
                 this.logger.alert("Konsola zakończyła działanie");
             } catch (final Exception exception) {
                 this.logger.critical("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ");
-//TODO: Dodać 'ServerAlertEvent:
+                this.bdsAutoEnable.getEventManager()
+                        .callEvent(new ServerAlertEvent("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ", exception, LogState.CRITICAL));
+
                 try {
                     this.serverProcess.setCanRun(false);
                     this.serverProcess.sendToConsole("stop");
