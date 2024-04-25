@@ -1,6 +1,8 @@
 package me.indian.bds;
 
 import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.logger.LogState;
@@ -17,6 +19,7 @@ public class ConsoleInput {
     private final Logger logger;
     private final ServerProcess serverProcess;
     private final CommandManager commandManager;
+    private final ExecutorService service;
 
     public ConsoleInput(final Scanner mainScanner, final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -25,28 +28,28 @@ public class ConsoleInput {
         this.logger = bdsAutoEnable.getLogger();
         this.serverProcess = bdsAutoEnable.getServerProcess();
         this.commandManager = bdsAutoEnable.getCommandManager();
+        this.service = Executors.newFixedThreadPool(4, new ThreadUtil("ConsoleInput"));
 
-        this.handleCommands();
+        this.service.execute(this::handleCommands);
     }
 
     private void handleCommands() {
-        //TODO: Wykonywać to przynajmniej na dwóch wątkach 
-        new ThreadUtil("ConsoleInput").newThread(() -> {
             try {
+                this.logger.info("&aUruchomiono konsole");
                 while (this.mainScanner.hasNext()) {
                     final String input = this.mainScanner.nextLine();
                     final String[] args = MessageUtil.stringToArgs(input);
                     final String[] newArgs = MessageUtil.removeFirstArgs(args);
 
-                    this.logger.instantLogToFile(input);
+                    this.service.execute(() -> {
+                        this.logger.instantLogToFile(input);
 
-                    final boolean done = this.commandManager.runCommands(null, args[0], newArgs, null, true);
+                        final boolean done = this.commandManager.runCommands(null, args[0], newArgs, null, true);
 
-                    if (done) {
-                        continue;
-                    }
+                        if (done) return;
 
-                    this.serverProcess.sendToConsole(input);
+                        this.serverProcess.sendToConsole(input);
+                    });
                 }
                 this.logger.alert("Konsola zakończyła działanie");
             } catch (final Exception exception) {
@@ -65,6 +68,5 @@ public class ConsoleInput {
                 System.exit(1);
                 throw exception;
             }
-        }).start();
     }
 }
