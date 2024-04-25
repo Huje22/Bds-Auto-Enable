@@ -1,6 +1,9 @@
-package me.indian.bds.util;
+package me.indian.bds.player.position;
+
+import java.util.Arrays;
 
 public enum Dimension {
+    UNKNOWN("UNKNOWN"),
     OVERWORLD("minecraft:overworld"),
     NETHER("minecraft:nether"),
     END("minecraft:the_end");
@@ -16,11 +19,9 @@ public enum Dimension {
     }
 
     public static Dimension getByID(final String dimensionID) {
-        for (final Dimension dimension : values()) {
-            if (dimensionID.contains(dimension.dimensionID)) {
-                return dimension;
-            }
-        }
-        throw new IllegalArgumentException("Unknown dimension ID: " + dimensionID);
+        return Arrays.stream(values())
+                .filter(dimension -> dimension.getDimensionID().contains(dimensionID))
+                .findFirst()
+                .orElse(UNKNOWN);
     }
 }

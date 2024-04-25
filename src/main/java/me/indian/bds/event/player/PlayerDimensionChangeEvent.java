@@ -1,9 +1,9 @@
 package me.indian.bds.event.player;
 
 import me.indian.bds.event.Event;
-import me.indian.bds.event.Position;
+import me.indian.bds.player.position.Position;
 import me.indian.bds.player.PlayerStatistics;
-import me.indian.bds.util.Dimension;
+import me.indian.bds.player.position.Dimension;
 
 public class PlayerDimensionChangeEvent extends Event {
 

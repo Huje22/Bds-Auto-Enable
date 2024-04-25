@@ -23,7 +23,7 @@ import me.indian.bds.command.defaults.TPSCommand;
 import me.indian.bds.command.defaults.TestCommand;
 import me.indian.bds.command.defaults.TopCommand;
 import me.indian.bds.command.defaults.VersionCommand;
-import me.indian.bds.event.Position;
+import me.indian.bds.player.position.Position;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.server.ServerProcess;
