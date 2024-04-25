@@ -19,6 +19,7 @@ public final class MessageUtil {
     public static String generateCode(final int length) {
         String code = "";
         for (int i = 0; i < length; i++) {
+        //TODO: Użyć string.charAt
             code += CHARS[random.nextInt(CHARS.length)];
         }
 
