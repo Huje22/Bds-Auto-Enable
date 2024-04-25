@@ -56,6 +56,7 @@ public class EventManager {
     /**
      * Kod użyty z <a href="https://github.com/EnderHC-PL/EnderHC-Platform/blob/master/platform-eventbus/src/main/java/pl/enderhc/platform/eventbus/EventBus.java">...</a>
      * Za zgodą Neziwa
+     *
      * @param event - Event do wywołania w listenerach
      */
     public void callEvent(final Event event) {
@@ -73,7 +74,7 @@ public class EventManager {
                     try {
                         method.setAccessible(true);
                         method.invoke(listener, event);
-                        this.logger.debug("Wywołano&6 " + event.getEventName() +"&r dla&d " + listener.getClass().getName());
+                        this.logger.debug("Wywołano&6 " + event.getEventName() + "&r dla&d " + listener.getClass().getName());
                     } catch (final Throwable throwable) {
                         this.logger.error("&cWystąpił błąd podczas wywoływania eventu:&1 " + event.getEventName() + "&c w listenerze:&1 " + listener.getClass().getName(), throwable);
                     }

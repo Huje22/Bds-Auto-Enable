@@ -183,7 +183,6 @@ public class ServerProcess {
      * Metody wykonywane są z consoleOutputService aby nie obciążać jednego wątku wykonywaniem tylu akcji na raz
      */
     private void readConsoleOutput() {
-        //TODO: Ogarnąć też errorStream
         try (final Scanner consoleOutput = new Scanner(new BufferedInputStream(this.process.getInputStream()), StandardCharsets.UTF_8)/*.useDelimiter("\\A")*/) {
             try {
                 while (this.canWriteConsoleOutput) {
@@ -209,8 +208,6 @@ public class ServerProcess {
             } catch (final Exception exception) {
                 this.logger.critical("Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
                 System.exit(1);
-            } finally {
-                consoleOutput.close();
             }
         }
     }
