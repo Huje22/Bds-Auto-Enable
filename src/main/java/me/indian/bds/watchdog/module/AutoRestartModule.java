@@ -14,6 +14,7 @@ import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
 import org.jetbrains.annotations.Nullable;
@@ -106,13 +107,13 @@ public class AutoRestartModule {
                 final LobbyConfig lobbyConfig = this.bdsAutoEnable.getAppConfigManager().getTransferConfig().getLobbyConfig();
 
                 if (lobbyConfig.isEnable()) {
-                    this.serverProcess.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
+                    ServerUtil.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
                 }
 
-                this.serverProcess.titleToAll("&cServer zostanie zrestartowany", "&bZa&a " + seconds + "&e sekund");
-                this.serverProcess.playSoundToAll("mob.wither.break_block");
+                ServerUtil.titleToAll("&cServer zostanie zrestartowany", "&bZa&a " + seconds + "&e sekund");
+                ServerUtil.playSoundToAll("mob.wither.break_block");
 
-                this.serverProcess.tellrawToAllAndLogger(this.prefix,
+                ServerUtil.tellrawToAllAndLogger(this.prefix,
                         "&aPrzygotowanie do&b restartu&a servera",
                         LogState.WARNING);
                 this.watchDog.saveAndResume();
@@ -120,7 +121,7 @@ public class AutoRestartModule {
 
 
                 if (!lobbyConfig.isEnable()) {
-                    this.serverProcess.kickAllPlayers(this.prefix + " &aServer jest restartowany....");
+                    ServerUtil.kickAllPlayers(this.prefix + " &aServer jest restartowany....");
                 }
 
                 this.serverProcess.sendToConsole("stop");
@@ -136,7 +137,7 @@ public class AutoRestartModule {
                     this.serverProcess.startProcess();
                 }
             } catch (final Exception exception) {
-                this.serverProcess.tellrawToAllAndLogger(this.prefix,
+                ServerUtil.tellrawToAllAndLogger(this.prefix,
                         "Nie można zrestartować servera!", exception, LogState.ERROR);
             } finally {
                 this.restarting = false;
@@ -158,8 +159,8 @@ public class AutoRestartModule {
             if (i < 10 || i == nextSeconds) {
                 nextSeconds = MathUtil.getCorrectNumber((i - 5) , 0, seconds);
 
-                this.serverProcess.actionBarToAll("&aZa&b " + i + "&a sekund server zostanie zrestartowany!");
-                this.serverProcess.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
+                ServerUtil.actionBarToAll("&aZa&b " + i + "&a sekund server zostanie zrestartowany!");
+                ServerUtil.tellrawToAllAndLogger(AutoRestartModule.this.prefix,
                         "&aZa&b " + i + "&a sekund server zostanie zrestartowany!", LogState.INFO);
 
             }

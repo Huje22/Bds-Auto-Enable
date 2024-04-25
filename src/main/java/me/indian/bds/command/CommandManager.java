@@ -23,10 +23,11 @@ import me.indian.bds.command.defaults.TPSCommand;
 import me.indian.bds.command.defaults.TestCommand;
 import me.indian.bds.command.defaults.TopCommand;
 import me.indian.bds.command.defaults.VersionCommand;
-import me.indian.bds.player.position.Position;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.player.PlayerStatistics;
+import me.indian.bds.player.position.Position;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.ServerUtil;
 
 public class CommandManager {
 
@@ -98,7 +99,7 @@ public class CommandManager {
 
                 if (!command.onExecute(args, this.isOp(player, isOp)) && !command.getUsage().isEmpty()) {
                     if (player != null) {
-                        this.serverProcess.tellrawToPlayer(player.getPlayerName(), command.getUsage());
+                        ServerUtil.tellrawToPlayer(player.getPlayerName(), command.getUsage());
                     } else {
                         this.bdsAutoEnable.getLogger().print(command.getUsage());
                     }
@@ -108,8 +109,8 @@ public class CommandManager {
         }
 
         if (player != null) {
-            this.serverProcess.tellrawToPlayer(player.getPlayerName(), "&cNie znaleziono takiego polecenia");
-            this.serverProcess.playSoundToPlayer(player.getPlayerName(), "random.break");
+            ServerUtil.tellrawToPlayer(player.getPlayerName(), "&cNie znaleziono takiego polecenia");
+            ServerUtil.playSoundToPlayer(player.getPlayerName(), "random.break");
         }
 
         return false;

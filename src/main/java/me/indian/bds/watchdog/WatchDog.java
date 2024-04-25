@@ -5,6 +5,7 @@ import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.AutoRestartModule;
 import me.indian.bds.watchdog.module.BackupModule;
@@ -50,14 +51,13 @@ public class WatchDog {
     public void init() {
         this.backupModule.init();
         this.autoRestartModule.init();
-        this.ramMonitor.init();
     }
 
     public void saveWorld() {
         final int time = (int) MathUtil
-                .getCorrectNumber(5,(this.watchDogConfig.getBackupConfig().getLastBackupTime() / 5), 60);
+                .getCorrectNumber(5, (this.watchDogConfig.getBackupConfig().getLastBackupTime() / 5), 60);
 
-        this.serverProcess.tellrawToAllAndLogger(this.watchDogPrefix, "&aZapisywanie świata, będzie to trwało około&1 " + time + "&a sekund", LogState.INFO);
+        ServerUtil.tellrawToAllAndLogger(this.watchDogPrefix, "&aZapisywanie świata, będzie to trwało około&1 " + time + "&a sekund", LogState.INFO);
         this.serverProcess.sendToConsole("save hold");
         ThreadUtil.sleep(time);
     }

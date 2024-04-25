@@ -30,6 +30,7 @@ import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ZipUtil;
 import me.indian.bds.util.geyser.GeyserUtil;
@@ -97,6 +98,7 @@ public class BDSAutoEnable {
         this.extensionManager = new ExtensionManager(this);
         this.allowlistManager = new AllowlistManager(this);
         this.serverManager.init();
+        ServerUtil.init(this);
         GeyserUtil.init(this);
         StatusUtil.init(this);
         ZipUtil.init(this);
@@ -245,7 +247,7 @@ public class BDSAutoEnable {
         final TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                BDSAutoEnable.this.serverProcess.tellrawToAll("&bTen server używa &aBDS-Auto-Enable&3 https://github.com/Huje22/Bds-Auto-Enable");
+                ServerUtil.tellrawToAll("&bTen server używa &aBDS-Auto-Enable&3 https://github.com/Huje22/Bds-Auto-Enable");
             }
         };
 

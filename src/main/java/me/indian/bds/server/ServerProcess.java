@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -25,7 +26,7 @@ import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.system.SystemOS;
 import me.indian.bds.util.system.SystemUtil;
@@ -264,95 +265,6 @@ public class ServerProcess {
         return this.lastConsoleLine == null ? "null" : this.lastConsoleLine;
     }
 
-    public void kickAllPlayers(final String msg) {
-        if (this.serverManager.getOnlinePlayers().isEmpty()) {
-            this.logger.debug("Lista graczy jest pusta");
-            return;
-        }
-        new ArrayList<>(this.serverManager.getOnlinePlayers()).forEach(name -> this.kick(name, msg));
-    }
-
-    public void kick(final String who, final String reason) {
-        if (this.serverManager.getOnlinePlayers().isEmpty()) {
-            this.logger.debug("Lista graczy jest pusta");
-            return;
-        }
-        this.sendToConsole("kick " + who + " " + MessageUtil.colorize(reason));
-    }
-
-    public void transferPlayer(final String playerName, final String address, final int port) {
-        this.sendToConsole("transfer " + playerName + " " + address + " " + port);
-    }
-
-    public void transferPlayer(final String playerName, final String address) {
-        this.transferPlayer(playerName, address, 19132);
-    }
-
-    public void tellrawToAll(final String msg) {
-        if (this.serverManager.getOnlinePlayers().isEmpty()) {
-            this.logger.debug("Lista graczy jest pusta");
-            return;
-        }
-
-        this.tellrawToPlayer("@a", msg);
-    }
-
-    public void tellrawToPlayer(final String playerName, final String msg) {
-        if (this.serverManager.getOnlinePlayers().isEmpty()) {
-            this.logger.debug("Lista graczy jest pusta");
-            return;
-        }
-
-        final String msg2 = MessageUtil.fixMessage(msg, true).replace("\"", "\\\"");
-
-        this.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + msg2 + "\"}]}"));
-    }
-
-    public void tellrawToAllAndLogger(final String prefix, final String msg, final LogState logState) {
-        this.tellrawToAllAndLogger(prefix, msg, null, logState);
-    }
-
-    public void tellrawToAllAndLogger(final String prefix, final String msg, final Throwable throwable, final LogState logState) {
-        this.logger.logByState("[To Minecraft] " + msg, throwable, logState);
-        if (!this.serverManager.getOnlinePlayers().isEmpty()) this.tellrawToAll(prefix + " " + msg);
-    }
-
-    public void titleToPlayer(final String playerName, final String message) {
-        if (this.serverManager.getOnlinePlayers().isEmpty()) return;
-        this.sendToConsole("title " + playerName + " title " + MessageUtil.colorize(message));
-    }
-
-    public void titleToPlayer(final String playerName, final String message, final String subTitle) {
-        if (this.serverManager.getOnlinePlayers().isEmpty()) return;
-        this.sendToConsole("title " + playerName + " subtitle " + MessageUtil.colorize(subTitle));
-        this.titleToPlayer(playerName, message);
-    }
-
-    public void titleToAll(final String message) {
-        this.titleToPlayer("@a", message);
-    }
-
-    public void titleToAll(final String message, final String subTitle) {
-        this.titleToPlayer("@a", message, subTitle);
-    }
-
-    public void actionBarToPlayer(final String playerName, final String message) {
-        if (this.serverManager.getOnlinePlayers().isEmpty()) return;
-        this.sendToConsole("title " + playerName + " actionbar " + MessageUtil.colorize(message));
-    }
-
-    public void actionBarToAll(final String message) {
-        this.actionBarToPlayer("@a", message);
-    }
-
-    public void playSoundToPlayer(final String playerName, final String soundName) {
-        this.sendToConsole("playsound " + soundName + " " + playerName);
-    }
-
-    public void playSoundToAll( final String soundName) {
-        this.playSoundToPlayer("@a" ,soundName);
-    }
-
     /**
      * Metoda do zatrzymania bezpiecznie servera wywoływana przez shutdown hook
      */
@@ -360,11 +272,10 @@ public class ServerProcess {
         this.logger.alert("Wyłączanie...");
         this.setCanRun(false);
 
-
         if (!this.appConfigManager.getTransferConfig().getLobbyConfig().isEnable()) {
-            this.kickAllPlayers(this.prefix + "&cServer jest zamykany");
+            ServerUtil.kickAllPlayers(this.prefix + "&cServer jest zamykany");
         } else {
-            this.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
+            ServerUtil.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
         }
 
         ThreadUtil.sleep(3);
@@ -383,14 +294,6 @@ public class ServerProcess {
                 this.logger.critical("&4Nie udało się zamknąć procesu servera ,zrób to ręcznie!");
             }
         }
-
-//        this.logger.info("Zapisywanie configu...");
-//        try {
-//            this.appConfigManager.save();
-//            this.logger.info("Zapisano config");
-//        } catch (final Exception exception) {
-//            this.logger.critical("Nie można zapisać configu", exception);
-//        }
 
         this.bdsAutoEnable.getExtensionManager().disableExtensions();
 
@@ -449,27 +352,26 @@ public class ServerProcess {
     private void someChangesForCommands(final String command) {
         if (command.equalsIgnoreCase("stop")) {
             if (!this.isEnabled()) return;
-            this.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
+            ServerUtil.tellrawToAllAndLogger(this.prefix, "&4Zamykanie servera...", LogState.ALERT);
 
             final LobbyConfig lobbyConfig = this.appConfigManager.getTransferConfig().getLobbyConfig();
             if (lobbyConfig.isEnable()) {
                 final String address = lobbyConfig.getAddress();
                 final int port = lobbyConfig.getPort();
-
                 final BedrockQuery query = BedrockQuery.create(address, port);
 
                 for (final String player : new ArrayList<>(this.serverManager.getOnlinePlayers())) {
                     if (query.online()) {
-                        this.tellrawToPlayer(player, lobbyConfig.getTransferringMessage());
+                        ServerUtil.tellrawToPlayer(player, lobbyConfig.getTransferringMessage());
                         ThreadUtil.sleep(1);
-                        this.transferPlayer(player, address, port);
+                        ServerUtil.transferPlayer(player, address, port);
                     } else {
-                        this.kickAllPlayers(lobbyConfig.getServerOffline());
+                        ServerUtil.kickAllPlayers(lobbyConfig.getServerOffline());
                         break;
                     }
                 }
             } else {
-                this.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
+                ServerUtil.kickAllPlayers(this.prefix + "&cKtoś wykonał&a stop &c w konsoli servera , co skutkuje  restartem");
             }
 
             if (!Thread.currentThread().isInterrupted()) ThreadUtil.sleep(2);
@@ -484,27 +386,21 @@ public class ServerProcess {
         }
     }
 
-    private boolean containsNotAllowedToFileLog(final String msg) {
-        for (final String noAllowed : this.appConfigManager.getLogConfig().getNoFile()) {
-            if (msg.toLowerCase().contains(noAllowed.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
+    private boolean containsNotAllowedToFileLog(final String message) {
+        return this.contains(message, this.appConfigManager.getLogConfig().getNoFile());
     }
 
-    private boolean containsNotAllowedToConsoleLog(final String msg) {
-        for (final String noAllowed : this.appConfigManager.getLogConfig().getNoConsole()) {
-            if (msg.toLowerCase().contains(noAllowed.toLowerCase())) {
-                return true;
-            }
-        }
-        return false;
+    private boolean containsNotAllowedToConsoleLog(final String message) {
+        return this.contains(message, this.appConfigManager.getLogConfig().getNoConsole());
     }
 
-    private boolean containsAllowedToAlert(final String msg) {
-        for (final String allowedForAlert : this.appConfigManager.getLogConfig().getAlertOn()) {
-            if (msg.toLowerCase().contains(allowedForAlert.toLowerCase())) {
+    private boolean containsAllowedToAlert(final String message) {
+        return this.contains(message, this.appConfigManager.getLogConfig().getAlertOn());
+    }
+
+    private boolean contains(final String message, final List<String> list) {
+        for (final String element : list) {
+            if (message.toLowerCase().contains(element.toLowerCase())) {
                 return true;
             }
         }

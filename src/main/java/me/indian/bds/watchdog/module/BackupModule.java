@@ -28,6 +28,7 @@ import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.util.ZipUtil;
@@ -124,7 +125,7 @@ public class BackupModule {
         if (!this.worldFile.exists()) return;
         final long gb = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
         if (gb < MathUtil.bytesToGB(FileUtil.getFolderSize(this.worldFile)) + 1) {
-            this.serverProcess.tellrawToAllAndLogger(this.prefix,
+            ServerUtil.tellrawToAllAndLogger(this.prefix,
                     "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!",
                     LogState.WARNING);
             return;
@@ -142,16 +143,16 @@ public class BackupModule {
             try {
                 this.watchDog.saveWorld();
                 final double lastBackUpTime = this.watchDogConfig.getBackupConfig().getLastBackupTime();
-                this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aTworzenie kopij zapasowej ostatnio trwało to&b " + lastBackUpTime + "&a sekund", LogState.INFO);
+                ServerUtil.tellrawToAllAndLogger(this.prefix, "&aTworzenie kopij zapasowej ostatnio trwało to&b " + lastBackUpTime + "&a sekund", LogState.INFO);
                 this.status = "Tworzenie backupa...";
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 final double backUpTime = ((System.currentTimeMillis() - startTime) / 1000.0);
                 this.watchDogConfig.getBackupConfig().setLastBackupTime(backUpTime);
                 this.loadAvailableBackups();
-                this.serverProcess.tellrawToAllAndLogger(this.prefix,
+                ServerUtil.tellrawToAllAndLogger(this.prefix,
                         "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona " + this.getBackupSize(backup, false),
                         LogState.INFO);
-                this.serverProcess.tellrawToAllAndLogger(this.prefix,
+                ServerUtil.tellrawToAllAndLogger(this.prefix,
                         "&aDostępne jest&d " + this.backups.size() + "&a kopi zapasowych",
                         LogState.INFO);
 
@@ -159,11 +160,11 @@ public class BackupModule {
                 this.bdsAutoEnable.getEventManager().callEvent(new BackupDoneEvent());
             } catch (final Exception exception) {
                 this.status = "Nie udało sie utworzyć kopij zapasowej";
-                this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4" + this.status, exception, LogState.CRITICAL);
+                ServerUtil.tellrawToAllAndLogger(this.prefix, "&4" + this.status, exception, LogState.CRITICAL);
                 if (backup.delete()) {
-                    this.serverProcess.tellrawToAllAndLogger(this.prefix, "&aUsunięto błędny backup", LogState.INFO);
+                    ServerUtil.tellrawToAllAndLogger(this.prefix, "&aUsunięto błędny backup", LogState.INFO);
                 } else {
-                    this.serverProcess.tellrawToAllAndLogger(this.prefix, "&4Nie można usunąć błędnego backupa", LogState.ERROR);
+                    ServerUtil.tellrawToAllAndLogger(this.prefix, "&4Nie można usunąć błędnego backupa", LogState.ERROR);
                 }
                 this.bdsAutoEnable.getEventManager().callEvent(new BackupFailEvent(exception));
             } finally {

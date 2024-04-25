@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.transfer.MainServerConfig;
 import me.indian.bds.event.EventManager;
-import me.indian.bds.player.position.Position;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerChatEvent;
@@ -33,11 +32,13 @@ import me.indian.bds.event.server.TPSChangeEvent;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.player.PlayerStatistics;
+import me.indian.bds.player.position.Dimension;
+import me.indian.bds.player.position.Position;
 import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DateUtil;
-import me.indian.bds.player.position.Dimension;
 import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.module.pack.PackModule;
@@ -250,10 +251,10 @@ public class ServerManager {
                     }
 
                     if (muted) {
-                        this.serverProcess.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
+                        ServerUtil.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
                         return;
                     }
-                    this.serverProcess.tellrawToAll(format);
+                    ServerUtil.tellrawToAll(format);
                 }
             } catch (final Exception exception) {
                 this.logger.error("&cWystąpił błąd podczas próby przetworzenia wiadomości gracza&c " + playerChat);
@@ -516,14 +517,14 @@ public class ServerManager {
 
             final BedrockQuery query = BedrockQuery.create(ip, port);
             if (query.online()) {
-                this.serverProcess.transferPlayer(playerName, ip, port);
+                ServerUtil.transferPlayer(playerName, ip, port);
                 additionalMessage = "Spróbujemy go przetransferować ponownie na server";
             } else {
-                this.serverProcess.kick(playerName, "Nie udało się obsłużyć nam twojego dołączenia");
+                ServerUtil.kick(playerName, "Nie udało się obsłużyć nam twojego dołączenia");
                 additionalMessage = "Wyrzuciliśmy go";
             }
         } else {
-            this.serverProcess.kick(playerName, "Nie udało się obsłużyć nam twojego dołączenia");
+            ServerUtil.kick(playerName, "Nie udało się obsłużyć nam twojego dołączenia");
             additionalMessage = "Wyrzuciliśmy go";
         }
 

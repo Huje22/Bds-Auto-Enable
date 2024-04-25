@@ -11,6 +11,7 @@ import me.indian.bds.player.position.Position;
 import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ServerUtil;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Command {
@@ -46,7 +47,7 @@ public abstract class Command {
     }
 
     protected void deniedSound() {
-        this.bdsAutoEnable.getServerProcess().playSoundToPlayer(this.player.getPlayerName(), this.commandConfig.getDeniedSound());
+        ServerUtil.playSoundToPlayer(this.player.getPlayerName(), this.commandConfig.getDeniedSound());
     }
 
     public final void setPosition(final Position position) {
@@ -99,7 +100,7 @@ public abstract class Command {
     protected final void sendMessage(final String message) {
         final ServerProcess serverProcess = this.bdsAutoEnable.getServerProcess();
         if (this.player != null) {
-            serverProcess.tellrawToPlayer(this.player.getPlayerName(), message);
+            ServerUtil.tellrawToPlayer(this.player.getPlayerName(), message);
         } else {
             this.bdsAutoEnable.getLogger().print(message);
         }

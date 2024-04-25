@@ -1,18 +1,17 @@
 package me.indian.bds.watchdog.monitor;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.sub.watchdog.RamMonitorConfig;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.StatusUtil;
-import me.indian.bds.watchdog.WatchDog;
-
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.util.Timer;
 import java.util.TimerTask;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.sub.watchdog.RamMonitorConfig;
+import me.indian.bds.logger.LogState;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ServerUtil;
+import me.indian.bds.util.StatusUtil;
+import me.indian.bds.watchdog.WatchDog;
 
 public class RamMonitor {
 
@@ -21,7 +20,6 @@ public class RamMonitor {
     private final Logger logger;
     private final String prefix;
     private final RamMonitorConfig ramMonitorConfig;
-    private ServerProcess serverProcess;
     private boolean running;
 
     public RamMonitor(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
@@ -34,10 +32,6 @@ public class RamMonitor {
 
     }
 
-    public void init() {
-        this.serverProcess = this.bdsAutoEnable.getServerProcess();
-    }
-
     public void monitRamUsage() {
         if (this.running) return;
         this.running = true;
@@ -47,10 +41,10 @@ public class RamMonitor {
                 final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
                 final long freeMem = MathUtil.bytesToMB(heapMemoryUsage.getMax() - heapMemoryUsage.getUsed());
                 if (MathUtil.bytesToMB(heapMemoryUsage.getUsed()) >= ((long) (MathUtil.bytesToMB(heapMemoryUsage.getMax()) * 0.80))) {
-                    RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                    ServerUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
                             "&cAplikacja używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!" + "&d(&c Wolne:&b " + freeMem + " &aMB&d )",
                             LogState.CRITICAL);
-                    RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                   ServerUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
                             "&cWiększe użycje może to prowadzić do crashy aplikacji a w tym servera&4!!",
                             LogState.CRITICAL);
                 }
@@ -68,10 +62,10 @@ public class RamMonitor {
                 final String maxComputerMemory = "&eCałkowite:&a " + MathUtil.bytesToGB(computerRam) + "&b GB&a " + MathUtil.getMbFromBytesGb(computerRam) + "&b MB";
 
                 if (computerFreeRamGb < 1) {
-                    RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                    ServerUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
                             "&cMaszyna posiada mniej niż&b 1GB&c wolej pamięci ram!",
                             LogState.ALERT);
-                    RamMonitor.this.serverProcess.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                    ServerUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
                             freeComputerMemory + " / " + maxComputerMemory,
                             LogState.ALERT);
                 }

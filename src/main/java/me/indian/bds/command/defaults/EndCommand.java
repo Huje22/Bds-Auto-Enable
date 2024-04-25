@@ -6,6 +6,7 @@ import me.indian.bds.config.sub.transfer.LobbyConfig;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.ThreadUtil;
 
 public class EndCommand extends Command {
@@ -54,11 +55,11 @@ public class EndCommand extends Command {
 
         final LobbyConfig lobbyConfig = this.bdsAutoEnable.getAppConfigManager().getTransferConfig().getLobbyConfig();
 
-        this.serverProcess.titleToAll("&cServer zostanie zamknięty", "&bZa&a " + seconds + "&e sekund");
-        this.serverProcess.playSoundToAll("mob.wither.break_block");
+        ServerUtil.titleToAll("&cServer zostanie zamknięty", "&bZa&a " + seconds + "&e sekund");
+        ServerUtil.playSoundToAll("mob.wither.break_block");
 
         if (lobbyConfig.isEnable()) {
-            this.serverProcess.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
+            ServerUtil.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
         }
 
         this.canStop = false;
@@ -68,15 +69,15 @@ public class EndCommand extends Command {
         for (int i = seconds; i >= 1; i--) {
             if (i < 10 || i == nextSeconds) {
                 nextSeconds = MathUtil.getCorrectNumber((i - 5), 0, seconds);
-                this.serverProcess.actionBarToAll("&aZa&b " + i + "&a sekund server zostanie zamknięty!");
-                this.serverProcess.tellrawToAllAndLogger("",
+                ServerUtil.actionBarToAll("&aZa&b " + i + "&a sekund server zostanie zamknięty!");
+                ServerUtil.tellrawToAllAndLogger("",
                         "&aZa&b " + i + "&a sekund server zostanie zamknięty!", LogState.INFO);
             }
             ThreadUtil.sleep(1);
         }
 
         if (!lobbyConfig.isEnable()) {
-            this.serverProcess.kickAllPlayers("&cServer jest wyłączany");
+            ServerUtil.kickAllPlayers("&cServer jest wyłączany");
         }
 
         this.serverProcess.sendToConsole("stop");

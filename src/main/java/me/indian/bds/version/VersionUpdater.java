@@ -12,6 +12,7 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.MathUtil;
+import me.indian.bds.util.ServerUtil;
 
 public class VersionUpdater {
 
@@ -51,12 +52,12 @@ public class VersionUpdater {
                 final String latest = VersionUpdater.this.bdsAutoEnable.getVersionManager().getLatestVersion();
 
                 if (!current.equals(latest) && !latest.equals("")) {
-                    VersionUpdater.this.serverProcess.tellrawToAllAndLogger(VersionUpdater.this.prefix,
+                    ServerUtil.tellrawToAllAndLogger(VersionUpdater.this.prefix,
                             "&aDostępna jest nowa wersja, aktualna to&b " + current + " &a najnowsza to&b " + latest,
                             LogState.INFO);
 
                     if (VersionUpdater.this.versionManagerConfig.isAutoUpdate()) {
-                        VersionUpdater.this.serverProcess.tellrawToAllAndLogger(VersionUpdater.this.prefix,
+                        ServerUtil.tellrawToAllAndLogger(VersionUpdater.this.prefix,
                                 "&aWłączona jest&b Auto Aktualizacja&a po pobraniu najnowszej wersji zostaniecie wyrzuceni a server zmieni wersje!",
                                 LogState.ALERT);
                         VersionUpdater.this.updateToLatest();
@@ -82,7 +83,7 @@ public class VersionUpdater {
                 this.versionManager.downloadServerFiles(version);
             }
 
-            this.serverProcess.tellrawToAllAndLogger(
+            ServerUtil.tellrawToAllAndLogger(
                     this.prefix,
                     "&aWersja &1" + version + "&a będzie właśnie ładowana!",
                     LogState.ALERT
@@ -90,7 +91,7 @@ public class VersionUpdater {
             this.serverProcess.setCanRun(false);
 
             if (this.serverProcess.isEnabled()) {
-                this.serverProcess.kickAllPlayers(this.prefix + " &aAktualizowanie servera....");
+                ServerUtil.kickAllPlayers(this.prefix + " &aAktualizowanie servera....");
                 this.serverProcess.sendToConsole("stop");
                 this.serverProcess.waitFor();
             }

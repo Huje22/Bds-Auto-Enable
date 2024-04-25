@@ -5,6 +5,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.ServerUtil;
 
 public class AlertCommand extends Command {
 
@@ -28,7 +29,7 @@ public class AlertCommand extends Command {
 
         if (args.length > 0) {
             for (final String newArg : MessageUtil.buildMessageFromArgs(args).split("-")) {
-                this.serverProcess.tellrawToAll(newArg);
+                ServerUtil.tellrawToAll(newArg);
             }
 
             return true;
