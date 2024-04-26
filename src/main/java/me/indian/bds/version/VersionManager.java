@@ -2,11 +2,8 @@ package me.indian.bds.version;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.nio.file.DirectoryStream;
@@ -18,6 +15,7 @@ import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
+import me.indian.bds.exception.DownloadException;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.properties.ServerProperties;
@@ -140,49 +138,12 @@ public class VersionManager {
     }
 
     public void downloadServerFiles(final String version) {
-        final Request request = new Request.Builder()
-                .url(this.getServerDownloadUrl(version))
-                .get()
-                .build();
-
-        try (final Response response = this.client.newCall(request).execute()) {
-            final long startTime = System.currentTimeMillis();
-            final int responseCode = response.code();
-
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                this.logger.info("Pobieranie wersji: &1" + version);
-                final long fileSize = response.body().contentLength();
-
-                try (final InputStream inputStream = new BufferedInputStream(response.body().byteStream())) {
-                    try (final FileOutputStream outputStream = new FileOutputStream(this.versionFolder.getPath() + File.separator + version + ".zip")) {
-
-                        final byte[] buffer = new byte[1024];
-                        int bytesRead;
-                        long totalBytesRead = 0;
-
-                        int tempProgres = -1;
-                        while ((bytesRead = inputStream.read(buffer)) != -1) {
-                            outputStream.write(buffer, 0, bytesRead);
-                            totalBytesRead += bytesRead;
-                            final int progress = Math.toIntExact((totalBytesRead * 100) / fileSize);
-
-                            if (progress != tempProgres) {
-                                tempProgres = progress;
-                                this.logger.info("Pobrano w:&b " + progress + "&a%");
-                            }
-                        }
-                    }
-                }
-
-                this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
-                this.loadVersionsInfo();
-            } else {
-                this.logger.error("Kod odpowiedzi strony: " + responseCode);
-                this.logger.error("Prawdopodobnie nie ma takiej wersji jak: " + version);
-                System.exit(1);
-            }
-        } catch (final IOException ioException) {
-            this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version, ioException);
+        try {
+            this.logger.info("Pobieranie wersji: &1" + version);
+            HTTPUtil.download(this.getServerDownloadUrl(version), Path.of(this.versionFolder.getPath() + File.separator + version + ".zip"), this.logger);
+            this.logger.info("Pobrano wersje: &1" + version);
+        } catch (final IOException | DownloadException exception) {
+            this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version, exception);
         }
     }
 
