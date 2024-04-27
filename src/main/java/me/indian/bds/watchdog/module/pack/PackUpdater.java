@@ -2,12 +2,8 @@ package me.indian.bds.watchdog.module.pack;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -45,55 +41,13 @@ public class PackUpdater {
     public void downloadPack() {
         try {
             final long startTime = System.currentTimeMillis();
-            final Request request = new Request.Builder()
-                    .url("https://github.com/Huje22/BDS-Auto-Enable-Management-Pack/archive/main.zip")
-                    .get()
-                    .build();
-
-            try (final Response response = HTTPUtil.getOkHttpClient().newCall(request).execute()) {
-                final int responseCode = response.code();
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-
-                    this.logger.info("Pobieranie Paczki");
-                    final long fileSize = response.body().contentLength();
-                    final String zipPatch = this.packModule.getPackFile().getPath() + ".zip";
-
-                    try (final InputStream inputStream = new BufferedInputStream(response.body().byteStream())) {
-                        try (final FileOutputStream outputStream = new FileOutputStream(zipPatch)) {
-
-                            if (fileSize <= 0) {
-                                this.logger.error("Nie można odczytać prawidłowego rozmiaru pliku.");
-                            }
-
-                            final byte[] buffer = new byte[1024];
-                            int bytesRead;
-                            long totalBytesRead = 0;
-
-                            int tempProgres = -1;
-                            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                                outputStream.write(buffer, 0, bytesRead);
-                                totalBytesRead += bytesRead;
-                                final int progress = Math.toIntExact((totalBytesRead * 100) / fileSize);
-
-                                if (progress != tempProgres) {
-                                    if (fileSize <= 0) {
-                                        continue;
-                                    }
-                                    tempProgres = progress;
-                                    this.logger.info("Pobrano w:&b " + progress + "&a%");
-                                }
-                            }
-                        }
-                    }
-                    this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
-                    ZipUtil.unzipFile(zipPatch, this.behaviorsFolder.getPath(), true);
-                } else {
-                    this.logger.error("Kod odpowiedzi strony:&b " + responseCode);
-                    System.exit(responseCode);
-                }
-            }
-        } catch (final Exception ioException) {
-            this.logger.error("Nie można pobrać paczki ", ioException);
+            this.logger.info("Pobieranie Paczki");
+            final String zipPath = this.packModule.getPackFile().getPath() + ".zip";
+            HTTPUtil.download("https://github.com/Huje22/BDS-Auto-Enable-Management-Pack/archive/main.zip", zipPath, this.logger);
+            this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
+            ZipUtil.unzipFile(zipPath, this.behaviorsFolder.getPath(), true);
+        } catch (final Exception exception) {
+            this.logger.error("Nie można pobrać paczki ", exception);
         }
     }
 
