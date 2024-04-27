@@ -119,6 +119,7 @@ public class AutoRestartModule {
                 this.watchDog.saveAndResume();
                 if (alert) this.restartAlert(seconds);
 
+                ServerUtil.playSoundToAll("mob.wither.death");
 
                 if (!lobbyConfig.isEnable()) {
                     ServerUtil.kickAllPlayers(this.prefix + " &aServer jest restartowany....");

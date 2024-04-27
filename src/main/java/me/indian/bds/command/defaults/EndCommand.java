@@ -76,6 +76,8 @@ public class EndCommand extends Command {
             ThreadUtil.sleep(1);
         }
 
+        ServerUtil.playSoundToAll("mob.wither.death");
+
         if (!lobbyConfig.isEnable()) {
             ServerUtil.kickAllPlayers("&cServer jest wyłączany");
         }
