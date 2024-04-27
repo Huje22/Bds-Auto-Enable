@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.nio.file.Path;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.exception.DownloadException;
 import me.indian.bds.logger.Logger;
@@ -63,8 +62,8 @@ public final class HTTPUtil {
         return LAST_KNOWN_IP;
     }
 
-    public static void download(final String url, final Path path, final Logger logger) throws IOException, DownloadException {
-        final File file = new File(path.toString());
+    public static void download(final String url, final String path ,final Logger logger) throws IOException, DownloadException {
+        final File file = new File(path);
         final Request request = new Request.Builder().url(url).get().build();
 
         try (final Response response = OK_HTTP_CLIENT.newCall(request).execute()) {

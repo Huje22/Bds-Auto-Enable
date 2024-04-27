@@ -140,7 +140,7 @@ public class VersionManager {
     public void downloadServerFiles(final String version) {
         try {
             this.logger.info("Pobieranie wersji: &1" + version);
-            HTTPUtil.download(this.getServerDownloadUrl(version), Path.of(this.versionFolder.getPath() + File.separator + version + ".zip"), this.logger);
+            HTTPUtil.download(this.getServerDownloadUrl(version),this.versionFolder.getPath() + File.separator + version + ".zip", this.logger);
             this.logger.info("Pobrano wersje: &1" + version);
         } catch (final IOException | DownloadException exception) {
             this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version, exception);
