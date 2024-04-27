@@ -106,7 +106,7 @@ public final class HTTPUtil {
                     }
                 }
             } else {
-                throw new DownloadException("Nie można pobrać wersji ponieważ" ,responseCode);
+                throw new DownloadException(responseCode);
             }
         }
     }

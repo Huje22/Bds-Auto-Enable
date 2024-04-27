@@ -4,8 +4,8 @@ import java.net.HttpURLConnection;
 
 public class DownloadException extends Exception {
 
-    public DownloadException(final String message, final int code) {
-        super(message + getCodeMessage(code));
+    public DownloadException(final int code) {
+        super("Nie można pobrać wersji ponieważ: " + getCodeMessage(code));
     }
 
     private static String getCodeMessage(final int responseCode) {
