@@ -240,7 +240,7 @@ public class ServerProcess {
             this.eventManager.callEventWithResponse(new ServerConsoleCommandEvent(command));
             this.logger.debug("Wysłano &b" + command.replaceAll("\n", "\\\\n"));
         } catch (final Exception exception) {
-            this.logger.error("Wystąpił błąd podczas próby wysłania polecenia do konsoli", exception);
+            this.logger.error("Wystąpił błąd podczas próby wysłania polecenia (" + command + ") do konsoli", exception);
         }
     }
 
