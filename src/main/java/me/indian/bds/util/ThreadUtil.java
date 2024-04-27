@@ -80,6 +80,14 @@ public final class ThreadUtil implements ThreadFactory {
         return thread;
     }
 
+    public String getThreadName() {
+        return this.threadName;
+    }
+
+    public boolean isDaemon() {
+        return this.daemon;
+    }
+
     private String generateThreadName() {
         this.threadCount++;
         return this.threadName.replace("%b", String.valueOf(this.threadCount));
