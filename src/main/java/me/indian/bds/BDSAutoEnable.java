@@ -30,6 +30,7 @@ import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.PlayerStatsUtil;
 import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.util.ZipUtil;
@@ -102,6 +103,7 @@ public class BDSAutoEnable {
         GeyserUtil.init(this);
         StatusUtil.init(this);
         ZipUtil.init(this);
+        PlayerStatsUtil.init(this);
 
         this.init();
     }
