@@ -8,7 +8,7 @@ public record Position(double x, double y, double z, Dimension dimension) {
 
     @Nullable
     public static Position parsePosition(final String positionString) {
-        final Pattern pattern = Pattern.compile("X:(.+) Y:(.+) Z:(.+) Dimension(.+)");
+        final Pattern pattern = Pattern.compile("X:(.+) Y:(.+) Z:(.+) Dimension:(.+)");
         final Matcher matcher = pattern.matcher(positionString);
 
         if (matcher.find()) {
