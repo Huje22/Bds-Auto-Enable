@@ -76,6 +76,8 @@ public class EndCommand extends Command {
             ThreadUtil.sleep(1);
         }
 
+//TODO: Zapisać świat dopiero po zakończeniu odliczania tu i w restarcje!
+        
         ServerUtil.playSoundToAll("mob.wither.death");
 
         if (!lobbyConfig.isEnable()) {
