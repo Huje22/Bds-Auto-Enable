@@ -245,7 +245,6 @@ public class BackupModule {
     }
 
     public long calculateMillisUntilNextBackup() {
-        //TODO: Zobaczyc czemu to nie działa 
         return Math.max(0, MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS) - (System.currentTimeMillis() - this.lastBackupMillis));
     }
 
