@@ -94,6 +94,17 @@ public final class StatusUtil {
         return STATUS;
     }
 
+    public static String getShortStatus() {
+        String shortStatus = "";
+
+
+        shortStatus += BDSAUTOENABLE.getProjectVersion() + " ";
+        shortStatus += BDSAUTOENABLE.getServerManager().getOnlinePlayers().size() + "/" + BDSAUTOENABLE.getServerProperties().getMaxPlayers() + " ";
+        shortStatus += Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + " ";
+
+        return shortStatus;
+    }
+
     public static long availableDiskSpace() {
         return (FILE.exists() ? FILE.getUsableSpace() : 0);
     }

@@ -267,6 +267,7 @@ public class ServerProcess {
      */
     public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
+        this.bdsAutoEnable.setAppWindowName("Wyłączanie...");
         this.setCanRun(false);
 
         if (!this.appConfigManager.getTransferConfig().getLobbyConfig().isEnable()) {

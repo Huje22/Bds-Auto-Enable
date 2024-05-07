@@ -2,6 +2,7 @@ package me.indian.bds;
 
 import eu.okaeri.configs.exception.InitializationException;
 import java.io.File;
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.time.ZoneId;
 import java.util.List;
@@ -113,6 +114,7 @@ public class BDSAutoEnable {
     }
 
     public void init() {
+        this.setAppWindowName("Inicjalizowanie.....");
         new ShutdownHandler(this);
         this.settings.loadSettings(this.mainScanner);
         this.packManager = new PackManager(this);
@@ -132,7 +134,9 @@ public class BDSAutoEnable {
 
         this.extensionManager.enableExtensions();
         this.serverProcess.startProcess();
+        this.setAppWindowName("Zainicjowano");
         this.runAutoPromotion();
+        this.setAppName();
     }
 
     private void isJavaVersionLessThan17() {
@@ -255,6 +259,31 @@ public class BDSAutoEnable {
 
         new Timer("AutoPromotion", true)
                 .scheduleAtFixedRate(timerTask, 0, MathUtil.minutesTo(10, TimeUnit.MILLISECONDS));
+    }
+
+    public void setAppWindowName(final String name) {
+        try {
+            switch (SystemUtil.getSystem()) {
+                case WINDOWS ->
+                        new ProcessBuilder("cmd.exe", "/c", "title", name.replaceAll("\"", "")).inheritIO().start().waitFor();
+                case LINUX ->
+                        new ProcessBuilder("bash", "-c", "printf '\\033]0;%s\\007' \"" + name.replaceAll("\"", "") + "\"").inheritIO().start().waitFor();
+            }
+        } catch (final IOException | InterruptedException exception) {
+            this.logger.debug("&cNie udało się zmienić nazwy okna na:&d \"&1" + name + "&d\"", exception);
+        }
+    }
+
+    private void setAppName() {
+        final long seconds = MathUtil.secondToMillis(1);
+        final TimerTask timerTask = new TimerTask() {
+            @Override
+            public void run() {
+                BDSAutoEnable.this.setAppWindowName(StatusUtil.getShortStatus());
+            }
+        };
+
+        new Timer("Console Name Changer", true).scheduleAtFixedRate(timerTask, seconds, seconds);
     }
 
     public long getStartTime() {
