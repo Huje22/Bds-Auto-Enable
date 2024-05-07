@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfig;
+import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.exception.DownloadException;
 import me.indian.bds.logger.Logger;
@@ -35,6 +36,7 @@ public class VersionManager {
     private final BDSAutoEnable bdsAutoEnable;
     private final OkHttpClient client;
     private final Logger logger;
+    private final AppConfigManager appConfigManager;
     private final AppConfig appConfig;
     private final VersionManagerConfig versionManagerConfig;
     private final List<String> importantFiles;
@@ -51,8 +53,9 @@ public class VersionManager {
         this.bdsAutoEnable = bdsAutoEnable;
         this.client = HTTPUtil.getOkHttpClient();
         this.logger = this.bdsAutoEnable.getLogger();
-        this.appConfig = this.bdsAutoEnable.getAppConfigManager().getAppConfig();
-        this.versionManagerConfig = this.bdsAutoEnable.getAppConfigManager().getVersionManagerConfig();
+        this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
+        this.appConfig = this.appConfigManager.getAppConfig();
+        this.versionManagerConfig = this.appConfigManager.getVersionManagerConfig();
         this.importantFiles = new ArrayList<>();
         this.versionFolder = new File(DefaultsVariables.getAppDir() + "versions");
         this.availableVersions = new ArrayList<>();
@@ -121,7 +124,7 @@ public class VersionManager {
             ZipUtil.unzipFile(verFile.getAbsolutePath(), this.appConfig.getFilesPath(), false, this.importantFiles);
             this.setLoaded(true);
             this.versionManagerConfig.setVersion(version);
-            this.versionManagerConfig.save();
+            this.appConfigManager.save();
             this.logger.info("Załadowano wersie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final Exception exception) {
             this.logger.critical("Nie można załadować wersji:&1 " + version, exception);
@@ -239,7 +242,7 @@ public class VersionManager {
 
     public void setLoaded(final boolean loaded) {
         this.versionManagerConfig.setLoaded(loaded);
-        this.versionManagerConfig.save();
+        this.appConfigManager.save();
     }
 
     public String getLoadedVersion() {
@@ -249,7 +252,7 @@ public class VersionManager {
     public void setLoadedVersion(final String version) {
         if (DefaultsVariables.isLeviLamina()) return;
         this.versionManagerConfig.setVersion(version);
-        this.versionManagerConfig.save();
+        this.appConfigManager.save();
     }
 
     public int getLastKnownProtocol() {
