@@ -455,7 +455,7 @@ public class ServerManager {
             this.lastTPS = 20;
             this.eventManager.callEvent(new TPSChangeEvent(this.lastTPS, this.lastTPS));
             this.eventManager.callEvent(new ServerStartEvent());
-            this.logger.info("&eUruchomiono server w:&b " + DateUtil.formatTime(System.currentTimeMillis() - this.serverProcess.getStartTime(), List.of('s', 'i'), true));
+            this.logger.info("&eUruchomiono server w:&b " + DateUtil.formatTimeDynamic(System.currentTimeMillis() - this.serverProcess.getStartTime(), true));
         }
     }
 

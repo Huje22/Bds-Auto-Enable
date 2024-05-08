@@ -164,7 +164,7 @@ public class ExtensionManager {
             this.enableExtension(entry.getValue());
         }
 
-        final String formattedTime = DateUtil.formatTime((System.currentTimeMillis() - startTime), List.of('s', 'i'), true);
+        final String formattedTime = DateUtil.formatTimeDynamic((System.currentTimeMillis() - startTime), true);
         this.logger.info("Włączono&b " + this.extensions.size() + "&r rozszerzeń w czasie&1 " + formattedTime);
     }
 
@@ -188,7 +188,7 @@ public class ExtensionManager {
             this.disableExtension(entry.getValue());
         }
 
-        final String formattedTime = DateUtil.formatTime((System.currentTimeMillis() - startTime), List.of('s', 'i'), true);
+        final String formattedTime = DateUtil.formatTimeDynamic((System.currentTimeMillis() - startTime), true);
         this.logger.info("Wyłączono&b " + this.extensions.size() + "&r rozszerzeń w czasie&1 " + formattedTime);
     }
 

@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -82,6 +83,28 @@ public final class DateUtil {
         }
 
         return formattedTime.toString().trim();
+    }
+
+    public static String formatTimeDynamic(final long millis) {
+        return formatTimeDynamic(millis, false);
+    }
+
+    public static String formatTimeDynamic(final long millis, final boolean shortNames) {
+        final List<Character> unitsPattern = new ArrayList<>();
+
+        final long days = formatDays(millis);
+        final long hours = formatHours(millis);
+        final long minutes = formatMinutes(millis);
+        final long seconds = formatSeconds(millis);
+        final long formatedMillis = millis % 1000;
+
+        if (days > 0) unitsPattern.add('d');
+        if (hours > 0) unitsPattern.add('h');
+        if (minutes > 0) unitsPattern.add('m');
+        if (seconds > 0) unitsPattern.add('s');
+        if (formatedMillis > 0) unitsPattern.add('i');
+        
+        return formatTime(millis, unitsPattern, shortNames);
     }
 
     public static String formatTime(final long millis, final List<Character> unitsPattern, final boolean shortNames) {
