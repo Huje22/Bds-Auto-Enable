@@ -95,14 +95,10 @@ public final class StatusUtil {
     }
 
     public static String getShortStatus() {
-        String shortStatus = "";
-
-
-        shortStatus += BDSAUTOENABLE.getProjectVersion() + " ";
-        shortStatus += BDSAUTOENABLE.getServerManager().getOnlinePlayers().size() + "/" + BDSAUTOENABLE.getServerProperties().getMaxPlayers() + " ";
-        shortStatus += Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + " ";
-
-        return shortStatus;
+        //TODO: Zrobić to jakoś ładniej
+        return BDSAUTOENABLE.getVersionManager().getLoadedVersion() + " " +
+                BDSAUTOENABLE.getServerManager().getOnlinePlayers().size() + "/" + BDSAUTOENABLE.getServerProperties().getMaxPlayers() +
+                " " + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount();
     }
 
     public static long availableDiskSpace() {
