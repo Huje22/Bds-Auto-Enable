@@ -9,6 +9,7 @@ import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.stats.ServerStats;
 import me.indian.bds.server.stats.StatsManager;
@@ -96,9 +97,10 @@ public final class StatusUtil {
 
     public static String getShortStatus() {
         //TODO: Zrobić to jakoś ładniej
-        return BDSAUTOENABLE.getVersionManager().getLoadedVersion() + " " +
-                BDSAUTOENABLE.getServerManager().getOnlinePlayers().size() + "/" + BDSAUTOENABLE.getServerProperties().getMaxPlayers() +
-                " " + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount();
+        final ServerManager serverManager = BDSAUTOENABLE.getServerManager();
+
+        return "BDSAE-" + BDSAUTOENABLE.getProjectVersion() + " | " + BDSAUTOENABLE.getVersionManager().getLoadedVersion() + " | TPS " + serverManager.getLastTPS() + " Online " +
+                serverManager.getOnlinePlayers().size() + "/" + BDSAUTOENABLE.getServerProperties().getMaxPlayers();
     }
 
     public static long availableDiskSpace() {

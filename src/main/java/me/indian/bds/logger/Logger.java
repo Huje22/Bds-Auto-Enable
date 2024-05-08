@@ -183,4 +183,8 @@ public abstract class Logger {
     public File getLogFile() {
         return this.logFile;
     }
+
+    public BDSAutoEnable getBdsAutoEnable() {
+        return this.bdsAutoEnable;
+    }
 }

@@ -10,6 +10,8 @@ import java.util.Scanner;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.config.AppConfig;
@@ -61,6 +63,7 @@ public class BDSAutoEnable {
     private final EventManager eventManager;
     private final ExtensionManager extensionManager;
     private final AllowlistManager allowlistManager;
+    private final ExecutorService service;
     private PackManager packManager;
     private CommandManager commandManager;
     private WatchDog watchDog;
@@ -99,6 +102,7 @@ public class BDSAutoEnable {
         this.mcLog = new McLog(this);
         this.extensionManager = new ExtensionManager(this);
         this.allowlistManager = new AllowlistManager(this);
+        this.service = Executors.newSingleThreadExecutor();
         this.serverManager.init();
         ServerUtil.init(this);
         GeyserUtil.init(this);
@@ -262,16 +266,20 @@ public class BDSAutoEnable {
     }
 
     public void setAppWindowName(final String name) {
-        try {
-            switch (SystemUtil.getSystem()) {
-                case WINDOWS ->
-                        new ProcessBuilder("cmd.exe", "/c", "title", name.replaceAll("\"", "")).inheritIO().start().waitFor();
-                case LINUX ->
-                        new ProcessBuilder("bash", "-c", "printf '\\033]0;%s\\007' \"" + name.replaceAll("\"", "") + "\"").inheritIO().start().waitFor();
+        this.service.execute(() -> {
+            try {
+                final ProcessBuilder processBuilder = new ProcessBuilder();
+
+                switch (SystemUtil.getSystem()) {
+                    case WINDOWS -> processBuilder.command("cmd.exe", "/c", "title", name);
+                    case LINUX -> processBuilder.command("bash", "-c", "printf '\\033]0;%s\\007' \"" + name + "\"");
+                }
+
+                processBuilder.inheritIO().start().waitFor();
+            } catch (final IOException | InterruptedException exception) {
+                this.logger.debug("&cNie udało się zmienić nazwy okna na:&d \"&1" + name + "&d\"", exception);
             }
-        } catch (final IOException | InterruptedException exception) {
-            this.logger.debug("&cNie udało się zmienić nazwy okna na:&d \"&1" + name + "&d\"", exception);
-        }
+        });
     }
 
     private void setAppName() {
@@ -280,7 +288,7 @@ public class BDSAutoEnable {
         final TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                if (!ShutdownHandler.isShutdownHookCalled()) {
+                if (!ShutdownHandler.isShutdownHookCalled() && BDSAutoEnable.this.serverProcess.isEnabled()) {
                     BDSAutoEnable.this.setAppWindowName(StatusUtil.getShortStatus());
                 } else {
                     this.cancel();

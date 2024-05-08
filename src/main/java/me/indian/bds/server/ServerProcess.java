@@ -267,8 +267,8 @@ public class ServerProcess {
      */
     public void instantShutdown() {
         this.logger.alert("Wyłączanie...");
-        this.bdsAutoEnable.setAppWindowName("Wyłączanie...");
         this.setCanRun(false);
+        this.bdsAutoEnable.setAppWindowName("Wyłączanie...");
 
         if (!this.appConfigManager.getTransferConfig().getLobbyConfig().isEnable()) {
             ServerUtil.kickAllPlayers(this.prefix + "&cServer jest zamykany");
