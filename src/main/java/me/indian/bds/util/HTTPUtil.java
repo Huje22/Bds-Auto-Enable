@@ -101,6 +101,7 @@ public final class HTTPUtil {
                                 final long remainingTimeSeconds = (long) (MathUtil.bytesToMB(fileSize) / formatedSpeed);
                                 final String remainingTimeString = DateUtil.formatTimeDynamic(remainingTimeSeconds * 1000, true);
 
+                                //TODO: Sformatuj to aby mialo sensowen odstpeny , te string.format()
                                 logger.getBdsAutoEnable().setAppWindowName("Pobrano w: " + progress + "% " + formatedSpeed + " MB/s Pozostało " + remainingTimeString);
 
                                 if (progress != lastProgress) {
