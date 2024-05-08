@@ -97,11 +97,15 @@ public final class HTTPUtil {
 
                                 final int progress = Math.round((float) totalBytesRead / (float) fileSize * 100.0f);
 
-                                logger.getBdsAutoEnable().setAppWindowName("Pobrano w: " + progress + "% " + MathUtil.format(speedMBps, 3) + " MB/s");
+                                final double formatedSpeed = MathUtil.format(speedMBps, 3);
+                                final long remainingTimeSeconds = (long) (MathUtil.bytesToMB(fileSize) / formatedSpeed);
+                                final String remainingTimeString = DateUtil.formatTimeDynamic(remainingTimeSeconds * 1000, true);
+
+                                logger.getBdsAutoEnable().setAppWindowName("Pobrano w: " + progress + "% " + formatedSpeed + " MB/s Pozostało " + remainingTimeString);
 
                                 if (progress != lastProgress) {
                                     lastProgress = progress;
-                                    logger.info("Pobrano w:&b " + progress + "&a% " + MathUtil.format(speedMBps, 3) + " MB/s");
+                                    logger.info("Pobrano w: &b" + progress + "&a% " + formatedSpeed + " MB/s&d Pozostało&b " + remainingTimeString);
                                 }
                             }
                         }
