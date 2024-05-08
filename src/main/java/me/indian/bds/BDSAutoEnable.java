@@ -276,10 +276,15 @@ public class BDSAutoEnable {
 
     private void setAppName() {
         final long seconds = MathUtil.secondToMillis(1);
+
         final TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                BDSAutoEnable.this.setAppWindowName(StatusUtil.getShortStatus());
+                if (!ShutdownHandler.isShutdownHookCalled()) {
+                    BDSAutoEnable.this.setAppWindowName(StatusUtil.getShortStatus());
+                } else {
+                    this.cancel();
+                }
             }
         };
 

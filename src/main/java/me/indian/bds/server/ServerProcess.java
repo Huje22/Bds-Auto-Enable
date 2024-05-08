@@ -306,6 +306,8 @@ public class ServerProcess {
                 this.logger.error("Nie udało się zatrzymać wątków procesu servera", exception);
             }
         }
+
+        this.bdsAutoEnable.setAppWindowName("Wyłączono");
     }
 
     public boolean isCanRun() {
