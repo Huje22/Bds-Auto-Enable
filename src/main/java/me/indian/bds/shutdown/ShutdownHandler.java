@@ -10,6 +10,7 @@ public class ShutdownHandler {
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final ServerProcess serverProcess;
+    private static boolean SHUTDOWN_HOOK_CALLED = false;
 
     public ShutdownHandler(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -24,6 +25,7 @@ public class ShutdownHandler {
         final ThreadUtil shutdownThread = new ThreadUtil("Shutdown");
 
         Runtime.getRuntime().addShutdownHook(shutdownThread.newThread(() -> {
+            SHUTDOWN_HOOK_CALLED = true;
             try {
                 this.serverProcess.instantShutdown();
                 this.bdsAutoEnable.getMcLog().sendCurrentLog();
@@ -31,5 +33,9 @@ public class ShutdownHandler {
                 this.logger.critical("Wystąpił błąd podczas próby uruchomienia shutdown hooku ", exception);
             }
         }));
+    }
+
+    public static boolean isShutdownHookCalled() {
+        return SHUTDOWN_HOOK_CALLED;
     }
 }
