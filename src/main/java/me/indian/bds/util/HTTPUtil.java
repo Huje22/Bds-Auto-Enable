@@ -96,9 +96,12 @@ public final class HTTPUtil {
                                 lastBytesRead = totalBytesRead;
 
                                 final int progress = Math.round((float) totalBytesRead / (float) fileSize * 100.0f);
+
+                                logger.getBdsAutoEnable().setAppWindowName("Pobrano w: " + progress + "% " + MathUtil.format(speedMBps, 3) + " MB/s");
+
                                 if (progress != lastProgress) {
                                     lastProgress = progress;
-                                    logger.info("Pobrano w:&b " + progress + "&a% " + MathUtil.format(speedMBps, 2) + " MB/s");
+                                    logger.info("Pobrano w:&b " + progress + "&a% " + MathUtil.format(speedMBps, 3) + " MB/s");
                                 }
                             }
                         }
