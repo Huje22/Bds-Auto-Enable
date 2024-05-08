@@ -112,12 +112,12 @@ public class AutoRestartModule {
 
                 ServerUtil.titleToAll("&cServer zostanie zrestartowany", "&bZa&a " + seconds + "&e sekund");
                 ServerUtil.playSoundToAll("mob.wither.break_block");
+                ServerUtil.tellrawToAllAndLogger(this.prefix, "&aPrzygotowanie do&b restartu&a servera", LogState.WARNING);
 
-                ServerUtil.tellrawToAllAndLogger(this.prefix,
-                        "&aPrzygotowanie do&b restartu&a servera",
-                        LogState.WARNING);
-                this.watchDog.saveAndResume();
                 if (alert) this.restartAlert(seconds);
+
+                ServerUtil.tellrawToAllAndLogger(this.prefix, "&aPierw zapiszemy świat!", LogState.INFO);
+                this.watchDog.saveAndResume();
 
                 ServerUtil.playSoundToAll("mob.wither.death");
 

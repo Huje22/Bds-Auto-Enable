@@ -70,13 +70,13 @@ public class EndCommand extends Command {
             if (i < 10 || i == nextSeconds) {
                 nextSeconds = MathUtil.getCorrectNumber((i - 5), 0, seconds);
                 ServerUtil.actionBarToAll("&aZa&b " + i + "&a sekund server zostanie zamknięty!");
-                ServerUtil.tellrawToAllAndLogger("",
-                        "&aZa&b " + i + "&a sekund server zostanie zamknięty!", LogState.INFO);
+                ServerUtil.tellrawToAllAndLogger("", "&aZa&b " + i + "&a sekund server zostanie zamknięty!", LogState.INFO);
             }
             ThreadUtil.sleep(1);
         }
 
-//TODO: Zapisać świat dopiero po zakończeniu odliczania tu i w restarcje!
+        ServerUtil.tellrawToAllAndLogger("", "&aPierw zapiszemy świat!", LogState.INFO);
+        this.bdsAutoEnable.getWatchDog().saveAndResume();
         
         ServerUtil.playSoundToAll("mob.wither.death");
 
@@ -85,6 +85,7 @@ public class EndCommand extends Command {
         }
 
         this.serverProcess.sendToConsole("stop");
+
         try {
             this.serverProcess.waitFor();
         } catch (final InterruptedException exception) {
