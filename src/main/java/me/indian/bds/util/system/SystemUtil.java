@@ -1,10 +1,13 @@
 package me.indian.bds.util.system;
 
-import me.indian.bds.exception.UnsupportedSystemException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
+import me.indian.bds.exception.UnsupportedSystemException;
 
 public final class SystemUtil {
 
@@ -41,6 +44,26 @@ public final class SystemUtil {
 
     public static String getFullyArchCode() {
         return System.getProperty("os.arch");
+    }
+
+    public static String getLinuxDistribution() {
+        final String releaseFilePath = "/etc/os-release";
+
+        try {
+            final Path path = Paths.get(releaseFilePath);
+            final List<String> lines = Files.readAllLines(path);
+
+            for (final String line : lines) {
+                if (line.startsWith("PRETTY_NAME=")) {
+                    System.out.println(line);
+                    return line.substring(12, line.length() - 1);
+                }
+            }
+        } catch (final IOException ioException) {
+            ioException.printStackTrace();
+        }
+
+        return "Nieznana";
     }
 
     public static long getRamUsageByPid(final long pid) throws IOException, UnsupportedSystemException {
