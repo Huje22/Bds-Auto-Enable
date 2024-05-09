@@ -125,7 +125,7 @@ public class BackupModule {
         if (!this.worldFile.exists()) return;
         final long gb = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
         if (gb < MathUtil.bytesToGB(FileUtil.getFolderSize(this.worldFile)) + 1) {
-          //TODO: Dodać opcje aby to ominąć ponieważ niektóre hosting z pterodactyl panel zwracają nieprawidłowe wartości pamięci 
+          //TODO: Dodać opcje aby to ominąć ponieważ niektóre hosting z pterodactyl panel zwracają nieprawidłowe wartości pamięci , ewentualnie dodać opcje limitu ilsoci backup
             ServerUtil.tellrawToAllAndLogger(this.prefix,
                     "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!",
                     LogState.WARNING);
