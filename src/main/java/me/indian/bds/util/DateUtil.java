@@ -45,7 +45,7 @@ public final class DateUtil {
         return Instant.ofEpochSecond(seconds).atZone(POLISH_ZONE).toLocalDateTime();
     }
 
-    public static long formatDays(final long millis) {
+    private static long formatDays(final long millis) {
         final long totalSeconds = millis / 1000;
         final long totalMinutes = totalSeconds / 60;
         final long totalHours = totalMinutes / 60;
@@ -53,7 +53,7 @@ public final class DateUtil {
         return totalHours / 24;
     }
 
-    public static long formatHours(final long millis) {
+    private static long formatHours(final long millis) {
         final long totalSeconds = millis / 1000;
         final long totalMinutes = totalSeconds / 60;
         final long totalHours = totalMinutes / 60;
@@ -61,28 +61,15 @@ public final class DateUtil {
         return totalHours % 24;
     }
 
-    public static long formatMinutes(final long millis) {
+    private static long formatMinutes(final long millis) {
         final long totalSeconds = millis / 1000;
         final long totalMinutes = totalSeconds / 60;
 
         return totalMinutes % 60;
     }
 
-    public static long formatSeconds(final long millis) {
+    private static long formatSeconds(final long millis) {
         return (millis / 1000) % 60;
-    }
-
-    public static String formatTime(final long millis, final List<Character> unitsPattern) {
-        final StringBuilder formattedTime = new StringBuilder();
-        final Map<Character, String> unitMap = getUnitMap(millis, false);
-
-        for (final char unit : unitsPattern) {
-            if (unitMap.containsKey(unit)) {
-                formattedTime.append(unitMap.get(unit)).append(" ");
-            }
-        }
-
-        return formattedTime.toString().trim();
     }
 
     public static String formatTimeDynamic(final long millis) {
@@ -90,8 +77,9 @@ public final class DateUtil {
     }
 
     public static String formatTimeDynamic(final long millis, final boolean shortNames) {
-        final List<Character> unitsPattern = new ArrayList<>();
+        if (millis == 0) return "N/A";
 
+        final List<Character> unitsPattern = new ArrayList<>();
         final long days = formatDays(millis);
         final long hours = formatHours(millis);
         final long minutes = formatMinutes(millis);
@@ -103,7 +91,7 @@ public final class DateUtil {
         if (minutes > 0) unitsPattern.add('m');
         if (seconds > 0) unitsPattern.add('s');
         if (formatedMillis > 0) unitsPattern.add('i');
-        
+
         return formatTime(millis, unitsPattern, shortNames);
     }
 
@@ -120,9 +108,13 @@ public final class DateUtil {
         return formattedTime.toString().trim();
     }
 
+    public static String formatTime(final long millis, final List<Character> unitsPattern) {
+        return formatTime(millis, unitsPattern, false);
+    }
+
     private static Map<Character, String> getUnitMap(final long millis, final boolean shortNames) {
         UNIT_MAP.clear();
-        if(shortNames){
+        if (shortNames) {
             UNIT_MAP.put('d', formatDays(millis) + "dni");
             UNIT_MAP.put('h', formatHours(millis) + "godz");
             UNIT_MAP.put('m', formatMinutes(millis) + "min");
