@@ -57,7 +57,7 @@ public class CommandManager {
         this.commandMap.put(new VersionCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new ChatFormatCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new MuteCommand(this.bdsAutoEnable), null);
-        this.commandMap.put(new AlertCommand(this.bdsAutoEnable), null);
+        this.commandMap.put(new AlertCommand(), null);
         this.commandMap.put(new SettingInfoCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new ServerPingCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new StatsCommand(), null);
