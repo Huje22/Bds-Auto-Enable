@@ -30,7 +30,7 @@ public class AutoRestartModule {
     private TimerTask task;
     private String prefix;
     private ServerProcess serverProcess;
-    private long lastRestartMillis;
+    private long lastPlanedRestartMillis;
     private boolean restarting, lastRestartDone;
     private static boolean playersOnRestart = false;
 
@@ -41,7 +41,7 @@ public class AutoRestartModule {
         this.watchDog = watchDog;
         this.timer = new Timer("AutoRestart", true);
         this.service = Executors.newSingleThreadExecutor(new ThreadUtil("Restart"));
-        this.lastRestartMillis = System.currentTimeMillis();
+        this.lastPlanedRestartMillis = System.currentTimeMillis();
         this.restarting = false;
 
         this.run();
@@ -69,6 +69,7 @@ public class AutoRestartModule {
                 if (!players && !playersOnRestart) {
                     AutoRestartModule.this.logger.alert("Brak graczy&c....");
                     AutoRestartModule.this.lastRestartDone = false;
+                    AutoRestartModule.this.lastPlanedRestartMillis = System.currentTimeMillis();
                     return;
                 }
 
@@ -79,7 +80,7 @@ public class AutoRestartModule {
                 }
 
                 AutoRestartModule.this.lastRestartDone = true;
-                AutoRestartModule.this.lastRestartMillis = System.currentTimeMillis();
+                AutoRestartModule.this.lastPlanedRestartMillis = System.currentTimeMillis();
             }
         };
 
@@ -151,7 +152,7 @@ public class AutoRestartModule {
         if (!this.autoRestartConfig.isEnabled()) return;
         this.task.cancel();
         this.run();
-        this.lastRestartMillis = System.currentTimeMillis();
+        this.lastPlanedRestartMillis = System.currentTimeMillis();
     }
 
     private void restartAlert(final int seconds) {
@@ -170,7 +171,7 @@ public class AutoRestartModule {
     }
 
     public long calculateMillisUntilNextRestart() {
-        return Math.max(0, (MathUtil.hoursTo(this.autoRestartConfig.getRestartTime(), TimeUnit.MILLISECONDS) + 10) - (System.currentTimeMillis() - this.lastRestartMillis));
+        return Math.max(0, (MathUtil.hoursTo(this.autoRestartConfig.getRestartTime(), TimeUnit.MILLISECONDS) + 10) - (System.currentTimeMillis() - this.lastPlanedRestartMillis));
     }
 
     public boolean isLastRestartDone() {

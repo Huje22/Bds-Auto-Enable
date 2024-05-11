@@ -52,7 +52,7 @@ public class BackupModule {
     private ServerProcess serverProcess;
     private File backupFolder;
     private String status, worldName, worldPath;
-    private long lastBackupMillis;
+    private long lastPlanedBackupMillis;
     private boolean backuping;
 
     public BackupModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
@@ -84,7 +84,7 @@ public class BackupModule {
         }
 
         this.status = "Brak";
-        this.lastBackupMillis = System.currentTimeMillis();
+        this.lastPlanedBackupMillis = System.currentTimeMillis();
         this.backuping = false;
         this.run();
     }
@@ -106,16 +106,14 @@ public class BackupModule {
                 public void run() {
                     final boolean nonPlayers = BackupModule.this.serverManager.getOnlinePlayers().isEmpty();
                     if (this.cachedNonPlayers && nonPlayers){
-
-//TODO: Zrobić tak samo z restartem
-                               BackupModule.this.lastBackupMillis = System.currentTimeMillis();
+                        BackupModule.this.lastPlanedBackupMillis = System.currentTimeMillis();
                         return;
                     }
                     
                     this.cachedNonPlayers = nonPlayers;
 
                     BackupModule.this.backup();
-                    BackupModule.this.lastBackupMillis = System.currentTimeMillis();
+                    BackupModule.this.lastPlanedBackupMillis = System.currentTimeMillis();
                 }
             };
             this.timer.scheduleAtFixedRate(backupTask, time, time);
@@ -252,7 +250,7 @@ public class BackupModule {
     }
 
     public long calculateMillisUntilNextBackup() {
-        return Math.max(0, MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS) - (System.currentTimeMillis() - this.lastBackupMillis));
+        return Math.max(0, MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS) - (System.currentTimeMillis() - this.lastPlanedBackupMillis));
     }
 
     public String getStatus() {
@@ -278,8 +276,8 @@ public class BackupModule {
         return this.enabled;
     }
 
-    public long getLastBackupMillis() {
-        return this.lastBackupMillis;
+    public long getLastPlanedBackupMillis() {
+        return this.lastPlanedBackupMillis;
     }
 
     public boolean isBackuping() {
