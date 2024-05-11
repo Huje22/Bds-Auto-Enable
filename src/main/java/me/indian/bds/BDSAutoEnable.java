@@ -81,6 +81,7 @@ public class BDSAutoEnable {
         this.appConfigManager = new AppConfigManager();
         this.appConfig = this.appConfigManager.getAppConfig();
         this.logger = new MainLogger(this);
+        //TODO: Pokoloruj logo
         this.logger.print("  ____  _____   _____                 _          ______             _     _      \n |  _ \\|  __ \\ / ____|     /\\        | |        |  ____|           | |   | |     \n | |_) | |  | | (___      /  \\  _   _| |_ ___   | |__   _ __   __ _| |__ | | ___ \n |  _ <| |  | |\\___ \\    / /\\ \\| | | | __/ _ \\  |  __| | '_ \\ / _` | '_ \\| |/ _ \\ \n | |_) | |__| |____) |  / ____ \\ |_| | || (_) | | |____| | | | (_| | |_) | |  __/ \n |____/|_____/|_____/  /_/    \\_\\__,_|\\__\\___/  |______|_| |_|\\__,_|_.__/|_|\\___|");
         this.isJavaVersionLessThan17();
         this.checkSystemSupport();
@@ -288,8 +289,10 @@ public class BDSAutoEnable {
         final TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {
-                if (!ShutdownHandler.isShutdownHookCalled() && BDSAutoEnable.this.serverProcess.isEnabled()) {
-                    BDSAutoEnable.this.setAppWindowName(StatusUtil.getShortStatus());
+                if (!ShutdownHandler.isShutdownHookCalled()) {
+                    if (BDSAutoEnable.this.serverProcess.isEnabled()) {
+                        BDSAutoEnable.this.setAppWindowName(StatusUtil.getShortStatus());
+                    }
                 } else {
                     this.cancel();
                 }
