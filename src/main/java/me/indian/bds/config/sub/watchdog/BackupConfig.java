@@ -10,6 +10,11 @@ public class BackupConfig extends OkaeriConfig {
     private boolean enabled = false;
 
     @Comment({""})
+    @Comment({"Maksymalna dozwolona liczba backupów"})
+    @Comment({"Jeśli ustawione na -1 albo 0 jedynym ograniczeniem będzie pamięć systemu"})
+    private int maxBackups = -1;
+
+    @Comment({""})
     @Comment({"Co ile min robić backup?"})
     private int backupFrequency = 60;
 
@@ -23,6 +28,10 @@ public class BackupConfig extends OkaeriConfig {
 
     public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public int getMaxBackups() {
+        return this.maxBackups;
     }
 
     public int getBackupFrequency() {

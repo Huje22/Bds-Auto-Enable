@@ -6,6 +6,7 @@ import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.util.DateUtil;
+import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.module.BackupModule;
 
@@ -52,8 +53,8 @@ public class BackupCommand extends Command {
                 return true;
             }
             backupModule.backup();
-            ThreadUtil.sleep(2);
-            this.sendMessage(backupModule.getStatus());
+            ThreadUtil.sleep((int) MathUtil.getCorrectNumber(5, (backupModule.getLastBackupTime() / 5), 60) + 1);
+            this.sendMessage("&aStatus backupa:&r " + backupModule.getStatus());
         }
 
         return true;

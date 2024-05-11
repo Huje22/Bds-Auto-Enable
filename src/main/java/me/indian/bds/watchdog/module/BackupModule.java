@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfigManager;
+import me.indian.bds.config.sub.watchdog.BackupConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
 import me.indian.bds.event.watchdog.BackupDoneEvent;
 import me.indian.bds.event.watchdog.BackupFailEvent;
@@ -49,6 +50,7 @@ public class BackupModule {
     private final String prefix;
     private final boolean enabled;
     private final ServerManager serverManager;
+    private final BackupConfig backupConfig;
     private ServerProcess serverProcess;
     private File backupFolder;
     private String status, worldName, worldPath;
@@ -73,6 +75,7 @@ public class BackupModule {
         this.prefix = this.watchDog.getWatchDogPrefix();
         this.enabled = this.watchDogConfig.getBackupConfig().isEnabled();
         this.serverManager = this.bdsAutoEnable.getServerManager();
+        this.backupConfig = this.watchDogConfig.getBackupConfig();
 
         if (this.watchDogConfig.getBackupConfig().isEnabled()) {
             this.backupFolder = new File(DefaultsVariables.getAppDir() + "backup");
@@ -96,7 +99,7 @@ public class BackupModule {
 
     private void run() {
         if (this.watchDogConfig.getBackupConfig().isEnabled()) {
-            final long time = MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS);
+            final long time = MathUtil.minutesTo(this.backupConfig.getBackupFrequency(), TimeUnit.MILLISECONDS);
 
             final TimerTask backupTask = new TimerTask() {
 
@@ -121,20 +124,14 @@ public class BackupModule {
     }
 
     public void backup() {
-        if (!this.watchDogConfig.getBackupConfig().isEnabled()) {
+        if (!this.backupConfig.isEnabled()) {
             this.logger.info("Backupy są&4 wyłączone");
             return;
         }
 
         if (!this.worldFile.exists()) return;
-        final long gb = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
-        if (gb < MathUtil.bytesToGB(FileUtil.getFolderSize(this.worldFile)) + 1) {
-          //TODO: Dodać opcje aby to ominąć ponieważ niektóre hosting z pterodactyl panel zwracają nieprawidłowe wartości pamięci , ewentualnie dodać opcje limitu ilsoci backup
-            ServerUtil.tellrawToAllAndLogger(this.prefix,
-                    "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!",
-                    LogState.WARNING);
-            return;
-        }
+
+        if (!this.canDoBackup()) return;
         if (this.backuping) {
             this.logger.error("&cNie można wykonać backup gdy jeden jest już wykonywany");
             return;
@@ -147,12 +144,12 @@ public class BackupModule {
             final File backup = new File(this.backupFolder.getAbsolutePath() + File.separator + this.worldName + " " + DateUtil.getFixedDate() + ".zip");
             try {
                 this.watchDog.saveWorld();
-                final double lastBackUpTime = this.watchDogConfig.getBackupConfig().getLastBackupTime();
+                final double lastBackUpTime = this.backupConfig.getLastBackupTime();
                 ServerUtil.tellrawToAllAndLogger(this.prefix, "&aTworzenie kopij zapasowej ostatnio trwało to&b " + lastBackUpTime + "&a sekund", LogState.INFO);
                 this.status = "Tworzenie backupa...";
                 ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 final double backUpTime = ((System.currentTimeMillis() - startTime) / 1000.0);
-                this.watchDogConfig.getBackupConfig().setLastBackupTime(backUpTime);
+                this.backupConfig.setLastBackupTime(backUpTime);
                 this.loadAvailableBackups();
                 ServerUtil.tellrawToAllAndLogger(this.prefix,
                         "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona " + this.getBackupSize(backup, false),
@@ -180,8 +177,32 @@ public class BackupModule {
         });
     }
 
+    private boolean canDoBackup() {
+        final int maxBackups = this.backupConfig.getMaxBackups();
+        if (maxBackups == -1 || maxBackups == 0) {
+
+            final long gb = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
+            if (gb < MathUtil.bytesToGB(FileUtil.getFolderSize(this.worldFile)) + 1) {
+                ServerUtil.tellrawToAllAndLogger(this.prefix,
+                        "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!",
+                        LogState.WARNING);
+                return false;
+            }
+
+        } else {
+            if (this.backups.size() >= maxBackups) {
+                ServerUtil.tellrawToAllAndLogger(this.prefix,
+                        "&cOsiągnięto maksymalną liczbę backup!&d (&3" + maxBackups + "&d)",
+                        LogState.WARNING);
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private void loadAvailableBackups() {
-        if (!this.watchDogConfig.getBackupConfig().isEnabled()) return;
+        if (!this.backupConfig.isEnabled()) return;
         this.backups.clear();
         try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(this.backupFolder.getPath()))) {
             for (final Path path : directoryStream) {
@@ -250,7 +271,11 @@ public class BackupModule {
     }
 
     public long calculateMillisUntilNextBackup() {
-        return Math.max(0, MathUtil.minutesTo(this.watchDogConfig.getBackupConfig().getBackupFrequency(), TimeUnit.MILLISECONDS) - (System.currentTimeMillis() - this.lastPlanedBackupMillis));
+        return Math.max(0, MathUtil.minutesTo(this.backupConfig.getBackupFrequency(), TimeUnit.MILLISECONDS) - (System.currentTimeMillis() - this.lastPlanedBackupMillis));
+    }
+
+    public double getLastBackupTime() {
+        return this.backupConfig.getLastBackupTime();
     }
 
     public String getStatus() {
