@@ -28,7 +28,7 @@ public class SettingInfoCommand extends Command {
 
         this.properties.loadProperties();
 
-        this.sendMessage("System:&b " + SystemUtil.getSystem() + " &d(&1" + SystemUtil.getFullyOsName() + "&d)");
+        this.sendMessage("System:&b " + SystemUtil.getSystem() + " &d(&1" + SystemUtil.getFullOsNameWithDistribution() + "&d)");
         this.sendMessage("System arch:&b " + SystemUtil.getFullyArchCode() + " &d(&1" + SystemUtil.getCurrentArch() + "&d)");
 
         this.sendMessage("&eNie wszystkie wartości muszą być załadowane przez server");

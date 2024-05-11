@@ -32,6 +32,13 @@ public final class SystemUtil {
         return System.getProperty("os.name");
     }
 
+    public static String getFullOsNameWithDistribution() {
+        return switch (getSystem()) {
+            case WINDOWS, UNSUPPORTED -> getFullyOsName();
+            case LINUX -> getFullyOsName() + " (" + getLinuxDistribution() + ")";
+        };
+    }
+
     public static SystemArch getCurrentArch() {
         final String osArch = System.getProperty("os.arch").toLowerCase();
 
@@ -55,8 +62,7 @@ public final class SystemUtil {
 
             for (final String line : lines) {
                 if (line.startsWith("PRETTY_NAME=")) {
-                    System.out.println(line);
-                    return line.substring(12, line.length() - 1);
+                    return line.substring(12, line.length() - 1).replaceAll("\"", "");
                 }
             }
         } catch (final IOException ioException) {

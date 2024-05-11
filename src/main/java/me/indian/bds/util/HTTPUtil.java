@@ -101,12 +101,11 @@ public final class HTTPUtil {
                                 final long remainingTimeSeconds = (long) (MathUtil.bytesToMB(fileSize) / formatedSpeed);
                                 final String remainingTimeString = DateUtil.formatTimeDynamic(remainingTimeSeconds * 1000, true);
 
-                                //TODO: Sformatuj to aby mialo sensowen odstpeny , te string.format()
-                                logger.getBdsAutoEnable().setAppWindowName("Pobrano w: " + progress + "% " + formatedSpeed + " MB/s Pozostało " + remainingTimeString);
+                                logger.getBdsAutoEnable().setAppWindowName(String.format("%-1s %-2s %-4s %-4s", "Pobrano w:", progress + "%", formatedSpeed + " MB/s", "Pozostało " + remainingTimeString));
 
                                 if (progress != lastProgress) {
                                     lastProgress = progress;
-                                    logger.info("Pobrano w: &b" + progress + "&a% " + formatedSpeed + " MB/s&d Pozostało&b " + remainingTimeString);
+                                    logger.info(String.format("%-1s &b%-2s &a%-4s &d%-4s", "Pobrano w:", progress + "%", formatedSpeed + " MB/s", "Pozostało " + remainingTimeString));
                                 }
                             }
                         }

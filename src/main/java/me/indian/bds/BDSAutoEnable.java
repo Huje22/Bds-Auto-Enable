@@ -159,7 +159,7 @@ public class BDSAutoEnable {
         }
 
         this.logger.info("&aUżyto Java: &b" + System.getProperty("java.vm.name") + " &1" + javaVersion + " &5(&d" + System.getProperty("java.vendor") + "&5)&r na&f "
-                + SystemUtil.getFullyOsName() + " &5(&c" + SystemUtil.getFullyArchCode() + "&5)");
+                + SystemUtil.getFullOsNameWithDistribution() + " &5(&c" + SystemUtil.getFullyArchCode() + "&5)");
     }
 
     private void checkSystemSupport() {
