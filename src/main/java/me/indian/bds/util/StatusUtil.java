@@ -75,17 +75,17 @@ public final class StatusUtil {
         STATUS.add("Ostatnie TPS: `" + BDSAUTOENABLE.getServerManager().getLastTPS() + "`");
         STATUS.add("Pamięć RAM: `" + usedServerMemory + "` (`" + freeComputerMemory + "`)");
         if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
-            STATUS.add("Następny restart za: `" + DateUtil.formatTime(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart(), List.of('d', 'h', 'm', 's', 'i')) + "`");
+            STATUS.add("Następny restart za: `" + DateUtil.formatTimeDynamic(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart()) + "`");
         }
         if (APPCONFIGMANAGER.getWatchDogConfig().getBackupConfig().isEnabled()) {
-            STATUS.add("Następny backup za: `" + DateUtil.formatTime(watchDog.getBackupModule().calculateMillisUntilNextBackup(), List.of('d', 'h', 'm', 's', 'i')) + "`");
+            STATUS.add("Następny backup za: `" + DateUtil.formatTimeDynamic(watchDog.getBackupModule().calculateMillisUntilNextBackup()) + "`");
         }
-        STATUS.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - SERVERPROCESS.getStartTime(), List.of('d', 'h', 'm', 's', 'i')) + "`");
-        STATUS.add("Łączny czas działania servera: `" + DateUtil.formatTime(serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's')) + "`");
+        STATUS.add("Czas działania: `" + DateUtil.formatTimeDynamic(System.currentTimeMillis() - SERVERPROCESS.getStartTime()) + "`");
+        STATUS.add("Łączny czas działania servera: `" + DateUtil.formatTimeDynamic(serverStats.getTotalUpTime()) + "`");
 
         STATUS.add("");
         STATUS.add("> **Statystyki aplikacji**");
-        STATUS.add("Czas działania: `" + DateUtil.formatTime(System.currentTimeMillis() - BDSAUTOENABLE.getStartTime(), List.of('d', 'h', 'm', 's', 'i')) + "`");
+        STATUS.add("Czas działania: `" + DateUtil.formatTimeDynamic(System.currentTimeMillis() - BDSAUTOENABLE.getStartTime()) + "`");
         STATUS.add("Pamięć RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
         STATUS.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
         STATUS.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");

@@ -2,7 +2,6 @@ package me.indian.bds.command.defaults;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.util.DateUtil;
@@ -35,11 +34,11 @@ public class BackupCommand extends Command {
         if (args.length == 0) {
             if (backupModule.getBackups().size() == 0) {
                 this.sendMessage("&aBrak backupów");
-                this.sendMessage("&aNastępny backup za:&b " + DateUtil.formatTime(backupModule.calculateMillisUntilNextBackup(), List.of('d', 'h', 'm', 's')));
+                this.sendMessage("&aNastępny backup za:&b " + DateUtil.formatTimeDynamic(backupModule.calculateMillisUntilNextBackup()));
                 return true;
             }
 
-            this.sendMessage("&aNastępny backup za:&b " + DateUtil.formatTime(backupModule.calculateMillisUntilNextBackup(), List.of('d', 'h', 'm', 's')));
+            this.sendMessage("&aNastępny backup za:&b " + DateUtil.formatTimeDynamic(backupModule.calculateMillisUntilNextBackup()));
             for (final Path path : backupModule.getBackups()) {
                 if (!Files.exists(path)) continue;
                 this.sendMessage("&a" + path.getFileName() + " Rozmiar: " + backupModule.getBackupSize(path.toFile(), false));

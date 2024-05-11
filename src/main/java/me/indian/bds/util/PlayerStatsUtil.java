@@ -1,35 +1,21 @@
 package me.indian.bds.util;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.stats.StatsManager;
 
 public final class PlayerStatsUtil {
 
-    private static final List<String> STATUS = new ArrayList<>();
-    private static final File FILE = new File(File.separator);
-    private static BDSAutoEnable BDSAUTOENABLE;
-    private static Logger LOGGER;
-    private static ServerProcess SERVERPROCESS;
     private static StatsManager STATSMANAGER;
-    private static AppConfigManager APPCONFIGMANAGER;
 
     private PlayerStatsUtil() {
     }
 
     public static void init(final BDSAutoEnable bdsAutoEnable) {
-        PlayerStatsUtil.BDSAUTOENABLE = bdsAutoEnable;
-        PlayerStatsUtil.LOGGER = bdsAutoEnable.getLogger();
-        PlayerStatsUtil.SERVERPROCESS = bdsAutoEnable.getServerProcess();
         PlayerStatsUtil.STATSMANAGER = bdsAutoEnable.getServerManager().getStatsManager();
-        PlayerStatsUtil.APPCONFIGMANAGER = bdsAutoEnable.getAppConfigManager();
     }
 
     public static List<String> getTopPlayTime(final boolean markdown, final int top) {
@@ -43,7 +29,7 @@ public final class PlayerStatsUtil {
 
         int place = 1;
         for (final Map.Entry<String, Long> entry : sortedEntries) {
-            topPlayTime.add(place + ". **" + entry.getKey() + "**: `" + DateUtil.formatTime(entry.getValue(), List.of('d', 'h', 'm', 's')) + "`");
+            topPlayTime.add(place + ". **" + entry.getKey() + "**: `" + DateUtil.formatTimeDynamic(entry.getValue()) + "`");
             place++;
         }
 

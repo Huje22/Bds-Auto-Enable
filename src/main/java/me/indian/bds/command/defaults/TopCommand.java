@@ -45,8 +45,7 @@ public class TopCommand extends Command {
         if (args[0].equalsIgnoreCase("playtime")) {
             this.sendMessage("&a---------------------");
             PlayerStatsUtil.getTopPlayTime(false, 10).forEach(this::sendMessage);
-            this.sendMessage("&aŁączny czas działania servera: &b"
-                    + DateUtil.formatTime(this.serverStats.getTotalUpTime(), List.of('d', 'h', 'm', 's')));
+            this.sendMessage("&aŁączny czas działania servera: &b" + DateUtil.formatTimeDynamic(this.serverStats.getTotalUpTime()));
             this.sendMessage("&a---------------------");
             return true;
         }

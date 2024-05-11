@@ -31,7 +31,7 @@ public class StatsCommand extends Command {
                 final long playerCooldown = this.cooldown.getOrDefault(playerName, 0L);
                 final long remainingTime = (playerCooldown + cooldownTime) - System.currentTimeMillis();
 
-                this.sendMessage("&cMusisz odczekać:&b " + DateUtil.formatTime(remainingTime, List.of('m', 's')));
+                this.sendMessage("&cMusisz odczekać:&b " + DateUtil.formatTimeDynamic(remainingTime));
                 return true;
             }
         }
