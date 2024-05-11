@@ -152,7 +152,7 @@ public class BackupModule {
                 this.backupConfig.setLastBackupTime(backUpTime);
                 this.loadAvailableBackups();
                 ServerUtil.tellrawToAllAndLogger(this.prefix,
-                        "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona " + this.getBackupSize(backup, false),
+                        "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona " + this.getBackupSize(backup),
                         LogState.INFO);
                 ServerUtil.tellrawToAllAndLogger(this.prefix,
                         "&aDostępne jest&d " + this.backups.size() + "&a kopi zapasowych",
@@ -216,22 +216,15 @@ public class BackupModule {
         }
     }
 
-    public String getBackupSize(final File backup, final boolean markdown) {
+    public String getBackupSize(final File backup) {
         long fileSizeBytes;
         try {
             fileSizeBytes = Files.size(backup.toPath());
         } catch (final IOException exception) {
             fileSizeBytes = -1;
         }
-        final long gb = MathUtil.bytesToGB(fileSizeBytes);
-        final long mb = MathUtil.getMbFromBytesGb(fileSizeBytes);
-        final long kb = MathUtil.getKbFromBytesGb(fileSizeBytes);
 
-        if (markdown) {
-            return gb + " GB " + mb + " MB " + kb + " KB";
-        } else {
-            return "&b" + gb + "&e GB &b" + mb + "&e MB &b" + kb + "&e KB";
-        }
+        return MathUtil.formatBytesDynamic(fileSizeBytes, true);
     }
 
     private void createWorldFile() {

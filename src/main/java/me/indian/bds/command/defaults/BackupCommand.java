@@ -41,7 +41,7 @@ public class BackupCommand extends Command {
             this.sendMessage("&aNastępny backup za:&b " + DateUtil.formatTimeDynamic(backupModule.calculateMillisUntilNextBackup()));
             for (final Path path : backupModule.getBackups()) {
                 if (!Files.exists(path)) continue;
-                this.sendMessage("&a" + path.getFileName() + " Rozmiar: " + backupModule.getBackupSize(path.toFile(), false));
+                this.sendMessage("&a" + path.getFileName() + " Rozmiar: " + backupModule.getBackupSize(path.toFile()));
             }
             return true;
         }

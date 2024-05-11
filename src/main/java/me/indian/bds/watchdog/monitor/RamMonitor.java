@@ -58,8 +58,8 @@ public class RamMonitor {
                 final long computerFreeRam = StatusUtil.getFreeRam();
 
                 final long computerFreeRamGb = MathUtil.bytesToGB(computerFreeRam);
-                final String freeComputerMemory = "&eWolne:&a " + computerFreeRamGb + "&b GB&a " + MathUtil.getMbFromBytesGb(computerFreeRam) + "&b MB";
-                final String maxComputerMemory = "&eCałkowite:&a " + MathUtil.bytesToGB(computerRam) + "&b GB&a " + MathUtil.getMbFromBytesGb(computerRam) + "&b MB";
+                final String freeComputerMemory = "&eWolne:&a " + MathUtil.formatBytesDynamic(computerFreeRam, true);
+                final String maxComputerMemory = "&eCałkowite:&a " + MathUtil.formatBytesDynamic(computerRam, true);
 
                 if (computerFreeRamGb < 1) {
                     ServerUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,

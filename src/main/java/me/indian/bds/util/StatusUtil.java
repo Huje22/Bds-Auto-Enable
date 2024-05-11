@@ -52,18 +52,18 @@ public final class StatusUtil {
         final long computerFreeRam = getFreeRam();
         final long computerRamUsed = getUsedRam();
 
-        final String usedServerMemory = "Użyte " + MathUtil.kilobytesToGb(getServerRamUsage()) + " GB " + MathUtil.getMbFromKilobytesGb(getServerRamUsage()) + " MB";
+        final String usedServerMemory = "Użyte " + MathUtil.formatKiloBytesDynamic(getServerRamUsage(), true);
 
-        final String usedComputerMemory = "Użyte " + MathUtil.bytesToGB(computerRamUsed) + " GB " + MathUtil.getMbFromBytesGb(computerRamUsed) + " MB";
-        final String maxComputerMemory = "Całkowity " + MathUtil.bytesToGB(computerRam) + " GB " + MathUtil.getMbFromBytesGb(computerRam) + " MB";
-        final String freeComputerMemory = "Wolny " + MathUtil.bytesToGB(computerFreeRam) + " GB " + MathUtil.getMbFromBytesGb(computerFreeRam) + " MB";
+        final String usedComputerMemory = "Użyte " + MathUtil.formatBytesDynamic(computerRamUsed, true);
+        final String maxComputerMemory = "Całkowity " + MathUtil.formatBytesDynamic(computerRam, true);
+        final String freeComputerMemory = "Wolny " + MathUtil.formatBytesDynamic(computerFreeRam, true);
 
         final String usedAppMemory = "Użyte " + MathUtil.bytesToMB(heapMemoryUsage.getUsed()) + " MB";
         final String committedAppMemory = "Przydzielone " + MathUtil.bytesToMB(heapMemoryUsage.getCommitted()) + " MB";
         final String maxAppMemory = "Dostępne " + MathUtil.bytesToMB(heapMemoryUsage.getMax()) + " MB";
 
-        final String usedRom = "Użyty: " + MathUtil.bytesToGB(usedDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(usedDiskSpace()) + " MB";
-        final String rom = "Dostępny: " + MathUtil.bytesToGB(availableDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(availableDiskSpace()) + " MB";
+        final String usedRom = "Użyty: " + MathUtil.formatBytesDynamic(usedDiskSpace(), true);
+        final String rom = "Dostępny: " + MathUtil.formatBytesDynamic(availableDiskSpace(), true);
 //        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(maxDiskSpace()) + " MB";
 
         STATUS.add("> **Statystyki maszyny**");
@@ -96,11 +96,19 @@ public final class StatusUtil {
     }
 
     public static String getShortStatus() {
-        //TODO: Zrobić to jakoś ładniej
-        final ServerManager serverManager = BDSAUTOENABLE.getServerManager();
+        final StringBuilder stringBuilder = new StringBuilder();
 
-        return "BDSAE-" + BDSAUTOENABLE.getProjectVersion() + " | " + BDSAUTOENABLE.getVersionManager().getLoadedVersion() + " | TPS " + serverManager.getLastTPS() + " Online " +
-                serverManager.getOnlinePlayers().size() + "/" + BDSAUTOENABLE.getServerProperties().getMaxPlayers();
+        final ServerManager serverManager = BDSAUTOENABLE.getServerManager();
+        final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
+        final long ram = heapMemoryUsage.getUsed() + getServerRamUsage();
+
+        stringBuilder.append(BDSAUTOENABLE.getProjectVersion()).append(" | ");
+        stringBuilder.append(BDSAUTOENABLE.getVersionManager().getLoadedVersion()).append(" | ");
+        stringBuilder.append("TPS: ").append(serverManager.getLastTPS()).append(" | ");
+        stringBuilder.append("Online: ").append(serverManager.getOnlinePlayers().size()).append("/").append(BDSAUTOENABLE.getServerProperties().getMaxPlayers()).append(" | ");
+        stringBuilder.append("Ram: ").append(MathUtil.formatBytesDynamic(ram + MathUtil.kilobytesToBytes(getServerRamUsage()), true));
+
+        return stringBuilder.toString();
     }
 
     public static long availableDiskSpace() {
