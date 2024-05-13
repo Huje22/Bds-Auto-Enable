@@ -144,18 +144,20 @@ public class ExtensionManager {
         }
     }
 
-    public void enableExtension(final Extension extension) {
-        if (extension.isEnabled()) return;
+    public boolean enableExtension(final Extension extension) {
+        if (extension.isEnabled()) return true;
         try {
             extension.onEnable();
             extension.setEnabled(true);
             this.eventManager.callEvent(new ExtensionEnableEvent(extension));
             this.logger.info("Włączono&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)");
+            return true;
         } catch (final Exception | Error throwable) {
             extension.setEnabled(false);
             extension.onDisable();
             this.logger.error("Nie udało się włączyć&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)", throwable);
         }
+        return false;
     }
 
     public void enableExtensions() {
@@ -168,18 +170,20 @@ public class ExtensionManager {
         this.logger.info("Włączono&b " + this.extensions.size() + "&r rozszerzeń w czasie&1 " + formattedTime);
     }
 
-    public void disableExtension(final Extension extension) {
+    public boolean disableExtension(final Extension extension) {
         try {
-            if (!extension.isEnabled()) return;
+            if (!extension.isEnabled()) return true;
             extension.onDisable();
             this.eventManager.unRegister(extension);
             this.bdsAutoEnable.getCommandManager().unRegister(extension);
             extension.setEnabled(false);
             this.eventManager.callEvent(new ExtensionDisableEvent(extension));
             this.logger.info("Wyłączono&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)");
+            return true;
         } catch (final Exception | Error throwable) {
             this.logger.error("Nie udało się wyłączyć&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)", throwable);
         }
+        return false;
     }
 
     public void disableExtensions() {

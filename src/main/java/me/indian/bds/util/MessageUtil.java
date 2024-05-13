@@ -89,6 +89,7 @@ public final class MessageUtil {
     public static String stringListToString(final List<String> list, String split) {
         if (split == null) split = " ";
         if (list == null || list.isEmpty()) return "";
+        if (list.size() == 1) return list.get(0);
 
         return String.join(split, list);
     }
@@ -96,6 +97,7 @@ public final class MessageUtil {
     public static <T> String objectListToString(final List<T> list, String split) {
         if (split == null) split = " ";
         if (list == null || list.isEmpty()) return "";
+        if (list.size() == 1) return String.valueOf(list.get(0));
 
         return String.join(split, list.stream().map(Object::toString).toArray(String[]::new));
     }
