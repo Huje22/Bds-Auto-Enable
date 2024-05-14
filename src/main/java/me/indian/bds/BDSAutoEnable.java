@@ -138,7 +138,7 @@ public class BDSAutoEnable {
         new AppMetrics(this);
 
         this.extensionManager.enableExtensions();
-//        this.serverProcess.startProcess();
+        this.serverProcess.startProcess();
         this.setAppWindowName("Zainicjowano");
         this.runAutoPromotion();
         this.setAppName();
