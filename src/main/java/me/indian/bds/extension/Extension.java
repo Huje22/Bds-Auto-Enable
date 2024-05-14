@@ -38,11 +38,11 @@ public abstract class Extension {
         this.enabled = enabled;
     }
 
-    public boolean isLoaded() {
+    public final boolean isLoaded() {
         return this.loaded;
     }
 
-    public void setLoaded(final boolean loaded) {
+    public final void setLoaded(final boolean loaded) {
         this.loaded = loaded;
     }
 
@@ -82,7 +82,7 @@ public abstract class Extension {
         return this.bdsAutoEnable;
     }
 
-    public Logger getLogger() {
+    public final Logger getLogger() {
         return this.logger;
     }
 
@@ -90,7 +90,7 @@ public abstract class Extension {
         return this.extensionDescription;
     }
 
-    public String getVersion() {
+    public final String getVersion() {
         return this.version;
     }
 

@@ -20,7 +20,6 @@ import me.indian.bds.config.LogbackConfig;
 import me.indian.bds.event.EventManager;
 import me.indian.bds.exception.MissingDllException;
 import me.indian.bds.extension.ExtensionManager;
-import me.indian.bds.gui.GuiManager;
 import me.indian.bds.logger.impl.MainLogger;
 import me.indian.bds.metrics.AppMetrics;
 import me.indian.bds.pack.PackManager;
@@ -65,7 +64,6 @@ public class BDSAutoEnable {
     private final ExtensionManager extensionManager;
     private final AllowlistManager allowlistManager;
     private final ExecutorService service;
-    private final GuiManager guiManager;
     private PackManager packManager;
     private CommandManager commandManager;
     private WatchDog watchDog;
@@ -105,7 +103,6 @@ public class BDSAutoEnable {
         this.mcLog = new McLog(this);
         this.extensionManager = new ExtensionManager(this);
         this.allowlistManager = new AllowlistManager(this);
-        this.guiManager = new GuiManager(this);
         this.service = Executors.newSingleThreadExecutor();
         this.serverManager.init();
         ServerUtil.init(this);
@@ -141,8 +138,7 @@ public class BDSAutoEnable {
         new AppMetrics(this);
 
         this.extensionManager.enableExtensions();
-        this.serverProcess.startProcess();
-        this.guiManager.init();
+//        this.serverProcess.startProcess();
         this.setAppWindowName("Zainicjowano");
         this.runAutoPromotion();
         this.setAppName();
