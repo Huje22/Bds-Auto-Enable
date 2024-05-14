@@ -3,7 +3,11 @@ package me.indian.bds.gui;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 
 public class CoordinateGridPanel extends JPanel {
 
@@ -12,6 +16,8 @@ public class CoordinateGridPanel extends JPanel {
 
     public CoordinateGridPanel() {
         this.gridSize = 25;
+        this.setName("CoordinateGridPanel");
+        this.handlePopUp();
     }
 
     public void setGridSize(final int gridSize) {
@@ -43,5 +49,31 @@ public class CoordinateGridPanel extends JPanel {
     @Override
     public Dimension getPreferredSize() {
         return new Dimension(737, 463);
+    }
+
+    private void handlePopUp() {
+        final JPopupMenu popupMenu = new JPopupMenu();
+        final JMenuItem menuItem1 = new JMenuItem("Może coś kiedyś ");
+        final JMenuItem menuItem2 = new JMenuItem("tu będzie");
+        popupMenu.add(menuItem1);
+        popupMenu.add(menuItem2);
+
+        menuItem1.addActionListener(actionEvent -> {
+            System.out.println("Wybrano opcję 1");
+        });
+
+
+        menuItem2.addActionListener(actionEvent -> {
+            System.out.println("Wybrano opcję 2");
+        });
+
+        this.setComponentPopupMenu(popupMenu);
+        this.addMouseListener(new MouseAdapter() {
+            public void mousePressed(final MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    popupMenu.show(e.getComponent(), e.getX(), e.getY());
+                }
+            }
+        });
     }
 }

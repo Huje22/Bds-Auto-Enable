@@ -29,6 +29,8 @@ public class ExtensionCard extends CoordinateGridPanel {
         this.tabbedPane.setPreferredSize(guiManager.getSize());
 
         this.setName("Extensions");
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+//        this.add(Box.createVerticalStrut(0));
 
         for (final Extension extension : this.extensionManager.getExtensions().values()) {
             this.addExtension(extension);
@@ -105,6 +107,4 @@ public class ExtensionCard extends CoordinateGridPanel {
 
         this.tabbedPane.addTab(name + " " + version, this.guiManager.scroll(extensionPanel));
     }
-
-
 }

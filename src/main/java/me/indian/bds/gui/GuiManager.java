@@ -12,67 +12,69 @@ import javax.swing.JTabbedPane;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 
-public class GuiManager extends JFrame {
+public class GuiManager {
 
+    private final JFrame frame;
     private final List<CoordinateGridPanel> cards;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final Dimension size;
+    private final JTabbedPane tabbedPane;
     private final boolean debug;
 
     public GuiManager(final BDSAutoEnable bdsAutoEnable) {
+        this.frame = new JFrame("BDS-Auto-Enable");
         this.cards = new LinkedList<>();
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
         this.size = new Dimension(737, 463);
+        this.tabbedPane = new JTabbedPane();
         this.debug = this.bdsAutoEnable.getAppConfigManager().getAppConfig().isDebug();
+        this.frame.getContentPane().add(this.tabbedPane);
     }
 
     public void init() {
-        this.addCard(new AppCard());
-        this.addCard(new ExtensionCard(this, this.bdsAutoEnable));
         this.createWindow();
+        this.addCard(new AppCard());
+        this.addCard(new ServerCard(this, this.bdsAutoEnable));
+        this.addCard(new ExtensionCard(this, this.bdsAutoEnable));
+        if (this.debug) this.addCard(new CoordinateGridPanel());
     }
 
     private void createWindow() {
-        this.setTitle("BDS-Auto-Enable");
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        this.setSize(this.size);
-        this.setLocationRelativeTo(null);
-        this.setResizable(false);
-        this.setVisible(true);
+        this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.frame.setSize(this.size);
+        this.frame.setLocationRelativeTo(null);
+        this.frame.setResizable(false);
+        this.frame.setVisible(true);
 
-        final JTabbedPane tabbedPane = new JTabbedPane();
-
-        for (final CoordinateGridPanel card : this.cards) {
-            card.setDebug(this.debug);
-            tabbedPane.addTab(card.getName(), card);
-        }
-
-        this.getContentPane().add(tabbedPane);
 
         this.debug();
     }
 
-    private void addCard(final CoordinateGridPanel coordinateGridPanel) {
+    public void addCard(final CoordinateGridPanel coordinateGridPanel) {
         this.cards.add(coordinateGridPanel);
+        coordinateGridPanel.setDebug(this.debug);
+        this.tabbedPane.addTab(coordinateGridPanel.getName(), coordinateGridPanel);
     }
 
     public JScrollPane scroll(final Component component) {
         final JScrollPane scrollPane = new JScrollPane(component);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+        if (this.debug) scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+
         return scrollPane;
     }
 
-    @Override
     public Dimension getSize() {
         return this.size;
     }
 
     private void debug() {
         if (!this.debug) return;
-        this.addComponentListener(new ComponentAdapter() {
+        this.frame.addComponentListener(new ComponentAdapter() {
             @Override
             public void componentResized(final ComponentEvent e) {
                 final Dimension size = e.getComponent().getSize();
@@ -80,6 +82,6 @@ public class GuiManager extends JFrame {
             }
         });
 
-        this.setResizable(true);
+        this.frame.setResizable(true);
     }
 }
