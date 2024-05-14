@@ -64,6 +64,7 @@ public class ServerProcess {
         this.eventManager = this.bdsAutoEnable.getEventManager();
         this.lastConsoleLine = "";
         this.pid = -1;
+        this.startTime = 0;
         this.canRun = true;
         this.canWriteConsoleOutput = true;
     }
@@ -179,6 +180,18 @@ public class ServerProcess {
     }
 
     /**
+     * TODO: Dodaj opis (Tej metody powinno się używać jak zamierza użyć się tylko "stop")
+     */
+    public void disableServer() throws InterruptedException {
+        this.watchDog.saveAndResume();
+        this.sendToConsole("stop");
+        this.logger.alert("Oczekiwanie na zamknięcie servera");
+        this.process.waitFor();
+        ThreadUtil.sleep(1);
+        this.logger.info("&eProces servera zakończył się pomyślnie");
+    }
+
+    /**
      * Metoda dzięki której konsola servera BDS wypisywana jest do konsoli aplikacji
      * Metody wykonywane są z consoleOutputService aby nie obciążać jednego wątku wykonywaniem tylu akcji na raz
      */
@@ -279,18 +292,10 @@ public class ServerProcess {
         ThreadUtil.sleep(3);
         this.bdsAutoEnable.getServerManager().getStatsManager().saveAllData();
 
-        if (this.isEnabled()) {
-            this.watchDog.saveAndResume();
-            this.sendToConsole("stop");
-            this.logger.alert("Oczekiwanie na zamknięcie servera");
-
-            try {
-                this.process.waitFor();
-                ThreadUtil.sleep(1);
-                this.logger.info("&eProces servera zakończył się pomyślnie");
-            } catch (final InterruptedException exception) {
-                this.logger.critical("&4Nie udało się zamknąć procesu servera ,zrób to ręcznie!");
-            }
+        try {
+            if (this.isEnabled()) this.disableServer();
+        } catch (final InterruptedException exception) {
+            this.logger.critical("&4Nie udało się zamknąć procesu servera ,zrób to ręcznie!");
         }
 
         this.bdsAutoEnable.getExtensionManager().disableExtensions();

@@ -139,8 +139,7 @@ public class AutoRestartModule {
                     this.serverProcess.startProcess();
                 }
             } catch (final Exception exception) {
-                ServerUtil.tellrawToAllAndLogger(this.prefix,
-                        "Nie można zrestartować servera!", exception, LogState.ERROR);
+                ServerUtil.tellrawToAllAndLogger(this.prefix, "Nie można zrestartować servera!", exception, LogState.ERROR);
             } finally {
                 this.restarting = false;
             }

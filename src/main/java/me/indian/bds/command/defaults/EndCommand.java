@@ -84,10 +84,8 @@ public class EndCommand extends Command {
             ServerUtil.kickAllPlayers("&cServer jest wyłączany");
         }
 
-        this.serverProcess.sendToConsole("stop");
-
         try {
-            this.serverProcess.waitFor();
+            this.serverProcess.disableServer();
         } catch (final InterruptedException exception) {
             ThreadUtil.sleep(10);
         }

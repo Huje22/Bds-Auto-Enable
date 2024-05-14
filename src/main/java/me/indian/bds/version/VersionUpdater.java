@@ -92,8 +92,7 @@ public class VersionUpdater {
 
             if (this.serverProcess.isEnabled()) {
                 ServerUtil.kickAllPlayers(this.prefix + " &aAktualizowanie servera....");
-                this.serverProcess.sendToConsole("stop");
-                this.serverProcess.waitFor();
+                this.serverProcess.disableServer();
             }
 
             this.versionManager.loadVersion(version);
