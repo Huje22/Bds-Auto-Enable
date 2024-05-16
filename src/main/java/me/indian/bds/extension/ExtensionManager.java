@@ -177,7 +177,6 @@ public class ExtensionManager {
             extension.setEnabled(false);
             this.eventManager.callEvent(new ExtensionDisableEvent(extension));
             this.logger.info("Wyłączono&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)");
-
         } catch (final Exception | Error throwable) {
             this.logger.error("Nie udało się wyłączyć&b " + extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)", throwable);
         }
