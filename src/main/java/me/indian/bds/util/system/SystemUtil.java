@@ -45,6 +45,32 @@ public final class SystemUtil {
         if (osArch.contains("amd64") || osArch.contains("x86_64")) return SystemArch.AMD_X64;
         if (osArch.contains("ar")) return SystemArch.ARM;
         if (osArch.contains("x86")) return SystemArch.AMD_X32;
+/*
+switch (osArch) {
+        case "amd64":
+        case "x86_64":
+            return SystemArch.AMD_X64;
+        case "aarch64":
+            return SystemArch.ARM64;
+        case "arm":
+        case "arm32":
+        case "armv7":
+        case "armv8":
+            return SystemArch.ARM;
+        case "x86":
+        case "i386":
+        case "i486":
+        case "i586":
+        case "i686":
+            return SystemArch.AMD_X32;
+        default:
+            return SystemArch.UNKNOWN;
+    }
+
+
+        */
+
+
         
         return SystemArch.UNKNOWN;
     }
