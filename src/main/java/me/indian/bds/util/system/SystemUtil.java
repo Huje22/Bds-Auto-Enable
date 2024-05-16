@@ -43,9 +43,9 @@ public final class SystemUtil {
         final String osArch = System.getProperty("os.arch").toLowerCase();
 
         if (osArch.contains("amd64") || osArch.contains("x86_64")) return SystemArch.AMD_X64;
-        if (osArch.contains("arm")) return SystemArch.ARM;
+        if (osArch.contains("ar")) return SystemArch.ARM;
         if (osArch.contains("x86")) return SystemArch.AMD_X32;
-
+        
         return SystemArch.UNKNOWN;
     }
 
