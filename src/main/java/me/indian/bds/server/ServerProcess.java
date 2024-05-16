@@ -20,7 +20,6 @@ import me.indian.bds.event.EventManager;
 import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
-import me.indian.bds.exception.BadThreadException;
 import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
@@ -265,10 +264,13 @@ public class ServerProcess {
     public String commandAndResponse(final String command) {
         final Thread thread = Thread.currentThread();
 
-        if (ThreadUtil.isImportantThread())
-            throw new BadThreadException("Nie możesz wykonać tego na tym wątku! (" + thread.getName() + ")");
-        if (thread.isInterrupted())
+        if (ThreadUtil.isImportantThread()) {
+            throw new UnsupportedOperationException("Nie możesz wykonać tego na tym wątku! (" + thread.getName() + ")");
+        }
+
+        if (thread.isInterrupted()) {
             throw new RuntimeException("Ten wątek (" + thread.getName() + ") został przerwany, nie można na nim wykonać tej metody.");
+        }
 
         this.sendToConsole(command);
         ThreadUtil.sleep(1);

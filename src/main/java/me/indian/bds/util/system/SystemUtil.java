@@ -7,7 +7,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
-import me.indian.bds.exception.UnsupportedSystemException;
 
 public final class SystemUtil {
 
@@ -42,37 +41,12 @@ public final class SystemUtil {
     public static SystemArch getCurrentArch() {
         final String osArch = System.getProperty("os.arch").toLowerCase();
 
-        if (osArch.contains("amd64") || osArch.contains("x86_64")) return SystemArch.AMD_X64;
-        if (osArch.contains("ar")) return SystemArch.ARM;
-        if (osArch.contains("x86")) return SystemArch.AMD_X32;
-/*
-switch (osArch) {
-        case "amd64":
-        case "x86_64":
-            return SystemArch.AMD_X64;
-        case "aarch64":
-            return SystemArch.ARM64;
-        case "arm":
-        case "arm32":
-        case "armv7":
-        case "armv8":
-            return SystemArch.ARM;
-        case "x86":
-        case "i386":
-        case "i486":
-        case "i586":
-        case "i686":
-            return SystemArch.AMD_X32;
-        default:
-            return SystemArch.UNKNOWN;
-    }
-
-
-        */
-
-
-        
-        return SystemArch.UNKNOWN;
+        return switch (osArch) {
+            case "amd64", "x86_64" -> SystemArch.AMD_X64;
+            case "x86", "i386", "i486", "i586", "i686" -> SystemArch.AMD_X32;
+            case "aarch64","arm", "arm32", "armv7", "armv8" -> SystemArch.ARM;
+            default -> SystemArch.UNKNOWN;
+        };
     }
 
     public static String getFullyArchCode() {
@@ -98,11 +72,11 @@ switch (osArch) {
         return "Nieznana";
     }
 
-    public static long getRamUsageByPid(final long pid) throws IOException, UnsupportedSystemException {
+    public static long getRamUsageByPid(final long pid) throws IOException {
         return switch (getSystem()) {
             case WINDOWS -> getMemoryUsageWindows(pid);
             case LINUX -> getMemoryUsageLinux(pid);
-            default -> throw new UnsupportedSystemException("Nie można pozyskać ilość ram dla wspieranego systemu");
+            default -> throw new UnsupportedOperationException("Nie można pozyskać ilość ram dla wspieranego systemu");
         };
     }
 

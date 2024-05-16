@@ -174,20 +174,13 @@ public class BDSAutoEnable {
                 this.logger.alert("&aMoże nie udać się nam uruchomić &bBedrock Dedicated Server&a na twoim systemie");
                 return;
             }
-            this.logger.critical("&cTwoja architektura systemu nie jest wspierana! Twoja architektura to&b "
-                    + SystemUtil.getFullyArchCode());
+
+            this.logger.critical("&cTwoja architektura systemu nie jest wspierana! Twoja architektura to&b " + SystemUtil.getFullyArchCode());
             System.exit(9);
         }
 
         if (systemOS == SystemOS.UNSUPPORTED) {
-            /*
-            if (this.appConfig.isDebug()) {
-                this.logger.warning("&aTwój system nie jest wspierany lecz masz włączony&1 Debug&a robisz to na własne&c ryzyko&c!");
-                return;
-            }
-            */
-
-            this.logger.critical("&cTwój system nie jest wspierany!!&r Twój system to:&1 " + System.getProperty("os.name"));
+            this.logger.critical("&cTwój system nie jest wspierany!!&r Twój system to:&1 " + SystemUtil.getFullOsNameWithDistribution());
             System.exit(9);
         }
     }
