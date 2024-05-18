@@ -187,7 +187,6 @@ public class ServerProcess {
         this.logger.alert("Oczekiwanie na zamknięcie servera");
         this.process.waitFor();
         ThreadUtil.sleep(1);
-        this.logger.info("&eProces servera zakończył się pomyślnie");
     }
 
     /**
@@ -247,7 +246,6 @@ public class ServerProcess {
 
             outputStream.write((command + "\n").getBytes());
             outputStream.flush();
-
 
             this.eventManager.callEventWithResponse(new ServerConsoleCommandEvent(command));
             this.logger.debug("Wysłano &b" + command.replaceAll("\n", "\\\\n"));
@@ -386,10 +384,27 @@ public class ServerProcess {
     }
 
     private void handleExitCode(final int exitCode) {
-        if (exitCode == -1073740791) {
-            this.logger.critical("&cKod&b " + exitCode + "&c zazwyczaj występuje gdy jakiś behavior w skryptach ma&1 &nimport \".\"");
-            this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera a ty spróbuj to&l naprawić");
-            ThreadUtil.sleep(30);
+        switch (exitCode) {
+            case 0 -> this.logger.info("&eProces servera zakończył się pomyślnie");
+
+            case 1 -> {
+                this.logger.alert("Proces serwera zakończył się kodem wyjściowym 1, prawdopodobnie został zamknięty z poziomu terminala.");
+                this.eventManager.callEvent(new ServerAlertEvent("Proces serwera zakończył się kodem wyjściowym 1, prawdopodobnie został zamknięty z poziomu terminala.", LogState.ALERT));
+            }
+
+            case -1073740791 -> {
+                this.logger.critical("&cKod&b " + exitCode + "&c zazwyczaj występuje gdy jakiś behavior w skryptach ma&1 &nimport \".\"");
+                this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera a ty spróbuj to&l naprawić");
+
+                this.eventManager.callEvent(new ServerAlertEvent("Kod " + exitCode + " zazwyczaj występuje gdy jakiś behavior w skryptach ma import \".\"",
+                        "Za 30 sekund spróbujemy znów uruchomić proces servera a ty spróbuj to naprawić", LogState.CRITICAL));
+                ThreadUtil.sleep(30);
+            }
+
+            default -> {
+                this.logger.alert("Wystąpił nieznany kod wyjściowy (" + exitCode + "), prosimy o zgłoszenie tego oraz opisanie kroków, które zostały wykonane, abyśmy mogli go zdiagnozować.");
+                this.eventManager.callEvent(new ServerAlertEvent("Wystąpił nieznany kod wyjściowy (" + exitCode + "), prosimy o zgłoszenie tego oraz opisanie kroków, które zostały wykonane, abyśmy mogli go zdiagnozować.", LogState.ALERT));
+            }
         }
     }
 
