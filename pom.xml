@@ -54,13 +54,6 @@
             <version>3.0.1</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.openjdk.nashorn</groupId>
-            <artifactId>nashorn-core</artifactId>
-            <version>15.4</version>
-            <scope>compile</scope>
-        </dependency>
-
 
         <!--   Używam starszej wersji logback bo w nowej nie rozumiem co sie dzieje     -->
         <dependency>
