@@ -231,14 +231,14 @@ public class ServerProcess {
         if (command.isEmpty()) return;
         try {
             if (!this.isEnabled()) {
-                this.logger.debug("Nie udało wysłać się wiadomości do konsoli ponieważ, Process jest&c nullem&r albo nie jest aktywny");
+                this.logger.debug("Nie udało wysłać się wiadomości  (" + command + ") do konsoli ponieważ, Process jest&c nullem&r albo nie jest aktywny");
                 return;
             }
 
             final OutputStream outputStream = this.process.getOutputStream();
 
             if (outputStream == null) {
-                this.logger.critical("Nie udało wysłać się wiadomości do konsoli ponieważ,&b OutputStream&r servera jest&c nullem&r!");
+                this.logger.critical("Nie udało wysłać się wiadomości (" + command + ") do konsoli ponieważ,&b OutputStream&r servera jest&c nullem&r!");
                 return;
             }
 
@@ -289,14 +289,15 @@ public class ServerProcess {
             ServerUtil.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
         }
 
-        ThreadUtil.sleep(3);
-        this.bdsAutoEnable.getServerManager().getStatsManager().saveAllData();
-
         try {
+            this.logger.info("Zamykanie servera...");
             if (this.isEnabled()) this.disableServer();
         } catch (final InterruptedException exception) {
             this.logger.critical("&4Nie udało się zamknąć procesu servera ,zrób to ręcznie!");
         }
+
+        ThreadUtil.sleep(3);
+        this.bdsAutoEnable.getServerManager().getStatsManager().saveAllData();
 
         this.bdsAutoEnable.getExtensionManager().disableExtensions();
 
