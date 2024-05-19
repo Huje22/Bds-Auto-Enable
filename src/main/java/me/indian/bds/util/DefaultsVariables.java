@@ -64,7 +64,7 @@ public final class DefaultsVariables {
     }
 
     public static boolean isJavaLoverThan17() {
-        return Double.parseDouble(System.getProperty("java.version").substring(0, 2)) < 17.0;
+        return Double.parseDouble(System.getProperty("java.specification.version")) < 17.0;
     }
 
     private static boolean wineCheck() {
