@@ -111,8 +111,7 @@ public final class MathUtil {
 
     public static long getGBfromKilobytes(final long kilobytes) {
         final long bytesInGB = 1073741824L; // 1 gigabajt = 1024 * 1024 * 1024 bajtów
-        final long gigabytes = kilobytes / bytesInGB;
-        return gigabytes;
+        return kilobytes / bytesInGB;
     }
 
 

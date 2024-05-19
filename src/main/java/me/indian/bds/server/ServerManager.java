@@ -476,9 +476,9 @@ public class ServerManager {
         final PackModule packModule = this.bdsAutoEnable.getWatchDog().getPackModule();
 
         if (logEntry.contains("BDS Auto Enable") && logEntry.contains("requesting dependency on beta APIs")) {
-            final String noExperiments = """                        
+            final String noExperiments = """
                     Wykryto że `Beta API's` nie są włączone!
-                    Funkcje jak: `licznik czasu gry/śmierci` nie będą działać 
+                    Funkcje jak: `licznik czasu gry/śmierci` nie będą działać
                     """;
 
             this.logger.alert(noExperiments.replaceAll("`", "").replaceAll("\n", ""));

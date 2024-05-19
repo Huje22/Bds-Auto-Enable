@@ -4,13 +4,12 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.Map;
-import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.util.ThreadUtil;
 
 public class TestCommand extends Command {
 
-    public TestCommand(final BDSAutoEnable bdsAutoEnable) {
+    public TestCommand() {
         super("test", " tescik");
     }
 

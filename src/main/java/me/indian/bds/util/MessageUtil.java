@@ -15,12 +15,12 @@ public final class MessageUtil {
     }
 
     public static String generateCode(final int length) {
-        String code = "";
+        final StringBuilder code = new StringBuilder();
         for (int i = 0; i < length; i++) {
-            code += CHARS_STRING.charAt(random.nextInt(CHARS_STRING.length()));
+            code.append(CHARS_STRING.charAt(random.nextInt(CHARS_STRING.length())));
         }
 
-        return code;
+        return code.toString();
     }
 
     public static String colorize(final String msg) {
@@ -58,12 +58,12 @@ public final class MessageUtil {
 
     public static String buildMessageFromArgs(final String[] args, final String[] includeArgs) {
         if (args == null) return "";
-        String message = "";
+        final StringBuilder message = new StringBuilder();
         for (final String arg : args) {
             if (includeArgs != null && Arrays.asList(includeArgs).contains(arg)) continue;
-            message = message.concat(arg + " ");
+            message.append(arg).append(" ");
         }
-        return message.trim();
+        return message.toString().trim();
     }
 
     public static String[] stringToArgs(final String input) {

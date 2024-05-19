@@ -381,7 +381,7 @@ public class Settings {
 
     private void versionQuestion(final ScannerUtil scannerUtil) {
         final String latest = this.bdsAutoEnable.getVersionManager().getLatestVersion();
-        final String check = (latest.equals("") ? "Nie udało odnaleźć się najnowszej wersji" : latest);
+        final String check = (latest.isEmpty() ? "Nie udało odnaleźć się najnowszej wersji" : latest);
 
         this.versionManagerConfig.setVersion(scannerUtil.addStringQuestion(
                 (defaultValue) -> {
@@ -393,7 +393,7 @@ public class Settings {
                     }
                     this.logger.info("Aby pobrać jakąś wersje wpisz jej numer (niektóre mogą mieć .01 / .02 na końcu)");
                 },
-                (latest.equals("") ? this.bdsAutoEnable.getVersionManager().getLoadedVersion() : latest),
+                (latest.isEmpty() ? this.bdsAutoEnable.getVersionManager().getLoadedVersion() : latest),
                 (input) -> this.logger.info("Wersja do załadowania ustawiona na:&1 " + input)
         ));
         this.bdsAutoEnable.getVersionManager().loadVersion();

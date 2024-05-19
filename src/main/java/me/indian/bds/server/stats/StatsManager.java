@@ -236,6 +236,18 @@ public class StatsManager {
         return this.serverStats;
     }
 
+    public Map<String, Long> getLastJoin() {
+        return this.lastJoin;
+    }
+
+    public Map<String, Long> getLastQuit() {
+        return this.lastQuit;
+    }
+
+    public Map<String, Long> getPlaytime() {
+        return this.playtime;
+    }
+
     public Map<String, Long> getPlayTime() {
         this.playerStats.forEach(player -> this.playtime.put(player.getPlayerName(), player.getPlaytime()));
         return this.playtime;

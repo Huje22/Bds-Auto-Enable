@@ -15,7 +15,6 @@ import me.indian.bds.watchdog.WatchDog;
 
 public class RamMonitor {
 
-    private final BDSAutoEnable bdsAutoEnable;
     private final Timer ramMonitorTimer;
     private final Logger logger;
     private final String prefix;
@@ -23,13 +22,11 @@ public class RamMonitor {
     private boolean running;
 
     public RamMonitor(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
-        this.bdsAutoEnable = bdsAutoEnable;
         this.ramMonitorTimer = new Timer("RamMonitorTimer", true);
-        this.logger = this.bdsAutoEnable.getLogger();
+        this.logger = bdsAutoEnable.getLogger();
         this.prefix = watchDog.getWatchDogPrefix();
-        this.ramMonitorConfig = this.bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getRamMonitorConfig();
+        this.ramMonitorConfig = bdsAutoEnable.getAppConfigManager().getWatchDogConfig().getRamMonitorConfig();
         this.running = false;
-
     }
 
     public void monitRamUsage() {

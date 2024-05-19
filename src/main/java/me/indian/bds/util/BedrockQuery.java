@@ -12,7 +12,7 @@ import me.indian.bds.server.properties.component.Gamemode;
 
 /**
  * Kod zaczerpnięty z
- * https://github.com/justin-eckenweber/BedrockServerQuery/blob/main/src/main/java/me/justin/bedrockserverquery/data/BedrockQuery.java
+ * <a href="https://github.com/justin-eckenweber/BedrockServerQuery/blob/main/src/main/java/me/justin/bedrockserverquery/data/BedrockQuery.java">...</a>
  */
 
 public record BedrockQuery(boolean online, long responseTime, String edition, String motd, int protocol,

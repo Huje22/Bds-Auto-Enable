@@ -13,7 +13,6 @@ public class HelpCommand extends Command {
         this.commandMap = commandMap;
     }
 
-
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         this.sendMessage("&a---------------------");

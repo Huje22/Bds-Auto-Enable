@@ -42,24 +42,24 @@ public final class LogbackConfig {
         return """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <configuration>
-                    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">   
-                        <encoder> 
+                    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+                        <encoder>
                             <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %blue(LogBack) %magenta(Logger) [%thread] %highlight(%-5level){TRACE=blue, DEBUG=green, INFO=white, WARN=yellow, ERROR=red} %logger{36} - %msg%n
                              </pattern>
-                        </encoder> 
+                        </encoder>
                     </appender>
-                                
+                
                     <logger name="net.dv8tion.jda" level="ERROR"/>
                     <logger name="net.dv8tion.jda" level="WARN"/>
-                    
+                
                     <logger name="org.eclipse.jetty" level="WARN"/>
                     <logger name="org.eclipse.jetty" level="ERROR"/>
-                    <logger name="io.javalin" level="ERROR"/>       
+                    <logger name="io.javalin" level="ERROR"/>
                     <logger name="io.javalin" level="WARN"/>
-                            
-                    <root level="INFO">  
-                        <appender-ref ref="STDOUT"/>     
-                    </root>         
+                
+                    <root level="INFO">
+                        <appender-ref ref="STDOUT"/>
+                    </root>
                 </configuration>
                 """;
     }

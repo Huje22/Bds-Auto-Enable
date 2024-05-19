@@ -4,6 +4,7 @@ import eu.okaeri.configs.exception.InitializationException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.nio.charset.Charset;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.Scanner;
@@ -198,7 +199,7 @@ public class BDSAutoEnable {
     }
 
     private void checkEncoding() {
-        final String encoding = System.getProperty("file.encoding");
+        final String encoding = Charset.defaultCharset().displayName();
         if (!encoding.equalsIgnoreCase("UTF-8")) {
             if (!this.appConfig.isDebug()) {
                 this.logger.critical("&cTwoje kodowanie to:&b " + encoding + ", &cmy wspieramy tylko&b: UTF-8");
@@ -209,7 +210,7 @@ public class BDSAutoEnable {
                 System.setProperty("file.encoding", "UTF-8");
             }
         } else {
-            this.logger.debug("Wykryto wspierane kodowanie:&b " + System.getProperty("file.encoding"));
+            this.logger.debug("Wykryto wspierane kodowanie:&b " + Charset.defaultCharset().displayName());
         }
     }
 

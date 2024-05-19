@@ -201,7 +201,11 @@ public class ServerProcess {
                     final String line = consoleOutput.nextLine();
                     if (line.isEmpty()) continue;
 
-                    this.serverManager.initFromLog(ConsoleColors.removeAnsiColors(line));
+                    if (DefaultsVariables.isLeviLamina()) {
+                        this.serverManager.initFromLog(ConsoleColors.removeAnsiColors(line));
+                    } else {
+                        this.serverManager.initFromLog(line);
+                    }
 
                     if (this.containsAllowedToAlert(line)) {
                         this.eventManager.callEvent(new ServerAlertEvent(line, LogState.ALERT));

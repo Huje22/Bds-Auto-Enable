@@ -26,18 +26,15 @@ import me.indian.bds.command.defaults.VersionCommand;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.player.position.Position;
-import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.ServerUtil;
 
 public class CommandManager {
 
     private final BDSAutoEnable bdsAutoEnable;
-    private final ServerProcess serverProcess;
     private final Map<Command, Extension> commandMap;
 
     public CommandManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
-        this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.commandMap = new LinkedHashMap<>();
 
         this.commandMap.put(new HelpCommand(this.commandMap), null);
@@ -63,7 +60,7 @@ public class CommandManager {
         this.commandMap.put(new StatsCommand(), null);
 
         if (this.bdsAutoEnable.getAppConfigManager().getAppConfig().isDebug()) {
-            this.commandMap.put(new TestCommand(this.bdsAutoEnable), null);
+            this.commandMap.put(new TestCommand(), null);
         }
 
         for (final Map.Entry<Command, Extension> entry : this.commandMap.entrySet()) {

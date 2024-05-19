@@ -74,8 +74,7 @@ public class PackUpdater {
         }
     }
 
-    @Nullable
-    private int[] getPackLatestVersion() {
+    private int @Nullable [] getPackLatestVersion() {
         try (final Response response = this.getPackManifest()) {
             final JsonObject jsonObject = GsonUtil.getGson().fromJson(response.body().string(), JsonObject.class);
 

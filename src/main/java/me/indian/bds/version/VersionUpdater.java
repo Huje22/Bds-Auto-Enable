@@ -51,7 +51,7 @@ public class VersionUpdater {
                 final String current = VersionUpdater.this.versionManagerConfig.getVersion();
                 final String latest = VersionUpdater.this.bdsAutoEnable.getVersionManager().getLatestVersion();
 
-                if (!current.equals(latest) && !latest.equals("")) {
+                if (!current.equals(latest) && !latest.isEmpty()) {
                     ServerUtil.tellrawToAllAndLogger(VersionUpdater.this.prefix,
                             "&aDostępna jest nowa wersja, aktualna to&b " + current + " &a najnowsza to&b " + latest,
                             LogState.INFO);

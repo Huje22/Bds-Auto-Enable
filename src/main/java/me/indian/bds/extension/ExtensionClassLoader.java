@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Kod użyty z https://github.com/CloudburstMC/Nukkit/blob/master/src/main/java/cn/nukkit/plugin/PluginClassLoader.java
+ * Kod użyty z <a href="https://github.com/CloudburstMC/Nukkit/blob/master/src/main/java/cn/nukkit/plugin/PluginClassLoader.java">...</a>
  */
 
 public class ExtensionClassLoader extends URLClassLoader {

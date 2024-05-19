@@ -8,16 +8,15 @@ import me.indian.bds.extension.ExtensionManager;
 
 public class AppMetrics {
 
-    private final BDSAutoEnable bdsAutoEnable;
     private final ExtensionManager extensionManager;
     private final IMetrics metrics;
 
     public AppMetrics(final BDSAutoEnable bdsAutoEnable) {
-        this.bdsAutoEnable = bdsAutoEnable;
-        this.extensionManager = this.bdsAutoEnable.getExtensionManager();
-        this.metrics = new IMetrics(this.bdsAutoEnable);
+        this.extensionManager = bdsAutoEnable.getExtensionManager();
+        this.metrics = new IMetrics(bdsAutoEnable);
         this.init();
     }
+
     //Z jakiegoś powodu to nie działa, nie chce mi się nad tym siedzieć
 
     private void init() {

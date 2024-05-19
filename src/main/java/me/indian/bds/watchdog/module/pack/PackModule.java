@@ -11,12 +11,10 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.pack.component.BehaviorPack;
 import me.indian.bds.pack.loader.BehaviorPackLoader;
 import me.indian.bds.pack.loader.ResourcePackLoader;
-import me.indian.bds.watchdog.WatchDog;
 import org.jetbrains.annotations.Nullable;
 
 public class PackModule {
 
-    private final WatchDog watchDog;
     private final Logger logger;
     private final String packName;
     private final ResourcePackLoader resourcePackLoader;
@@ -26,8 +24,7 @@ public class PackModule {
     private BehaviorPack mainPack;
     private boolean loaded, appHandledMessages;
 
-    public PackModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
-        this.watchDog = watchDog;
+    public PackModule(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
         this.packName = "BDS-Auto-Enable-Managment-Pack";
         this.resourcePackLoader = bdsAutoEnable.getPackManager().getResourcePackLoader();

@@ -26,11 +26,7 @@ public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler
         }
         this.bdsAutoEnable.getEventManager().callEvent(new ServerUncaughtExceptionEvent(thread, throwable));
 
-        if (this.appConfig.isCloseOnException()) {
-            System.exit(20);
-        }
-
-        if (this.bdsAutoEnable.isMainThread(thread)) {
+        if (this.appConfig.isCloseOnException() || this.bdsAutoEnable.isMainThread(thread)) {
             System.exit(20);
         }
     }
