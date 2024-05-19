@@ -393,6 +393,12 @@ public class ServerProcess {
                 this.eventManager.callEvent(new ServerAlertEvent("Proces serwera zakończył się kodem wyjściowym 1, prawdopodobnie został zamknięty z poziomu terminala.", LogState.ALERT));
             }
 
+            case 130 -> {
+                this.logger.alert("Proces serwera zakończył się kodem wyjściowym 130, prawdopodobnie został zamknięty za pomocą sygnału SIGINT. Nie jest to najlepszym wyjściem dla BDS");
+                this.eventManager.callEvent(new ServerAlertEvent("Proces serwera zakończył się kodem wyjściowym 130, prawdopodobnie został zamknięty za pomocą sygnału SIGINT.",
+                        "Nie jest to najlepszym wyjściem dla BDS", LogState.ALERT));
+            }
+
             case -1073740791 -> {
                 this.logger.critical("&cKod&b " + exitCode + "&c zazwyczaj występuje gdy jakiś behavior w skryptach ma&1 &nimport \".\"");
                 this.logger.alert("Za&1 30&r sekund spróbujemy znów uruchomić proces servera a ty spróbuj to&l naprawić");
