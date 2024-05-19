@@ -119,8 +119,12 @@ public class ResourcePackLoader {
 
             for (final File file : packs) {
                 if (file.getName().endsWith(".zip")) {
-                    ZipUtil.unzipFile(file.getPath(), this.resourcesFolder.getPath(), true);
-                    this.logger.info("Odpakowano folder&b " + file.getName() + " z paczką&d tekstur");
+                    try {
+                        ZipUtil.unzipFile(file.getPath(), this.resourcesFolder.getPath(), true);
+                        this.logger.info("Odpakowano folder&b " + file.getName() + "&r z paczką&d tekstur");
+                    } catch (final Exception exception) {
+                        this.logger.info("&cNie udało się odpakować folderu&b " + file.getName() + "&r z paczką tekstur", exception);
+                    }
                 }
             }
 

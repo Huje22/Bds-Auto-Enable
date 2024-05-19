@@ -115,8 +115,12 @@ public class BehaviorPackLoader {
 
             for (final File file : packs) {
                 if (file.getName().endsWith(".zip")) {
-                    ZipUtil.unzipFile(file.getPath(), this.behaviorsFolder.getPath(), true);
-                    this.logger.info("Odpakowano folder&b " + file.getName() + " z paczką&d zachowań");
+                    try {
+                        ZipUtil.unzipFile(file.getPath(), this.behaviorsFolder.getPath(), true);
+                        this.logger.info("Odpakowano folder&b " + file.getName() + "&r z paczką&d zachowań");
+                    } catch (final Exception exception) {
+                        this.logger.info("&cNie udało się odpakować folderu&b " + file.getName() + "&r z paczką zachować", exception);
+                    }
                 }
             }
 
