@@ -62,7 +62,7 @@ public final class ZipUtil {
             while ((zipEntry = zipInputStream.getNextEntry()) != null) {
                 final String entryName = zipEntry.getName();
                 final File outputFile = new File(targetDirectory + File.separator + entryName);
-                if (entryName.contains(File.separator + ".git")) continue;
+                if (outputFile.getPath().contains(File.separator + ".git")) continue;
                 if (outputFile.exists() && skipFiles != null && skipFiles.contains(outputFile.getAbsolutePath())) {
                     LOGGER.info("Omijam plik&1 " + outputFile.getAbsolutePath());
                     continue;
@@ -92,7 +92,7 @@ public final class ZipUtil {
         final File[] files = folder.listFiles();
         if (files != null) {
             for (final File file : files) {
-                if (file.getAbsolutePath().contains(File.separator + ".git")) continue;
+                if (file.getPath().contains(File.separator + ".git")) continue;
                 if (file.isDirectory()) {
                     addFolderToZip(file, folderName + File.separator + file.getName(), zos);
                 } else {
