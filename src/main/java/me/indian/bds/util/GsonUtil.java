@@ -11,6 +11,7 @@ public final class GsonUtil {
             .disableHtmlEscaping().setLenient()
             .excludeFieldsWithModifiers(Modifier.PRIVATE)
             .create();
+    //TODO: detLenient() jest przestarzałe, trzeba użyć innej formy z docs gsona
 
     private GsonUtil() {
     }
