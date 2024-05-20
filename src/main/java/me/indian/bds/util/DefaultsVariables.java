@@ -36,6 +36,7 @@ public final class DefaultsVariables {
     }
 
     public static boolean isLeviLamina() {
+        //TODO: Zrobić coś lżejszego, był chyba Files.exsist() czy coś takiego 
         return new File(APPCONFIG.getFilesPath() + File.separator + "bedrock_server_mod.exe").exists();
     }
 
