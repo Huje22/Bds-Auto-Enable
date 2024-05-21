@@ -179,7 +179,7 @@ public class ServerProcess {
     }
 
     /**
-     * TODO: Dodaj opis (Tej metody powinno się używać jak zamierza użyć się tylko "stop")
+     * Metoda aby zatrzymać server z oczekiwaniem i zapisaniem świata , najlepiej używać jej tylko wtedy gdy trzeba użyć samego "stop" aby zatrzymać server
      */
     public void disableServer() throws InterruptedException {
         this.watchDog.saveAndResume();
