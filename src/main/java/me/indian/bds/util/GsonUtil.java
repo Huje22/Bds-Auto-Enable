@@ -3,7 +3,6 @@ package me.indian.bds.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.Strictness;
-import java.lang.reflect.Modifier;
 
 public final class GsonUtil {
 
@@ -11,7 +10,6 @@ public final class GsonUtil {
             .setPrettyPrinting().serializeNulls()
             .disableHtmlEscaping()
             .setStrictness(Strictness.LENIENT)
-            .excludeFieldsWithModifiers(Modifier.PRIVATE)
             .create();
 
     private GsonUtil() {
