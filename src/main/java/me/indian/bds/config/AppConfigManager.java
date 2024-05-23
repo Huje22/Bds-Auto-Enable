@@ -74,22 +74,70 @@ public class AppConfigManager {
         this.fixVariables();
     }
 
-    public void load() {
+    public void loadAll() {
         this.fixVariables();
+        this.loadAppConfig();
+        this.loadTransferConfig();
+        this.loadLogConfig();
+        this.loadVersionManagerConfig();
+        this.loadWatchDogConfig();
+        this.loadCommandConfig();
+    }
+
+    public void saveAll() {
+        this.saveAppConfig();
+        this.saveTransferConfig();
+        this.saveLogConfig();
+        this.saveVersionManagerConfig();
+        this.saveWatchDogConfig();
+        this.saveCommandConfig();
+    }
+
+   public void loadAppConfig() {
         this.appConfig = (AppConfig) this.appConfig.load(true);
+    }
+
+   public void loadTransferConfig() {
         this.transferConfig = (TransferConfig) this.transferConfig.load(true);
+    }
+
+   public void loadLogConfig() {
         this.logConfig = (LogConfig) this.logConfig.load(true);
+    }
+
+   public void loadVersionManagerConfig() {
         this.versionManagerConfig = (VersionManagerConfig) this.versionManagerConfig.load(true);
+    }
+
+   public void loadWatchDogConfig() {
         this.watchDogConfig = (WatchDogConfig) this.watchDogConfig.load(true);
+    }
+
+   public void loadCommandConfig() {
         this.commandConfig = (CommandConfig) this.commandConfig.load(true);
     }
 
-    public void save() {
+   public void saveAppConfig() {
         this.appConfig = (AppConfig) this.appConfig.save();
+    }
+
+   public void saveTransferConfig() {
         this.transferConfig = (TransferConfig) this.transferConfig.save();
+    }
+
+   public void saveLogConfig() {
         this.logConfig = (LogConfig) this.logConfig.save();
+    }
+
+   public void saveVersionManagerConfig() {
         this.versionManagerConfig = (VersionManagerConfig) this.versionManagerConfig.save();
+    }
+
+   public void saveWatchDogConfig() {
         this.watchDogConfig = (WatchDogConfig) this.watchDogConfig.save();
+    }
+
+   public void saveCommandConfig() {
         this.commandConfig = (CommandConfig) this.commandConfig.save();
     }
 

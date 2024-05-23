@@ -124,7 +124,7 @@ public class VersionManager {
             ZipUtil.unzipFile(verFile.getAbsolutePath(), this.appConfig.getFilesPath(), false, this.importantFiles);
             this.setLoaded(true);
             this.versionManagerConfig.setVersion(version);
-            this.appConfigManager.save();
+            this.appConfigManager.saveVersionManagerConfig();
             this.logger.info("Załadowano wersie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         } catch (final Exception exception) {
             this.logger.critical("Nie można załadować wersji:&1 " + version, exception);
@@ -242,7 +242,7 @@ public class VersionManager {
 
     public void setLoaded(final boolean loaded) {
         this.versionManagerConfig.setLoaded(loaded);
-        this.appConfigManager.save();
+        this.appConfigManager.saveVersionManagerConfig();
     }
 
     public String getLoadedVersion() {
@@ -252,7 +252,7 @@ public class VersionManager {
     public void setLoadedVersion(final String version) {
         if (DefaultsVariables.isLeviLamina()) return;
         this.versionManagerConfig.setVersion(version);
-        this.appConfigManager.save();
+        this.appConfigManager.saveVersionManagerConfig();
     }
 
     public int getLastKnownProtocol() {
