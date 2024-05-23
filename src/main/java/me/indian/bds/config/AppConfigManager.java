@@ -94,6 +94,7 @@ public class AppConfigManager {
     }
 
    public void loadAppConfig() {
+       this.fixVariables();
         this.appConfig = (AppConfig) this.appConfig.load(true);
     }
 
@@ -118,6 +119,7 @@ public class AppConfigManager {
     }
 
    public void saveAppConfig() {
+       this.fixVariables();
         this.appConfig = (AppConfig) this.appConfig.save();
     }
 
