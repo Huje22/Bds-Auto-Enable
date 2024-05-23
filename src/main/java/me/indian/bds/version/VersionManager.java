@@ -115,7 +115,7 @@ public class VersionManager {
         try {
             this.logger.info("Ładowanie wersji:&1 " + version);
             if (!this.hasVersion(version)) {
-                this.logger.error("Wielkość wersji nie jest zgodna!");
+                this.logger.error("&cNie znaleziono wersji&b" + version + "&c bądź jej wielkość się nie zgadza!");
                 this.downloadServerFiles(version);
             }
 
@@ -145,6 +145,7 @@ public class VersionManager {
             this.logger.info("Pobieranie wersji: &1" + version);
             HTTPUtil.download(this.getServerDownloadUrl(version),this.versionFolder.getPath() + File.separator + version + ".zip", this.logger);
             this.logger.info("Pobrano wersje: &1" + version);
+            this.loadVersionsInfo();
         } catch (final IOException | DownloadException exception) {
             this.logger.error("Wystąpił błąd podczas próby pobrania wersji " + version, exception);
         }
