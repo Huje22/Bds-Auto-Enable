@@ -1,21 +1,21 @@
 package me.indian.bds.util;
 
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.AppConfig;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.system.SystemUtil;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
 import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
+import me.indian.bds.BDSAutoEnable;
+import me.indian.bds.config.AppConfig;
+import me.indian.bds.logger.Logger;
+import me.indian.bds.util.system.SystemUtil;
 
 public final class DefaultsVariables {
 
     public static boolean WINE;
     private static AppConfig APPCONFIG;
     private static Logger LOGGER;
+    private static File LEVILAMINA_FILE;
 
     private DefaultsVariables() {
     }
@@ -24,6 +24,7 @@ public final class DefaultsVariables {
         APPCONFIG = bdsAutoEnable.getAppConfigManager().getAppConfig();
         LOGGER = bdsAutoEnable.getLogger();
         WINE = wineCheck();
+        LEVILAMINA_FILE = new File(APPCONFIG.getFilesPath() + File.separator + "bedrock_server_mod.exe");
     }
 
     public static String getDefaultFileName() {
@@ -36,8 +37,7 @@ public final class DefaultsVariables {
     }
 
     public static boolean isLeviLamina() {
-        //TODO: Zrobić coś lżejszego, był chyba Files.exsist() czy coś takiego 
-        return new File(APPCONFIG.getFilesPath() + File.separator + "bedrock_server_mod.exe").exists();
+        return LEVILAMINA_FILE.exists();
     }
 
     public static String getJarDir() {
