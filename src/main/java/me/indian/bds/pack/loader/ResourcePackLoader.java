@@ -110,7 +110,7 @@ public class ResourcePackLoader {
         }
 
         try {
-            File[] packs = new File(this.resourcesFolder.getPath()).listFiles();
+            File[] packs = new File(this.resourcesFolder.getPath()).listFiles(file -> file.getName().endsWith(".zip") || file.getName().endsWith(".mcpack"));
 
             if (packs == null) {
                 this.logger.info("Nie wykryto behaviorów do załadowania");
@@ -118,17 +118,15 @@ public class ResourcePackLoader {
             }
 
             for (final File file : packs) {
-                if (file.getName().endsWith(".zip")) {
-                    try {
-                        ZipUtil.unzipFile(file.getPath(), this.resourcesFolder.getPath(), true);
-                        this.logger.info("Odpakowano folder&b " + file.getName() + "&r z paczką&d tekstur");
-                    } catch (final Exception exception) {
-                        this.logger.info("&cNie udało się odpakować folderu&b " + file.getName() + "&r z paczką tekstur", exception);
-                    }
+                try {
+                    ZipUtil.unzipFile(file.getPath(), this.resourcesFolder.getPath(), true);
+                    this.logger.info("Odpakowano folder&b " + file.getName() + "&r z paczką&d tekstur");
+                } catch (final Exception exception) {
+                    this.logger.info("&cNie udało się odpakować folderu&b " + file.getName() + "&r z paczką tekstur", exception);
                 }
             }
 
-            packs = new File(this.resourcesFolder.getPath()).listFiles();
+            packs = new File(this.resourcesFolder.getPath()).listFiles(File::isDirectory);
 
             if (packs == null) {
                 this.logger.info("Nie wykryto behaviorów do załadowania");
@@ -139,7 +137,6 @@ public class ResourcePackLoader {
 
             for (final File file : packs) {
                 try {
-                    if (!file.isDirectory()) continue;
                     final TexturePack packFromFile = this.getPackFromFile(file);
                     if (packFromFile != null && !this.packIsLoaded(packFromFile)) {
                         this.loadPack(packFromFile);

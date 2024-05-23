@@ -36,6 +36,7 @@ public class AppConfig extends OkaeriConfig {
     @Comment({"Czy restartować server gdy TPS dwa razy pod rząd są mniejsze niż 9?"})
     @CustomKey("RestartOnLowTPS")
     private boolean restartOnLowTPS = true;
+
     @Comment({""})
     @Comment({"Ścieżka do plików z serverem"})
     @CustomKey("FilesPath")
@@ -47,10 +48,10 @@ public class AppConfig extends OkaeriConfig {
     @CustomKey("LoadTexturePacks")
     private boolean loadTexturePacks = true;
 
-//    @Comment({""})
-//    @Comment({"Czy ładować automatycznie paczki zachowań które nie są załadowane?"})
-//    @CustomKey("LoadBehaviorPacks")
-//    private boolean loadBehaviorPacks = true;
+    @Comment({""})
+    @Comment({"Czy ładować automatycznie paczki zachowań które nie są załadowane?"})
+    @CustomKey("LoadBehaviorPacks")
+    private boolean loadBehaviorPacks = true;
 
     @Comment({""})
     @Comment({"Czy zamknąć aplikacje jeśli wystąpi niezłapany wyjątek?"})

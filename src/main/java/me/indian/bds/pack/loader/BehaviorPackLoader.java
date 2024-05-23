@@ -105,8 +105,13 @@ public class BehaviorPackLoader {
     }
 
     public void findAllPacks() {
+        if (!this.bdsAutoEnable.getAppConfigManager().getAppConfig().isLoadTexturePacks()) {
+            this.logger.debug("Automatyczne ładowanie paczek zachowań jest&c wyłączone");
+            return;
+        }
+
         try {
-            File[] packs = new File(this.behaviorsFolder.getPath()).listFiles();
+            File[] packs = new File(this.behaviorsFolder.getPath()).listFiles(file -> file.getName().endsWith(".zip") || file.getName().endsWith(".mcpack"));
 
             if (packs == null) {
                 this.logger.info("Nie wykryto behaviorów do załadowania");
@@ -114,17 +119,15 @@ public class BehaviorPackLoader {
             }
 
             for (final File file : packs) {
-                if (file.getName().endsWith(".zip")) {
-                    try {
-                        ZipUtil.unzipFile(file.getPath(), this.behaviorsFolder.getPath(), true);
-                        this.logger.info("Odpakowano folder&b " + file.getName() + "&r z paczką&d zachowań");
-                    } catch (final Exception exception) {
-                        this.logger.info("&cNie udało się odpakować folderu&b " + file.getName() + "&r z paczką zachować", exception);
-                    }
+                try {
+                    ZipUtil.unzipFile(file.getPath(), this.behaviorsFolder.getPath(), true);
+                    this.logger.info("Odpakowano folder&b " + file.getName() + "&r z paczką&d zachowań");
+                } catch (final Exception exception) {
+                    this.logger.info("&cNie udało się odpakować folderu&b " + file.getName() + "&r z paczką zachować", exception);
                 }
             }
 
-            packs = new File(this.behaviorsFolder.getPath()).listFiles();
+            packs = new File(this.behaviorsFolder.getPath()).listFiles(File::isDirectory);
 
             if (packs == null) {
                 this.logger.info("Nie wykryto behaviorów do załadowania");
@@ -135,7 +138,6 @@ public class BehaviorPackLoader {
 
             for (final File file : packs) {
                 try {
-                    if (!file.isDirectory()) continue;
                     final BehaviorPack packFromFile = this.getPackFromFile(file);
                     if (packFromFile != null && !this.packIsLoaded(packFromFile)) {
                         this.loadPack(packFromFile);
