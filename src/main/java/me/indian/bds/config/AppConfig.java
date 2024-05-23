@@ -50,6 +50,7 @@ public class AppConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Czy ładować automatycznie paczki zachowań które nie są załadowane?"})
+    @Comment({"UWAGA: Jest to w fazie beta"})
     @CustomKey("LoadBehaviorPacks")
     private boolean loadBehaviorPacks = true;
 
@@ -72,7 +73,6 @@ public class AppConfig extends OkaeriConfig {
     @Comment({"Debug, dodatkowe wiadomości w konsoli dla developerów"})
     @CustomKey("Debug")
     private boolean debug = false;
-
 
     public boolean isFirstRun() {
         return this.firstRun;
@@ -112,6 +112,10 @@ public class AppConfig extends OkaeriConfig {
 
     public boolean isLoadTexturePacks() {
         return this.loadTexturePacks;
+    }
+
+    public boolean isLoadBehaviorPacks() {
+        return this.loadBehaviorPacks;
     }
 
     public void setFilesPath(final String filesPath) {

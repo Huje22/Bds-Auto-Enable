@@ -105,7 +105,7 @@ public class BehaviorPackLoader {
     }
 
     public void findAllPacks() {
-        if (!this.bdsAutoEnable.getAppConfigManager().getAppConfig().isLoadTexturePacks()) {
+        if (!this.bdsAutoEnable.getAppConfigManager().getAppConfig().isLoadBehaviorPacks()) {
             this.logger.debug("Automatyczne ładowanie paczek zachowań jest&c wyłączone");
             return;
         }
