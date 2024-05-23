@@ -3,6 +3,7 @@ package me.indian.bds.server.properties;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,6 +38,7 @@ public class ServerProperties {
         try {
             this.properties.clear();
             this.properties.load(Files.newInputStream(this.propertiesFile.toPath()));
+            this.fixWorldName();
         } catch (final IOException exception) {
             this.logger.critical("&cWystąpił krytyczny błąd podczas ładowania &aserver.properties", exception);
             System.exit(5);
@@ -92,6 +94,26 @@ public class ServerProperties {
             this.logger.logThrowable(exception);
             this.setWorldName("Bedrock level");
             return "Bedrock level";
+        }
+    }
+
+    public void fixWorldName() {
+        String worldName = this.getWorldName();
+
+        if (worldName == null || worldName.isEmpty() || worldName.equals("null")) {
+            try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DefaultsVariables.getWorldsPath()))) {
+                for (final Path path : directoryStream) {
+                    if (Files.isDirectory(path) && Files.exists(path)) {
+                        worldName = path.toFile().getName();
+                        break;
+                    }
+                }
+            } catch (final Exception exception) {
+                worldName = "Bedrock level";
+            }
+
+            this.setWorldName(worldName);
+            this.logger.debug("&aNaprawiono nazwę świata&c!&d (&b" + worldName + "&d)");
         }
     }
 

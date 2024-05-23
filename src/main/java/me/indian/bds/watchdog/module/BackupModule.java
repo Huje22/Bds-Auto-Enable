@@ -24,7 +24,6 @@ import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.FileUtil;
@@ -44,7 +43,7 @@ public class BackupModule {
     private final AppConfigManager appConfigManager;
     private final WatchDogConfig watchDogConfig;
     private final List<Path> backups;
-    private final ServerProperties serverProperties;
+    private final String worldName, worldPath;
     private final File worldFile;
     private final WatchDog watchDog;
     private final String prefix;
@@ -53,7 +52,7 @@ public class BackupModule {
     private final BackupConfig backupConfig;
     private ServerProcess serverProcess;
     private File backupFolder;
-    private String status, worldName, worldPath;
+    private String status;
     private long lastPlanedBackupMillis;
     private boolean backuping;
 
@@ -68,8 +67,6 @@ public class BackupModule {
         this.timer = new Timer("Backup-Timer", true);
         this.worldName = this.bdsAutoEnable.getServerProperties().getWorldName();
         this.worldPath = DefaultsVariables.getWorldsPath() + this.worldName;
-        this.serverProperties = this.bdsAutoEnable.getServerProperties();
-        this.fixWorldName();
         this.worldFile = new File(this.worldPath);
         this.createWorldFile();
         this.prefix = this.watchDog.getWatchDogPrefix();
@@ -100,7 +97,6 @@ public class BackupModule {
     private void run() {
         if (this.watchDogConfig.getBackupConfig().isEnabled()) {
             final long time = MathUtil.minutesTo(this.backupConfig.getBackupFrequency(), TimeUnit.MILLISECONDS);
-
             final TimerTask backupTask = new TimerTask() {
 
                 boolean cachedNonPlayers = false;
@@ -129,9 +125,8 @@ public class BackupModule {
             return;
         }
 
-        if (!this.worldFile.exists()) return;
+        if (!this.worldFile.exists() || !this.canDoBackup()) return;
 
-        if (!this.canDoBackup()) return;
         if (this.backuping) {
             this.logger.error("&cNie można wykonać backup gdy jeden jest już wykonywany");
             return;
@@ -238,28 +233,6 @@ public class BackupModule {
                 }
             }
             this.logger.info("Utworzono brakujący folder świata");
-        }
-    }
-
-    public void fixWorldName() {
-        String worldName = this.serverProperties.getWorldName();
-
-        if (worldName == null || worldName.isEmpty() || worldName.equals("null")) {
-            try (final DirectoryStream<Path> directoryStream = Files.newDirectoryStream(Paths.get(DefaultsVariables.getWorldsPath()))) {
-                for (final Path path : directoryStream) {
-                    if (Files.isDirectory(path) && Files.exists(path)) {
-                        worldName = path.toFile().getName();
-                        this.worldPath = path.toString();
-                        break;
-                    }
-                }
-            } catch (final Exception exception) {
-                worldName = "Bedrock level";
-            }
-
-            this.serverProperties.setWorldName(worldName);
-            this.worldName = worldName;
-            this.logger.debug("&aNaprawiono nazwe świata&c!");
         }
     }
 
