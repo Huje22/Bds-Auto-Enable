@@ -16,8 +16,18 @@ public class HelpCommand extends Command {
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
         this.sendMessage("&a---------------------");
-        this.commandMap.forEach((command, extension) -> this.sendMessage("&a" + command.getName() + " &4-&b " + command.getDescription()));
+        this.commandMap.forEach((command, extension) -> this.sendMessage("&a" + command.getName() + " &4-&b " + command.getDescription() + " &e" + this.getExtensionInfo(extension,isOp)));
         this.sendMessage("&a---------------------");
         return true;
+    }
+
+    private String getExtensionInfo(final Extension extension, final boolean isOp) {
+        String info = "";
+
+        if (extension != null && isOp) {
+            info = extension.getName() + "&r (Wersja:&a " + extension.getVersion() + "&r Autor:&a " + extension.getAuthor() + "&r)";
+        }
+
+        return info;
     }
 }
