@@ -26,7 +26,6 @@ public class EndCommand extends Command {
         this.canStop = true;
 
         this.addOption("[seconds]");
-
     }
 
     @Override
@@ -44,14 +43,13 @@ public class EndCommand extends Command {
                 seconds = Integer.parseInt(args[0]);
             } catch (final NumberFormatException ignored) {
             }
-            this.stop(seconds);
-        } else {
-            this.stop(seconds);
         }
+
+        this.end(seconds);
         return true;
     }
 
-    private void stop(final int seconds) {
+    private void end(final int seconds) {
         if (!this.canStop) {
             this.sendMessage("&cServer jest już w trakcie zatrzymywania");
             return;
