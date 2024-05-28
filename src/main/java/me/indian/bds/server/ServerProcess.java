@@ -359,6 +359,10 @@ public class ServerProcess {
         this.process.destroy();
     }
 
+    public void destroyForciblyProcess() {
+        this.process.destroyForcibly();
+    }
+
     private void someChangesForCommands(final String command) {
         if (command.equalsIgnoreCase("stop")) {
             if (!this.isEnabled()) return;

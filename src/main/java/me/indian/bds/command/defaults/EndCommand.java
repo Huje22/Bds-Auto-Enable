@@ -1,9 +1,11 @@
 package me.indian.bds.command.defaults;
 
+import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.config.sub.transfer.LobbyConfig;
 import me.indian.bds.logger.LogState;
+import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ServerUtil;
@@ -12,12 +14,14 @@ import me.indian.bds.util.ThreadUtil;
 public class EndCommand extends Command {
 
     private final BDSAutoEnable bdsAutoEnable;
+    private final Logger logger;
     private final ServerProcess serverProcess;
     private boolean canStop;
 
     public EndCommand(final BDSAutoEnable bdsAutoEnable) {
         super("end", "Kończy działanie servera i aplikacji");
         this.bdsAutoEnable = bdsAutoEnable;
+        this.logger = bdsAutoEnable.getLogger();
         this.serverProcess = bdsAutoEnable.getServerProcess();
         this.canStop = true;
 
@@ -85,8 +89,19 @@ public class EndCommand extends Command {
         }
 
         try {
-            this.serverProcess.disableServer();
+            this.serverProcess.sendToConsole("stop");
+            this.logger.alert("Oczekiwanie na zamknięcie servera");
+            if (!this.serverProcess.waitFor(2, TimeUnit.MINUTES)) {
+                ServerUtil.tellrawToAllAndLogger("", "&4Proces servera nie zakończył się w czasie&e 2&b minut&4 powoduje to zabicie procesu", LogState.ERROR);
+
+                this.serverProcess.destroyProcess();
+
+                if (!this.serverProcess.waitFor(30, TimeUnit.SECONDS)) {
+                    this.serverProcess.destroyForciblyProcess();
+                }
+            }
         } catch (final InterruptedException exception) {
+            this.logger.error("Proces został przerwany", exception);
             ThreadUtil.sleep(10);
         }
         System.exit(0);
