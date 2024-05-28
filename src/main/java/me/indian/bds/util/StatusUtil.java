@@ -87,7 +87,7 @@ public final class StatusUtil {
         STATUS.add("> **Statystyki aplikacji**");
         STATUS.add("Czas działania: `" + DateUtil.formatTimeDynamic(System.currentTimeMillis() - BDSAUTOENABLE.getStartTime()) + "`");
         STATUS.add("Pamięć RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
-        STATUS.add("Aktualna liczba wątków: `" + Thread.activeCount() + "/" + ThreadUtil.getThreadsCount() + "`");
+        STATUS.add("Aktualna liczba wątków: `" + ThreadUtil.getThreadsCount() + "/" + ThreadUtil.getPeakThreadsCount() + "` ");
         STATUS.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
 
         if (!markdown) STATUS.replaceAll(s -> s.replaceAll("`", "&b").replaceAll("\\*", "&a").replaceAll("> ", "&l"));
