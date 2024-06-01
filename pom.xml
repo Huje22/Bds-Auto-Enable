@@ -24,36 +24,46 @@
 
 
     <dependencies>
+        <!--        Adnotacje od JetBrains aby kod lepiej wyglądał-->
         <dependency>
             <groupId>org.jetbrains</groupId>
             <artifactId>annotations</artifactId>
             <version>24.1.0</version>
             <scope>compile</scope>
         </dependency>
+
+        <!--        Łatwe konfiguracje YML-->
         <dependency>
             <groupId>eu.okaeri</groupId>
             <artifactId>okaeri-configs-yaml-snakeyaml</artifactId>
             <version>5.0.1</version>
             <scope>compile</scope>
         </dependency>
+
+        <!--        Serializacja i deserializacja Json-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
             <version>2.11.0</version>
             <scope>compile</scope>
         </dependency>
+
+        <!--        Rządania HTTP-->
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
             <version>5.0.0-alpha.12</version>
             <scope>compile</scope>
         </dependency>
+
+        <!--       Wysyłanie logów na https://mclo.gs/-->
         <dependency>
             <groupId>gs.mclo</groupId>
             <artifactId>api</artifactId>
             <version>3.0.1</version>
             <scope>compile</scope>
         </dependency>
+
 
         <!--   Używam starszej wersji logback bo w nowej nie rozumiem co sie dzieje     -->
         <dependency>
