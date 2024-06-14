@@ -70,7 +70,7 @@ public class BDSAutoEnable {
 
     public BDSAutoEnable() {
         if (instanceRuned) {
-            throw new InitializationException("Można utworzyć tylko jedną instancję klasy BDSAutoEnable.");
+            throw new IllegalStateException("Można utworzyć tylko jedną instancję klasy BDSAutoEnable.");
         }
         instanceRuned = true;
         this.mainThread = Thread.currentThread();
@@ -214,12 +214,16 @@ public class BDSAutoEnable {
     }
 
     private void checkMemory() {
+        final long maxComputerMem = MathUtil.bytesToMB(StatusUtil.getAvailableRam());
         final long maxMem = MathUtil.bytesToMB(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax());
-        if (maxMem < 1000)
+
+        if (maxMem < 1000) {
             this.logger.warning("&cWykryto małą ilość pamięci przeznaczonej dla aplikacji! &b(&a" + maxMem + " mb&b)");
+        }
 
-
-        //TODO: Sprawdź czy system ma minimum 4GB RAM, jeśli nie daj ostrzeżenie 
+        if (maxComputerMem < 4000) {
+            this.logger.warning("&cTwoja maszyna posiada tylko&b " + maxComputerMem + "mb&c ramu, zalecane jest&b 4024mb");
+        }
     }
 
     private void checkExecutable() {
