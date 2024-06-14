@@ -1,6 +1,5 @@
 package me.indian.bds;
 
-import eu.okaeri.configs.exception.InitializationException;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -218,6 +217,9 @@ public class BDSAutoEnable {
         final long maxMem = MathUtil.bytesToMB(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax());
         if (maxMem < 1000)
             this.logger.warning("&cWykryto małą ilość pamięci przeznaczonej dla aplikacji! &b(&a" + maxMem + " mb&b)");
+
+
+        //TODO: Sprawdź czy system ma minimum 4GB RAM, jeśli nie daj ostrzeżenie 
     }
 
     private void checkExecutable() {
