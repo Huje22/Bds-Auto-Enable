@@ -230,8 +230,10 @@ public class BDSAutoEnable {
         final String serverPath = this.appConfig.getFilesPath() + File.separator + DefaultsVariables.getDefaultFileName();
         if (!FileUtil.canExecute(serverPath)) {
             if (!FileUtil.addExecutePerm(serverPath)) {
-                this.logger.critical("&cBrak odpowiednich uprawnień!");
-                System.exit(9);
+                if (!FileUtil.canExecute(serverPath)) {
+                    this.logger.critical("&cBrak odpowiednich uprawnień!");
+                    System.exit(9);
+                }
             }
         }
     }
