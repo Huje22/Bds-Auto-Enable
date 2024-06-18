@@ -17,9 +17,8 @@ public final class FileUtil {
         try {
             return Files.isExecutable(Path.of(URLDecoder.decode(filePath.replace("/C", "C"), StandardCharsets.UTF_8)));
         } catch (final Exception exception) {
-            exception.printStackTrace();
+            throw new RuntimeException(exception);
         }
-        return false;
     }
 
     public static boolean addExecutePerm(final String filePath) {
@@ -28,17 +27,16 @@ public final class FileUtil {
             if (!file.exists()) throw new NoSuchFileException(file.toString());
             return file.setExecutable(true, false);
         } catch (final Exception exception) {
-            exception.printStackTrace();
+            throw new RuntimeException(exception);
         }
-        return false;
     }
 
     public static boolean renameFolder(final Path oldPath, final Path newPath) {
         try {
             Files.move(oldPath, newPath);
             return true;
-        } catch (final IOException e) {
-            return false;
+        } catch (final IOException ioException) {
+            throw new RuntimeException(ioException);
         }
     }
 
