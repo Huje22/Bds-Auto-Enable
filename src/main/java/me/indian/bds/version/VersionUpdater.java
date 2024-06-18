@@ -88,6 +88,7 @@ public class VersionUpdater {
                     "&aWersja &1" + version + "&a będzie właśnie ładowana!",
                     LogState.ALERT
             );
+
             this.serverProcess.setCanRun(false);
 
             if (this.serverProcess.isEnabled()) {

@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import java.io.File;
 import java.io.IOException;
-import java.net.ConnectException;
 import java.net.HttpURLConnection;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
@@ -195,24 +194,22 @@ public class VersionManager {
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 final JsonObject jsonObject = JsonParser.parseString(response.body().string()).getAsJsonObject();
 
-                switch (this.system) {
-                    case WINDOWS -> {
-                        return jsonObject.getAsJsonObject("windows").get("stable").getAsString();
-                    }
-                    case LINUX -> {
-                        return jsonObject.getAsJsonObject("linux").get("stable").getAsString();
-                    }
-                    default -> {
-                        return "";
-                    }
-                }
+                final String version = switch (this.system) {
+                    case WINDOWS -> jsonObject.getAsJsonObject("windows").get("stable").getAsString();
+                    case LINUX -> jsonObject.getAsJsonObject("linux").get("stable").getAsString();
+                    default -> "";
+                };
+
+                this.logger.debug("&aNajnowsza znaleziona wersja to:&b "+ version);
+
+              return version;
             } else {
                 this.logger.error("Błąd przy pobieraniu danych. Kod odpowiedzi: " + responseCode);
             }
         } catch (final Exception exception) {
-            if (exception instanceof ConnectException) {
-                return "";
-            }
+//            if (exception instanceof ConnectException) {
+//                return "";
+//            }
             this.logger.error("Błąd przy pobieraniu najnowszej wersji", exception);
         }
         return "";
