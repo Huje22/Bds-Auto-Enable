@@ -12,9 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicReference;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.event.player.PlayerChatEvent;
 import me.indian.bds.event.player.response.PlayerChatResponse;
-import me.indian.bds.event.server.ServerConsoleCommandEvent;
 import me.indian.bds.event.server.response.ServerConsoleCommandResponse;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
@@ -83,43 +81,43 @@ public class EventManager {
         });
     }
 
-    public EventResponse callEventWithResponse(final ResponsibleEvent event) {
-        return CompletableFuture.supplyAsync(() -> this.getEventResponse(event), this.listenerService).join();
-    }
-
-    public EventResponse getEventResponse(final ResponsibleEvent event) {
+    private List<EventResponse> eventResponses(final ResponsibleEvent event) {
+        final List<EventResponse> responseList = new ArrayList<>();
         this.listeners = new HashMap<>(this.listenerMap);
+        for (final Map.Entry<Listener, Extension> entry : this.listeners.entrySet()) {
+            final Listener listener = entry.getKey();
 
-        final AtomicReference<Extension> extension = new AtomicReference<>();
-        try {
-            if (event instanceof final PlayerChatEvent playerChatEvent) {
-                this.listeners.forEach((listener, ex) -> {
-                    extension.set(ex);
-                    final PlayerChatResponse chatResponse = listener.onPlayerChat(playerChatEvent);
-                    if (chatResponse != null) {
-                        this.chatResponse.set(chatResponse);
+            final Method[] subscribeMethods = Arrays.stream(listener.getClass().getDeclaredMethods())
+                    .filter(method -> method.isAnnotationPresent(EventHandler.class))
+                    .filter(method -> method.getParameters().length == 1)
+                    .filter(method -> method.getParameterTypes()[0].isAssignableFrom(event.getClass()))
+                    .toArray(Method[]::new);
+
+            for (final Method method : subscribeMethods) {
+                try {
+                    method.setAccessible(true);
+                    final Class<?> type = method.getReturnType();
+
+                    if (EventResponse.class.isAssignableFrom(type)) {
+                        final EventResponse eventResponse = (EventResponse) method.invoke(listener, event);
+
+                        if (eventResponse instanceof final ServerConsoleCommandResponse response) {
+                            response.getActionToDo().run();
+                        }
+
+                        if (eventResponse != null) responseList.add(eventResponse);
+                        this.logger.debug("Wywołano&6 " + event.getEventName() + "&r dla&d " + listener.getClass().getName());
                     }
-                });
-
-                this.logger.debug("Wywołano&6 " + event.getEventName());
-                return this.chatResponse.get();
-            } else if (event instanceof final ServerConsoleCommandEvent serverConsoleCommandEvent) {
-                this.listeners.forEach((listener, ex) -> {
-                    extension.set(ex);
-                    final ServerConsoleCommandResponse commandResponse = listener.onServerConsoleCommand(serverConsoleCommandEvent);
-                    if (commandResponse != null) {
-                        commandResponse.getActionToDo().run();
-                    }
-                });
-
-                this.logger.debug("Wywołano&6 " + event.getEventName());
-                return null;
+                } catch (final Throwable throwable) {
+                    this.logger.error("&cWystąpił błąd podczas wywoływania eventu:&1 " + event.getEventName() + "&c w listenerze:&1 " + listener.getClass().getName(), throwable);
+                }
             }
-        } catch (final Exception exception) {
-            this.logger.critical("&cNie można wykonać eventu&b " + event.getEventName() + "&c dla rozszerzenia&b " + extension.get().getName(), exception);
         }
 
-        this.logger.error("Wykonano nieznany event&6 " + event.getEventName());
-        return null;
+        return responseList;
+    }
+
+    public List<EventResponse> callEventsWithResponse(final ResponsibleEvent event) {
+        return CompletableFuture.supplyAsync(() -> this.eventResponses(event), this.listenerService).join();
     }
 }

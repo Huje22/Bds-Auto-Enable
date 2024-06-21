@@ -251,7 +251,7 @@ public class ServerProcess {
             outputStream.write((command + "\n").getBytes());
             outputStream.flush();
 
-            this.eventManager.callEventWithResponse(new ServerConsoleCommandEvent(command));
+            this.eventManager.callEventsWithResponse(new ServerConsoleCommandEvent(command));
             this.logger.debug("Wysłano &b" + command.replaceAll("\n", "\\\\n"));
         } catch (final Exception exception) {
             this.logger.error("Wystąpił błąd podczas próby wysłania polecenia (" + command + ") do konsoli", exception);

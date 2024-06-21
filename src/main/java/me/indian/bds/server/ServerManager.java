@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.transfer.MainServerConfig;
 import me.indian.bds.event.EventManager;
+import me.indian.bds.event.EventResponse;
 import me.indian.bds.event.player.PlayerBlockBreakEvent;
 import me.indian.bds.event.player.PlayerBlockPlaceEvent;
 import me.indian.bds.event.player.PlayerChatEvent;
@@ -241,20 +242,24 @@ public class ServerManager {
                 final PlayerStatistics playerStatistics = this.statsManager.getPlayer(playerChat);
                 final boolean muted = this.isMuted(playerStatistics.getXuid());
 
-                final PlayerChatResponse response = (PlayerChatResponse) this.eventManager.callEventWithResponse(new PlayerChatEvent(playerStatistics, message, position, muted, appHandled));
+                final List<EventResponse> responses = this.eventManager.callEventsWithResponse(new PlayerChatEvent(playerStatistics, message, position, muted, appHandled));
 
-                if (appHandled) {
-                    String format = playerChat + " »» " + message;
-                    if (response != null) {
+                for (final EventResponse eventResponse : responses) {
+                    if (!PlayerChatResponse.class.isAssignableFrom(eventResponse.getClass())) continue;
+
+                    final PlayerChatResponse response = (PlayerChatResponse) eventResponse;
+
+                    if (appHandled) {
+                        String format = playerChat + " »» " + message;
                         if (response.isCanceled()) return;
                         format = response.getFormat();
-                    }
 
-                    if (muted) {
-                        ServerUtil.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
-                        return;
+                        if (muted) {
+                            ServerUtil.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
+                            return;
+                        }
+                        ServerUtil.tellrawToAll(format);
                     }
-                    ServerUtil.tellrawToAll(format);
                 }
             } catch (final Exception exception) {
                 this.logger.error("&cWystąpił błąd podczas próby przetworzenia wiadomości gracza&c " + playerChat);
