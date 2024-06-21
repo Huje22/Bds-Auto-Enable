@@ -65,7 +65,7 @@ public class EventManager {
             for (final Map.Entry<Listener, Extension> entry : this.listeners.entrySet()) {
                 final Listener listener = entry.getKey();
 
-                final Method[] subscribeMethods = Arrays.stream(listener.getClass().getMethods())
+                final Method[] subscribeMethods = Arrays.stream(listener.getClass().getDeclaredMethods())
                         .filter(method -> method.isAnnotationPresent(EventHandler.class))
                         .filter(method -> method.getParameters().length == 1)
                         .filter(method -> method.getParameterTypes()[0].isAssignableFrom(event.getClass()))
