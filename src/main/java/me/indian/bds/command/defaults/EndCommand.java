@@ -89,6 +89,7 @@ public class EndCommand extends Command {
         try {
             this.serverProcess.sendToConsole("stop");
             this.logger.alert("Oczekiwanie na zamknięcie servera");
+            this.sendMessage("&c&lJeśli proces servera nie zakończy się w czasie&e 2&bminut&c zostanie on zabity!");
             if (!this.serverProcess.waitFor(2, TimeUnit.MINUTES)) {
                 ServerUtil.tellrawToAllAndLogger("", "&4Proces servera nie zakończył się w czasie&e 2&b minut&4 powoduje to zabicie procesu", LogState.ERROR);
 
@@ -99,7 +100,7 @@ public class EndCommand extends Command {
                 }
             }
         } catch (final InterruptedException exception) {
-            this.logger.error("Proces został przerwany", exception);
+            this.logger.error("Wątek został przerwany", exception);
             ThreadUtil.sleep(10);
         }
         System.exit(0);
