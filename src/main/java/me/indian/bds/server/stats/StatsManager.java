@@ -5,8 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,6 +24,7 @@ import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.MathUtil;
 import org.jetbrains.annotations.Nullable;
@@ -157,7 +157,7 @@ public class StatsManager {
     }
 
     @Nullable
-    public List<String> getOldNames(final String playerName){
+    public List<String> getOldNames(final String playerName) {
         final PlayerStatistics player = this.getPlayer(playerName);
         if (player != null) {
             return player.getOldNames();
@@ -326,16 +326,14 @@ public class StatsManager {
             }
         }
 
-        final Path path = Path.of(this.statsFolder.toPath() + File.separator + "readme.txt");
-        if (!Files.exists(path)) {
+        final File infoFile = new File(this.statsFolder.toPath() + File.separator + "readme.txt");
+        if (!infoFile.exists()) {
             try {
-                Files.createFile(path);
-                try (final FileWriter writer = new FileWriter(path.toFile())) {
-                    writer.write("Jeśli aplikacja jest włączony edycja tych JSON nic nie da :D.");
-                    writer.write("\nDane są zapisywane do pliku co 30 minut albo co restart servera.");
-                }
-            } catch (final Exception exception) {
-                this.logger.debug("Nie udało się stworzyć pliku informacyjnego w katalogu&b stats&r", exception);
+                FileUtil.writeText(infoFile,
+                        List.of("Jeśli aplikacja jest włączony edycja tych JSON nic nie da :D.",
+                                "Dane są zapisywane do pliku co 30 minut albo co restart servera."));
+            } catch (final IOException ioException) {
+                this.logger.debug("Nie udało się stworzyć pliku informacyjnego w katalogu&b stats&r", ioException);
             }
         }
 

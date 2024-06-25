@@ -1,16 +1,48 @@
 package me.indian.bds.util;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 public final class FileUtil {
 
     private FileUtil() {
+    }
+
+    public static void writeText(final File file, final List<String> lines, final boolean removeOld) throws IOException {
+        final List<String> currentLines;
+
+        if (file.exists()) {
+            if (removeOld) {
+                currentLines = new ArrayList<>(lines);
+            } else {
+                currentLines = Files.readAllLines(file.toPath());
+                currentLines.addAll(lines);
+            }
+        } else {
+            if (!file.createNewFile()) throw new FileNotFoundException(file.getName());
+            currentLines = new ArrayList<>(lines);
+        }
+
+        try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
+            for (final String line : currentLines) {
+                writer.write(line);
+                writer.newLine();
+            }
+        }
+    }
+
+    public static void writeText(final File file, final List<String> lines) throws IOException {
+        writeText(file, lines, true);
     }
 
     public static boolean canExecute(final String filePath) {

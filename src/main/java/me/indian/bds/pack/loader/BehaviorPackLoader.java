@@ -13,10 +13,12 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.pack.component.BehaviorPack;
 import me.indian.bds.util.DefaultsVariables;
+import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.ZipUtil;
 import org.jetbrains.annotations.Nullable;
@@ -256,8 +258,8 @@ public class BehaviorPackLoader {
 //    }
 
     private void makeItArray() {
-        try (final FileWriter writer = new FileWriter(this.worldBehaviorsJson.getPath())) {
-            writer.write("[]");
+        try {
+            FileUtil.writeText(this.worldBehaviorsJson, List.of("[]"));
         } catch (final IOException exception) {
             this.logger.critical("Wystąpił krytyczny błąd z&b world_behavior_packs.json", exception);
             System.exit(5);
