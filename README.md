@@ -56,7 +56,7 @@ paczka jest najwyżej)**
 
 [JetBrains Annotations (24.1.0) - Dla lepszego kodu](https://github.com/JetBrains/java-annotations) <br>
 [Okaeri Configs (5.0.1) - Do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
-[Gson (2.10.1) - Do plików i samych Json](https://github.com/google/gson)<br>
+[Gson (2.11.0) - Do plików i samych Json](https://github.com/google/gson)<br>
 [OkHTTP (5.0.0-alpha.12) - Do wygodnych zapytań HTTP](https://github.com/square/okhttp)<br>
 [Logback (1.2.8) - Tylko dla developerów rozszerzeń](https://github.com/qos-ch/logback)<br>
 [McLogs (3.0.1) - Do łatwego udostępniania logów](https://github.com/aternosorg/mclogs-java)
