@@ -214,6 +214,7 @@ public class StatsManager {
     }
 
     public void updateLoginStreak(final PlayerStatistics playerStatistics, final long loginTime) {
+        //TODO: Zrobić to na zasadzie czasu sekund itp
         final LocalDate lastLoginDate = DateUtil.longToLocalDateTime(playerStatistics.getLastJoin()).toLocalDate();
         final LocalDate loginDate = DateUtil.longToLocalDateTime(loginTime).toLocalDate();
         final long loginStreak = playerStatistics.getLoginStreak();
