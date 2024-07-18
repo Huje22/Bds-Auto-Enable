@@ -2,7 +2,7 @@
 
 # BDS-Auto-Enable
 
-Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**<br>
+Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22** i [innych](#Todo uzupełnij to) <br>
 Jak zbudować projekt? [Budowanie projektu za pomocą Maven Wrapper](./Wrapper%20Instruction.MD)
 </div>
 
@@ -51,6 +51,14 @@ paczka jest najwyżej)**
 # Szybkie info
 
 * Paczka sama się pobierze do twojego świata i załaduje , potrzebujesz jedynie włączonych experymentów w tym świecie!
+
+
+# Bardziej i mniej znane servery które używały tego projektu 
+TODO: Wystulizuj tą listę itp
+
+[MrowiskoSMP]()
+[Realms coś tam od Adovskiego]()
+
 
 # Użyte biblioteki
 
