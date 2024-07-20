@@ -1,5 +1,6 @@
 package me.indian.bds;
 
+import java.awt.SystemTray;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
@@ -122,6 +123,7 @@ public class BDSAutoEnable {
 
     public static void main(final String[] args) {
         new BDSAutoEnable();
+        if (SystemTray.isSupported()) new AppTray();
     }
 
     public void init() {
