@@ -2,15 +2,20 @@
 
 # BDS-Auto-Enable
 
-Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22** i [innych](#Todo uzupełnij to) <br>
+Jest to program do zarządzania BDS wykorzystywany na serverze **Huje22**
+i [innych](#inne-servery-które-używały-tego-projektu-) <br>
 Jak zbudować projekt? [Budowanie projektu za pomocą Maven Wrapper](./Wrapper%20Instruction.MD)
 </div>
 
 # Uwaga
-* Wspieramy tylko tą ___[wersje](https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/me/indian/bds/config/sub/version/VersionManagerConfig.java#L17)___
+
+* Wspieramy tylko tą__
+  _[wersje](https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/me/indian/bds/config/sub/version/VersionManagerConfig.java#L17)
+  ___
 * Wymaga Javy 17 bądź wyższej
 * Program wymaga przynajmniej `1GB` RAM do działania z rozszerzeniami jak `DiscordExtension`
-* Program wspiera użycie: [**WINE**](https://github.com/wine-mirror/wine), [LeviLamina](https://github.com/LiteLDev/LeviLamina)
+* Program wspiera użycie: [**WINE
+  **](https://github.com/wine-mirror/wine), [LeviLamina](https://github.com/LiteLDev/LeviLamina)
 * Program wspiera proste
   rozszerzenia: [ExampleExtension](https://github.com/Huje22/BDS-AE-Extensions/tree/master/ExampleExtension)
 
@@ -22,7 +27,8 @@ Jak zbudować projekt? [Budowanie projektu za pomocą Maven Wrapper](./Wrapper%2
 * Łatwe załadowanie innej wersji
 * Automatyczne ładowanie paczek `zachowań` i `tesktur` z `FOLDER_ŚWIATA/behavior_packs`/`resource_packs`
 * Tworzenie backupów świata co dany czas i manualnie
-* Statystyki graczy (Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
+* Statystyki graczy (
+  Wymaga [BDS-Auto-Enable-Management-Pack](https://github.com/Huje22/BDS-Auto-Enable-Management-Pack))
 
 <details>
   <summary>Jak działa to z Paczką?</summary>
@@ -52,13 +58,12 @@ paczka jest najwyżej)**
 
 * Paczka sama się pobierze do twojego świata i załaduje , potrzebujesz jedynie włączonych experymentów w tym świecie!
 
+# Inne servery które używały tego projektu
 
-# Bardziej i mniej znane servery które używały tego projektu 
-TODO: Wystulizuj tą listę itp
-
-[MrowiskoSMP]()
-[Realms coś tam od Adovskiego]()
-
+* [MrowiskoSMP](https://github.com/mrowiskomc/) - Server przy którym pomagał Indian tworzony przez <b>Mruwe</b> i jego
+  ekipe <br>
+* <b>BetterRealms</b> - Server przy którym pomagał Indian tworzony
+  przez [Adovskiego](https://www.youtube.com/@AdoVski) <br>
 
 # Użyte biblioteki
 

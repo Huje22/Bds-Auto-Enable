@@ -14,8 +14,7 @@ public class VersionManagerConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Wersja która jest załadowana"})
     @CustomKey("Version")
-    //TODO: Zaktualizować całą apke i paczkę pod 1.21.2 (czy tam inna najnowsz)
-    private String version = "1.20.73.01";
+    private String version = "1.21.3.01";
 
     @Comment({""})
     @Comment({"Nie zmieniaj tego!"})
