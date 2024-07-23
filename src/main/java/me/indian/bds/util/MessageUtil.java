@@ -45,8 +45,8 @@ public final class MessageUtil {
         return msg2;
     }
 
-    public static String fixPlayerName(final String playerName){
-        if(playerName.contains(" ")){
+    public static String fixPlayerName(final String playerName) {
+        if (playerName.contains(" ")) {
             return "\"" + playerName + "\"";
         }
         return playerName;

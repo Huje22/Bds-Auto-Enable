@@ -13,7 +13,7 @@ public class TransferConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Konfiguracja servera lobby"})
     @CustomKey("LobbyServer")
-    private  LobbyConfig lobbyConfig = new LobbyConfig();
+    private LobbyConfig lobbyConfig = new LobbyConfig();
 
     @Comment({""})
     @Comment({"Konfiguracja servera głównego"})

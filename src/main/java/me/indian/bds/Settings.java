@@ -312,7 +312,7 @@ public class Settings {
         this.logger.info("Java:&1 " + System.getProperty("java.version"));
         this.logger.info("Wine:&1 " + this.appConfig.isWine() + (DefaultsVariables.WINE ? " &d(&bPosiadasz&d)" : ""));
         this.logger.info("Ścieżka plików:&1 " + this.appConfig.getFilesPath());
-        
+
         final boolean backup = this.watchDogConfig.getBackupConfig().isEnabled();
         this.logger.info("Backup:&1 " + backup);
 

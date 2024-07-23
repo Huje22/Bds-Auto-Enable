@@ -18,6 +18,7 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Constructs a new ThreadUtil with the specified thread name prefix.
+     *
      * @param threadName the prefix for thread names created by this factory
      */
     public ThreadUtil(final String threadName) {
@@ -26,8 +27,9 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Constructs a new ThreadUtil with the specified thread name prefix and daemon flag.
+     *
      * @param threadName the prefix for thread names created by this factory
-     * @param daemon if true, created threads will be daemon threads
+     * @param daemon     if true, created threads will be daemon threads
      */
     public ThreadUtil(final String threadName, final boolean daemon) {
         this(threadName, null, daemon);
@@ -35,8 +37,9 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Constructs a new ThreadUtil with the specified thread name prefix and runnable.
+     *
      * @param threadName the prefix for thread names created by this factory
-     * @param runnable the runnable to be executed by created threads
+     * @param runnable   the runnable to be executed by created threads
      */
     public ThreadUtil(final String threadName, final Runnable runnable) {
         this(threadName, runnable, false);
@@ -44,9 +47,10 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Constructs a new ThreadUtil with the specified thread name prefix, runnable, and daemon flag.
+     *
      * @param threadName the prefix for thread names created by this factory
-     * @param runnable the runnable to be executed by created threads
-     * @param daemon if true, created threads will be daemon threads
+     * @param runnable   the runnable to be executed by created threads
+     * @param daemon     if true, created threads will be daemon threads
      */
     public ThreadUtil(final String threadName, final Runnable runnable, final boolean daemon) {
         this.threadName = threadName + "-%d";
@@ -56,6 +60,7 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Causes the current thread to sleep for the specified number of seconds.
+     *
      * @param seconds the number of seconds to sleep
      */
     public static void sleep(final int seconds) {
@@ -69,6 +74,7 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Causes the current thread to sleep for the specified number of milliseconds.
+     *
      * @param millis the number of milliseconds to sleep
      */
     public static void sleep(final long millis) {
@@ -82,6 +88,7 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Returns the number of available logical processors.
+     *
      * @return the number of available logical processors
      */
     public static int getLogicalThreads() {
@@ -90,6 +97,7 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Returns the current number of active threads in the JVM.
+     *
      * @return the current number of active threads
      */
     public static int getThreadsCount() {
@@ -98,6 +106,7 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Returns the peak number of threads since the JVM started or peak reset.
+     *
      * @return the peak number of threads
      */
     public static int getPeakThreadsCount() {
@@ -106,6 +115,7 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Checks if the current thread is important based on its name.
+     *
      * @return true if the current thread is important, false otherwise
      */
     public static boolean isImportantThread() {
@@ -123,6 +133,7 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Creates a new thread with the specified runnable.
+     *
      * @return the new thread
      */
     public Thread newThread() {
@@ -134,6 +145,7 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Returns the thread name prefix used by this factory.
+     *
      * @return the thread name prefix
      */
     public String getThreadName() {
@@ -142,6 +154,7 @@ public final class ThreadUtil implements ThreadFactory {
 
     /**
      * Returns if the created threads are daemon threads.
+     *
      * @return true if created threads are daemon threads, false otherwise
      */
     public boolean isDaemon() {

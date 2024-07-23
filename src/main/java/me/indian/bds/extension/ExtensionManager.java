@@ -37,7 +37,6 @@ public class ExtensionManager {
     private final Map<String, Class<?>> classes;
     private final Map<String, ExtensionClassLoader> classLoaders;
 
-
     public ExtensionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();

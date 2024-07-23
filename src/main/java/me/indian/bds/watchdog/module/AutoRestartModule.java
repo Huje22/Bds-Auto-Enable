@@ -158,7 +158,7 @@ public class AutoRestartModule {
         int nextSeconds = seconds;
         for (int i = seconds; i >= 1; i--) {
             if (i < 10 || i == nextSeconds) {
-                nextSeconds = MathUtil.getCorrectNumber((i - 5) , 0, seconds);
+                nextSeconds = MathUtil.getCorrectNumber((i - 5), 0, seconds);
 
                 ServerUtil.actionBarToAll("&aZa&b " + i + "&a sekund server zostanie zrestartowany!");
                 ServerUtil.tellrawToAllAndLogger(AutoRestartModule.this.prefix,

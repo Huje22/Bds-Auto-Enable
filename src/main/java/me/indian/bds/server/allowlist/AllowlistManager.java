@@ -50,16 +50,16 @@ public class AllowlistManager {
         }
     }
 
-    public void reloadAllowlist(){
+    public void reloadAllowlist() {
         this.bdsAutoEnable.getServerProcess().sendToConsole("allowlist reload");
     }
 
-    public boolean isOnAllowList(final String name){
+    public boolean isOnAllowList(final String name) {
         return this.allowlistPlayers.stream().anyMatch(player -> player.name().equals(name));
     }
 
     @Nullable
-    public AllowlistPlayer getPlayer(final String name){
+    public AllowlistPlayer getPlayer(final String name) {
         return this.allowlistPlayers.stream()
                 .filter(player -> player.name().equals(name))
                 .findFirst()
@@ -73,7 +73,7 @@ public class AllowlistManager {
         this.allowlistPlayers.add(player);
     }
 
-    public void addPlayerByName(final String playerName){
+    public void addPlayerByName(final String playerName) {
         if (this.allowlistPlayers.isEmpty()) {
             this.allowlistPlayers = this.loadPlayers();
         }
@@ -81,7 +81,7 @@ public class AllowlistManager {
     }
 
     public void removePlayer(final AllowlistPlayer player) {
-       this.allowlistPlayers.remove(player);
+        this.allowlistPlayers.remove(player);
     }
 
     public List<AllowlistPlayer> getAllowlistPlayers() {

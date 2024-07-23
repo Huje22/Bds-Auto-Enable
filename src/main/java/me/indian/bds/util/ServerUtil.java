@@ -7,18 +7,18 @@ import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
 
-public final class ServerUtil{
+public final class ServerUtil {
 
     private static Logger LOGGER;
     private static ServerProcess SERVER_PROCESS;
     private static ServerManager SERVER_MANAGER;
 
-    private ServerUtil(){
+    private ServerUtil() {
 
     }
 
-    public static void init(final BDSAutoEnable bdsAutoEnable){
-        LOGGER= bdsAutoEnable.getLogger();
+    public static void init(final BDSAutoEnable bdsAutoEnable) {
+        LOGGER = bdsAutoEnable.getLogger();
         SERVER_PROCESS = bdsAutoEnable.getServerProcess();
         SERVER_MANAGER = bdsAutoEnable.getServerManager();
     }
@@ -108,8 +108,8 @@ public final class ServerUtil{
         SERVER_PROCESS.sendToConsole("playsound " + soundName + " " + playerName);
     }
 
-    public static void playSoundToAll( final String soundName) {
-        playSoundToPlayer("@a" ,soundName);
+    public static void playSoundToAll(final String soundName) {
+        playSoundToPlayer("@a", soundName);
     }
 
 }

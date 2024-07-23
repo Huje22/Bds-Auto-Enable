@@ -30,7 +30,7 @@ public class RestartCommand extends Command {
             } catch (final NumberFormatException ignored) {
             }
         }
-        
+
         if (!this.bdsAutoEnable.getWatchDog().getAutoRestartModule().restart(true, seconds, "Użycie komendy")) {
             this.sendMessage("&cServer jest już w trakcje restartu!");
         }

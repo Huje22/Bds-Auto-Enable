@@ -30,7 +30,7 @@ public class EndCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-         if (!isOp) {
+        if (!isOp) {
             this.sendMessage("&cPotrzebujesz wyższych uprawnień");
             this.deniedSound();
             return true;
@@ -79,7 +79,7 @@ public class EndCommand extends Command {
 
         ServerUtil.tellrawToAllAndLogger("", "&aPierw zapiszemy świat!", LogState.INFO);
         this.bdsAutoEnable.getWatchDog().saveAndResume();
-        
+
         ServerUtil.playSoundToAll("mob.wither.death");
 
         if (!lobbyConfig.isEnable()) {

@@ -44,7 +44,7 @@ public final class SystemUtil {
         return switch (osArch) {
             case "amd64", "x86_64" -> SystemArch.AMD_X64;
             case "x86", "i386", "i486", "i586", "i686" -> SystemArch.AMD_X32;
-            case "aarch64","arm", "arm32", "armv7", "armv8" -> SystemArch.ARM;
+            case "aarch64", "arm", "arm32", "armv7", "armv8" -> SystemArch.ARM;
             default -> SystemArch.UNKNOWN;
         };
     }

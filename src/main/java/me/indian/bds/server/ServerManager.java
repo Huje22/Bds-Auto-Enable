@@ -79,7 +79,7 @@ public class ServerManager {
         this.serverProcess = this.bdsAutoEnable.getServerProcess();
         this.versionManager = this.bdsAutoEnable.getVersionManager();
     }
-    
+
     public void initFromLog(final String logEntry) {
         this.chatService.execute(() -> {
             this.chatMessage(logEntry);

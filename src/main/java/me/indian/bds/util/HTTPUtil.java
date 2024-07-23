@@ -63,7 +63,7 @@ public final class HTTPUtil {
         return LAST_KNOWN_IP;
     }
 
-    public static void download(final String url, final String path ,final Logger logger) throws IOException, DownloadException {
+    public static void download(final String url, final String path, final Logger logger) throws IOException, DownloadException {
         final File file = new File(path);
         final Request request = new Request.Builder().url(url).get().build();
 

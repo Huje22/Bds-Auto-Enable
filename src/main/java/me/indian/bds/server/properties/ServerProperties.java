@@ -315,7 +315,7 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
-    public boolean isAllowList(){
+    public boolean isAllowList() {
         try {
             return Boolean.parseBoolean(this.properties.getProperty("allow-list"));
         } catch (final Exception exception) {

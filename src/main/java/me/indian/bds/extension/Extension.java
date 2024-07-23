@@ -98,19 +98,19 @@ public abstract class Extension {
         return this.name;
     }
 
-    public final  String getAuthor() {
+    public final String getAuthor() {
         return this.author;
     }
 
-    public final  String getDescription() {
+    public final String getDescription() {
         return this.description;
     }
 
-    public final  List<String> getAuthors() {
+    public final List<String> getAuthors() {
         return this.authors;
     }
 
-    public final  File getDataFolder() {
+    public final File getDataFolder() {
         return this.dataFolder;
     }
 

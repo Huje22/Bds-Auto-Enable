@@ -3,7 +3,7 @@ package me.indian.bds.config.sub.transfer;
 import eu.okaeri.configs.OkaeriConfig;
 import eu.okaeri.configs.annotation.Comment;
 
-public class LobbyConfig  extends OkaeriConfig {
+public class LobbyConfig extends OkaeriConfig {
 
     @Comment({""})
     @Comment({"Czy przenosić graczy na dany server podczas restartu albo wyłączenia servera?"})

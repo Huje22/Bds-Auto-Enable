@@ -48,15 +48,15 @@ public final class LogbackConfig {
                              </pattern>
                         </encoder>
                     </appender>
-                
+                                
                     <logger name="net.dv8tion.jda" level="ERROR"/>
                     <logger name="net.dv8tion.jda" level="WARN"/>
-                
+                                
                     <logger name="org.eclipse.jetty" level="WARN"/>
                     <logger name="org.eclipse.jetty" level="ERROR"/>
                     <logger name="io.javalin" level="ERROR"/>
                     <logger name="io.javalin" level="WARN"/>
-                
+                                
                     <root level="INFO">
                         <appender-ref ref="STDOUT"/>
                     </root>

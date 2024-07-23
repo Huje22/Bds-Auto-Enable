@@ -56,8 +56,7 @@ public class ServerProcess {
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.serverManager = this.bdsAutoEnable.getServerManager();
         this.processService = Executors.newFixedThreadPool(2, new ThreadUtil("Server process"));
-        this.consoleOutputService = Executors.newFixedThreadPool(3 * ThreadUtil.getLogicalThreads(),
-                new ThreadUtil("Console Output"));
+        this.consoleOutputService = Executors.newCachedThreadPool(new ThreadUtil("Console Output"));
         this.prefix = "&b[&3ServerProcess&b] ";
         this.system = SystemUtil.getSystem();
         this.eventManager = this.bdsAutoEnable.getEventManager();
@@ -75,6 +74,7 @@ public class ServerProcess {
 
     /**
      * Metoda która patrzy czy proces o nazwie pliku servera jest już aktywny
+     *
      * @return Czy proces servera jest aktywny
      */
     public boolean checkProcesRunning() {
@@ -194,7 +194,7 @@ public class ServerProcess {
      * Metody wykonywane są z consoleOutputService aby nie obciążać jednego wątku wykonywaniem tylu akcji na raz
      */
     private void readConsoleOutput() {
-        try (final Scanner consoleOutput = new Scanner(new BufferedInputStream(this.process.getInputStream()), StandardCharsets.UTF_8)/*.useDelimiter("\\A")*/) {
+        try (final Scanner consoleOutput = new Scanner(new BufferedInputStream(this.process.getInputStream()), StandardCharsets.UTF_8).useDelimiter("\\A")) {
             try {
                 while (this.canWriteConsoleOutput) {
                     if (!consoleOutput.hasNext()) continue;
@@ -228,7 +228,8 @@ public class ServerProcess {
     }
 
     /**
-     *  Metoda do wysyłania poleceń do konsoli servera BDS
+     * Metoda do wysyłania poleceń do konsoli servera BDS
+     *
      * @param command Komenda do serveru
      */
     public void sendToConsole(final String command) {
@@ -260,6 +261,7 @@ public class ServerProcess {
 
     /**
      * Metoda do wysyłania poleceń do konsoli servera BDS i uzyskania ostatniej linij z konsoli , może być opóźnione
+     *
      * @param command Komenda do serveru
      * @return ostatnia linia z konsoli
      */
@@ -341,7 +343,7 @@ public class ServerProcess {
     }
 
     /**
-     *  Jeśli ktoś użył by 'this.process.getInputStream()' to może popsuć całą konsole
+     * Jeśli ktoś użył by 'this.process.getInputStream()' to może popsuć całą konsole
      */
     public long getPID() {
         return this.pid;

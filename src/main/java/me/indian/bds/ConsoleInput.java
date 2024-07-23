@@ -34,39 +34,39 @@ public class ConsoleInput {
     }
 
     private void handleCommands() {
-            try {
-                this.logger.info("&aUruchomiono konsole");
-                while (this.mainScanner.hasNext()) {
-                    final String input = this.mainScanner.nextLine();
-                    final String[] args = MessageUtil.stringToArgs(input);
-                    final String[] newArgs = MessageUtil.removeFirstArgs(args);
+        try {
+            this.logger.info("&aUruchomiono konsole");
+            while (this.mainScanner.hasNext()) {
+                final String input = this.mainScanner.nextLine();
+                final String[] args = MessageUtil.stringToArgs(input);
+                final String[] newArgs = MessageUtil.removeFirstArgs(args);
 
-                    this.service.execute(() -> {
-                        this.logger.instantLogToFile(input);
+                this.service.execute(() -> {
+                    this.logger.instantLogToFile(input);
 
-                        final boolean done = this.commandManager.runCommands(null, args[0], newArgs, null, true);
+                    final boolean done = this.commandManager.runCommands(null, args[0], newArgs, null, true);
 
-                        if (done) return;
+                    if (done) return;
 
-                        this.serverProcess.sendToConsole(input);
-                    });
-                }
-                this.logger.alert("Konsola zakończyła działanie");
-            } catch (final Exception exception) {
-                this.logger.critical("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ");
-                this.bdsAutoEnable.getEventManager()
-                        .callEvent(new ServerAlertEvent("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ", exception, LogState.CRITICAL));
-
-                try {
-                    this.serverProcess.setCanRun(false);
-                    this.serverProcess.disableServer();
-                    this.serverProcess.waitFor();
-                } catch (final InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
-
-                System.exit(1);
-                throw exception;
+                    this.serverProcess.sendToConsole(input);
+                });
             }
+            this.logger.alert("Konsola zakończyła działanie");
+        } catch (final Exception exception) {
+            this.logger.critical("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ");
+            this.bdsAutoEnable.getEventManager()
+                    .callEvent(new ServerAlertEvent("Konsola aplikacji uległa awarii , powoduje to wyłączenie aplikacji ", exception, LogState.CRITICAL));
+
+            try {
+                this.serverProcess.setCanRun(false);
+                this.serverProcess.disableServer();
+                this.serverProcess.waitFor();
+            } catch (final InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+
+            System.exit(1);
+            throw exception;
+        }
     }
 }

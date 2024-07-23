@@ -41,7 +41,7 @@ public class RamMonitor {
                     ServerUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
                             "&cAplikacja używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!" + "&d(&c Wolne:&b " + freeMem + " &aMB&d )",
                             LogState.CRITICAL);
-                   ServerUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
+                    ServerUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
                             "&cWiększe użycje może to prowadzić do crashy aplikacji a w tym servera&4!!",
                             LogState.CRITICAL);
                 }

@@ -13,7 +13,7 @@ public class PlayerStatistics implements Serializable {
     private final long firstJoin;
     private long lastJoin, lastQuit;
     private final List<String> oldNames;
-    private long playtime, deaths, blockPlaced, blockBroken, loginStreak,longestLoginStreak;
+    private long playtime, deaths, blockPlaced, blockBroken, loginStreak, longestLoginStreak;
     private DeviceOS lastDevice;
     private Controller lastController;
     private final Map<String, Object> dynamicProperties;

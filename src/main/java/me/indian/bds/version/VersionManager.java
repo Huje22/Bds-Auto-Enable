@@ -142,7 +142,7 @@ public class VersionManager {
     public void downloadServerFiles(final String version) {
         try {
             this.logger.info("Pobieranie wersji: &1" + version);
-            HTTPUtil.download(this.getServerDownloadUrl(version),this.versionFolder.getPath() + File.separator + version + ".zip", this.logger);
+            HTTPUtil.download(this.getServerDownloadUrl(version), this.versionFolder.getPath() + File.separator + version + ".zip", this.logger);
             this.logger.info("Pobrano wersje: &1" + version);
             this.loadVersionsInfo();
         } catch (final IOException | DownloadException exception) {
@@ -200,16 +200,13 @@ public class VersionManager {
                     default -> "";
                 };
 
-                this.logger.debug("&aNajnowsza znaleziona wersja to:&b "+ version);
+                this.logger.debug("&aNajnowsza znaleziona wersja to:&b " + version);
 
-              return version;
+                return version;
             } else {
                 this.logger.error("Błąd przy pobieraniu danych. Kod odpowiedzi: " + responseCode);
             }
         } catch (final Exception exception) {
-//            if (exception instanceof ConnectException) {
-//                return "";
-//            }
             this.logger.error("Błąd przy pobieraniu najnowszej wersji", exception);
         }
         return "";
@@ -255,7 +252,6 @@ public class VersionManager {
 
     public int getLastKnownProtocol() {
         if (this.lastKnownProtocol == 0 || this.lastKnownProtocol == -1) {
-            if(this.getLoadedVersion().contains("1.20.7")) return 662;
             final int protocol = BedrockQuery.create("localhost", this.serverProperties.getServerPort()).protocol();
             if (protocol == -1) {
                 this.waitForProtocol();

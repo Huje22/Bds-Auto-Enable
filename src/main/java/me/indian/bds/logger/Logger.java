@@ -33,20 +33,20 @@ public abstract class Logger {
     }
 
     private void initializeLogFile() {
-            final File logsDir = new File(DefaultsVariables.getLogsDir());
-            if (!logsDir.exists()) {
-                if (!logsDir.mkdir()) if (logsDir.mkdirs()) {
-                    throw new RuntimeException("Nie można utworzyć miejsca na logi");
-                }
+        final File logsDir = new File(DefaultsVariables.getLogsDir());
+        if (!logsDir.exists()) {
+            if (!logsDir.mkdir()) if (logsDir.mkdirs()) {
+                throw new RuntimeException("Nie można utworzyć miejsca na logi");
             }
+        }
 
-            try {
-                this.logFile = new File(logsDir, "ServerLog-" + this.bdsAutoEnable.getRunDate() + ".log");
-                final FileOutputStream fileOutputStream = new FileOutputStream(this.logFile, true);
-                this.printStream = new PrintStream(fileOutputStream);
-            } catch (final Exception exception) {
-                this.error("Nie można utworzyć&1 PrintStreamu&r aby zapisywać logi do pliku ", exception);
-            }
+        try {
+            this.logFile = new File(logsDir, "ServerLog-" + this.bdsAutoEnable.getRunDate() + ".log");
+            final FileOutputStream fileOutputStream = new FileOutputStream(this.logFile, true);
+            this.printStream = new PrintStream(fileOutputStream);
+        } catch (final Exception exception) {
+            this.error("Nie można utworzyć&1 PrintStreamu&r aby zapisywać logi do pliku ", exception);
+        }
     }
 
     public void print() {

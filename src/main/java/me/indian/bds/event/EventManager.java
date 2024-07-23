@@ -10,9 +10,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicReference;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.event.player.response.PlayerChatResponse;
 import me.indian.bds.event.server.response.ServerConsoleCommandResponse;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.logger.Logger;
@@ -23,14 +21,12 @@ public class EventManager {
     private final Logger logger;
     private final Map<Listener, Extension> listenerMap;
     private final ExecutorService listenerService;
-    private final AtomicReference<PlayerChatResponse> chatResponse;
     private Map<Listener, Extension> listeners;
 
     public EventManager(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
         this.listenerMap = new LinkedHashMap<>();
-        this.listenerService = Executors.newFixedThreadPool(5, new ThreadUtil("Listeners"));
-        this.chatResponse = new AtomicReference<>();
+        this.listenerService = Executors.newCachedThreadPool(new ThreadUtil("Listeners"));
     }
 
     public <T extends Listener> void registerListener(final T listener, final Extension extension) {
@@ -42,10 +38,7 @@ public class EventManager {
         final List<Listener> listenerToRemove = new ArrayList<>();
 
         this.listenerMap.forEach((listener, ex) -> {
-            if (ex == extension) {
-                listenerToRemove.add(listener);
-
-            }
+            if (ex == extension) listenerToRemove.add(listener);
         });
 
         listenerToRemove.forEach(this.listenerMap::remove);
@@ -73,8 +66,8 @@ public class EventManager {
                         method.setAccessible(true);
                         method.invoke(listener, event);
                         this.logger.debug("Wywołano&6 " + event.getEventName() + "&r dla&d " + listener.getClass().getName());
-                    } catch (final Throwable throwable) {
-                        this.logger.error("&cWystąpił błąd podczas wywoływania eventu:&1 " + event.getEventName() + "&c w listenerze:&1 " + listener.getClass().getName(), throwable);
+                    } catch (final Exception exception) {
+                        this.logger.error("&cWystąpił błąd podczas wywoływania eventu:&1 " + event.getEventName() + "&c w listenerze:&1 " + listener.getClass().getName(), exception);
                     }
                 }
             }
@@ -108,8 +101,8 @@ public class EventManager {
                         if (eventResponse != null) responseList.add(eventResponse);
                         this.logger.debug("Wywołano&6 " + event.getEventName() + "&r dla&d " + listener.getClass().getName());
                     }
-                } catch (final Throwable throwable) {
-                    this.logger.error("&cWystąpił błąd podczas wywoływania eventu:&1 " + event.getEventName() + "&c w listenerze:&1 " + listener.getClass().getName(), throwable);
+                } catch (final Exception exception) {
+                    this.logger.error("&cWystąpił błąd podczas wywoływania eventu:&1 " + event.getEventName() + "&c w listenerze:&1 " + listener.getClass().getName(), exception);
                 }
             }
         }

@@ -93,53 +93,53 @@ public class AppConfigManager {
         this.saveCommandConfig();
     }
 
-   public void loadAppConfig() {
-       this.fixVariables();
+    public void loadAppConfig() {
+        this.fixVariables();
         this.appConfig = (AppConfig) this.appConfig.load(true);
     }
 
-   public void loadTransferConfig() {
+    public void loadTransferConfig() {
         this.transferConfig = (TransferConfig) this.transferConfig.load(true);
     }
 
-   public void loadLogConfig() {
+    public void loadLogConfig() {
         this.logConfig = (LogConfig) this.logConfig.load(true);
     }
 
-   public void loadVersionManagerConfig() {
+    public void loadVersionManagerConfig() {
         this.versionManagerConfig = (VersionManagerConfig) this.versionManagerConfig.load(true);
     }
 
-   public void loadWatchDogConfig() {
+    public void loadWatchDogConfig() {
         this.watchDogConfig = (WatchDogConfig) this.watchDogConfig.load(true);
     }
 
-   public void loadCommandConfig() {
+    public void loadCommandConfig() {
         this.commandConfig = (CommandConfig) this.commandConfig.load(true);
     }
 
-   public void saveAppConfig() {
-       this.fixVariables();
+    public void saveAppConfig() {
+        this.fixVariables();
         this.appConfig = (AppConfig) this.appConfig.save();
     }
 
-   public void saveTransferConfig() {
+    public void saveTransferConfig() {
         this.transferConfig = (TransferConfig) this.transferConfig.save();
     }
 
-   public void saveLogConfig() {
+    public void saveLogConfig() {
         this.logConfig = (LogConfig) this.logConfig.save();
     }
 
-   public void saveVersionManagerConfig() {
+    public void saveVersionManagerConfig() {
         this.versionManagerConfig = (VersionManagerConfig) this.versionManagerConfig.save();
     }
 
-   public void saveWatchDogConfig() {
+    public void saveWatchDogConfig() {
         this.watchDogConfig = (WatchDogConfig) this.watchDogConfig.save();
     }
 
-   public void saveCommandConfig() {
+    public void saveCommandConfig() {
         this.commandConfig = (CommandConfig) this.commandConfig.save();
     }
 
