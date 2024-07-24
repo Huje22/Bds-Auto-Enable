@@ -9,9 +9,7 @@ Jak zbudować projekt? [Budowanie projektu za pomocą Maven Wrapper](./Wrapper%2
 
 # Uwaga
 
-* Wspieramy tylko tą__
-  _[wersje](https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/me/indian/bds/config/sub/version/VersionManagerConfig.java#L17)
-  ___
+* Wspieramy tylko tą [wersje](https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/me/indian/bds/config/sub/version/VersionManagerConfig.java#L17)
 * Wymaga Javy 17 bądź wyższej
 * Program wymaga przynajmniej `1GB` RAM do działania z rozszerzeniami jak `DiscordExtension`
 * Program wspiera użycie: **[WINE](https://github.com/wine-mirror/wine)**, [LeviLamina](https://github.com/LiteLDev/LeviLamina)
