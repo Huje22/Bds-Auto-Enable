@@ -1,7 +1,8 @@
 package me.indian.bds;
 
-import gs.mclo.api.Log;
 import gs.mclo.api.MclogsClient;
+import gs.mclo.api.response.UploadLogResponse;
+import java.util.concurrent.CompletableFuture;
 import me.indian.bds.config.sub.log.LogConfig;
 import me.indian.bds.logger.Logger;
 
@@ -20,7 +21,10 @@ public class McLog {
     public void sendCurrentLog() {
         if (this.logConfig.isSendLogs()) {
             try {
-                this.logger.info("&aWysłano logi servera do&b mclo.gs&a link:&1 " + this.mclogsClient.uploadLog(new Log(this.logger.getLogFile().toPath())).getUrl());
+                // share the log file
+                final CompletableFuture<UploadLogResponse> future = this.mclogsClient.uploadLog(this.logger.getLogFile().toPath());
+
+                this.logger.info("&aWysłano logi servera do&b mclo.gs&a link:&1 " + future.get().getUrl());
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się przekazać logów servera do&b mclo.gs", exception);
             }
