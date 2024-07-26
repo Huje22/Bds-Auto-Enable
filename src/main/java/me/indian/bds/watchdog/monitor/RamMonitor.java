@@ -29,6 +29,8 @@ public class RamMonitor {
         this.running = false;
     }
 
+    //TODO: Obliczaj srednia ilosc ramu uzywama przez server
+
     public void monitRamUsage() {
         if (this.running) return;
         this.running = true;
