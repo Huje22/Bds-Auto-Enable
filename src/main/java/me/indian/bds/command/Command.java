@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.CommandConfig;
-import me.indian.bds.player.position.Position;
 import me.indian.bds.player.PlayerStatistics;
+import me.indian.bds.player.position.Position;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ServerUtil;
@@ -46,12 +46,12 @@ public abstract class Command {
         return this.position;
     }
 
-    protected void deniedSound() {
-        ServerUtil.playSoundToPlayer(this.player.getPlayerName(), this.commandConfig.getDeniedSound());
-    }
-
     public final void setPosition(final Position position) {
         this.position = position;
+    }
+
+    protected void deniedSound() {
+        ServerUtil.playSoundToPlayer(this.player.getPlayerName(), this.commandConfig.getDeniedSound());
     }
 
     public boolean isAlias(final String command) {

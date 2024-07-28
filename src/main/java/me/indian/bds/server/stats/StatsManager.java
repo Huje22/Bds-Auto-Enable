@@ -274,11 +274,6 @@ public class StatsManager {
         this.saveServerStats();
     }
 
-    /*
-    TODO: Użyc kiedys mongoBD
-    https://www.baeldung.com/java-mongodb
-     */
-
     private void savePlayerStats() {
         try (final FileWriter writer = new FileWriter(this.statsJson)) {
             writer.write(this.gson.toJson(this.playerStats));

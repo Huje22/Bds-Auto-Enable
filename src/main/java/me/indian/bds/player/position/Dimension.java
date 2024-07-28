@@ -14,14 +14,14 @@ public enum Dimension {
         this.dimensionID = dimensionID;
     }
 
-    public String getDimensionID() {
-        return this.dimensionID;
-    }
-
     public static Dimension getByID(final String dimensionID) {
         return Arrays.stream(values())
                 .filter(dimension -> dimension.getDimensionID().contains(dimensionID))
                 .findFirst()
                 .orElse(UNKNOWN);
+    }
+
+    public String getDimensionID() {
+        return this.dimensionID;
     }
 }

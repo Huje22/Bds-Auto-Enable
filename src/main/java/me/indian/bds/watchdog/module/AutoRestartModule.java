@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class AutoRestartModule {
 
+    private static boolean playersOnRestart = false;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final AutoRestartConfig autoRestartConfig;
@@ -32,7 +33,6 @@ public class AutoRestartModule {
     private ServerProcess serverProcess;
     private long lastPlanedRestartMillis;
     private boolean restarting, lastRestartDone;
-    private static boolean playersOnRestart = false;
 
     public AutoRestartModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.bdsAutoEnable = bdsAutoEnable;

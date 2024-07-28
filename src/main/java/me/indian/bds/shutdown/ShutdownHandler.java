@@ -7,10 +7,10 @@ import me.indian.bds.util.ThreadUtil;
 
 public class ShutdownHandler {
 
+    private static boolean SHUTDOWN_HOOK_CALLED = false;
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final ServerProcess serverProcess;
-    private static boolean SHUTDOWN_HOOK_CALLED = false;
 
     public ShutdownHandler(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -19,6 +19,10 @@ public class ShutdownHandler {
 
         this.shutdownHook();
         Thread.setDefaultUncaughtExceptionHandler(new UncaughtExceptionHandler(bdsAutoEnable));
+    }
+
+    public static boolean isShutdownHookCalled() {
+        return SHUTDOWN_HOOK_CALLED;
     }
 
     private void shutdownHook() {
@@ -33,9 +37,5 @@ public class ShutdownHandler {
                 this.logger.critical("Wystąpił błąd podczas próby uruchomienia shutdown hooku ", exception);
             }
         }));
-    }
-
-    public static boolean isShutdownHookCalled() {
-        return SHUTDOWN_HOOK_CALLED;
     }
 }

@@ -110,16 +110,16 @@ public class AppConfig extends OkaeriConfig {
         return this.filesPath;
     }
 
+    public void setFilesPath(final String filesPath) {
+        this.filesPath = filesPath;
+    }
+
     public boolean isLoadTexturePacks() {
         return this.loadTexturePacks;
     }
 
     public boolean isLoadBehaviorPacks() {
         return this.loadBehaviorPacks;
-    }
-
-    public void setFilesPath(final String filesPath) {
-        this.filesPath = filesPath;
     }
 
     public List<String> getAdmins() {

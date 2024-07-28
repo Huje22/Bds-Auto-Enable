@@ -97,6 +97,12 @@ public class ServerProperties {
         }
     }
 
+    public void setWorldName(final String name) {
+        if (name == null) return;
+        this.properties.setProperty("level-name", name);
+        this.reloadServerProperties();
+    }
+
     public void fixWorldName() {
         String worldName = this.getWorldName();
 
@@ -115,12 +121,6 @@ public class ServerProperties {
             this.setWorldName(worldName);
             this.logger.debug("&aNaprawiono nazwę świata&c!&d (&b" + worldName + "&d)");
         }
-    }
-
-    public void setWorldName(final String name) {
-        if (name == null) return;
-        this.properties.setProperty("level-name", name);
-        this.reloadServerProperties();
     }
 
     public String getRealWorldName() {
@@ -433,6 +433,11 @@ public class ServerProperties {
         }
     }
 
+    public void setServerMovementAuth(final ServerMovementAuth serverAuthoritativeMovement) {
+        this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement.getAuthName());
+        this.reloadServerProperties();
+    }
+
     public int getCompressionThreshold() {
         try {
             return Integer.parseInt(this.properties.getProperty("compression-threshold"));
@@ -444,11 +449,6 @@ public class ServerProperties {
 
     public void setCompressionThreshold(final int compressionThreshold) {
         this.properties.setProperty("compression-threshold", String.valueOf(compressionThreshold));
-    }
-
-    public void setServerMovementAuth(final ServerMovementAuth serverAuthoritativeMovement) {
-        this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement.getAuthName());
-        this.reloadServerProperties();
     }
 
     public boolean propertiesExists() {

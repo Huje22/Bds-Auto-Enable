@@ -263,6 +263,10 @@ public class VersionManager {
         return this.lastKnownProtocol;
     }
 
+    private void setLastKnownProtocol(final int lastKnownProtocol) {
+        this.lastKnownProtocol = lastKnownProtocol;
+    }
+
     private void waitForProtocol() {
         if (this.waitingForProtocolInfo) return;
         this.waitingForProtocolInfo = true;
@@ -274,9 +278,5 @@ public class VersionManager {
             }
             this.setLastKnownProtocol(protocol);
         }).start();
-    }
-
-    private void setLastKnownProtocol(final int lastKnownProtocol) {
-        this.lastKnownProtocol = lastKnownProtocol;
     }
 }
