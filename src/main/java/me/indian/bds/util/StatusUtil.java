@@ -22,6 +22,7 @@ public final class StatusUtil {
     private static final File FILE = new File(File.separator);
     private static BDSAutoEnable BDSAUTOENABLE;
     private static Logger LOGGER;
+    private static WatchDog WATCH_DOG;
     private static ServerProcess SERVERPROCESS;
     private static StatsManager STATSMANAGER;
     private static AppConfigManager APPCONFIGMANAGER;
@@ -32,6 +33,7 @@ public final class StatusUtil {
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         StatusUtil.BDSAUTOENABLE = bdsAutoEnable;
         StatusUtil.LOGGER = bdsAutoEnable.getLogger();
+        StatusUtil.WATCH_DOG = bdsAutoEnable.getWatchDog();
         StatusUtil.SERVERPROCESS = bdsAutoEnable.getServerProcess();
         StatusUtil.STATSMANAGER = bdsAutoEnable.getServerManager().getStatsManager();
         StatusUtil.APPCONFIGMANAGER = bdsAutoEnable.getAppConfigManager();
@@ -74,6 +76,7 @@ public final class StatusUtil {
         STATUS.add("> **Statystyki servera**");
         STATUS.add("Ostatnie TPS: `" + BDSAUTOENABLE.getServerManager().getLastTPS() + "`");
         STATUS.add("Pamięć RAM: `" + usedServerMemory + "` (`" + freeComputerMemory + "`)");
+        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatKiloBytesDynamic(watchDog.getRamMonitor().getAverageServerRamUsage(), true) + "`");
         if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
             STATUS.add("Następny restart za: `" + DateUtil.formatTimeDynamic(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart()) + "`");
         }
@@ -87,6 +90,7 @@ public final class StatusUtil {
         STATUS.add("> **Statystyki aplikacji**");
         STATUS.add("Czas działania: `" + DateUtil.formatTimeDynamic(System.currentTimeMillis() - BDSAUTOENABLE.getStartTime()) + "`");
         STATUS.add("Pamięć RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
+        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatBytesDynamic(watchDog.getRamMonitor().getAverageAppRamUsage(), true) + "`");
         STATUS.add("Aktualna liczba wątków: `" + ThreadUtil.getThreadsCount() + "/" + ThreadUtil.getPeakThreadsCount() + "` ");
         STATUS.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
 
