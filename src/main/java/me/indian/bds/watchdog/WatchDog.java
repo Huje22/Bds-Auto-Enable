@@ -51,6 +51,7 @@ public class WatchDog {
     public void init() {
         this.backupModule.init();
         this.autoRestartModule.init();
+        this.ramMonitor.init();
     }
 
     public void saveWorld() {
