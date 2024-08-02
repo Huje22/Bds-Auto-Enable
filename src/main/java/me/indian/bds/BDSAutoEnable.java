@@ -63,8 +63,8 @@ public class BDSAutoEnable {
     private final McLog mcLog;
     private final EventManager eventManager;
     private final ExtensionManager extensionManager;
-    private final AllowlistManager allowlistManager;
     private final ExecutorService service;
+    private AllowlistManager allowlistManager;
     private PackManager packManager;
     private CommandManager commandManager;
     private WatchDog watchDog;
@@ -109,7 +109,6 @@ public class BDSAutoEnable {
         this.versionManager = new VersionManager(this);
         this.mcLog = new McLog(this);
         this.extensionManager = new ExtensionManager(this);
-        this.allowlistManager = new AllowlistManager(this);
         this.service = Executors.newSingleThreadExecutor();
         this.serverManager.init();
         ServerUtil.init(this);
@@ -131,6 +130,7 @@ public class BDSAutoEnable {
         new ShutdownHandler(this);
         this.settings.loadSettings(this.mainScanner);
         this.packManager = new PackManager(this);
+        this.allowlistManager = new AllowlistManager(this);
         this.watchDog = new WatchDog(this);
         this.serverProcess.init();
         this.watchDog.init();
