@@ -1,5 +1,6 @@
 package me.indian.bds.server.allowlist;
 
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileReader;
@@ -36,7 +37,7 @@ public class AllowlistManager {
             };
 
             return GsonUtil.getGson().fromJson(reader, token);
-        } catch (final IOException exception) {
+        } catch (final IOException | JsonSyntaxException exception) {
             this.logger.critical("&cNie udało się załadować&b allowlist", exception);
         }
         return new LinkedList<>();

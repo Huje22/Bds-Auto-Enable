@@ -1,6 +1,7 @@
 package me.indian.bds.server.stats;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import java.io.File;
 import java.io.FileReader;
@@ -298,7 +299,7 @@ public class StatsManager {
             };
             final List<PlayerStatistics> loadedPlayers = GsonUtil.getGson().fromJson(reader, type);
             return (loadedPlayers == null ? new ArrayList<>() : loadedPlayers);
-        } catch (final Exception exception) {
+        } catch (final IOException | JsonSyntaxException exception) {
             this.logger.error("Nie udało się załadować&b statystyk&r graczy", exception);
         }
         return new ArrayList<>();
