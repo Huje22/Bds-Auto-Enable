@@ -54,7 +54,7 @@ public class BackupModule {
     private File backupFolder;
     private String status;
     private long lastPlanedBackupMillis;
-    private boolean backuping;
+    private boolean backuping,canDoBackupOnPlayerJoin;
 
     public BackupModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -86,6 +86,7 @@ public class BackupModule {
         this.status = "Brak";
         this.lastPlanedBackupMillis = System.currentTimeMillis();
         this.backuping = false;
+        this.canDoBackupOnPlayerJoin = false;
         this.run();
     }
 
@@ -106,6 +107,7 @@ public class BackupModule {
                     final boolean nonPlayers = BackupModule.this.serverManager.getOnlinePlayers().isEmpty();
                     if (this.cachedNonPlayers && nonPlayers) {
                         BackupModule.this.lastPlanedBackupMillis = System.currentTimeMillis();
+                        BackupModule.this.canDoBackupOnPlayerJoin = true;
                         return;
                     }
 
@@ -273,5 +275,9 @@ public class BackupModule {
 
     public boolean isBackuping() {
         return this.backuping;
+    }
+
+    public boolean isCanDoBackupOnPlayerJoin() {
+        return this.canDoBackupOnPlayerJoin;
     }
 }

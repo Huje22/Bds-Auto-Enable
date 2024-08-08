@@ -42,6 +42,7 @@ import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.version.VersionManager;
+import me.indian.bds.watchdog.module.BackupModule;
 import me.indian.bds.watchdog.module.pack.PackModule;
 
 public class ServerManager {
@@ -178,6 +179,11 @@ public class ServerManager {
 
                 this.statsManager.updateLoginStreak(playerStatistics, DateUtil.localDateTimeToLong(LocalDateTime.now(DateUtil.POLISH_ZONE)));
                 this.eventManager.callEvent(new PlayerJoinEvent(playerStatistics));
+
+                final BackupModule backupModule = this.bdsAutoEnable.getWatchDog().getBackupModule();
+
+                if (backupModule.isCanDoBackupOnPlayerJoin()) backupModule.backup();
+
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć dołączenia gracza&b " + playerName, exception);
                 this.serverJoinException(playerName, exception);
