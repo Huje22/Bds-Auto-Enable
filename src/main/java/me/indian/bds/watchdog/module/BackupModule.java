@@ -54,7 +54,7 @@ public class BackupModule {
     private File backupFolder;
     private String status;
     private long lastPlanedBackupMillis;
-    private boolean backuping,canDoBackupOnPlayerJoin;
+    private boolean backuping, canDoBackupOnPlayerJoin;
 
     public BackupModule(final BDSAutoEnable bdsAutoEnable, final WatchDog watchDog) {
         this.bdsAutoEnable = bdsAutoEnable;
@@ -118,6 +118,13 @@ public class BackupModule {
                 }
             };
             this.timer.scheduleAtFixedRate(backupTask, time, time);
+        }
+    }
+
+    public void backupOnPlayerJoin() {
+        if (this.canDoBackupOnPlayerJoin) {
+            this.backup();
+            this.canDoBackupOnPlayerJoin = false;
         }
     }
 
