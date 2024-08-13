@@ -37,6 +37,7 @@ public final class DefaultsVariables {
     }
 
     public static boolean isLeviLamina() {
+        //TODO: Usunąć wsparcie dla levilamina przez to ze nie jest już kontynuowana 
         return LEVILAMINA_FILE.exists();
     }
 
