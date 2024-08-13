@@ -9,6 +9,7 @@ import me.indian.bds.command.defaults.AlertCommand;
 import me.indian.bds.command.defaults.BackupCommand;
 import me.indian.bds.command.defaults.ChatFormatCommand;
 import me.indian.bds.command.defaults.EndCommand;
+import me.indian.bds.command.defaults.ExecuteCommand;
 import me.indian.bds.command.defaults.ExtensionsCommand;
 import me.indian.bds.command.defaults.HelpCommand;
 import me.indian.bds.command.defaults.McLogCommand;
@@ -38,6 +39,7 @@ public class CommandManager {
         this.commandMap = new LinkedHashMap<>();
 
         this.commandMap.put(new HelpCommand(this.commandMap), null);
+        this.commandMap.put(new ExecuteCommand(), null);
         this.commandMap.put(new TPSCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new ExtensionsCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new EndCommand(this.bdsAutoEnable), null);
