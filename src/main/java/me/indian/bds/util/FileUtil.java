@@ -19,14 +19,14 @@ public final class FileUtil {
     }
 
     public static void writeText(final File file, final List<String> lines, final boolean removeOld) throws IOException {
-        final List<String> currentLines;
+        final LinkedList<String> currentLines;
 
         if (file.exists()) {
             if (removeOld) {
                 currentLines = new ArrayList<>(lines);
             } else {
-                currentLines = Files.readAllLines(file.toPath());
                 currentLines.addAll(lines);
+                currentLines.addAll(Files.readAllLines(file.toPath()));
             }
         } else {
             if (!file.createNewFile()) throw new FileNotFoundException(file.getName());
