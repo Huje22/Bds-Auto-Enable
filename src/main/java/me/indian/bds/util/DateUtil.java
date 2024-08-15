@@ -1,5 +1,6 @@
 package me.indian.bds.util;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public final class DateUtil {
 
@@ -43,6 +45,42 @@ public final class DateUtil {
 
     public static LocalDateTime longToLocalDateTime(final long seconds) {
         return Instant.ofEpochSecond(seconds).atZone(POLISH_ZONE).toLocalDateTime();
+    }
+
+    public static long daysFrom(final long time, final TimeUnit sourceUnit) {
+        return sourceUnit.toDays(time);
+    }
+
+    public static long daysTo(final long time, final TimeUnit targetUnit) {
+        return targetUnit.convert(time, TimeUnit.DAYS);
+    }
+
+    public static long hoursFrom(final long time, final TimeUnit sourceUnit) {
+        return sourceUnit.toHours(time);
+    }
+
+    public static long hoursTo(final long time, final TimeUnit targetUnit) {
+        return targetUnit.convert(time, TimeUnit.HOURS);
+    }
+
+    public static long minutesFrom(final long time, final TimeUnit sourceUnit) {
+        return sourceUnit.toMinutes(time);
+    }
+
+    public static long minutesTo(final long time, final TimeUnit targetUnit) {
+        return targetUnit.convert(time, TimeUnit.MINUTES);
+    }
+
+    public static long millisFrom(final long time, final TimeUnit sourceUnit) {
+        return sourceUnit.toMillis(time);
+    }
+
+    public static long millisTo(final long time, final TimeUnit targetUnit) {
+        return targetUnit.convert(time, TimeUnit.MILLISECONDS);
+    }
+
+    public static long secondToMillis(final long seconds) {
+        return Duration.ofSeconds(seconds).toMillis();
     }
 
     private static long formatDays(final long millis) {

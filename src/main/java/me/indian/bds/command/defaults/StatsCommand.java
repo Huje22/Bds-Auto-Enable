@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 import me.indian.bds.command.Command;
 import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.StatusUtil;
 
 public class StatsCommand extends Command {
@@ -23,7 +22,7 @@ public class StatsCommand extends Command {
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (this.player != null) {
             final String playerName = this.player.getPlayerName();
-            final long cooldownTime = MathUtil.secondToMillis(90);
+            final long cooldownTime = DateUtil.secondToMillis(90);
 
             if (!this.cooldown.containsKey(playerName) || System.currentTimeMillis() - this.cooldown.get(playerName) > cooldownTime) {
                 this.cooldown.put(playerName, System.currentTimeMillis());

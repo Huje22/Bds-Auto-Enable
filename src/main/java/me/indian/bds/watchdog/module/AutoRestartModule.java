@@ -13,6 +13,7 @@ import me.indian.bds.event.server.ServerRestartEvent;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.ThreadUtil;
@@ -53,7 +54,7 @@ public class AutoRestartModule {
     }
 
     private void run() {
-        final long restartTime = MathUtil.hoursTo(this.autoRestartConfig.getRestartTime(), TimeUnit.MILLISECONDS);
+        final long restartTime = DateUtil.hoursTo(this.autoRestartConfig.getRestartTime(), TimeUnit.MILLISECONDS);
 
         this.task = new TimerTask() {
 
@@ -170,7 +171,7 @@ public class AutoRestartModule {
     }
 
     public long calculateMillisUntilNextRestart() {
-        return Math.max(0, (MathUtil.hoursTo(this.autoRestartConfig.getRestartTime(), TimeUnit.MILLISECONDS) + 10) - (System.currentTimeMillis() - this.lastPlanedRestartMillis));
+        return Math.max(0, (DateUtil.hoursTo(this.autoRestartConfig.getRestartTime(), TimeUnit.MILLISECONDS) + 10) - (System.currentTimeMillis() - this.lastPlanedRestartMillis));
     }
 
     public boolean isLastRestartDone() {

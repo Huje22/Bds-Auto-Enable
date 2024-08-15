@@ -11,6 +11,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.RamMonitorConfig;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.StatusUtil;
@@ -41,7 +42,7 @@ public class RamMonitor {
     }
 
     private void monitAverageRamUsage() {
-        final long tenMinutes = MathUtil.minutesTo(10, TimeUnit.MILLISECONDS);
+        final long tenMinutes = DateUtil.minutesTo(10, TimeUnit.MILLISECONDS);
         final long maxEntries = 10000 * MathUtil.bytesToGB(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax());
 
         final TimerTask app = new TimerTask() {
@@ -112,13 +113,13 @@ public class RamMonitor {
         };
 
         if (this.ramMonitorConfig.isMachine()) {
-            this.ramMonitorTimer.scheduleAtFixedRate(machineRamMonitor, 0, MathUtil.secondToMillis(this.ramMonitorConfig.getCheckMachineTime()));
+            this.ramMonitorTimer.scheduleAtFixedRate(machineRamMonitor, 0, DateUtil.secondToMillis(this.ramMonitorConfig.getCheckMachineTime()));
         } else {
             this.logger.debug("Monitorowanie ramu maszyny jest wyłączone");
         }
 
         if (this.ramMonitorConfig.isApp()) {
-            this.ramMonitorTimer.scheduleAtFixedRate(appRamMonitor, 0, MathUtil.secondToMillis(this.ramMonitorConfig.getCheckAppTime()));
+            this.ramMonitorTimer.scheduleAtFixedRate(appRamMonitor, 0, DateUtil.secondToMillis(this.ramMonitorConfig.getCheckAppTime()));
         } else {
             this.logger.debug("Monitorowanie ramu aplikacji jest wyłączone");
         }

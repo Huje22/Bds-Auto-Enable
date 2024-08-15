@@ -97,7 +97,7 @@ public class BackupModule {
 
     private void run() {
         if (this.watchDogConfig.getBackupConfig().isEnabled()) {
-            final long time = MathUtil.minutesTo(this.backupConfig.getBackupFrequency(), TimeUnit.MILLISECONDS);
+            final long time = DateUtil.minutesTo(this.backupConfig.getBackupFrequency(), TimeUnit.MILLISECONDS);
             final TimerTask backupTask = new TimerTask() {
 
                 boolean cachedNonPlayers = false;
@@ -246,7 +246,7 @@ public class BackupModule {
     }
 
     public long calculateMillisUntilNextBackup() {
-        return Math.max(0, MathUtil.minutesTo(this.backupConfig.getBackupFrequency(), TimeUnit.MILLISECONDS) - (System.currentTimeMillis() - this.lastPlanedBackupMillis));
+        return Math.max(0, DateUtil.minutesTo(this.backupConfig.getBackupFrequency(), TimeUnit.MILLISECONDS) - (System.currentTimeMillis() - this.lastPlanedBackupMillis));
     }
 
     public double getLastBackupTime() {

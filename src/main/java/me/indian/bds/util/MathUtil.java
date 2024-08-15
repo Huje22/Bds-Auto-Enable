@@ -2,13 +2,11 @@ package me.indian.bds.util;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 public final class MathUtil {
 
@@ -22,55 +20,23 @@ public final class MathUtil {
     private MathUtil() {
     }
 
-    public static int getCorrectNumber(final int number, final int mini, final int max) {
-        return Math.max(mini, Math.min(max, number));
+    // Utility methods for clamping numbers
+    public static int getCorrectNumber(final int number, final int min, final int max) {
+        return Math.max(min, Math.min(max, number));
     }
 
     public static double getCorrectNumber(final double number, final double min, final double max) {
         return Math.max(min, Math.min(max, number));
     }
 
-    public static long daysFrom(final long time, final TimeUnit sourceUnit) {
-        return sourceUnit.toDays(time);
-    }
 
-    public static long daysTo(final long time, final TimeUnit targetUnit) {
-        return targetUnit.convert(time, TimeUnit.DAYS);
-    }
-
-    public static long hoursFrom(final long time, final TimeUnit sourceUnit) {
-        return sourceUnit.toHours(time);
-    }
-
-    public static long hoursTo(final long time, final TimeUnit targetUnit) {
-        return targetUnit.convert(time, TimeUnit.HOURS);
-    }
-
-    public static long minutesFrom(final long time, final TimeUnit sourceUnit) {
-        return sourceUnit.toMinutes(time);
-    }
-
-    public static long minutesTo(final long time, final TimeUnit targetUnit) {
-        return targetUnit.convert(time, TimeUnit.MINUTES);
-    }
-
-    public static long millisTo(final long time, final TimeUnit targetUnit) {
-        return targetUnit.convert(time, TimeUnit.MILLISECONDS);
-    }
-
-    public static long millisFrom(final long time, final TimeUnit sourceUnit) {
-        return sourceUnit.toMillis(time);
-    }
-
-    public static long secondToMillis(final long seconds) {
-        return Duration.ofSeconds(seconds).toMillis();
-    }
-
+    // Number formatting
     public static double format(final double decimal, final int format) {
         DECIMAL_FORMAT.setMaximumFractionDigits(format);
         return Double.parseDouble(DECIMAL_FORMAT.format(decimal));
     }
 
+    // Data conversion methods
     public static long kilobytesToMb(final long kilobytes) {
         return kilobytes / 1024;
     }
@@ -95,43 +61,24 @@ public final class MathUtil {
         return bytes / (1024 * 1024 * 1024);
     }
 
-    public static long getMbFromBytesGb(final long bytes) {
-        final long gb = bytesToGB(bytes);
-        return bytesToMB(bytes - (gb * 1024 * 1024 * 1024));
+    // Methods to extract remaining units
+    public static long getRemainingGbFromBytes(final long bytes) {
+        return (bytes % (1024L * 1024 * 1024 * 1024)) / (1024 * 1024 * 1024);
     }
 
-    public static long getMbFromKilobytesGb(final long kilobytes) {
-        final long gb = kilobytesToGb(kilobytes);
-        return kilobytesToMb(kilobytes - (gb * 1024 * 1024));
-    }
-
-    public static long getKbFromBytesGb(final long bytes) {
-        return (bytes % (1024 * 1024)) / 1024;
-    }
-
-    public static long getGBfromKilobytes(final long kilobytes) {
-        final long bytesInGB = 1073741824L; // 1 gigabajt = 1024 * 1024 * 1024 bajtów
-        return kilobytes / bytesInGB;
-    }
-
-
-    public static long getGbFromBytes(final long bytes) {
-        return bytes / (1024 * 1024 * 1024);
-    }
-
-    public static long getMbFromBytes(final long bytes) {
+    public static long getRemainingMbFromBytes(final long bytes) {
         return (bytes % (1024 * 1024 * 1024)) / (1024 * 1024);
     }
 
-    public static long getKbFromBytes(final long bytes) {
-        return ((bytes % (1024 * 1024 * 1024)) % (1024 * 1024)) / 1024;
+    public static long getRemainingKbFromBytes(final long bytes) {
+        return (bytes % (1024 * 1024)) / 1024;
     }
 
-    public static long getGbFromKb(final long kb) {
-        return kb / (1024 * 1024);
+    public static long getRemainingGbFromKb(final long kb) {
+        return (kb % (1024L * 1024 * 1024)) / (1024 * 1024);
     }
 
-    public static long getMbFromKb(final long kb) {
+    public static long getRemainingMbFromKb(final long kb) {
         return (kb % (1024 * 1024)) / 1024;
     }
 
@@ -139,13 +86,13 @@ public final class MathUtil {
         return kb * 1024;
     }
 
-
+    // Formatting methods
     public static String formatKiloBytesDynamic(final long kilobytes, final boolean shortNames) {
         if (kilobytes == 0) return "N/A";
 
         final List<Character> unitsPattern = new ArrayList<>();
-        final long gb = getGbFromKb(kilobytes);
-        final long mb = getMbFromKb(kilobytes);
+        final long gb = kilobytesToGb(kilobytes);
+        final long mb = getRemainingMbFromKb(kilobytes);
 
         if (gb > 0) unitsPattern.add('g');
         if (mb > 0) {
@@ -161,15 +108,15 @@ public final class MathUtil {
         if (bytes == 0) return "N/A";
 
         final List<Character> unitsPattern = new ArrayList<>();
-        final long gigabytes = getGbFromBytes(bytes);
-        final long megabytes = getMbFromBytes(bytes);
-        final long kilobytes = getKbFromBytes(bytes);
+        final long gb = bytesToGB(bytes);
+        final long mb = getRemainingMbFromBytes(bytes);
+        final long kb = getRemainingKbFromBytes(bytes);
 
-        if (gigabytes > 0) unitsPattern.add('g');
-        if (megabytes > 0) {
+        if (gb > 0) unitsPattern.add('g');
+        if (mb > 0) {
             unitsPattern.add('m');
         } else {
-            if (kilobytes > 0) {
+            if (kb > 0) {
                 unitsPattern.add('k');
             } else {
                 unitsPattern.add('b');
@@ -179,17 +126,17 @@ public final class MathUtil {
         return formatBytes(bytes, unitsPattern, shortNames);
     }
 
-    public static String formatKilobytes(final long millis, final List<Character> unitsPattern, final boolean shortNames) {
-        final StringBuilder formattedTime = new StringBuilder();
-        final Map<Character, String> unitMap = getUnitKilobytesMap(millis, shortNames);
+    public static String formatKilobytes(final long kilobytes, final List<Character> unitsPattern, final boolean shortNames) {
+        final StringBuilder formattedKilobytes = new StringBuilder();
+        final Map<Character, String> unitMap = getUnitKilobytesMap(kilobytes, shortNames);
 
         for (final char unit : unitsPattern) {
             if (unitMap.containsKey(unit)) {
-                formattedTime.append(unitMap.get(unit)).append(" ");
+                formattedKilobytes.append(unitMap.get(unit)).append(" ");
             }
         }
 
-        return formattedTime.toString().trim();
+        return formattedKilobytes.toString().trim();
     }
 
     public static String formatBytes(final long bytes, final List<Character> unitsPattern, final boolean shortNames) {
@@ -205,17 +152,18 @@ public final class MathUtil {
         return formattedBytes.toString().trim();
     }
 
+    // Helper methods to map units to strings
     private static Map<Character, String> getUnitBytesMap(final long bytes, final boolean shortNames) {
         final Map<Character, String> UNIT_MAP = new HashMap<>();
 
         if (shortNames) {
-            UNIT_MAP.put('k', getKbFromBytes(bytes) + " KB");
-            UNIT_MAP.put('m', getMbFromBytes(bytes) + " MB");
-            UNIT_MAP.put('g', getGbFromBytes(bytes) + " GB");
+            UNIT_MAP.put('k', getRemainingKbFromBytes(bytes) + " KB");
+            UNIT_MAP.put('m', getRemainingMbFromBytes(bytes) + " MB");
+            UNIT_MAP.put('g', getRemainingGbFromBytes(bytes) + " GB");
         } else {
-            UNIT_MAP.put('k', getKbFromBytes(bytes) + " kilobajtów");
-            UNIT_MAP.put('m', getMbFromBytes(bytes) + " megabajtów");
-            UNIT_MAP.put('g', getGbFromBytes(bytes) + " gigabajtów");
+            UNIT_MAP.put('k', getRemainingKbFromBytes(bytes) + " kilobajtów");
+            UNIT_MAP.put('m', getRemainingMbFromBytes(bytes) + " megabajtów");
+            UNIT_MAP.put('g', getRemainingGbFromBytes(bytes) + " gigabajtów");
         }
 
         return UNIT_MAP;
@@ -226,12 +174,12 @@ public final class MathUtil {
 
         if (shortNames) {
             UNIT_MAP.put('k', kilobytes + " KB");
-            UNIT_MAP.put('m', getMbFromKb(kilobytes) + " MB");
-            UNIT_MAP.put('g', getGbFromKb(kilobytes) + " GB");
+            UNIT_MAP.put('m', getRemainingMbFromKb(kilobytes) + " MB");
+            UNIT_MAP.put('g', getRemainingGbFromKb(kilobytes) + " GB");
         } else {
             UNIT_MAP.put('k', kilobytes + " kilobajtów");
-            UNIT_MAP.put('m', getMbFromKb(kilobytes) + " megabajtów");
-            UNIT_MAP.put('g', getGbFromKb(kilobytes) + " gigabajtów");
+            UNIT_MAP.put('m', getRemainingMbFromKb(kilobytes) + " megabajtów");
+            UNIT_MAP.put('g', getRemainingGbFromKb(kilobytes) + " gigabajtów");
         }
 
         return UNIT_MAP;

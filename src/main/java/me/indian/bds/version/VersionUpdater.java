@@ -10,8 +10,8 @@ import me.indian.bds.event.server.ServerUpdatingEvent;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ServerUtil;
 
 public class VersionUpdater {
@@ -43,7 +43,7 @@ public class VersionUpdater {
 
         this.running = true;
 
-        final long hours = MathUtil.hoursTo(this.versionManagerConfig.getVersionCheckFrequency(), TimeUnit.MILLISECONDS);
+        final long hours = DateUtil.hoursTo(this.versionManagerConfig.getVersionCheckFrequency(), TimeUnit.MILLISECONDS);
 
         final TimerTask timerTask = new TimerTask() {
             @Override
@@ -66,7 +66,7 @@ public class VersionUpdater {
             }
         };
 
-        new Timer("Version Updater", true).scheduleAtFixedRate(timerTask, MathUtil.minutesTo(1, TimeUnit.MILLISECONDS), hours);
+        new Timer("Version Updater", true).scheduleAtFixedRate(timerTask, DateUtil.minutesTo(1, TimeUnit.MILLISECONDS), hours);
     }
 
     public void updateToLatest() {

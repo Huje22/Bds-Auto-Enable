@@ -28,9 +28,9 @@ import javax.net.ssl.HttpsURLConnection;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.MetricsConfig;
 import me.indian.bds.server.ServerProcess;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ThreadUtil;
 
 /**
@@ -201,8 +201,8 @@ public class IMetrics {
         final int randomMinutes = 3 + random.nextInt(6);
         final int secondRandomMinutes = 3 + random.nextInt(10);
 
-        timer.scheduleAtFixedRate(submitTask, MathUtil.minutesTo(randomMinutes + secondRandomMinutes, TimeUnit.MILLISECONDS),
-                MathUtil.minutesTo(30, TimeUnit.MILLISECONDS));
+        timer.scheduleAtFixedRate(submitTask, DateUtil.minutesTo(randomMinutes + secondRandomMinutes, TimeUnit.MILLISECONDS),
+                DateUtil.minutesTo(30, TimeUnit.MILLISECONDS));
     }
 
     /**

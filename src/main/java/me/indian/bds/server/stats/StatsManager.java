@@ -27,7 +27,6 @@ import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.MathUtil;
 import org.jetbrains.annotations.Nullable;
 
 public class StatsManager {
@@ -66,7 +65,7 @@ public class StatsManager {
     }
 
     private void startTasks() {
-        final long second = MathUtil.secondToMillis(1);
+        final long second = DateUtil.secondToMillis(1);
         final TimerTask playTimeTask = new TimerTask() {
             @Override
             public void run() {
@@ -86,7 +85,7 @@ public class StatsManager {
             }
         };
 
-        this.playerStatsManagerTimer.scheduleAtFixedRate(saveDataTask, MathUtil.hoursTo(1, TimeUnit.MILLISECONDS), MathUtil.minutesTo(30, TimeUnit.MILLISECONDS));
+        this.playerStatsManagerTimer.scheduleAtFixedRate(saveDataTask, DateUtil.hoursTo(1, TimeUnit.MILLISECONDS), DateUtil.minutesTo(30, TimeUnit.MILLISECONDS));
         this.playerStatsManagerTimer.scheduleAtFixedRate(playTimeTask, 0, second);
     }
 
@@ -94,7 +93,7 @@ public class StatsManager {
         if (this.countingTime) return;
 
 
-        final long second = MathUtil.secondToMillis(1);
+        final long second = DateUtil.secondToMillis(1);
         final TimerTask serverTimeTask = new TimerTask() {
             @Override
             public void run() {

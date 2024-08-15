@@ -272,7 +272,7 @@ public class BDSAutoEnable {
         };
 
         new Timer("AutoPromotion", true)
-                .scheduleAtFixedRate(timerTask, 0, MathUtil.minutesTo(10, TimeUnit.MILLISECONDS));
+                .scheduleAtFixedRate(timerTask, 0, DateUtil.minutesTo(10, TimeUnit.MILLISECONDS));
     }
 
     public void setAppWindowName(final String name) {
@@ -293,7 +293,7 @@ public class BDSAutoEnable {
     }
 
     private void setAppName() {
-        final long seconds = MathUtil.secondToMillis(1);
+        final long seconds = DateUtil.secondToMillis(1);
 
         final TimerTask timerTask = new TimerTask() {
             @Override

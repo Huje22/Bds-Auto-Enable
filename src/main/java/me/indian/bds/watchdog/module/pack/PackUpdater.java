@@ -11,9 +11,9 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.pack.component.BehaviorPack;
+import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.HTTPUtil;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ZipUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -121,7 +121,7 @@ public class PackUpdater {
             }
         };
 
-        final long fiveMinutes = MathUtil.minutesTo(5, TimeUnit.MINUTES);
+        final long fiveMinutes = DateUtil.minutesTo(5, TimeUnit.MINUTES);
 
         new Timer("Pack Response Remover", true)
                 .scheduleAtFixedRate(removeResponseTask, fiveMinutes, fiveMinutes);

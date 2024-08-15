@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public final class FileUtil {
@@ -23,14 +23,15 @@ public final class FileUtil {
 
         if (file.exists()) {
             if (removeOld) {
-                currentLines = new ArrayList<>(lines);
+                currentLines = new LinkedList<>(lines);
             } else {
+                currentLines = new LinkedList<>();
                 currentLines.addAll(lines);
                 currentLines.addAll(Files.readAllLines(file.toPath()));
             }
         } else {
             if (!file.createNewFile()) throw new FileNotFoundException(file.getName());
-            currentLines = new ArrayList<>(lines);
+            currentLines = new LinkedList<>(lines);
         }
 
         try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
