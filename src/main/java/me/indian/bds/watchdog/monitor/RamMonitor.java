@@ -143,7 +143,7 @@ public class RamMonitor {
         return (size == 0 ? 0 : sum / size);
     }
 
-    public int getAverageAppRamUsageListSize(){
+    public int getAverageAppRamUsageListSize() {
         return this.averageAppRamUsageList.size();
     }
 
@@ -166,7 +166,7 @@ public class RamMonitor {
         return (size == 0 ? 0 : sum / size);
     }
 
-    public int getAverageServerRamUsageListSize(){
+    public int getAverageServerRamUsageListSize() {
         return this.averageServerRamUsageList.size();
     }
 }

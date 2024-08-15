@@ -78,7 +78,7 @@ public final class StatusUtil {
         STATUS.add("> **Statystyki servera**");
         STATUS.add("Ostatnie TPS: `" + BDSAUTOENABLE.getServerManager().getLastTPS() + "`");
         STATUS.add("Pamięć RAM: `" + usedServerMemory + "` (`" + freeComputerMemory + "`)");
-        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatKiloBytesDynamic(ramMonitor.getAverageServerRamUsage(), true) + "` ("+ramMonitor.getAverageServerRamUsageListSize()+")");
+        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatKiloBytesDynamic(ramMonitor.getAverageServerRamUsage(), true) + "` (" + ramMonitor.getAverageServerRamUsageListSize() + ")");
         if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
             STATUS.add("Następny restart za: `" + DateUtil.formatTimeDynamic(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart()) + "`");
         }

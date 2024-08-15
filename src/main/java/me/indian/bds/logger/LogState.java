@@ -16,6 +16,6 @@ public enum LogState {
     }
 
     public String getColorCode() {
-        return colorCode;
+        return this.colorCode;
     }
 }

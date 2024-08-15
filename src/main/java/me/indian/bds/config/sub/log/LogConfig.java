@@ -36,7 +36,7 @@ public class LogConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Wysyła ServerAlertEvent z wiadomością która zawiera coś z poniższych informacji"})
     @CustomKey("AlertOn")
-    private List<String> alertOn = Arrays.asList("[Scythe]");
+    private List<String> alertOn = List.of("[Scythe]");
 
     public boolean isSendLogs() {
         return this.sendLogs;
