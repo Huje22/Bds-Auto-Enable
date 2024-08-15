@@ -15,7 +15,6 @@ public final class DefaultsVariables {
     public static boolean WINE;
     private static AppConfig APPCONFIG;
     private static Logger LOGGER;
-    private static File LEVILAMINA_FILE;
 
     private DefaultsVariables() {
     }
@@ -24,21 +23,14 @@ public final class DefaultsVariables {
         APPCONFIG = bdsAutoEnable.getAppConfigManager().getAppConfig();
         LOGGER = bdsAutoEnable.getLogger();
         WINE = wineCheck();
-        LEVILAMINA_FILE = new File(APPCONFIG.getFilesPath() + File.separator + "bedrock_server_mod.exe");
     }
 
     public static String getDefaultFileName() {
         return switch (SystemUtil.getSystem()) {
-            case LINUX ->
-                    (APPCONFIG.isWine() ? (isLeviLamina() ? "bedrock_server_mod.exe" : "bedrock_server.exe") : "bedrock_server");
-            case WINDOWS -> (isLeviLamina() ? "bedrock_server_mod.exe" : "bedrock_server.exe");
+            case LINUX -> (APPCONFIG.isWine() ? "bedrock_server.exe" : "bedrock_server");
+            case WINDOWS -> "bedrock_server.exe";
             default -> "";
         };
-    }
-
-    public static boolean isLeviLamina() {
-        //TODO: Usunąć wsparcie dla levilamina przez to ze nie jest już kontynuowana 
-        return LEVILAMINA_FILE.exists();
     }
 
     public static String getJarDir() {

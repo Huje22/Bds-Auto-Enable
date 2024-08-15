@@ -11,7 +11,6 @@ import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.ServerUtil;
 
 public class VersionUpdater {
@@ -35,16 +34,16 @@ public class VersionUpdater {
     }
 
     public void checkForUpdate() {
+        if (this.running) return;
+
         if (!this.versionManagerConfig.isCheckVersion()) {
             this.logger.debug("Sprawdzanie najnowszej wersji jest wyłączone");
             return;
         }
-        if (this.running || DefaultsVariables.isLeviLamina()) return;
 
         this.running = true;
 
         final long hours = DateUtil.hoursTo(this.versionManagerConfig.getVersionCheckFrequency(), TimeUnit.MILLISECONDS);
-
         final TimerTask timerTask = new TimerTask() {
             @Override
             public void run() {

@@ -3,7 +3,6 @@ package me.indian.bds.command.defaults;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.util.DefaultsVariables;
 
 public class VersionCommand extends Command {
 
@@ -24,11 +23,7 @@ public class VersionCommand extends Command {
     }
 
     private String getServerVersion() {
-        final int protocol = this.bdsAutoEnable.getVersionManager().getLastKnownProtocol();
-        String serverVersion = "&aWersja minecraft:&b " + this.appConfigManager.getVersionManagerConfig().getVersion() + "&r (&d" + protocol + "&r) ";
-
-        if (DefaultsVariables.isLeviLamina()) serverVersion += "&1LeviLamia";
-
-        return serverVersion;
+        return "&aWersja minecraft:&b " + this.appConfigManager.getVersionManagerConfig().getVersion() +
+                "&r (&d" + this.bdsAutoEnable.getVersionManager().getLastKnownProtocol() + "&r) ";
     }
 }

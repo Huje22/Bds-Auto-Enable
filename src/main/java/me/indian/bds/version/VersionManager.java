@@ -182,7 +182,6 @@ public class VersionManager {
     }
 
     public String getLatestVersion() {
-        if (DefaultsVariables.isLeviLamina()) return this.versionManagerConfig.getVersion();
         this.logger.debug("&aUzyskiwanie najnowszej wersji...");
         final Request request = new Request.Builder()
                 .url("https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json")
@@ -245,7 +244,6 @@ public class VersionManager {
     }
 
     public void setLoadedVersion(final String version) {
-        if (DefaultsVariables.isLeviLamina()) return;
         this.versionManagerConfig.setVersion(version);
         this.appConfigManager.saveVersionManagerConfig();
     }

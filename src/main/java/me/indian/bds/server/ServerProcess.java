@@ -20,7 +20,6 @@ import me.indian.bds.event.EventManager;
 import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
-import me.indian.bds.logger.ConsoleColors;
 import me.indian.bds.logger.LogState;
 import me.indian.bds.logger.Logger;
 import me.indian.bds.util.BedrockQuery;
@@ -201,11 +200,7 @@ public class ServerProcess {
                     final String line = consoleOutput.nextLine();
                     if (line.isEmpty()) continue;
 
-                    if (DefaultsVariables.isLeviLamina()) {
-                        this.serverManager.initFromLog(ConsoleColors.removeAnsiColors(line));
-                    } else {
-                        this.serverManager.initFromLog(line);
-                    }
+                    this.serverManager.initFromLog(line);
 
                     if (this.containsAllowedToAlert(line)) {
                         this.eventManager.callEvent(new ServerAlertEvent(line, LogState.ALERT));
