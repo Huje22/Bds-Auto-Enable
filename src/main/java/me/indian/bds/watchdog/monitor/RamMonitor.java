@@ -46,7 +46,6 @@ public class RamMonitor {
         final long maxEntries = 10000 * MathUtil.bytesToGB(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax());
 
         final TimerTask app = new TimerTask() {
-
             @Override
             public void run() {
                 if (RamMonitor.this.averageAppRamUsageList.size() == maxEntries) {
@@ -144,6 +143,10 @@ public class RamMonitor {
         return (size == 0 ? 0 : sum / size);
     }
 
+    public int getAverageAppRamUsageListSize(){
+        return this.averageAppRamUsageList.size();
+    }
+
     /**
      * Oblicza średnie zużycie pamięci RAM przez serwer.
      * <p>
@@ -161,5 +164,9 @@ public class RamMonitor {
 
         final long size = this.averageServerRamUsageList.size();
         return (size == 0 ? 0 : sum / size);
+    }
+
+    public int getAverageServerRamUsageListSize(){
+        return this.averageServerRamUsageList.size();
     }
 }

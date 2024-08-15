@@ -15,6 +15,7 @@ import me.indian.bds.server.stats.ServerStats;
 import me.indian.bds.server.stats.StatsManager;
 import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.watchdog.WatchDog;
+import me.indian.bds.watchdog.monitor.RamMonitor;
 
 public final class StatusUtil {
 
@@ -43,6 +44,7 @@ public final class StatusUtil {
         STATUS.clear();
 
         final WatchDog watchDog = BDSAUTOENABLE.getWatchDog();
+        final RamMonitor ramMonitor = watchDog.getRamMonitor();
         final ServerStats serverStats = STATSMANAGER.getServerStats();
 
         final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
@@ -76,7 +78,7 @@ public final class StatusUtil {
         STATUS.add("> **Statystyki servera**");
         STATUS.add("Ostatnie TPS: `" + BDSAUTOENABLE.getServerManager().getLastTPS() + "`");
         STATUS.add("Pamięć RAM: `" + usedServerMemory + "` (`" + freeComputerMemory + "`)");
-        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatKiloBytesDynamic(watchDog.getRamMonitor().getAverageServerRamUsage(), true) + "`");
+        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatKiloBytesDynamic(ramMonitor.getAverageServerRamUsage(), true) + "` ("+ramMonitor.getAverageServerRamUsageListSize()+")");
         if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
             STATUS.add("Następny restart za: `" + DateUtil.formatTimeDynamic(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart()) + "`");
         }
@@ -90,8 +92,7 @@ public final class StatusUtil {
         STATUS.add("> **Statystyki aplikacji**");
         STATUS.add("Czas działania: `" + DateUtil.formatTimeDynamic(System.currentTimeMillis() - BDSAUTOENABLE.getStartTime()) + "`");
         STATUS.add("Pamięć RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
-        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatBytesDynamic(watchDog.getRamMonitor().getAverageAppRamUsage(), true) + "`");
-        //TODO: Dodać info o tym ile jest "entries"
+        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatBytesDynamic(ramMonitor.getAverageAppRamUsage(), true) + "` (" + ramMonitor.getAverageAppRamUsageListSize() + ")");
         STATUS.add("Aktualna liczba wątków: `" + ThreadUtil.getThreadsCount() + "/" + ThreadUtil.getPeakThreadsCount() + "` ");
         STATUS.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
 
