@@ -5,20 +5,17 @@ import java.io.DataOutputStream;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.util.Random;
-import me.indian.bds.server.properties.component.Gamemode;
 
 /**
  * Kod zaczerpnięty z
  * <a href="https://github.com/justin-eckenweber/BedrockServerQuery/blob/main/src/main/java/me/justin/bedrockserverquery/data/BedrockQuery.java">...</a>
  */
-
-public record BedrockQuery(boolean online, long responseTime, String edition, String motd, int protocol,
+public record BedrockQuery(String serverAddress, String hostAddress, boolean online, long responseTime, String edition,
+                           String motd, int protocol,
                            String minecraftVersion,
                            int playerCount,
-                           int maxPlayers, String mapName, Gamemode gamemode, int portV4, int portV6) {
+                           int maxPlayers, String serverID, String mapName, String gamemode, int portV4, int portV6) {
 
     private static final byte IDUnconnectedPing = 0x01;
     private static final byte[] unconnectedMessageSequence = {0x00, (byte) 0xff, (byte) 0xff, 0x00, (byte) 0xfe, (byte) 0xfe, (byte) 0xfe, (byte) 0xfe, (byte) 0xfd, (byte) 0xfd, (byte) 0xfd, (byte) 0xfd, 0x12, 0x34, 0x56, 0x78};
@@ -62,17 +59,12 @@ public record BedrockQuery(boolean online, long responseTime, String edition, St
                 portV6 = Integer.parseInt(splittedData[11]);
             }
 
-            return new BedrockQuery(true, ping,
+            return new BedrockQuery(serverAddress, address.getHostAddress(), true, ping,
                     splittedData[0], splittedData[1], Integer.parseInt(splittedData[2]), splittedData[3],
-                    Integer.parseInt(splittedData[4]), Integer.parseInt(splittedData[5]),
-                    splittedData[7], Gamemode.getByName(splittedData[8]), portV4, portV6);
+                    Integer.parseInt(splittedData[4]), Integer.parseInt(splittedData[5]), splittedData[6],
+                    splittedData[7], splittedData[8], portV4, portV6);
         } catch (final Exception exception) {
-            if (!(exception instanceof UnknownHostException) &&
-                    !(exception instanceof SocketTimeoutException)) {
-                exception.printStackTrace();
-            }
-
-            return new BedrockQuery(false, -1, "", "", -1, "", 0, 0, "", Gamemode.SURVIVAL, -1, -1);
+            return new BedrockQuery(serverAddress, "", false, -1, "", "", -1, "", 0, 0, "", "", "", -1, -1);
         }
     }
 }
