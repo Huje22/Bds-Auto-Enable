@@ -9,8 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.logger.impl.ExtensionLogger;
+import me.indian.util.logger.Logger;
 
 public abstract class Extension {
 

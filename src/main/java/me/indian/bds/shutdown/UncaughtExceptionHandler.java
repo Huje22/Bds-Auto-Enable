@@ -3,7 +3,7 @@ package me.indian.bds.shutdown;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.event.server.ServerUncaughtExceptionEvent;
-import me.indian.bds.logger.Logger;
+import me.indian.util.logger.Logger;
 
 public class UncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
 

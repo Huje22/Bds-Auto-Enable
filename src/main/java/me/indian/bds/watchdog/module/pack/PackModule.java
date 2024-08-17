@@ -7,10 +7,10 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.pack.component.BehaviorPack;
 import me.indian.bds.pack.loader.BehaviorPackLoader;
 import me.indian.bds.pack.loader.ResourcePackLoader;
+import me.indian.util.logger.Logger;
 import org.jetbrains.annotations.Nullable;
 
 public class PackModule {

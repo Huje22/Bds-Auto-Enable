@@ -3,7 +3,7 @@ package me.indian.bds.command.defaults;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.config.AppConfigManager;
-import me.indian.bds.logger.Logger;
+import me.indian.util.logger.Logger;
 
 public class ReloadCommand extends Command {
 

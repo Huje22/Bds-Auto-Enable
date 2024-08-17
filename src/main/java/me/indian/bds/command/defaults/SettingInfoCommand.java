@@ -4,8 +4,9 @@ import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.server.properties.ServerProperties;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.util.system.SystemUtil;
+import me.indian.util.ThreadUtil;
+import me.indian.util.system.SystemUtil;
+
 
 public class SettingInfoCommand extends Command {
 

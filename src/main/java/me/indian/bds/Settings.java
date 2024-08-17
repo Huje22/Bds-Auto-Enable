@@ -5,16 +5,16 @@ import java.util.Scanner;
 import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.config.sub.watchdog.WatchDogConfig;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.server.properties.component.CompressionAlgorithm;
 import me.indian.bds.server.properties.component.PlayerPermissionLevel;
 import me.indian.bds.server.properties.component.ServerMovementAuth;
 import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.ScannerUtil;
-import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.version.VersionManager;
+import me.indian.util.MessageUtil;
+import me.indian.util.ScannerUtil;
+import me.indian.util.ThreadUtil;
+import me.indian.util.logger.Logger;
 
 public class Settings {
 

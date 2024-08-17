@@ -16,16 +16,16 @@ import me.indian.bds.config.AppConfig;
 import me.indian.bds.config.AppConfigManager;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.exception.DownloadException;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.properties.ServerProperties;
-import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.HTTPUtil;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.util.ZipUtil;
-import me.indian.bds.util.system.SystemOS;
-import me.indian.bds.util.system.SystemUtil;
+import me.indian.util.BedrockQuery;
+import me.indian.util.ThreadUtil;
+import me.indian.util.ZipUtil;
+import me.indian.util.logger.Logger;
+import me.indian.util.system.SystemOS;
+import me.indian.util.system.SystemUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -142,7 +142,7 @@ public class VersionManager {
     public void downloadServerFiles(final String version) {
         try {
             this.logger.info("Pobieranie wersji: &1" + version);
-            HTTPUtil.download(this.getServerDownloadUrl(version), this.versionFolder.getPath() + File.separator + version + ".zip", this.logger);
+            HTTPUtil.download(this.getServerDownloadUrl(version), this.versionFolder.getPath() + File.separator + version + ".zip", this.bdsAutoEnable);
             this.logger.info("Pobrano wersje: &1" + version);
             this.loadVersionsInfo();
         } catch (final IOException | DownloadException exception) {

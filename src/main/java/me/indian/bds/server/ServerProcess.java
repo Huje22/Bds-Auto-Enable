@@ -20,15 +20,15 @@ import me.indian.bds.event.EventManager;
 import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerClosedEvent;
 import me.indian.bds.event.server.ServerConsoleCommandEvent;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.BedrockQuery;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.ServerUtil;
-import me.indian.bds.util.ThreadUtil;
-import me.indian.bds.util.system.SystemOS;
-import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.watchdog.WatchDog;
+import me.indian.util.BedrockQuery;
+import me.indian.util.ThreadUtil;
+import me.indian.util.logger.LogState;
+import me.indian.util.logger.Logger;
+import me.indian.util.system.SystemOS;
+import me.indian.util.system.SystemUtil;
 
 public class ServerProcess {
 

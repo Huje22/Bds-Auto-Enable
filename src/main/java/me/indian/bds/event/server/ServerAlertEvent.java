@@ -1,7 +1,7 @@
 package me.indian.bds.event.server;
 
 import me.indian.bds.event.Event;
-import me.indian.bds.logger.LogState;
+import me.indian.util.logger.LogState;
 import org.jetbrains.annotations.Nullable;
 
 public class ServerAlertEvent extends Event {

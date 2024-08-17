@@ -28,10 +28,10 @@ import javax.net.ssl.HttpsURLConnection;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.MetricsConfig;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.ThreadUtil;
+import me.indian.util.DateUtil;
+import me.indian.util.ThreadUtil;
 
 /**
  * bStats collects some data for plugin authors.

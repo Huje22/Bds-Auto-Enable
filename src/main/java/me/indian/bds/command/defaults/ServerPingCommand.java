@@ -2,7 +2,7 @@ package me.indian.bds.command.defaults;
 
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
-import me.indian.bds.util.BedrockQuery;
+import me.indian.util.BedrockQuery;
 
 public class ServerPingCommand extends Command {
 

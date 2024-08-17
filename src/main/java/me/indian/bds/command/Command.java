@@ -10,8 +10,8 @@ import me.indian.bds.config.sub.CommandConfig;
 import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.player.position.Position;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ServerUtil;
+import me.indian.util.MessageUtil;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class Command {

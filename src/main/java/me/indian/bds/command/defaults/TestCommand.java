@@ -5,7 +5,7 @@ import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.Map;
 import me.indian.bds.command.Command;
-import me.indian.bds.util.ThreadUtil;
+import me.indian.util.ThreadUtil;
 
 public class TestCommand extends Command {
 

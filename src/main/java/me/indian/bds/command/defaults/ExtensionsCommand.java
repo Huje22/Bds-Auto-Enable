@@ -6,7 +6,7 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.extension.ExtensionManager;
-import me.indian.bds.util.MessageUtil;
+import me.indian.util.MessageUtil;
 
 public class ExtensionsCommand extends Command {
 

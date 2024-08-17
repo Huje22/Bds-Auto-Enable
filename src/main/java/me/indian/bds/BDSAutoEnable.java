@@ -29,21 +29,21 @@ import me.indian.bds.server.ServerProcess;
 import me.indian.bds.server.allowlist.AllowlistManager;
 import me.indian.bds.server.properties.ServerProperties;
 import me.indian.bds.shutdown.ShutdownHandler;
-import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.FileUtil;
-import me.indian.bds.util.MathUtil;
-import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.PlayerStatsUtil;
 import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.StatusUtil;
-import me.indian.bds.util.ZipUtil;
 import me.indian.bds.util.geyser.GeyserUtil;
-import me.indian.bds.util.system.SystemArch;
-import me.indian.bds.util.system.SystemOS;
-import me.indian.bds.util.system.SystemUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.WatchDog;
+import me.indian.util.DateUtil;
+import me.indian.util.FileUtil;
+import me.indian.util.MathUtil;
+import me.indian.util.MessageUtil;
+import me.indian.util.ZipUtil;
+import me.indian.util.system.SystemArch;
+import me.indian.util.system.SystemOS;
+import me.indian.util.system.SystemUtil;
 
 public class BDSAutoEnable {
 
@@ -114,7 +114,7 @@ public class BDSAutoEnable {
         ServerUtil.init(this);
         GeyserUtil.init(this);
         StatusUtil.init(this);
-        ZipUtil.init(this);
+        ZipUtil.init(this.logger);
         PlayerStatsUtil.init(this);
 
         this.init();
@@ -174,7 +174,7 @@ public class BDSAutoEnable {
         final SystemArch arch = SystemUtil.getCurrentArch();
         final SystemOS systemOS = SystemUtil.getSystem();
 
-        if (arch == SystemArch.ARM || arch == SystemArch.AMD_X32) {
+        if (arch == SystemArch.ARM_32X || arch == SystemArch.ARM_64X || arch == SystemArch.AMD_X32) {
             if (this.appConfig.isDebug()) {
                 this.logger.warning("&aTwoja architektura systemu nie jest wspierana," +
                         " lecz masz włączony&1 Debug&a robisz to na własne&c ryzyko&c!");

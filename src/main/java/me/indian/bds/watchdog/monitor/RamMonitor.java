@@ -9,13 +9,13 @@ import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.watchdog.RamMonitorConfig;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ServerUtil;
 import me.indian.bds.util.StatusUtil;
 import me.indian.bds.watchdog.WatchDog;
+import me.indian.util.DateUtil;
+import me.indian.util.MathUtil;
+import me.indian.util.logger.LogState;
+import me.indian.util.logger.Logger;
 
 public class RamMonitor {
 
@@ -43,7 +43,7 @@ public class RamMonitor {
 
     private void monitAverageRamUsage() {
         final long tenMinutes = DateUtil.minutesTo(10, TimeUnit.MILLISECONDS);
-        final long maxEntries = 10000 * MathUtil.bytesToGB(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax());
+        final long maxEntries = 100;
 
         final TimerTask app = new TimerTask() {
             @Override

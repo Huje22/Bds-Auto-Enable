@@ -10,7 +10,6 @@ import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
 
 public class GuiManager {
 

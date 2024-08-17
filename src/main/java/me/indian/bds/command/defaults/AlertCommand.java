@@ -2,8 +2,8 @@ package me.indian.bds.command.defaults;
 
 import java.util.List;
 import me.indian.bds.command.Command;
-import me.indian.bds.util.MessageUtil;
 import me.indian.bds.util.ServerUtil;
+import me.indian.util.MessageUtil;
 
 public class AlertCommand extends Command {
 

@@ -9,12 +9,12 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.pack.component.BehaviorPack;
-import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.GsonUtil;
 import me.indian.bds.util.HTTPUtil;
-import me.indian.bds.util.ZipUtil;
+import me.indian.util.DateUtil;
+import me.indian.util.ZipUtil;
+import me.indian.util.logger.Logger;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class PackUpdater {
 
+    private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final PackModule packModule;
     private final File behaviorsFolder;
@@ -29,6 +30,7 @@ public class PackUpdater {
     private Response response;
 
     public PackUpdater(final BDSAutoEnable bdsAutoEnable, final PackModule packModule) {
+        this.bdsAutoEnable = bdsAutoEnable;
         this.logger = bdsAutoEnable.getLogger();
         this.packModule = packModule;
         this.behaviorsFolder = bdsAutoEnable.getPackManager().getBehaviorPackLoader().getBehaviorsFolder();
@@ -43,7 +45,7 @@ public class PackUpdater {
             final long startTime = System.currentTimeMillis();
             this.logger.info("Pobieranie Paczki");
             final String zipPath = this.packModule.getPackFile().getPath() + ".zip";
-            HTTPUtil.download("https://github.com/Huje22/BDS-Auto-Enable-Management-Pack/archive/main.zip", zipPath, this.logger);
+            HTTPUtil.download("https://github.com/Huje22/BDS-Auto-Enable-Management-Pack/archive/main.zip", zipPath, this.bdsAutoEnable);
             this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
             ZipUtil.unzipFile(zipPath, this.behaviorsFolder.getPath(), true);
         } catch (final Exception exception) {

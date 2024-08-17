@@ -13,8 +13,8 @@ import java.util.concurrent.Executors;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.event.server.response.ServerConsoleCommandResponse;
 import me.indian.bds.extension.Extension;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.ThreadUtil;
+import me.indian.util.ThreadUtil;
+import me.indian.util.logger.Logger;
 
 public class EventManager {
 

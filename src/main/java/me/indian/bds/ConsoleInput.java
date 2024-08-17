@@ -5,11 +5,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import me.indian.bds.command.CommandManager;
 import me.indian.bds.event.server.ServerAlertEvent;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.MessageUtil;
-import me.indian.bds.util.ThreadUtil;
+import me.indian.util.MessageUtil;
+import me.indian.util.ThreadUtil;
+import me.indian.util.logger.LogState;
+import me.indian.util.logger.Logger;
 
 public class ConsoleInput {
 

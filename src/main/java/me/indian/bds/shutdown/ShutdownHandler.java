@@ -1,9 +1,9 @@
 package me.indian.bds.shutdown;
 
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.ThreadUtil;
+import me.indian.util.ThreadUtil;
+import me.indian.util.logger.Logger;
 
 public class ShutdownHandler {
 

@@ -30,19 +30,20 @@ import me.indian.bds.event.player.response.PlayerChatResponse;
 import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerStartEvent;
 import me.indian.bds.event.server.TPSChangeEvent;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.player.PlayerStatistics;
 import me.indian.bds.player.position.Dimension;
 import me.indian.bds.player.position.Position;
 import me.indian.bds.server.stats.StatsManager;
-import me.indian.bds.util.BedrockQuery;
-import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.MessageUtil;
+import me.indian.bds.util.MinecraftUtil;
 import me.indian.bds.util.ServerUtil;
-import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.version.VersionManager;
 import me.indian.bds.watchdog.module.pack.PackModule;
+import me.indian.util.BedrockQuery;
+import me.indian.util.DateUtil;
+import me.indian.util.MessageUtil;
+import me.indian.util.ThreadUtil;
+import me.indian.util.logger.LogState;
+import me.indian.util.logger.Logger;
 
 public class ServerManager {
 
@@ -116,7 +117,7 @@ public class ServerManager {
             final Matcher matcher = pattern.matcher(logEntry);
 
             if (matcher.find()) {
-                final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
+                final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
                 final long xuid = Long.parseLong(matcher.group(2));
 
                 final String oldPlayerName = this.statsManager.getNameByXuid(xuid);
@@ -145,7 +146,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
+            final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
 
             try {
                 this.onlinePlayers.remove(playerName);
@@ -169,7 +170,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
+            final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
             try {
                 this.onlinePlayers.add(playerName);
                 this.offlinePlayers.remove(playerName);
@@ -193,7 +194,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
+            final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
 
             try {
                 this.eventManager.callEvent(new PlayerSpawnEvent(this.statsManager.getPlayer(playerName)));
@@ -212,7 +213,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerMovement = MessageUtil.fixPlayerName(matcher.group(1));
+            final String playerMovement = MinecraftUtil.fixPlayerName(matcher.group(1));
             final String playerPosition = matcher.group(2);
 
             try {
@@ -235,8 +236,8 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerChat = MessageUtil.fixPlayerName(matcher.group(1));
-            final String message = MessageUtil.fixMessage(matcher.group(2));
+            final String playerChat = MinecraftUtil.fixPlayerName(matcher.group(1));
+            final String message = MinecraftUtil.fixMessage(matcher.group(2));
             final Position position = Position.parsePosition(matcher.group(3));
             final boolean appHandled = this.bdsAutoEnable.getWatchDog().getPackModule().isAppHandledMessages();
 
@@ -280,7 +281,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerCommand = MessageUtil.fixPlayerName(matcher.group(1));
+            final String playerCommand = MinecraftUtil.fixPlayerName(matcher.group(1));
             final String command = matcher.group(2);
             final String position = matcher.group(3);
             final boolean isOp = Boolean.parseBoolean(matcher.group(4));
@@ -303,8 +304,8 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerDeath = MessageUtil.fixPlayerName(matcher.group(1));
-            final String deathMessage = MessageUtil.fixMessage(matcher.group(2));
+            final String playerDeath = MinecraftUtil.fixPlayerName(matcher.group(1));
+            final String deathMessage = MinecraftUtil.fixMessage(matcher.group(2));
             final Position deathPosition = Position.parsePosition(matcher.group(3));
             final String killerName = matcher.group(4);
             final String usedItemName = matcher.group(5);
@@ -352,7 +353,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerName = MessageUtil.fixPlayerName(matcher.group(1));
+            final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
             final String fromDimension = matcher.group(2);
             final String toDimension = matcher.group(3);
             final Position fromPosition = Position.parsePosition(matcher.group(4));
@@ -375,7 +376,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerBreakBlock = MessageUtil.fixPlayerName(matcher.group(1));
+            final String playerBreakBlock = MinecraftUtil.fixPlayerName(matcher.group(1));
             final String blockID = matcher.group(2);
             final String blockPosition = matcher.group(3);
 
@@ -398,7 +399,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerPlaceBlock = MessageUtil.fixPlayerName(matcher.group(1));
+            final String playerPlaceBlock = MinecraftUtil.fixPlayerName(matcher.group(1));
             final String blockID = matcher.group(2);
             final String blockPosition = matcher.group(3);
 
@@ -421,7 +422,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerInteract = MessageUtil.fixPlayerName(matcher.group(1));
+            final String playerInteract = MinecraftUtil.fixPlayerName(matcher.group(1));
             final String blockID = matcher.group(2);
             final String blockPosition = matcher.group(3);
 
@@ -442,7 +443,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerInteract = MessageUtil.fixPlayerName(matcher.group(1));
+            final String playerInteract = MinecraftUtil.fixPlayerName(matcher.group(1));
             final String entityID = matcher.group(2);
             final String entityPosition = matcher.group(3);
 
@@ -472,7 +473,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String version = MessageUtil.fixMessage(matcher.group(1));
+            final String version = MinecraftUtil.fixMessage(matcher.group(1));
             if (!this.versionManager.getLoadedVersion().equals(version)) {
                 this.versionManager.setLoadedVersion(version);
             }

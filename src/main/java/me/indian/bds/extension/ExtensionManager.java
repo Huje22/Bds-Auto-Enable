@@ -20,10 +20,10 @@ import me.indian.bds.event.EventManager;
 import me.indian.bds.event.server.ExtensionDisableEvent;
 import me.indian.bds.event.server.ExtensionEnableEvent;
 import me.indian.bds.exception.ExtensionException;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.DefaultsVariables;
 import me.indian.bds.util.GsonUtil;
+import me.indian.util.DateUtil;
+import me.indian.util.logger.Logger;
 import org.jetbrains.annotations.Nullable;
 
 public class ExtensionManager {

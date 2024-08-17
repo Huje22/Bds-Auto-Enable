@@ -4,7 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.command.Command;
-import me.indian.bds.util.MessageUtil;
+import me.indian.util.MessageUtil;
 
 public class ExecuteCommand extends Command {
 

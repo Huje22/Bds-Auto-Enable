@@ -4,12 +4,12 @@ import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.command.Command;
 import me.indian.bds.config.sub.transfer.LobbyConfig;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ServerUtil;
-import me.indian.bds.util.ThreadUtil;
+import me.indian.util.MathUtil;
+import me.indian.util.ThreadUtil;
+import me.indian.util.logger.LogState;
+import me.indian.util.logger.Logger;
 
 public class EndCommand extends Command {
 

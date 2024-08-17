@@ -8,15 +8,15 @@ import java.util.Map;
 
 public class PlayerStatistics implements Serializable {
 
+    private final long firstJoin;
+    private final List<String> oldNames;
+    private final Map<String, Object> dynamicProperties;
     private String playerName;
     private long xuid;
-    private final long firstJoin;
     private long lastJoin, lastQuit;
-    private final List<String> oldNames;
     private long playtime, deaths, blockPlaced, blockBroken, loginStreak, longestLoginStreak;
     private DeviceOS lastDevice;
     private Controller lastController;
-    private final Map<String, Object> dynamicProperties;
 
     public PlayerStatistics(final String playerName, final long xuid, final long firstJoin, final long lastJoin, final long lastQuit, final long playtime, final long deaths, final long blockPlaced, final long blockBroken) {
         this.playerName = playerName;
@@ -68,12 +68,12 @@ public class PlayerStatistics implements Serializable {
         return this.lastQuit;
     }
 
-    public List<String> getOldNames() {
-        return this.oldNames;
-    }
-
     public void setLastQuit(final long lastQuit) {
         this.lastQuit = lastQuit;
+    }
+
+    public List<String> getOldNames() {
+        return this.oldNames;
     }
 
     public long getPlaytime() {

@@ -5,8 +5,8 @@ import gs.mclo.api.response.UploadLogResponse;
 import java.io.File;
 import java.util.concurrent.CompletableFuture;
 import me.indian.bds.config.sub.log.LogConfig;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.MathUtil;
+import me.indian.util.MathUtil;
+import me.indian.util.logger.Logger;
 
 public class McLog {
 

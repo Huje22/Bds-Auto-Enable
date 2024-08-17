@@ -11,7 +11,6 @@ import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
 import org.jetbrains.annotations.Nullable;
 
 public final class RobotUtil {

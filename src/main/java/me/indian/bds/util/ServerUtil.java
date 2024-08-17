@@ -2,10 +2,11 @@ package me.indian.bds.util;
 
 import java.util.ArrayList;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
+import me.indian.util.MessageUtil;
+import me.indian.util.logger.LogState;
+import me.indian.util.logger.Logger;
 
 public final class ServerUtil {
 
@@ -36,7 +37,7 @@ public final class ServerUtil {
             LOGGER.debug("Lista graczy jest pusta");
             return;
         }
-        SERVER_PROCESS.sendToConsole("kick " + who + " " + MessageUtil.colorize(reason));
+        SERVER_PROCESS.sendToConsole("kick " + who + " " + MinecraftUtil.colorize(reason));
     }
 
     public static void transferPlayer(final String playerName, final String address, final int port) {
@@ -62,9 +63,9 @@ public final class ServerUtil {
             return;
         }
 
-        final String msg2 = MessageUtil.fixMessage(msg, true).replace("\"", "\\\"");
+        final String msg2 = MinecraftUtil.fixMessage(msg, true).replace("\"", "\\\"");
 
-        SERVER_PROCESS.sendToConsole(MessageUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + msg2 + "\"}]}"));
+        SERVER_PROCESS.sendToConsole(MinecraftUtil.colorize("tellraw " + playerName + " {\"rawtext\":[{\"text\":\"" + msg2 + "\"}]}"));
     }
 
     public static void tellrawToAllAndLogger(final String prefix, final String msg, final LogState logState) {
@@ -78,12 +79,12 @@ public final class ServerUtil {
 
     public static void titleToPlayer(final String playerName, final String message) {
         if (SERVER_MANAGER.getOnlinePlayers().isEmpty()) return;
-        SERVER_PROCESS.sendToConsole("title " + playerName + " title " + MessageUtil.colorize(message));
+        SERVER_PROCESS.sendToConsole("title " + playerName + " title " + MinecraftUtil.colorize(message));
     }
 
     public static void titleToPlayer(final String playerName, final String message, final String subTitle) {
         if (SERVER_MANAGER.getOnlinePlayers().isEmpty()) return;
-        SERVER_PROCESS.sendToConsole("title " + playerName + " subtitle " + MessageUtil.colorize(subTitle));
+        SERVER_PROCESS.sendToConsole("title " + playerName + " subtitle " + MinecraftUtil.colorize(subTitle));
         titleToPlayer(playerName, message);
     }
 
@@ -97,7 +98,7 @@ public final class ServerUtil {
 
     public static void actionBarToPlayer(final String playerName, final String message) {
         if (SERVER_MANAGER.getOnlinePlayers().isEmpty()) return;
-        SERVER_PROCESS.sendToConsole("title " + playerName + " actionbar " + MessageUtil.colorize(message));
+        SERVER_PROCESS.sendToConsole("title " + playerName + " actionbar " + MinecraftUtil.colorize(message));
     }
 
     public static void actionBarToAll(final String message) {

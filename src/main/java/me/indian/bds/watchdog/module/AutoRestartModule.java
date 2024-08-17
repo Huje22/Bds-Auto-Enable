@@ -10,14 +10,14 @@ import me.indian.bds.config.sub.transfer.LobbyConfig;
 import me.indian.bds.config.sub.watchdog.AutoRestartConfig;
 import me.indian.bds.event.server.ServerAlertEvent;
 import me.indian.bds.event.server.ServerRestartEvent;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.DateUtil;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.util.ServerUtil;
-import me.indian.bds.util.ThreadUtil;
 import me.indian.bds.watchdog.WatchDog;
+import me.indian.util.DateUtil;
+import me.indian.util.MathUtil;
+import me.indian.util.ThreadUtil;
+import me.indian.util.logger.LogState;
+import me.indian.util.logger.Logger;
 import org.jetbrains.annotations.Nullable;
 
 public class AutoRestartModule {

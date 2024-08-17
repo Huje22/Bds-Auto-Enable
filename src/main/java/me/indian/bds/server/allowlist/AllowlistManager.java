@@ -10,9 +10,9 @@ import java.util.LinkedList;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfig;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.server.allowlist.component.AllowlistPlayer;
 import me.indian.bds.util.GsonUtil;
+import me.indian.util.logger.Logger;
 import org.jetbrains.annotations.Nullable;
 
 public class AllowlistManager {

@@ -9,8 +9,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.util.concurrent.TimeUnit;
+import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.exception.DownloadException;
-import me.indian.bds.logger.Logger;
+import me.indian.util.DateUtil;
+import me.indian.util.MathUtil;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -63,7 +65,7 @@ public final class HTTPUtil {
         return LAST_KNOWN_IP;
     }
 
-    public static void download(final String url, final String path, final Logger logger) throws IOException, DownloadException {
+    public static void download(final String url, final String path, final BDSAutoEnable bdsAutoEnable) throws IOException, DownloadException {
         final File file = new File(path);
         final Request request = new Request.Builder().url(url).get().build();
 
@@ -102,11 +104,11 @@ public final class HTTPUtil {
                                 final long remainingTimeSeconds = (long) (MathUtil.bytesToMB(fileSize) / formatedSpeed);
                                 final String remainingTimeString = DateUtil.formatTimeDynamic(remainingTimeSeconds * 1000, true);
 
-                                logger.getBdsAutoEnable().setAppWindowName(String.format("%-1s %-2s %-4s %-4s", "Pobrano w:", progress + "%", formatedSpeed + " MB/s", "Pozostało " + remainingTimeString));
+                                bdsAutoEnable.setAppWindowName(String.format("%-1s %-2s %-4s %-4s", "Pobrano w:", progress + "%", formatedSpeed + " MB/s", "Pozostało " + remainingTimeString));
 
                                 if (progress != lastProgress) {
                                     lastProgress = progress;
-                                    logger.info(String.format("%-1s &b%-2s &a%-4s &d%-4s", "Pobrano w:", progress + "%", formatedSpeed + " MB/s", "Pozostało " + remainingTimeString));
+                                    bdsAutoEnable.getLogger().info(String.format("%-1s &b%-2s &a%-4s &d%-4s", "Pobrano w:", progress + "%", formatedSpeed + " MB/s", "Pozostało " + remainingTimeString));
                                 }
                             }
                         }

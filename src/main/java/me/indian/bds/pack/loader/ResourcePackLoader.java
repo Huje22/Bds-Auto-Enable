@@ -15,12 +15,12 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.pack.component.TexturePack;
 import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.FileUtil;
 import me.indian.bds.util.GsonUtil;
-import me.indian.bds.util.ZipUtil;
+import me.indian.util.FileUtil;
+import me.indian.util.ZipUtil;
+import me.indian.util.logger.Logger;
 import org.jetbrains.annotations.Nullable;
 
 public class ResourcePackLoader {

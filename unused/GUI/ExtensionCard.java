@@ -12,7 +12,6 @@ import javax.swing.JTabbedPane;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.extension.Extension;
 import me.indian.bds.extension.ExtensionManager;
-import me.indian.bds.util.MessageUtil;
 
 public class ExtensionCard extends CoordinateGridPanel {
 

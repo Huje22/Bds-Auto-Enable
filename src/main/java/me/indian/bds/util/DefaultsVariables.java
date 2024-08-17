@@ -7,8 +7,9 @@ import java.time.ZoneId;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.AppConfig;
-import me.indian.bds.logger.Logger;
-import me.indian.bds.util.system.SystemUtil;
+import me.indian.util.DateUtil;
+import me.indian.util.logger.Logger;
+import me.indian.util.system.SystemUtil;
 
 public final class DefaultsVariables {
 

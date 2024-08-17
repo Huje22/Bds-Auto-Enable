@@ -7,11 +7,11 @@ import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.config.sub.version.VersionManagerConfig;
 import me.indian.bds.event.server.ServerUpdatedEvent;
 import me.indian.bds.event.server.ServerUpdatingEvent;
-import me.indian.bds.logger.LogState;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.DateUtil;
 import me.indian.bds.util.ServerUtil;
+import me.indian.util.DateUtil;
+import me.indian.util.logger.LogState;
+import me.indian.util.logger.Logger;
 
 public class VersionUpdater {
 

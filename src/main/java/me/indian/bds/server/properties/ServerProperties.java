@@ -10,14 +10,14 @@ import java.nio.file.Paths;
 import java.util.Properties;
 import java.util.stream.Stream;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.Logger;
 import me.indian.bds.server.properties.component.CompressionAlgorithm;
 import me.indian.bds.server.properties.component.Difficulty;
 import me.indian.bds.server.properties.component.PlayerPermissionLevel;
 import me.indian.bds.server.properties.component.ServerMovementAuth;
 import me.indian.bds.util.DefaultsVariables;
-import me.indian.bds.util.MathUtil;
 import me.indian.bds.version.VersionManager;
+import me.indian.util.MathUtil;
+import me.indian.util.logger.Logger;
 
 public class ServerProperties {
 
