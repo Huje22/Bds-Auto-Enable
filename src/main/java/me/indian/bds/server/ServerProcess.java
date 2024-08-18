@@ -263,7 +263,7 @@ public class ServerProcess {
     public String commandAndResponse(final String command) {
         final Thread thread = Thread.currentThread();
 
-        if (ThreadUtil.isImportantThread()) {
+        if (BDSAutoEnable.isImportantThread()) {
             throw new UnsupportedOperationException("Nie możesz wykonać tego na tym wątku! (" + thread.getName() + ")");
         }
 

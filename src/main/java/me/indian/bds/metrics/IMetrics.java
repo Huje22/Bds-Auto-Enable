@@ -107,7 +107,7 @@ public class IMetrics {
      */
     private static void sendData(final JsonObject data) throws Exception {
         if (data == null) throw new IllegalArgumentException("Data nie może być nullem!");
-        if (ThreadUtil.isImportantThread()) throw new IllegalAccessError("Nie możesz wykonac tego na tym wątku!");
+        if (BDSAutoEnable.isImportantThread()) throw new IllegalAccessError("Nie możesz wykonac tego na tym wątku!");
         if (logSentData) bdsAutoEnable.getLogger().info("Wysyłanie danych do bStats: " + data);
 
         final HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();

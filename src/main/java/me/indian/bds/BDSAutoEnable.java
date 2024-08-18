@@ -311,6 +311,11 @@ public class BDSAutoEnable {
         new Timer("Console Name Changer", true).scheduleAtFixedRate(timerTask, seconds, seconds);
     }
 
+    public static boolean isImportantThread() {
+        final String threadName = Thread.currentThread().getName();
+        return threadName.contains("Console") || threadName.contains("Server process");
+    }
+
     public long getStartTime() {
         return this.startTime;
     }
