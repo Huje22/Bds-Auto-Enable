@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.concurrent.TimeUnit;
 import me.indian.bds.command.Command;
+import me.indian.bds.util.MinecraftUtil;
 import me.indian.util.MessageUtil;
 
 public class ExecuteCommand extends Command {
@@ -33,7 +34,8 @@ public class ExecuteCommand extends Command {
                     process.destroy();
                 }
             } catch (final Exception exception) {
-                this.sendMessage(MessageUtil.getStackTraceAsString(exception));
+                this.sendMessage("&cNie udało się wykonać polecenia!");
+                this.sendMessage(MinecraftUtil.fixMessage(MessageUtil.getStackTraceAsString(exception)));
             }
         } else {
             this.sendMessage("&cPotrzebujesz wyższych uprawnień");
