@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
-import me.indian.util.MessageUtil;
 import me.indian.util.logger.LogState;
 import me.indian.util.logger.Logger;
 
@@ -22,6 +21,10 @@ public final class ServerUtil {
         LOGGER = bdsAutoEnable.getLogger();
         SERVER_PROCESS = bdsAutoEnable.getServerProcess();
         SERVER_MANAGER = bdsAutoEnable.getServerManager();
+    }
+
+    public static String sendCommandAsPlayer(final String playerName, final String command){
+        return SERVER_PROCESS.commandAndResponse("execute as " +playerName +" run " + command);
     }
 
     public static void kickAllPlayers(final String msg) {
