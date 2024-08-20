@@ -308,7 +308,12 @@ public class BDSAutoEnable {
             }
         };
 
-        new Timer("Console Name Changer", true).scheduleAtFixedRate(timerTask, seconds, seconds);
+        if(System.console() == null){
+            this.logger.debug("&cOkno konsoli jest nie dostępne");
+        } else {
+            this.logger.debug("&aOkno konsoli jest dostępne");
+            new Timer("Console Name Changer", true).scheduleAtFixedRate(timerTask, seconds, seconds);
+        }
     }
 
     public static boolean isImportantThread() {
