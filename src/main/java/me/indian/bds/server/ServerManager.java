@@ -354,13 +354,17 @@ public class ServerManager {
 
         if (matcher.find()) {
             final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
-            final String fromDimension = matcher.group(2);
-            final String toDimension = matcher.group(3);
-            final Position fromPosition = Position.parsePosition(matcher.group(4));
-            final Position toPosition = Position.parsePosition(matcher.group(5));
 
             try {
-                this.eventManager.callEvent(new PlayerDimensionChangeEvent(this.getStatsManager().getPlayer(playerName), Dimension.getByID(fromDimension), Dimension.getByID(toDimension), fromPosition, toPosition));
+                final Dimension fromDimension = Dimension.getByID(matcher.group(2));
+                final Dimension toDimension = Dimension.getByID(matcher.group(3));
+                final Position fromPosition = Position.parsePosition(matcher.group(4));
+                final Position toPosition = Position.parsePosition(matcher.group(5));
+
+                final PlayerStatistics playerStatistics = this.getStatsManager().getPlayer(playerName);
+
+                playerStatistics.setDimension(toDimension);
+                this.eventManager.callEvent(new PlayerDimensionChangeEvent(playerStatistics, fromDimension, toDimension, fromPosition, toPosition));
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć zmiany wymiaru gracza " + playerName);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć zmiany wymiaru gracza " + playerName,

@@ -5,11 +5,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import me.indian.bds.player.position.Dimension;
 
 public class PlayerStatistics implements Serializable {
 
     private String playerName;
     private long xuid;
+    private Dimension dimension;
     private final long firstJoin;
     private final List<String> oldNames;
     private long lastJoin, lastQuit;
@@ -18,9 +20,10 @@ public class PlayerStatistics implements Serializable {
     private Controller lastController;
     private final Map<String, Object> dynamicProperties;
 
-    public PlayerStatistics(final String playerName, final long xuid, final long firstJoin, final long lastJoin, final long lastQuit, final long playtime, final long deaths, final long blockPlaced, final long blockBroken) {
+    public PlayerStatistics(final String playerName, final long xuid, final Dimension dimension , final long firstJoin, final long lastJoin, final long lastQuit, final long playtime, final long deaths, final long blockPlaced, final long blockBroken) {
         this.playerName = playerName;
         this.xuid = xuid;
+        this.dimension = dimension;
         this.firstJoin = firstJoin;
         this.lastJoin = lastJoin;
         this.lastQuit = lastQuit;
@@ -50,6 +53,14 @@ public class PlayerStatistics implements Serializable {
 
     public void setXuid(final long xuid) {
         this.xuid = xuid;
+    }
+
+    public Dimension getDimension() {
+        return this.dimension;
+    }
+
+    public void setDimension(final Dimension dimension) {
+        this.dimension = dimension;
     }
 
     public long getFirstJoin() {
@@ -165,6 +176,7 @@ public class PlayerStatistics implements Serializable {
         return "PlayerStatistics(" +
                 "playerName='" + this.playerName + '\'' +
                 ", xuid=" + this.xuid +
+                ", dimension=" + this.dimension +
                 ", firstJoin=" + this.firstJoin +
                 ", lastJoin=" + this.lastJoin +
                 ", lastQuit=" + this.lastQuit +

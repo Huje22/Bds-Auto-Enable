@@ -20,6 +20,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import me.indian.bds.BDSAutoEnable;
 import me.indian.bds.player.PlayerStatistics;
+import me.indian.bds.player.position.Dimension;
 import me.indian.bds.server.ServerManager;
 import me.indian.bds.server.ServerProcess;
 import me.indian.bds.util.DefaultsVariables;
@@ -112,7 +113,7 @@ public class StatsManager {
             this.playerCreateLock.lock();
             if (this.getPlayer(xuid) == null) {
                 this.playerStats.add(new PlayerStatistics(playerName,
-                        xuid, DateUtil.localDateTimeToLong(LocalDateTime.now()), 0, 0, 0, 0, 0, 0));
+                        xuid, Dimension.OVERWORLD, DateUtil.localDateTimeToLong(LocalDateTime.now()), 0, 0, 0, 0, 0, 0));
                 this.logger.debug("Utworzono gracza:&b " + playerName);
             }
         } catch (final Exception exception) {
