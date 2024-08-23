@@ -23,8 +23,8 @@ public final class ServerUtil {
         SERVER_MANAGER = bdsAutoEnable.getServerManager();
     }
 
-    public static String sendCommandAsPlayer(final String playerName, final String command){
-        return SERVER_PROCESS.commandAndResponse("execute as " +playerName +" run " + command);
+    public static String sendCommandAsPlayer(final String playerName, final String command) {
+        return SERVER_PROCESS.commandAndResponse("execute as " + playerName + " run " + command);
     }
 
     public static void kickAllPlayers(final String msg) {

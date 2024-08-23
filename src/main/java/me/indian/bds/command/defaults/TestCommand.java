@@ -49,8 +49,8 @@ public class TestCommand extends Command {
 //            this.sendMessage("------------------------");
 //        }
 
-        this.sendMessage(ServerUtil.sendCommandAsPlayer(player.getPlayerName(), "say @s chuj"));
-        this.sendMessage(ServerUtil.sendCommandAsPlayer(player.getPlayerName(), "kill"));
+        this.sendMessage(ServerUtil.sendCommandAsPlayer(this.player.getPlayerName(), "say @s chuj"));
+        this.sendMessage(ServerUtil.sendCommandAsPlayer(this.player.getPlayerName(), "kill"));
 
         return false;
     }

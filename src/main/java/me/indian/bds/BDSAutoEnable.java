@@ -125,6 +125,11 @@ public class BDSAutoEnable {
         if (SystemTray.isSupported()) new AppTray();
     }
 
+    public static boolean isImportantThread() {
+        final String threadName = Thread.currentThread().getName();
+        return threadName.contains("Console") || threadName.contains("Server process");
+    }
+
     public void init() {
         this.setAppWindowName("Inicjalizowanie.....");
         new ShutdownHandler(this);
@@ -308,17 +313,12 @@ public class BDSAutoEnable {
             }
         };
 
-        if(System.console() == null){
+        if (System.console() == null) {
             this.logger.debug("&cOkno konsoli jest nie dostępne");
         } else {
             this.logger.debug("&aOkno konsoli jest dostępne");
             new Timer("Console Name Changer", true).scheduleAtFixedRate(timerTask, seconds, seconds);
         }
-    }
-
-    public static boolean isImportantThread() {
-        final String threadName = Thread.currentThread().getName();
-        return threadName.contains("Console") || threadName.contains("Server process");
     }
 
     public long getStartTime() {
