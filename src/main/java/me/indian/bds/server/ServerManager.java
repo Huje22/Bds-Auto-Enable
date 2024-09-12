@@ -154,7 +154,7 @@ public class ServerManager {
 
                 final PlayerStatistics playerStatistics = this.statsManager.getPlayer(playerName);
 
-                playerStatistics.setLastQuit(DateUtil.localDateTimeToLong(LocalDateTime.now()));
+                playerStatistics.setLastQuit(DateUtil.localDateTimeToMillis(LocalDateTime.now()));
                 this.eventManager.callEvent(new PlayerQuitEvent(playerStatistics));
             } catch (final Exception exception) {
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć opuszczenia gracza " + playerName,
@@ -177,7 +177,7 @@ public class ServerManager {
 
                 final PlayerStatistics playerStatistics = this.statsManager.getPlayer(playerName);
 
-                this.statsManager.updateLoginStreak(playerStatistics, DateUtil.localDateTimeToLong(LocalDateTime.now(DateUtil.POLISH_ZONE)));
+                this.statsManager.updateLoginStreak(playerStatistics, DateUtil.localDateTimeToMillis(LocalDateTime.now(DateUtil.POLISH_ZONE)));
                 this.eventManager.callEvent(new PlayerJoinEvent(playerStatistics));
                 this.bdsAutoEnable.getWatchDog().getBackupModule().backupOnPlayerJoin();
 

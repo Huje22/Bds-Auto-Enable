@@ -9,7 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.logger.impl.ExtensionLogger;
 import me.indian.util.logger.Logger;
 
 public abstract class Extension {
@@ -52,7 +51,7 @@ public abstract class Extension {
 
     public final void init(final BDSAutoEnable bdsAutoEnable, final ExtensionDescription description, final ExtensionManager manager) throws IOException {
         this.bdsAutoEnable = bdsAutoEnable;
-        this.logger = new ExtensionLogger(bdsAutoEnable, description.prefix());
+        this.logger = bdsAutoEnable.getLogger().prefixed(description.prefix());
         this.extensionDescription = description;
         this.mainClass = description.mainClass();
         this.version = description.version();

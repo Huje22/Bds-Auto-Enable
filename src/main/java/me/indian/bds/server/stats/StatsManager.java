@@ -113,7 +113,7 @@ public class StatsManager {
             this.playerCreateLock.lock();
             if (this.getPlayer(xuid) == null) {
                 this.playerStats.add(new PlayerStatistics(playerName,
-                        xuid, Dimension.OVERWORLD, DateUtil.localDateTimeToLong(LocalDateTime.now()), 0, 0, 0, 0, 0, 0));
+                        xuid, Dimension.OVERWORLD, DateUtil.localDateTimeToMillis(LocalDateTime.now()), 0, 0, 0, 0, 0, 0));
                 this.logger.debug("Utworzono gracza:&b " + playerName);
             }
         } catch (final Exception exception) {
@@ -216,8 +216,8 @@ public class StatsManager {
 
     public void updateLoginStreak(final PlayerStatistics playerStatistics, final long loginTime) {
         //TODO: Zrobić to na zasadzie czasu sekund itp
-        final LocalDate lastLoginDate = DateUtil.longToLocalDateTime(playerStatistics.getLastJoin()).toLocalDate();
-        final LocalDate loginDate = DateUtil.longToLocalDateTime(loginTime).toLocalDate();
+        final LocalDate lastLoginDate = DateUtil.millisToLocalDateTime(playerStatistics.getLastJoin()).toLocalDate();
+        final LocalDate loginDate = DateUtil.millisToLocalDateTime(loginTime).toLocalDate();
         final long loginStreak = playerStatistics.getLoginStreak();
         final long longestLoginStreak = playerStatistics.getLongestLoginStreak();
 
