@@ -1,4 +1,4 @@
-package me.indian.bds.gui;
+package pl.indianbartonka.bds.gui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -11,11 +11,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.config.sub.watchdog.WatchDogConfig;
-import me.indian.bds.server.ServerProcess;
-import me.indian.bds.util.StatusUtil;
-import me.indian.bds.watchdog.WatchDog;
+import pl.indianbartonka.bds.BDSAutoEnable;
+import pl.indianbartonka.bds.config.sub.watchdog.WatchDogConfig;
+import pl.indianbartonka.bds.server.ServerProcess;
+import pl.indianbartonka.bds.util.StatusUtil;
+import pl.indianbartonka.bds.watchdog.WatchDog;
 
 public class ServerCard extends CoordinateGridPanel {
 

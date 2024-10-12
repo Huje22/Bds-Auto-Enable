@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>me.indian.bds</groupId>
+    <groupId>pl.indianbartonka.bds</groupId>
     <artifactId>BDS-Auto-Enable</artifactId>
     <version>0.0.1</version>
 
@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.github.IndianBartonka</groupId>
             <artifactId>Indian-Utils</artifactId>
-            <version>0.0.4</version>
+            <version>0.0.7.2</version>
             <scope>compile</scope>
         </dependency>
 
@@ -112,7 +112,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>me.indian.bds.BDSAutoEnable</mainClass>
+                                    <mainClass>pl.indianbartonka.bds.BDSAutoEnable</mainClass>
                                 </transformer>
                             </transformers>
                             <finalName>${project.name}-${project.version}</finalName>

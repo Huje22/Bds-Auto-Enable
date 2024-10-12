@@ -1,4 +1,4 @@
-package me.indian.bds.gui;
+package pl.indianbartonka.bds.gui;
 
 import java.awt.Font;
 import java.util.List;
@@ -9,9 +9,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import me.indian.bds.BDSAutoEnable;
-import me.indian.bds.extension.Extension;
-import me.indian.bds.extension.ExtensionManager;
+import pl.indianbartonka.bds.BDSAutoEnable;
+import pl.indianbartonka.bds.extension.Extension;
+import pl.indianbartonka.bds.extension.ExtensionManager;
 
 public class ExtensionCard extends CoordinateGridPanel {
 

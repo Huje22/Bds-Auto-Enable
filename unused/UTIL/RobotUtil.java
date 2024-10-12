@@ -1,4 +1,4 @@
-package me.indian.bds.util;
+package pl.indianbartonka.bds.util;
 
 import java.awt.AWTException;
 import java.awt.GraphicsEnvironment;
@@ -10,7 +10,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
-import me.indian.bds.BDSAutoEnable;
+import pl.indianbartonka.bds.BDSAutoEnable;
 import org.jetbrains.annotations.Nullable;
 
 public final class RobotUtil {

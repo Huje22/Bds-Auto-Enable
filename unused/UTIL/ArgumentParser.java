@@ -1,4 +1,4 @@
-package me.indian.bds;
+package pl.indianbartonka.bds;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;

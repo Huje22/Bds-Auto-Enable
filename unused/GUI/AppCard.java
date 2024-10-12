@@ -1,4 +1,4 @@
-package me.indian.bds.gui;
+package pl.indianbartonka.bds.gui;
 
 import java.awt.Component;
 import javax.swing.BoxLayout;
