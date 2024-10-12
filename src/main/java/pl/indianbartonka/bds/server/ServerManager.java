@@ -246,7 +246,7 @@ public class ServerManager {
                 final boolean muted = this.isMuted(playerStatistics.getXuid());
 
                 final List<EventResponse> responses = this.eventManager.callEventsWithResponse(new PlayerChatEvent(playerStatistics, message, position, muted, appHandled));
-                
+
                 if (responses.isEmpty() && appHandled) {
                     if (muted) {
                         ServerUtil.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
@@ -270,6 +270,7 @@ public class ServerManager {
                             return;
                         }
                         ServerUtil.tellrawToAll(format);
+                        break;
                     }
                 }
             } catch (final Exception exception) {
