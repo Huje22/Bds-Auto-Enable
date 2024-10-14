@@ -34,4 +34,4 @@ Po uruchomieniu Maven Wrapper, zbuduj projekt, wykonując poniższe polecenia:
 
 ### Gdzie odnaleźć JAR
 
-Po zbudowaniu projektu, przejdź do katalogu `./target` i odnajdź plik `BDS-Auto-Enable-WERSIA.jar`.
+Po zbudowaniu projektu, przejdź do katalogu `./target` i odnajdź plik `.jar`
