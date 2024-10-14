@@ -32,7 +32,7 @@
         <dependency>
             <groupId>com.github.IndianBartonka</groupId>
             <artifactId>Indian-Utils</artifactId>
-            <version>0.0.7.3</version>
+            <version>0.0.7.5-Test</version>
             <scope>compile</scope>
         </dependency>
 

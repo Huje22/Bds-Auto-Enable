@@ -45,7 +45,7 @@ public class ServerPingCommand extends Command {
             this.sendMessage("&aLiczba graczy:&b " + query.playerCount());
             this.sendMessage("&aMaksymalna liczba graczy:&b " + query.maxPlayers());
             this.sendMessage("&aNazwa mapy:&b " + query.mapName());
-            this.sendMessage("&aTryb gry:&b " + query.gamemode());
+            this.sendMessage("&aTryb gry:&b " + query.gameMode());
             this.sendMessage("&aEdycja:&b " + query.edition());
 
             final int portV4 = query.portV4();
