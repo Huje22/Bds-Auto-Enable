@@ -5,20 +5,24 @@ import com.google.gson.JsonParser;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
+import okhttp3.Protocol;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.jetbrains.annotations.Nullable;
 import pl.indianbartonka.bds.exception.DownloadException;
 import pl.indianbartonka.util.download.DownloadListener;
 import pl.indianbartonka.util.download.DownloadTask;
+import pl.indianbartonka.util.http.UserAgent;
 
 public final class HTTPUtil {
 
     private static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient.Builder()
+            .protocols(List.of(Protocol.HTTP_3, Protocol.HTTP_2, Protocol.HTTP_1_1))
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
             .readTimeout(10, TimeUnit.SECONDS)
@@ -70,7 +74,7 @@ public final class HTTPUtil {
         final File file = new File(path);
         final Request request = new Request.Builder()
                 .url(url)
-                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36")
+                .addHeader("User-Agent", UserAgent.buildUserAgent())
                 .get()
                 .build();
 
