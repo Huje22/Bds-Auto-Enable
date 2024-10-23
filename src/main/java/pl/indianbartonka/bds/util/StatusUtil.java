@@ -1,7 +1,6 @@
 package pl.indianbartonka.bds.util;
 
 import com.sun.management.OperatingSystemMXBean;
-import java.io.File;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
 import java.util.ArrayList;
@@ -24,7 +23,6 @@ import pl.indianbartonka.util.system.SystemUtil;
 public final class StatusUtil {
 
     private static final List<String> STATUS = new ArrayList<>();
-    private static final File FILE = new File(File.separator);
     private static BDSAutoEnable BDSAUTOENABLE;
     private static Logger LOGGER;
     private static WatchDog WATCH_DOG;
@@ -70,8 +68,8 @@ public final class StatusUtil {
         final String committedAppMemory = "Przydzielone " + MemoryUnit.BYTES.to(heapMemoryUsage.getCommitted(), MemoryUnit.MEGABYTES) + " MB";
         final String maxAppMemory = "Dostępne " + MemoryUnit.BYTES.to(heapMemoryUsage.getMax(), MemoryUnit.MEGABYTES) + " MB";
 
-        final String usedRom = "Użyty: " + MathUtil.formatBytesDynamic(usedDiskSpace(), true);
-        final String rom = "Dostępny: " + MathUtil.formatBytesDynamic(availableDiskSpace(), true);
+        final String usedRom = "Użyty: " + MathUtil.formatBytesDynamic(SystemUtil.usedDiskSpace(), true);
+        final String rom = "Dostępny: " + MathUtil.formatBytesDynamic(SystemUtil.availableDiskSpace(), true);
 //        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(maxDiskSpace()) + " MB";
 
         STATUS.add("> **Statystyki maszyny**");
@@ -119,18 +117,6 @@ public final class StatusUtil {
         stringBuilder.append("Ram: ").append(MathUtil.formatBytesDynamic((long) (ram + MemoryUnit.KILOBYTES.to(getServerRamUsage(), MemoryUnit.BYTES)), true));
 
         return stringBuilder.toString();
-    }
-
-    public static long availableDiskSpace() {
-        return (FILE.exists() ? FILE.getUsableSpace() : 0);
-    }
-
-    public static long maxDiskSpace() {
-        return (FILE.exists() ? FILE.getTotalSpace() : 0);
-    }
-
-    public static long usedDiskSpace() {
-        return (maxDiskSpace() - availableDiskSpace());
     }
 
     public static long getServerRamUsage() {
