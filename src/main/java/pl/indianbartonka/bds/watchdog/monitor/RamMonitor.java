@@ -14,6 +14,7 @@ import pl.indianbartonka.bds.util.StatusUtil;
 import pl.indianbartonka.bds.watchdog.WatchDog;
 import pl.indianbartonka.util.DateUtil;
 import pl.indianbartonka.util.MathUtil;
+import pl.indianbartonka.util.MemoryUnit;
 import pl.indianbartonka.util.logger.LogState;
 import pl.indianbartonka.util.logger.Logger;
 
@@ -78,9 +79,9 @@ public class RamMonitor {
             @Override
             public void run() {
                 final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-                final long freeMem = MathUtil.bytesToMB(heapMemoryUsage.getMax() - heapMemoryUsage.getUsed());
+                final long freeMem = (long) MemoryUnit.BYTES.to(heapMemoryUsage.getMax() - heapMemoryUsage.getUsed(), MemoryUnit.MEGABYTES);
 
-                if (MathUtil.bytesToMB(heapMemoryUsage.getUsed()) >= (MathUtil.bytesToMB(heapMemoryUsage.getMax()) * 0.80)) {
+                if (MemoryUnit.BYTES.to(heapMemoryUsage.getUsed(), MemoryUnit.MEGABYTES) >= (MemoryUnit.BYTES.to(heapMemoryUsage.getMax(), MemoryUnit.MEGABYTES) * 0.80)) {
                     ServerUtil.tellrawToAllAndLogger(RamMonitor.this.prefix,
                             "&cAplikacja używa&b 80%&c dostępnej dla niej pamięci&b RAM&4!!!" + "&d(&c Wolne:&b " + freeMem + " &aMB&d )",
                             LogState.CRITICAL);
@@ -96,7 +97,7 @@ public class RamMonitor {
             public void run() {
                 final long computerRam = StatusUtil.getAvailableRam();
                 final long computerFreeRam = StatusUtil.getFreeRam();
-                final long computerFreeRamGb = MathUtil.bytesToGB(computerFreeRam);
+                final long computerFreeRamGb = (long) MemoryUnit.BYTES.to(computerFreeRam, MemoryUnit.GIGABYTES);
                 final String freeComputerMemory = "&eWolne:&a " + MathUtil.formatBytesDynamic(computerFreeRam, true);
                 final String maxComputerMemory = "&eCałkowite:&a " + MathUtil.formatBytesDynamic(computerRam, true);
 

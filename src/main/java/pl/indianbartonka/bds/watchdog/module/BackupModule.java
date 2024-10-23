@@ -27,6 +27,7 @@ import pl.indianbartonka.bds.util.ServerUtil;
 import pl.indianbartonka.bds.util.StatusUtil;
 import pl.indianbartonka.bds.watchdog.WatchDog;
 import pl.indianbartonka.util.DateUtil;
+import pl.indianbartonka.util.MemoryUnit;
 import pl.indianbartonka.util.file.FileUtil;
 import pl.indianbartonka.util.MathUtil;
 import pl.indianbartonka.util.ThreadUtil;
@@ -185,8 +186,9 @@ public class BackupModule {
         final int maxBackups = this.backupConfig.getMaxBackups();
         if (maxBackups == -1 || maxBackups == 0) {
 
-            final long gb = MathUtil.bytesToGB(StatusUtil.availableDiskSpace());
-            if (gb < MathUtil.bytesToGB(FileUtil.getFileSize(this.worldFile)) + 1) {
+            //TODO: Usunac te casty do longu jak wyjdzie nowe IndianUtils
+            final long gb = (long) MemoryUnit.BYTES.to(StatusUtil.availableDiskSpace(), MemoryUnit.GIGABYTES);
+            if (gb < MemoryUnit.BYTES.to(FileUtil.getFileSize(this.worldFile), MemoryUnit.GIGABYTES) + 1) {
                 ServerUtil.tellrawToAllAndLogger(this.prefix,
                         "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!",
                         LogState.WARNING);

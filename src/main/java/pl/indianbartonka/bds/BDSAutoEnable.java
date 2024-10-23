@@ -37,7 +37,7 @@ import pl.indianbartonka.bds.util.geyser.GeyserUtil;
 import pl.indianbartonka.bds.version.VersionManager;
 import pl.indianbartonka.bds.watchdog.WatchDog;
 import pl.indianbartonka.util.DateUtil;
-import pl.indianbartonka.util.MathUtil;
+import pl.indianbartonka.util.MemoryUnit;
 import pl.indianbartonka.util.MessageUtil;
 import pl.indianbartonka.util.ZipUtil;
 import pl.indianbartonka.util.file.FileUtil;
@@ -220,8 +220,8 @@ public class BDSAutoEnable {
     }
 
     private void checkMemory() {
-        final long maxComputerMem = MathUtil.bytesToMB(StatusUtil.getAvailableRam());
-        final long maxMem = MathUtil.bytesToMB(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax());
+        final long maxComputerMem = (long) MemoryUnit.BYTES.to(StatusUtil.getAvailableRam(), MemoryUnit.MEGABYTES);
+        final long maxMem = (long) MemoryUnit.BYTES.to(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax(), MemoryUnit.MEGABYTES);
 
         if (maxMem < 1000) {
             this.logger.warning("&cWykryto małą ilość pamięci przeznaczonej dla aplikacji! &b(&a" + maxMem + " mb&b)");

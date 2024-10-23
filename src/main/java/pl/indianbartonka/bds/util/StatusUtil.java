@@ -16,6 +16,7 @@ import pl.indianbartonka.bds.watchdog.WatchDog;
 import pl.indianbartonka.bds.watchdog.monitor.RamMonitor;
 import pl.indianbartonka.util.DateUtil;
 import pl.indianbartonka.util.MathUtil;
+import pl.indianbartonka.util.MemoryUnit;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.logger.Logger;
 import pl.indianbartonka.util.system.SystemUtil;
@@ -59,15 +60,15 @@ public final class StatusUtil {
         final long computerFreeRam = getFreeRam();
         final long computerRamUsed = getUsedRam();
 
-        final String usedServerMemory = "Użyte " + MathUtil.formatKiloBytesDynamic(getServerRamUsage(), true);
+        final String usedServerMemory = "Użyte " + MathUtil.formatKilobytesDynamic(getServerRamUsage(), true);
 
         final String usedComputerMemory = "Użyte " + MathUtil.formatBytesDynamic(computerRamUsed, true);
         final String maxComputerMemory = "Całkowity " + MathUtil.formatBytesDynamic(computerRam, true);
         final String freeComputerMemory = "Wolny " + MathUtil.formatBytesDynamic(computerFreeRam, true);
 
-        final String usedAppMemory = "Użyte " + MathUtil.bytesToMB(heapMemoryUsage.getUsed()) + " MB";
-        final String committedAppMemory = "Przydzielone " + MathUtil.bytesToMB(heapMemoryUsage.getCommitted()) + " MB";
-        final String maxAppMemory = "Dostępne " + MathUtil.bytesToMB(heapMemoryUsage.getMax()) + " MB";
+        final String usedAppMemory = "Użyte " + MemoryUnit.BYTES.to(heapMemoryUsage.getUsed(), MemoryUnit.MEGABYTES) + " MB";
+        final String committedAppMemory = "Przydzielone " + MemoryUnit.BYTES.to(heapMemoryUsage.getCommitted(), MemoryUnit.MEGABYTES) + " MB";
+        final String maxAppMemory = "Dostępne " + MemoryUnit.BYTES.to(heapMemoryUsage.getMax(), MemoryUnit.MEGABYTES) + " MB";
 
         final String usedRom = "Użyty: " + MathUtil.formatBytesDynamic(usedDiskSpace(), true);
         final String rom = "Dostępny: " + MathUtil.formatBytesDynamic(availableDiskSpace(), true);
@@ -81,7 +82,7 @@ public final class StatusUtil {
         STATUS.add("> **Statystyki servera**");
         STATUS.add("Ostatnie TPS: `" + BDSAUTOENABLE.getServerManager().getLastTPS() + "`");
         STATUS.add("Pamięć RAM: `" + usedServerMemory + "` (`" + freeComputerMemory + "`)");
-        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatKiloBytesDynamic(ramMonitor.getAverageServerRamUsage(), true) + "` (" + ramMonitor.getAverageServerRamUsageListSize() + ")");
+        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatKilobytesDynamic(ramMonitor.getAverageServerRamUsage(), true) + "` (" + ramMonitor.getAverageServerRamUsageListSize() + ")");
         if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
             STATUS.add("Następny restart za: `" + DateUtil.formatTimeDynamic(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart()) + "`");
         }
@@ -97,7 +98,7 @@ public final class StatusUtil {
         STATUS.add("Pamięć RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
         STATUS.add("Średnie użycie ramu: `" + MathUtil.formatBytesDynamic(ramMonitor.getAverageAppRamUsage(), true) + "` (" + ramMonitor.getAverageAppRamUsageListSize() + ")");
         STATUS.add("Aktualna liczba wątków: `" + ThreadUtil.getThreadsCount() + "/" + ThreadUtil.getPeakThreadsCount() + "` ");
-        STATUS.add("Użycje cpu: `" + MathUtil.format((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
+        STATUS.add("Użycje cpu: `" + MathUtil.formatDecimal((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
 
         if (!markdown) STATUS.replaceAll(s -> s.replaceAll("`", "&b").replaceAll("\\*", "&a").replaceAll("> ", "&l"));
 
@@ -115,7 +116,7 @@ public final class StatusUtil {
         stringBuilder.append(BDSAUTOENABLE.getVersionManager().getLoadedVersion()).append(" | ");
         stringBuilder.append("TPS: ").append(serverManager.getLastTPS()).append(" | ");
         stringBuilder.append("Online: ").append(serverManager.getOnlinePlayers().size()).append("/").append(BDSAUTOENABLE.getServerProperties().getMaxPlayers()).append(" | ");
-        stringBuilder.append("Ram: ").append(MathUtil.formatBytesDynamic(ram + MathUtil.kilobytesToBytes(getServerRamUsage()), true));
+        stringBuilder.append("Ram: ").append(MathUtil.formatBytesDynamic((long) (ram + MemoryUnit.KILOBYTES.to(getServerRamUsage(), MemoryUnit.BYTES)), true));
 
         return stringBuilder.toString();
     }

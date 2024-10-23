@@ -74,7 +74,7 @@ public final class HTTPUtil {
         final File file = new File(path);
         final Request request = new Request.Builder()
                 .url(url)
-                .addHeader("User-Agent", UserAgent.buildUserAgent())
+                .addHeader("User-Agent", UserAgent.randomUserAgent())
                 .get()
                 .build();
 
