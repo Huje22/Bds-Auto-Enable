@@ -30,6 +30,8 @@ import pl.indianbartonka.bds.event.player.response.PlayerChatResponse;
 import pl.indianbartonka.bds.event.server.ServerAlertEvent;
 import pl.indianbartonka.bds.event.server.ServerStartEvent;
 import pl.indianbartonka.bds.event.server.TPSChangeEvent;
+import pl.indianbartonka.bds.player.MemoryTier;
+import pl.indianbartonka.bds.player.PlatformType;
 import pl.indianbartonka.bds.player.PlayerStatistics;
 import pl.indianbartonka.bds.player.position.Dimension;
 import pl.indianbartonka.bds.player.position.Position;
@@ -165,12 +167,17 @@ public class ServerManager {
     }
 
     private void playerJoin(final String logEntry) {
-        final String patternString = "PlayerJoin:([^,]+)";
+        // PlayerJoin:JndjanBartonka PlayerPlatform:Desktop MemoryTier:4 MaxRenderDistance:50
+        final String patternString = "PlayerJoin:([^,]+) PlayerPlatform:([^,]+) MemoryTier:([^,]+) MaxRenderDistance:([^,]+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
+            final String platform = matcher.group(2);
+            final int memoryTier = Integer.parseInt(matcher.group(3));
+            final int maxRenderDistance = Integer.parseInt(matcher.group(4));
+
             try {
                 this.onlinePlayers.add(playerName);
                 this.offlinePlayers.remove(playerName);
@@ -178,6 +185,10 @@ public class ServerManager {
                 final PlayerStatistics playerStatistics = this.statsManager.getPlayer(playerName);
 
                 this.statsManager.updateLoginStreak(playerStatistics, DateUtil.localDateTimeToMillis(LocalDateTime.now(DateUtil.POLISH_ZONE)));
+                playerStatistics.setPlatformType(PlatformType.getByName(platform));
+                playerStatistics.setMemoryTier(MemoryTier.getMemoryTier(memoryTier));
+                playerStatistics.setMaxRenderDistance(maxRenderDistance);
+
                 this.eventManager.callEvent(new PlayerJoinEvent(playerStatistics));
                 this.bdsAutoEnable.getWatchDog().getBackupModule().backupOnPlayerJoin();
 

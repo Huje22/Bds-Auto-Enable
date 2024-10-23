@@ -16,11 +16,13 @@ public class PlayerStatistics implements Serializable {
     private final List<String> oldNames;
     private long lastJoin, lastQuit;
     private long playtime, deaths, blockPlaced, blockBroken, loginStreak, longestLoginStreak;
-    private DeviceOS lastDevice;
+    private MemoryTier memoryTier;
+    private int maxRenderDistance;
+    private PlatformType platformType;
     private Controller lastController;
     private final Map<String, Object> dynamicProperties;
 
-    public PlayerStatistics(final String playerName, final long xuid, final Dimension dimension , final long firstJoin, final long lastJoin, final long lastQuit, final long playtime, final long deaths, final long blockPlaced, final long blockBroken) {
+    public PlayerStatistics(final String playerName, final long xuid, final Dimension dimension, final long firstJoin, final long lastJoin, final long lastQuit, final long playtime, final long deaths, final long blockPlaced, final long blockBroken) {
         this.playerName = playerName;
         this.xuid = xuid;
         this.dimension = dimension;
@@ -33,8 +35,10 @@ public class PlayerStatistics implements Serializable {
         this.blockPlaced = blockPlaced;
         this.blockBroken = blockBroken;
         this.loginStreak = 0;
+        this.memoryTier = MemoryTier.UNDETERMINED;
+        this.maxRenderDistance = -1;
         this.longestLoginStreak = 0;
-        this.lastDevice = DeviceOS.UNKNOWN;
+        this.platformType = PlatformType.UNKNOWN;
         this.lastController = Controller.UNKNOWN;
         this.dynamicProperties = new HashMap<>();
     }
@@ -127,6 +131,22 @@ public class PlayerStatistics implements Serializable {
         return this.longestLoginStreak;
     }
 
+    public MemoryTier getMemoryTier() {
+        return this.memoryTier;
+    }
+
+    public void setMemoryTier(final MemoryTier memoryTier) {
+        this.memoryTier = memoryTier;
+    }
+
+    public int getMaxRenderDistance() {
+        return this.maxRenderDistance;
+    }
+
+    public void setMaxRenderDistance(final int maxRenderDistance) {
+        this.maxRenderDistance = maxRenderDistance;
+    }
+
     public void setLongestLoginStreak(final long longestLoginStreak) {
         this.longestLoginStreak = longestLoginStreak;
     }
@@ -135,12 +155,12 @@ public class PlayerStatistics implements Serializable {
         this.blockBroken += blockBreak;
     }
 
-    public DeviceOS getLastDevice() {
-        return this.lastDevice;
+    public PlatformType getPlatformType() {
+        return this.platformType;
     }
 
-    public void setLastDevice(final DeviceOS lastDevice) {
-        this.lastDevice = lastDevice;
+    public void setPlatformType(final PlatformType platformType) {
+        this.platformType = platformType;
     }
 
     public Controller getLastController() {
@@ -185,7 +205,9 @@ public class PlayerStatistics implements Serializable {
                 ", deaths=" + this.deaths +
                 ", blockPlaced=" + this.blockPlaced +
                 ", blockBroken=" + this.blockBroken +
-                ", lastDevice=" + this.lastDevice +
+                ", platformType=" + this.platformType +
+                ", memoryTier=" + this.memoryTier +
+                " , maxRenderDistance= " + this.maxRenderDistance +
                 ", lastController=" + this.lastController +
                 ", dynamicProperties=" + this.dynamicProperties +
                 ')';
