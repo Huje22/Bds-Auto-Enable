@@ -14,14 +14,14 @@ import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.pack.component.TexturePack;
 import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.util.GsonUtil;
-import pl.indianbartonka.util.file.FileUtil;
 import pl.indianbartonka.util.ZipUtil;
+import pl.indianbartonka.util.file.FileUtil;
 import pl.indianbartonka.util.logger.Logger;
-import org.jetbrains.annotations.Nullable;
 
 public class ResourcePackLoader {
     private final BDSAutoEnable bdsAutoEnable;

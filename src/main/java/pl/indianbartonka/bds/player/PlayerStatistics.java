@@ -9,18 +9,18 @@ import pl.indianbartonka.bds.player.position.Dimension;
 
 public class PlayerStatistics implements Serializable {
 
+    private final long firstJoin;
+    private final List<String> oldNames;
+    private final Map<String, Object> dynamicProperties;
     private String playerName;
     private long xuid;
     private Dimension dimension;
-    private final long firstJoin;
-    private final List<String> oldNames;
     private long lastJoin, lastQuit;
     private long playtime, deaths, blockPlaced, blockBroken, loginStreak, longestLoginStreak;
     private MemoryTier memoryTier;
     private int maxRenderDistance;
     private PlatformType platformType;
     private Controller lastController;
-    private final Map<String, Object> dynamicProperties;
 
     public PlayerStatistics(final String playerName, final long xuid, final Dimension dimension, final long firstJoin, final long lastJoin, final long lastQuit, final long playtime, final long deaths, final long blockPlaced, final long blockBroken) {
         this.playerName = playerName;
@@ -131,6 +131,10 @@ public class PlayerStatistics implements Serializable {
         return this.longestLoginStreak;
     }
 
+    public void setLongestLoginStreak(final long longestLoginStreak) {
+        this.longestLoginStreak = longestLoginStreak;
+    }
+
     public MemoryTier getMemoryTier() {
         return this.memoryTier;
     }
@@ -145,10 +149,6 @@ public class PlayerStatistics implements Serializable {
 
     public void setMaxRenderDistance(final int maxRenderDistance) {
         this.maxRenderDistance = maxRenderDistance;
-    }
-
-    public void setLongestLoginStreak(final long longestLoginStreak) {
-        this.longestLoginStreak = longestLoginStreak;
     }
 
     public void addBlockBroken(final long blockBreak) {

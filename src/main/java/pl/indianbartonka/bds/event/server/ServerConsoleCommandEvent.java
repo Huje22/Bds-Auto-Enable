@@ -1,7 +1,7 @@
 package pl.indianbartonka.bds.event.server;
 
-import pl.indianbartonka.bds.event.ResponsibleEvent;
 import org.jetbrains.annotations.Nullable;
+import pl.indianbartonka.bds.event.ResponsibleEvent;
 
 public class ServerConsoleCommandEvent extends ResponsibleEvent {
 

@@ -1,7 +1,7 @@
 package pl.indianbartonka.bds.event.server;
 
-import pl.indianbartonka.bds.event.Event;
 import org.jetbrains.annotations.Nullable;
+import pl.indianbartonka.bds.event.Event;
 
 public class ServerRestartEvent extends Event {
 

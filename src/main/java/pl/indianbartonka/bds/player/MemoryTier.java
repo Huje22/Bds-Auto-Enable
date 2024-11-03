@@ -14,16 +14,16 @@ public enum MemoryTier {
         this.tier = tier;
     }
 
-    public int getTier() {
-        return this.tier;
-    }
-
     public static MemoryTier getMemoryTier(final int tier) {
         for (final MemoryTier memoryTier : values()) {
             if (memoryTier.tier == tier) return memoryTier;
         }
 
         return UNDETERMINED;
+    }
+
+    public int getTier() {
+        return this.tier;
     }
 }
 

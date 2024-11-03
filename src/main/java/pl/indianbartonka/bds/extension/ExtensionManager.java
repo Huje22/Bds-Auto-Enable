@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import org.jetbrains.annotations.Nullable;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.event.EventManager;
 import pl.indianbartonka.bds.event.server.ExtensionDisableEvent;
@@ -24,7 +25,6 @@ import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.util.GsonUtil;
 import pl.indianbartonka.util.DateUtil;
 import pl.indianbartonka.util.logger.Logger;
-import org.jetbrains.annotations.Nullable;
 
 public class ExtensionManager {
 

@@ -8,12 +8,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
+import org.jetbrains.annotations.Nullable;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.config.AppConfig;
 import pl.indianbartonka.bds.server.allowlist.component.AllowlistPlayer;
 import pl.indianbartonka.bds.util.GsonUtil;
 import pl.indianbartonka.util.logger.Logger;
-import org.jetbrains.annotations.Nullable;
 
 public class AllowlistManager {
 

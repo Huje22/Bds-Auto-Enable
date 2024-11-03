@@ -185,8 +185,6 @@ public class BackupModule {
     private boolean canDoBackup() {
         final int maxBackups = this.backupConfig.getMaxBackups();
         if (maxBackups == -1 || maxBackups == 0) {
-
-            //TODO: Usunac te casty do longu jak wyjdzie nowe IndianUtils
             final long gb = MemoryUnit.BYTES.to(SystemUtil.getMaxMainDiskSpace(), MemoryUnit.GIGABYTES);
             if (gb < MemoryUnit.BYTES.to(FileUtil.getFileSize(this.worldFile), MemoryUnit.GIGABYTES) + 1) {
                 ServerUtil.tellrawToAllAndLogger(this.prefix,

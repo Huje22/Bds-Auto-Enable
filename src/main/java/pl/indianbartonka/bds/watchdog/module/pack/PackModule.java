@@ -6,12 +6,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import org.jetbrains.annotations.Nullable;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.pack.component.BehaviorPack;
 import pl.indianbartonka.bds.pack.loader.BehaviorPackLoader;
 import pl.indianbartonka.bds.pack.loader.ResourcePackLoader;
 import pl.indianbartonka.util.logger.Logger;
-import org.jetbrains.annotations.Nullable;
 
 public class PackModule {
 

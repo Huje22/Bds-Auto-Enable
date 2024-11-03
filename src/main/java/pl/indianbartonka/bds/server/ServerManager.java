@@ -171,7 +171,7 @@ public class ServerManager {
         final String patternString = "PlayerJoin:([^,]+) PlayerPlatform:([^,]+) MemoryTier:([^,]+) MaxRenderDistance:([^,]+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
-//TODO: Zbadaj czy napenwo wszystko jest dobrze 
+
         if (matcher.find()) {
             final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
             final String platform = matcher.group(2);

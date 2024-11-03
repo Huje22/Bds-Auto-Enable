@@ -5,6 +5,7 @@ import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import org.jetbrains.annotations.Nullable;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.config.sub.transfer.LobbyConfig;
 import pl.indianbartonka.bds.config.sub.watchdog.AutoRestartConfig;
@@ -18,7 +19,6 @@ import pl.indianbartonka.util.MathUtil;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.logger.LogState;
 import pl.indianbartonka.util.logger.Logger;
-import org.jetbrains.annotations.Nullable;
 
 public class AutoRestartModule {
 

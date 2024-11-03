@@ -5,12 +5,12 @@ import com.google.gson.annotations.SerializedName;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import pl.indianbartonka.bds.BDSAutoEnable;
-import pl.indianbartonka.bds.util.GsonUtil;
-import pl.indianbartonka.bds.util.HTTPUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import pl.indianbartonka.bds.BDSAutoEnable;
+import pl.indianbartonka.bds.util.GsonUtil;
+import pl.indianbartonka.bds.util.HTTPUtil;
 
 public final class GeyserUtil {
 

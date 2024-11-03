@@ -53,7 +53,7 @@ public class Settings {
                             }
                             this.againSetupServer();
                             this.questionsSetting();
-                            this.currentSettings( true);
+                            this.currentSettings(true);
                         } else {
                             this.logger.info("Zaczynamy od nowa");
                             this.init();
@@ -138,7 +138,7 @@ public class Settings {
         this.questionsSetting();
         this.logger.info("Ukończono odpowiedzi w&a " + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
         this.appConfig.save();
-        this.currentSettings( true);
+        this.currentSettings(true);
     }
 
     private void serverSettings() {
@@ -369,7 +369,7 @@ public class Settings {
         if (waitForUser) {
             this.logger.alert("&cWięcej opcji&e konfiguracji&c znajdziesz w config");
             this.logger.info("Kliknij enter aby kontynuować");
-            try(final Scanner scanner = new Scanner(System.in)){
+            try (final Scanner scanner = new Scanner(System.in)) {
                 scanner.nextLine();
             }
         }

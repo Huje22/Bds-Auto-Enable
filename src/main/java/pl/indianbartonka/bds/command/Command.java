@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.config.sub.CommandConfig;
 import pl.indianbartonka.bds.player.PlayerStatistics;
@@ -12,7 +13,6 @@ import pl.indianbartonka.bds.player.position.Position;
 import pl.indianbartonka.bds.server.ServerProcess;
 import pl.indianbartonka.bds.util.ServerUtil;
 import pl.indianbartonka.util.MessageUtil;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class Command {
 

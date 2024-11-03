@@ -1,8 +1,8 @@
 package pl.indianbartonka.bds.event.server;
 
+import org.jetbrains.annotations.Nullable;
 import pl.indianbartonka.bds.event.Event;
 import pl.indianbartonka.util.logger.LogState;
-import org.jetbrains.annotations.Nullable;
 
 public class ServerAlertEvent extends Event {
 

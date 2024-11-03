@@ -111,7 +111,7 @@ public class EventManager {
     }
 
     public List<EventResponse> callEventsWithResponse(final ResponsibleEvent event) {
-    //TODO: Użyj whenComplete zamiast Join czy jakoś tak
+        //TODO: Użyj whenComplete zamiast Join czy jakoś tak
         return CompletableFuture.supplyAsync(() -> this.eventResponses(event), this.listenerService).join();
     }
 }
