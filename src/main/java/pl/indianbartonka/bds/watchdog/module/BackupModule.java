@@ -24,16 +24,16 @@ import pl.indianbartonka.bds.server.ServerManager;
 import pl.indianbartonka.bds.server.ServerProcess;
 import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.util.ServerUtil;
-import pl.indianbartonka.bds.util.StatusUtil;
 import pl.indianbartonka.bds.watchdog.WatchDog;
 import pl.indianbartonka.util.DateUtil;
-import pl.indianbartonka.util.MemoryUnit;
-import pl.indianbartonka.util.file.FileUtil;
 import pl.indianbartonka.util.MathUtil;
+import pl.indianbartonka.util.MemoryUnit;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.ZipUtil;
+import pl.indianbartonka.util.file.FileUtil;
 import pl.indianbartonka.util.logger.LogState;
 import pl.indianbartonka.util.logger.Logger;
+import pl.indianbartonka.util.system.SystemUtil;
 
 public class BackupModule {
 
@@ -187,7 +187,7 @@ public class BackupModule {
         if (maxBackups == -1 || maxBackups == 0) {
 
             //TODO: Usunac te casty do longu jak wyjdzie nowe IndianUtils
-            final long gb = (long) MemoryUnit.BYTES.to(StatusUtil.availableDiskSpace(), MemoryUnit.GIGABYTES);
+            final long gb = MemoryUnit.BYTES.to(SystemUtil.getMaxMainDiskSpace(), MemoryUnit.GIGABYTES);
             if (gb < MemoryUnit.BYTES.to(FileUtil.getFileSize(this.worldFile), MemoryUnit.GIGABYTES) + 1) {
                 ServerUtil.tellrawToAllAndLogger(this.prefix,
                         "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!",

@@ -29,7 +29,7 @@ public class SettingInfoCommand extends Command {
 
         this.properties.loadProperties();
 
-        this.sendMessage("System:&b " + SystemUtil.getSystem() + " &d(&1" + SystemUtil.getFullOsNameWithDistribution() + "&d)");
+        this.sendMessage("System:&b " + SystemUtil.getSystem() + " &d(&1" + SystemUtil.getFullOSNameWithDistribution() + "&d)");
         this.sendMessage("System arch:&b " + SystemUtil.getFullyArchCode() + " &d(&1" + SystemUtil.getCurrentArch() + "&d)");
 
         this.sendMessage("&eNie wszystkie wartości muszą być załadowane przez server");
@@ -46,7 +46,6 @@ public class SettingInfoCommand extends Command {
         } else if (threadsCount == 0) {
             threadsNote = "&d (&bPosiadasz:&1 " + logicalThreadsCount + "&d)";
         }
-
 
         this.sendMessage("Maksymalna ilość wątków których może użyć server:&b " + threadsCount + threadsNote);
         this.sendMessage("Maksymalny czas bycia AFK:&b " + this.properties.getPlayerIdleTimeout() + "&e minut");

@@ -133,7 +133,7 @@ public class BDSAutoEnable {
     public void init() {
         this.setAppWindowName("Inicjalizowanie.....");
         new ShutdownHandler(this);
-        this.settings.loadSettings(this.mainScanner);
+        this.settings.loadSettings();
         this.packManager = new PackManager(this);
         this.allowlistManager = new AllowlistManager(this);
         this.watchDog = new WatchDog(this);
@@ -172,7 +172,7 @@ public class BDSAutoEnable {
         }
 
         this.logger.info("&aUżyto Java: &b" + System.getProperty("java.vm.name") + " &1" + javaVersion + " &5(&d" + System.getProperty("java.vendor") + "&5)&r na&f "
-                + SystemUtil.getFullOsNameWithDistribution() + " &5(&c" + SystemUtil.getFullyArchCode() + "&5)");
+                + SystemUtil.getFullOSNameWithDistribution() + " &5(&c" + SystemUtil.getFullyArchCode() + "&5)");
     }
 
     private void checkSystemSupport() {
@@ -191,8 +191,8 @@ public class BDSAutoEnable {
             System.exit(9);
         }
 
-        if (systemOS == SystemOS.UNSUPPORTED) {
-            this.logger.critical("&cTwój system nie jest wspierany!!&r Twój system to:&1 " + SystemUtil.getFullOsNameWithDistribution());
+        if (systemOS == SystemOS.UNKNOWN) {
+            this.logger.critical("&cTwój system nie jest znany!!&r Twój system to:&1 " + SystemUtil.getFullOSNameWithDistribution());
             System.exit(9);
         }
     }
@@ -220,8 +220,8 @@ public class BDSAutoEnable {
     }
 
     private void checkMemory() {
-        final long maxComputerMem = (long) MemoryUnit.BYTES.to(StatusUtil.getAvailableRam(), MemoryUnit.MEGABYTES);
-        final long maxMem = (long) MemoryUnit.BYTES.to(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax(), MemoryUnit.MEGABYTES);
+        final long maxComputerMem = MemoryUnit.BYTES.to(SystemUtil.getMaxRam(), MemoryUnit.MEGABYTES);
+        final long maxMem = MemoryUnit.BYTES.to(ManagementFactory.getMemoryMXBean().getHeapMemoryUsage().getMax(), MemoryUnit.MEGABYTES);
 
         if (maxMem < 1000) {
             this.logger.warning("&cWykryto małą ilość pamięci przeznaczonej dla aplikacji! &b(&a" + maxMem + " mb&b)");
@@ -243,8 +243,8 @@ public class BDSAutoEnable {
                     }
                 }
             }
-        } catch (final IOException ioException) {
-            this.logger.critical("&cNie udało się nadać uprawnień do wystartowania servera", ioException);
+        } catch (final Exception exception) {
+            this.logger.critical("&cNie udało się nadać uprawnień do wystartowania servera", exception);
         }
     }
 

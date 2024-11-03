@@ -149,7 +149,7 @@ public class ServerProcess {
                     this.startTime = System.currentTimeMillis();
 
                     if (!this.appConfigManager.getAppConfig().isQuestions()) {
-                        this.bdsAutoEnable.getSettings().currentSettings(this.bdsAutoEnable.getMainScanner(), false);
+                        this.bdsAutoEnable.getSettings().currentSettings(false);
                     }
 
                     this.pid = this.process.pid();

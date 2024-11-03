@@ -54,22 +54,18 @@ public final class StatusUtil {
 
         final double processCpuLoad = operatingSystemMXBean.getCpuLoad();
 
-        final long computerRam = getAvailableRam();
-        final long computerFreeRam = getFreeRam();
-        final long computerRamUsed = getUsedRam();
-
         final String usedServerMemory = "Użyte " + MathUtil.formatKilobytesDynamic(getServerRamUsage(), true);
 
-        final String usedComputerMemory = "Użyte " + MathUtil.formatBytesDynamic(computerRamUsed, true);
-        final String maxComputerMemory = "Całkowity " + MathUtil.formatBytesDynamic(computerRam, true);
-        final String freeComputerMemory = "Wolny " + MathUtil.formatBytesDynamic(computerFreeRam, true);
+        final String usedComputerMemory = "Użyte " + MathUtil.formatBytesDynamic(SystemUtil.getUsedRam(), true);
+        final String maxComputerMemory = "Całkowity " + MathUtil.formatBytesDynamic(SystemUtil.getMaxRam(), true);
+        final String freeComputerMemory = "Wolny " + MathUtil.formatBytesDynamic(SystemUtil.getFreeRam(), true);
 
         final String usedAppMemory = "Użyte " + MemoryUnit.BYTES.to(heapMemoryUsage.getUsed(), MemoryUnit.MEGABYTES) + " MB";
         final String committedAppMemory = "Przydzielone " + MemoryUnit.BYTES.to(heapMemoryUsage.getCommitted(), MemoryUnit.MEGABYTES) + " MB";
         final String maxAppMemory = "Dostępne " + MemoryUnit.BYTES.to(heapMemoryUsage.getMax(), MemoryUnit.MEGABYTES) + " MB";
 
-        final String usedRom = "Użyty: " + MathUtil.formatBytesDynamic(SystemUtil.usedDiskSpace(), true);
-        final String rom = "Dostępny: " + MathUtil.formatBytesDynamic(SystemUtil.availableDiskSpace(), true);
+        final String usedRom = "Użyty: " + MathUtil.formatBytesDynamic(SystemUtil.getUsedMainDiskSpace(), true);
+        final String rom = "Dostępny: " + MathUtil.formatBytesDynamic(SystemUtil.getFreeMainDiskSpace(), true);
 //        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(maxDiskSpace()) + " MB";
 
         STATUS.add("> **Statystyki maszyny**");
@@ -114,7 +110,7 @@ public final class StatusUtil {
         stringBuilder.append(BDSAUTOENABLE.getVersionManager().getLoadedVersion()).append(" | ");
         stringBuilder.append("TPS: ").append(serverManager.getLastTPS()).append(" | ");
         stringBuilder.append("Online: ").append(serverManager.getOnlinePlayers().size()).append("/").append(BDSAUTOENABLE.getServerProperties().getMaxPlayers()).append(" | ");
-        stringBuilder.append("Ram: ").append(MathUtil.formatBytesDynamic((long) (ram + MemoryUnit.KILOBYTES.to(getServerRamUsage(), MemoryUnit.BYTES)), true));
+        stringBuilder.append("Ram: ").append(MathUtil.formatBytesDynamic(ram + MemoryUnit.KILOBYTES.to(getServerRamUsage(), MemoryUnit.BYTES), true));
 
         return stringBuilder.toString();
     }
@@ -127,17 +123,5 @@ public final class StatusUtil {
             LOGGER.debug("Nie można uzyskać używanego ramu przez server dla systemu&1 " + SystemUtil.getSystem(), exception);
         }
         return -1;
-    }
-
-    public static long getUsedRam() {
-        return getAvailableRam() - getFreeRam();
-    }
-
-    public static long getAvailableRam() {
-        return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getTotalMemorySize();
-    }
-
-    public static long getFreeRam() {
-        return ((OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getFreeMemorySize();
     }
 }
