@@ -125,6 +125,7 @@ public class VersionManager {
 
             ZipUtil.unzipFile(verFile.getAbsolutePath(), this.appConfig.getFilesPath(), false, this.importantFiles);
             this.setLoaded(true);
+            this.loadVersionsInfo();
             this.versionManagerConfig.setVersion(version);
             this.appConfigManager.saveVersionManagerConfig();
             this.logger.info("Załadowano wersie:&1 " + version + "&r w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
