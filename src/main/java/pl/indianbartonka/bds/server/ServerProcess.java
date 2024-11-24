@@ -128,6 +128,7 @@ public class ServerProcess {
                                     System.exit(-1);
                                     return;
                                 }
+                                //TODO: Dodać wsparcie dla Box64 i Box64 + wine
 
                                 this.processBuilder = new ProcessBuilder("wine", this.finalFilePath);
                             } else {
