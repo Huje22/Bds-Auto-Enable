@@ -27,6 +27,7 @@ import pl.indianbartonka.bds.util.HTTPUtil;
 import pl.indianbartonka.util.BedrockQuery;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.ZipUtil;
+import pl.indianbartonka.util.http.UserAgent;
 import pl.indianbartonka.util.logger.Logger;
 import pl.indianbartonka.util.system.SystemOS;
 import pl.indianbartonka.util.system.SystemUtil;
@@ -157,6 +158,7 @@ public class VersionManager {
         final Request request = new Request.Builder()
                 .url(this.getServerDownloadUrl(version))
                 .get()
+                .addHeader("User-Agent", UserAgent.randomUserAgent())
                 .build();
 
         try (final Response response = this.client.newCall(request).execute()) {
@@ -191,6 +193,7 @@ public class VersionManager {
         final Request request = new Request.Builder()
                 .url("https://raw.githubusercontent.com/Bedrock-OSS/BDS-Versions/main/versions.json")
                 .get()
+                .addHeader("User-Agent", UserAgent.randomUserAgent())
                 .build();
 
         try (final Response response = this.client.newCall(request).execute()) {
