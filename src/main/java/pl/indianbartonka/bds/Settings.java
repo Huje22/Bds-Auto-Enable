@@ -70,7 +70,7 @@ public class Settings {
 
         this.logger.println();
 
-        if (DefaultsVariables.WINE) {
+        if (DefaultsVariables.wine) {
             this.appConfig.setWine(ScannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
                         this.logger.info("&n&lWykryliśmy &r&bWINE&r&n&l czy użyć go?&r (Domyślnie: " + defaultValue + ")" + this.enter);
@@ -78,6 +78,18 @@ public class Settings {
                     },
                     false,
                     (input) -> this.logger.info("&bWINE&r ustawione na:&1 " + input)
+            ));
+            this.logger.println();
+        }
+
+        if (DefaultsVariables.box64) {
+            this.appConfig.setBox64(ScannerUtil.addBooleanQuestion(
+                    (defaultValue) -> {
+                        this.logger.info("&n&lWykryliśmy &r&bBox64&r&n&l czy użyć go?&r (Domyślnie: " + defaultValue + ")" + this.enter);
+                        this.logger.alert("Jeśli chcesz użyć&b Box64&r plik musi kończyć się na&1 .exe");
+                    },
+                    false,
+                    (input) -> this.logger.info("&bBox64&r ustawione na:&1 " + input)
             ));
             this.logger.println();
         }
@@ -309,7 +321,8 @@ public class Settings {
         this.logger.println();
         this.logger.info("&e----------&bAplikacja&e----------");
         this.logger.info("Java:&1 " + System.getProperty("java.version"));
-        this.logger.info("Wine:&1 " + this.appConfig.isWine() + (DefaultsVariables.WINE ? " &d(&bPosiadasz&d)" : ""));
+        this.logger.info("Wine:&1 " + this.appConfig.isWine() + (DefaultsVariables.wine ? " &d(&bPosiadasz&d)" : ""));
+        this.logger.info("Box64:&1 " + this.appConfig.isBox64() + (DefaultsVariables.box64 ? " &d(&bPosiadasz&d)" : ""));
         this.logger.info("Ścieżka plików:&1 " + this.appConfig.getFilesPath());
 
         final boolean backup = this.watchDogConfig.getBackupConfig().isEnabled();

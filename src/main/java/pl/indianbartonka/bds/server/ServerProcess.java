@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
@@ -20,6 +21,7 @@ import pl.indianbartonka.bds.event.EventManager;
 import pl.indianbartonka.bds.event.server.ServerAlertEvent;
 import pl.indianbartonka.bds.event.server.ServerClosedEvent;
 import pl.indianbartonka.bds.event.server.ServerConsoleCommandEvent;
+import pl.indianbartonka.bds.shutdown.ShutdownHandler;
 import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.util.ServerUtil;
 import pl.indianbartonka.bds.watchdog.WatchDog;
@@ -110,6 +112,7 @@ public class ServerProcess {
             this.logger.debug("Nie można uruchomić procesu ponieważ&b canRun&r jest ustawione na:&b " + false);
             return;
         }
+
         this.finalFilePath = this.appConfigManager.getAppConfig().getFilesPath() + File.separator + this.fileName;
         this.processService.execute(() -> {
             if (this.checkProcesRunning()) {
@@ -120,29 +123,9 @@ public class ServerProcess {
             } else {
                 this.logger.debug("Proces " + this.fileName + " nie jest uruchomiony. Uruchamianie...");
                 try {
-                    switch (this.system) {
-                        case LINUX -> {
-                            if (this.appConfigManager.getAppConfig().isWine()) {
-                                if (!DefaultsVariables.WINE) {
-                                    this.logger.critical("^#cNIE POSIADASZ ^#1WINE^#C!");
-                                    System.exit(-1);
-                                    return;
-                                }
-                                //TODO: Dodać wsparcie dla Box64 i Box64 + wine
+                    this.processBuilder = this.buildStartCommand();
 
-                                this.processBuilder = new ProcessBuilder("wine", this.finalFilePath);
-                            } else {
-                                this.processBuilder = new ProcessBuilder("./" + this.fileName);
-                                this.processBuilder.environment().put("LD_LIBRARY_PATH", ".");
-                                this.processBuilder.directory(new File(this.appConfigManager.getAppConfig().getFilesPath()));
-                            }
-                        }
-                        case WINDOWS -> this.processBuilder = new ProcessBuilder(this.finalFilePath);
-                        default -> {
-                            this.logger.critical("Twój system jest nie wspierany");
-                            System.exit(21);
-                        }
-                    }
+                    if (ShutdownHandler.isShutdownHookCalled()) return;
 
                     this.canWriteConsoleOutput = true;
                     this.watchDog.getPackModule().getPackInfo();
@@ -176,6 +159,57 @@ public class ServerProcess {
                 }
             }
         });
+    }
+
+    /**
+     * @return
+     */
+    private ProcessBuilder buildStartCommand() {
+        ProcessBuilder processBuilder = null;
+        switch (this.system) {
+            case LINUX -> {
+                final List<String> firstArgs = new LinkedList<>();
+                final boolean wine = this.appConfigManager.getAppConfig().isWine();
+                final boolean box64 = this.appConfigManager.getAppConfig().isBox64();
+
+                if (!wine && !box64) {
+                    processBuilder = new ProcessBuilder("./" + this.fileName);
+                    processBuilder.environment().put("LD_LIBRARY_PATH", ".");
+                    processBuilder.directory(new File(this.appConfigManager.getAppConfig().getFilesPath()));
+
+                    return processBuilder;
+                }
+
+                if (box64) {
+                    if (!DefaultsVariables.box64) {
+                        this.logger.critical("^#cNIE POSIADASZ ^#1Box64^#C!");
+                        System.exit(-1);
+                        return null;
+                    }
+                    firstArgs.add("box64");
+                }
+
+                if (wine) {
+                    if (!DefaultsVariables.wine) {
+                        this.logger.critical("^#cNIE POSIADASZ ^#1WINE^#C!");
+                        System.exit(-1);
+                        return null;
+                    }
+                    firstArgs.add("wine");
+                }
+
+                firstArgs.add("./" + this.fileName);
+                processBuilder = new ProcessBuilder(firstArgs);
+            }
+
+            case WINDOWS -> processBuilder = new ProcessBuilder(this.finalFilePath);
+            default -> {
+                this.logger.critical("Twój system jest nie wspierany");
+                System.exit(21);
+            }
+        }
+
+        return processBuilder;
     }
 
     /**

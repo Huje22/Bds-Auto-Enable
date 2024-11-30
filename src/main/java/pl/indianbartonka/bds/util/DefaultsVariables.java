@@ -13,7 +13,8 @@ import pl.indianbartonka.util.system.SystemUtil;
 
 public final class DefaultsVariables {
 
-    public static boolean WINE;
+    public static boolean wine;
+    public static boolean box64;
     private static AppConfig APPCONFIG;
     private static Logger LOGGER;
 
@@ -23,7 +24,8 @@ public final class DefaultsVariables {
     public static void init(final BDSAutoEnable bdsAutoEnable) {
         APPCONFIG = bdsAutoEnable.getAppConfigManager().getAppConfig();
         LOGGER = bdsAutoEnable.getLogger();
-        WINE = wineCheck();
+        wine = wineCheck();
+        box64 = box64();
     }
 
     public static String getDefaultFileName() {
@@ -74,6 +76,22 @@ public final class DefaultsVariables {
             if (!process.waitFor(30, TimeUnit.MILLISECONDS)) process.destroy();
         } catch (final Exception exception) {
             LOGGER.debug("Nie znaleziono&1 WINE&r (Nie potrzebujesz go)");
+        }
+        return false;
+    }
+
+    private static boolean box64() {
+        try {
+            final Process process = Runtime.getRuntime().exec("box64 --version");
+            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("Box64")) return true;
+                }
+            }
+            if (!process.waitFor(30, TimeUnit.MILLISECONDS)) process.destroy();
+        } catch (final Exception exception) {
+            LOGGER.debug("Nie znaleziono&1 Box64");
         }
         return false;
     }

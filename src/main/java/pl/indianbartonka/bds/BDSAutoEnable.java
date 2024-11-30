@@ -90,6 +90,7 @@ public class BDSAutoEnable {
                 &e| |_) | |__| |____) |&1  / ____ \\ |_| | || (_) | | |____| | | | (_| | |_) | |  __/
                 &e|____/|_____/|_____/ &1 /_/    \\_\\__,_|\\__\\___/  |______|_| |_|\\__,_|_.__/|_|\\___|
                 """);
+        DefaultsVariables.init(this);
         this.isJavaVersionLessThan17();
         this.checkSystemSupport();
         this.checkEncoding();
@@ -99,7 +100,6 @@ public class BDSAutoEnable {
         this.checkTimeZone();
         this.logger.info("&lNumer wersji projektu:&1 &n" + this.projectVersion);
         this.logger.debug("&aUUID&r aplikacji:&b " + this.getAppUUID());
-        DefaultsVariables.init(this);
         LogbackConfig.init();
         this.serverProperties = new ServerProperties(this);
         this.settings = new Settings(this);
@@ -179,16 +179,19 @@ public class BDSAutoEnable {
         final SystemArch arch = SystemUtil.getCurrentArch();
         final SystemOS systemOS = SystemUtil.getSystem();
 
-        if (arch == SystemArch.ARM_32X || arch == SystemArch.ARM_64X || arch == SystemArch.AMD_X32) {
-            if (this.appConfig.isDebug()) {
-                this.logger.warning("&aTwoja architektura systemu nie jest wspierana," +
-                        " lecz masz włączony&1 Debug&a robisz to na własne&c ryzyko&c!");
-                this.logger.alert("&aMoże nie udać się nam uruchomić &bBedrock Dedicated Server&a na twoim systemie");
-                return;
-            }
-
+        if (arch == SystemArch.AMD_X32) {
             this.logger.critical("&cTwoja architektura systemu nie jest wspierana! Twoja architektura to&b " + SystemUtil.getFullyArchCode());
             System.exit(9);
+        }
+
+        if (arch == SystemArch.ARM_32X || arch == SystemArch.ARM_64X) {
+            if (DefaultsVariables.box64) {
+                this.logger.warning("&cTwoja architektura systemu nie jest wspierana!&a Ale posiadasz&e Box64&c!");
+                return;
+            } else {
+                this.logger.critical("&cTwoja architektura systemu nie jest wspierana! Twoja architektura to&b " + SystemUtil.getFullyArchCode());
+                System.exit(9);
+            }
         }
 
         if (systemOS == SystemOS.UNKNOWN) {
