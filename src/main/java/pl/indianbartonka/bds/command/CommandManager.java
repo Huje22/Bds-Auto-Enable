@@ -100,7 +100,7 @@ public class CommandManager {
                     if (player != null) {
                         ServerUtil.tellrawToPlayer(player.getPlayerName(), command.getUsage());
                     } else {
-                        this.bdsAutoEnable.getLogger().print(command.getUsage());
+                        this.bdsAutoEnable.getLogger().println(command.getUsage());
                     }
                 }
                 return true;

@@ -64,8 +64,8 @@ public final class StatusUtil {
         final String committedAppMemory = "Przydzielone " + MemoryUnit.BYTES.to(heapMemoryUsage.getCommitted(), MemoryUnit.MEGABYTES) + " MB";
         final String maxAppMemory = "Dostępne " + MemoryUnit.BYTES.to(heapMemoryUsage.getMax(), MemoryUnit.MEGABYTES) + " MB";
 
-        final String usedRom = "Użyty: " + MathUtil.formatBytesDynamic(SystemUtil.getUsedMainDiskSpace(), true);
-        final String rom = "Dostępny: " + MathUtil.formatBytesDynamic(SystemUtil.getFreeMainDiskSpace(), true);
+        final String usedRom = "Użyty: " + MathUtil.formatBytesDynamic(SystemUtil.getUsedCurrentDiskSpace(), true);
+        final String rom = "Dostępny: " + MathUtil.formatBytesDynamic(SystemUtil.getFreeCurrentDiskSpace(), true);
 //        final String maxRom = "Całkowity: " + MathUtil.bytesToGB(maxDiskSpace()) + " GB " + MathUtil.getMbFromBytesGb(maxDiskSpace()) + " MB";
 
         STATUS.add("> **Statystyki maszyny**");

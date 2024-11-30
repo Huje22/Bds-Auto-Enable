@@ -185,7 +185,7 @@ public class BackupModule {
     private boolean canDoBackup() {
         final int maxBackups = this.backupConfig.getMaxBackups();
         if (maxBackups == -1 || maxBackups == 0) {
-            final long gb = MemoryUnit.BYTES.to(SystemUtil.getMaxMainDiskSpace(), MemoryUnit.GIGABYTES);
+            final long gb = MemoryUnit.BYTES.to(SystemUtil.getMaxCurrentDiskSpace(), MemoryUnit.GIGABYTES);
             if (gb < MemoryUnit.BYTES.to(FileUtil.getFileSize(this.worldFile), MemoryUnit.GIGABYTES) + 1) {
                 ServerUtil.tellrawToAllAndLogger(this.prefix,
                         "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!",

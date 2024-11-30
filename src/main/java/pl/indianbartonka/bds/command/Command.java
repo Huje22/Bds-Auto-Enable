@@ -102,7 +102,7 @@ public abstract class Command {
         if (this.player != null) {
             ServerUtil.tellrawToPlayer(this.player.getPlayerName(), message);
         } else {
-            this.bdsAutoEnable.getLogger().print(message);
+            this.bdsAutoEnable.getLogger().println(message);
         }
     }
 

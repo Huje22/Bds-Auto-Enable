@@ -82,7 +82,7 @@ public class BDSAutoEnable {
         this.appConfigManager = new AppConfigManager();
         this.appConfig = this.appConfigManager.getAppConfig();
         this.logger = new MainLogger(this);
-        this.logger.print("""
+        this.logger.println("""
                 &e ____  _____   _____ &1                _          ______             _     _     \s
                 &e|  _ \\|  __ \\ / ____|&1     /\\        | |        |  ____|           | |   | |    \s
                 &e| |_) | |  | | (___  &1    /  \\  _   _| |_ ___   | |__   _ __   __ _| |__ | | ___\s
