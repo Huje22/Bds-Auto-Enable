@@ -30,40 +30,12 @@ public final class HTTPUtil {
             .retryOnConnectionFailure(true)
             .followRedirects(true)
             .build();
-    private static String LAST_KNOWN_IP = null;
-
 
     private HTTPUtil() {
     }
 
     public static OkHttpClient getOkHttpClient() {
         return OK_HTTP_CLIENT;
-    }
-
-    @Nullable
-    public static String getOwnIP() {
-        if (LAST_KNOWN_IP != null) {
-            return LAST_KNOWN_IP;
-        }
-
-        final Request request = new Request.Builder()
-                .url("https://api64.ipify.org?format=json")
-                .build();
-
-        try (final Response response = OK_HTTP_CLIENT.newCall(request).execute()) {
-            if (response.isSuccessful()) {
-                final JsonObject jsonObject = JsonParser.parseString(response.body().string())
-                        .getAsJsonObject();
-
-                if (jsonObject.has("ip")) {
-                    LAST_KNOWN_IP = jsonObject.get("ip").getAsString();
-                    return LAST_KNOWN_IP;
-                }
-            }
-        } catch (final Exception ignored) {
-        }
-
-        return LAST_KNOWN_IP;
     }
 
     public static void download(final String url, final String path) throws DownloadException, IOException, TimeoutException {
