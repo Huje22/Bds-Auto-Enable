@@ -2,6 +2,7 @@ package pl.indianbartonka.bds.server.properties.component;
 
 public enum ServerMovementAuth {
 
+    DEFAULT("default"),
     CLIENT_AUTH("client-auth"),
     SERVER_AUTH("server-auth"),
     SERVER_AUTH_REWIND("server-auth-with-rewind");

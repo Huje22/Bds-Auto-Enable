@@ -20,6 +20,7 @@ public class PlayerStatistics implements Serializable {
     private MemoryTier memoryTier;
     private int maxRenderDistance;
     private PlatformType platformType;
+    private InputMode lastKnownInputMode;
     private Controller lastController;
 
     public PlayerStatistics(final String playerName, final long xuid, final Dimension dimension, final long firstJoin, final long lastJoin, final long lastQuit, final long playtime, final long deaths, final long blockPlaced, final long blockBroken) {
@@ -39,6 +40,7 @@ public class PlayerStatistics implements Serializable {
         this.maxRenderDistance = -1;
         this.longestLoginStreak = 0;
         this.platformType = PlatformType.UNKNOWN;
+        lastKnownInputMode = InputMode.UNKNOWN;
         this.lastController = Controller.UNKNOWN;
         this.dynamicProperties = new HashMap<>();
     }
@@ -161,6 +163,14 @@ public class PlayerStatistics implements Serializable {
 
     public void setPlatformType(final PlatformType platformType) {
         this.platformType = platformType;
+    }
+
+    public InputMode getLastKnownInputMode() {
+        return this.lastKnownInputMode;
+    }
+
+    public void setLastKnownInputMode(final InputMode lastKnownInputMode) {
+        this.lastKnownInputMode = lastKnownInputMode;
     }
 
     public Controller getLastController() {

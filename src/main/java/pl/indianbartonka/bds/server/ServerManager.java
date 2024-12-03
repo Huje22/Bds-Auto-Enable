@@ -16,6 +16,7 @@ import pl.indianbartonka.bds.event.EventManager;
 import pl.indianbartonka.bds.event.EventResponse;
 import pl.indianbartonka.bds.event.player.PlayerBlockBreakEvent;
 import pl.indianbartonka.bds.event.player.PlayerBlockPlaceEvent;
+import pl.indianbartonka.bds.event.player.PlayerChangeInputModeEvent;
 import pl.indianbartonka.bds.event.player.PlayerChatEvent;
 import pl.indianbartonka.bds.event.player.PlayerCommandEvent;
 import pl.indianbartonka.bds.event.player.PlayerDeathEvent;
@@ -30,6 +31,7 @@ import pl.indianbartonka.bds.event.player.response.PlayerChatResponse;
 import pl.indianbartonka.bds.event.server.ServerAlertEvent;
 import pl.indianbartonka.bds.event.server.ServerStartEvent;
 import pl.indianbartonka.bds.event.server.TPSChangeEvent;
+import pl.indianbartonka.bds.player.InputMode;
 import pl.indianbartonka.bds.player.MemoryTier;
 import pl.indianbartonka.bds.player.PlatformType;
 import pl.indianbartonka.bds.player.PlayerStatistics;
@@ -102,6 +104,7 @@ public class ServerManager {
             this.playerBreakBlock(logEntry);
             this.playerPlaceBlock(logEntry);
             this.playerContainerInteract(logEntry);
+            this.playerChangeInputMode(logEntry);
 
             //Dodatkowe metody
             this.serverEnabled(logEntry);
@@ -167,16 +170,16 @@ public class ServerManager {
     }
 
     private void playerJoin(final String logEntry) {
-        // PlayerJoin:JndjanBartonka PlayerPlatform:Desktop MemoryTier:4 MaxRenderDistance:50
-        final String patternString = "PlayerJoin:([^,]+) PlayerPlatform:([^,]+) MemoryTier:([^,]+) MaxRenderDistance:([^,]+)";
+        final String patternString = "PlayerJoin:([^,]+) PlayerPlatform:([^,]+) PlayerInput:([^,]+) MemoryTier:([^,]+) MaxRenderDistance:([^,]+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
             final String platform = matcher.group(2);
-            final int memoryTier = Integer.parseInt(matcher.group(3));
-            final int maxRenderDistance = Integer.parseInt(matcher.group(4));
+            final String input = matcher.group(3);
+            final int memoryTier = Integer.parseInt(matcher.group(4));
+            final int maxRenderDistance = Integer.parseInt(matcher.group(5));
 
             try {
                 this.onlinePlayers.add(playerName);
@@ -186,6 +189,7 @@ public class ServerManager {
 
                 this.statsManager.updateLoginStreak(playerStatistics, DateUtil.localDateTimeToMillis(LocalDateTime.now(DateUtil.POLISH_ZONE)));
                 playerStatistics.setPlatformType(PlatformType.getByName(platform));
+                playerStatistics.setLastKnownInputMode(InputMode.getByName(input));
                 playerStatistics.setMemoryTier(MemoryTier.getMemoryTier(memoryTier));
                 playerStatistics.setMaxRenderDistance(maxRenderDistance);
 
@@ -455,6 +459,30 @@ public class ServerManager {
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć interakcji gracza z kontenerem " + playerInteract);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć interakcji gracza z kontenerem " + playerInteract,
+                        "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
+                throw exception;
+            }
+        }
+    }
+
+    private void playerChangeInputMode(final String logEntry) {
+        final String patternString = "PlayerInput:([^,]+) NewInputMode:([^,]+) OldInputMode:([^,]+)";
+        final Pattern pattern = Pattern.compile(patternString);
+        final Matcher matcher = pattern.matcher(logEntry);
+
+        if (matcher.find()) {
+            final String playerInput = matcher.group(1);
+            final InputMode newInput = InputMode.getByName(matcher.group(2));
+            final InputMode oldInput = InputMode.getByName(matcher.group(3));
+
+            try {
+                final PlayerStatistics playerStatistics = this.getStatsManager().getPlayer(playerInput);
+                playerStatistics.setLastKnownInputMode(newInput);
+
+                this.eventManager.callEvent(new PlayerChangeInputModeEvent(playerStatistics, newInput, oldInput));
+            } catch (final Exception exception) {
+                this.logger.error("&cNie udało się obsłużyć zmiany&b InputMode&c gracza&b " + playerInput);
+                this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć zmiany InputMode gracza " + playerInput,
                         "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
                 throw exception;
             }
