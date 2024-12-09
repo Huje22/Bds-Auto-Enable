@@ -9,18 +9,19 @@ Jak zbudować projekt? [Budowanie projektu za pomocą Maven Wrapper](./Wrapper%2
 
 # Uwaga
 
-* Wspieramy tylko tą [wersje](https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/me/indian/bds/config/sub/version/VersionManagerConfig.java#L17)
+* Wspieramy tylko
+  tą [wersje](https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/me/indian/bds/config/sub/version/VersionManagerConfig.java#L17)
 * Wymaga Javy 17 bądź wyższej
 * Program wymaga przynajmniej `1GB` RAM do działania z rozszerzeniami jak `DiscordExtension`
-* Program wspiera użycie: **[WINE](https://github.com/wine-mirror/wine)**, Dodaj info o wsparciu box64
-*
-* * Program wspiera proste
+* Program wspiera użycie: **[WINE](https://github.com/wine-mirror/wine)**, **[Box64](https://github.com/ptitSeb/box64)**
+* Program wspiera proste
   rozszerzenia: [ExampleExtension](https://github.com/Huje22/BDS-AE-Extensions/tree/master/ExampleExtension)
 
 # Program zawiera
 
 * Dosyć proste
-  rozszerzenia: [ExampleExtension](https://github.com/Huje22/BDS-AE-Extensions/tree/master/ExampleExtension)
+  rozszerzenia: [ExampleExtension](https://github.com/Huje22/BDS-AE-Extensions/tree/master/ExampleExtension) (Nie zawsze
+  zaktualizowane z najnowszym API)
 * Automatyczne włączenie servera po crashu
 * Łatwe załadowanie innej wersji
 * Automatyczne ładowanie paczek `zachowań` i `tesktur` z `FOLDER_ŚWIATA/behavior_packs`/`resource_packs`

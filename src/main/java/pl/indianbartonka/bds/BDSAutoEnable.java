@@ -42,6 +42,7 @@ import pl.indianbartonka.util.MessageUtil;
 import pl.indianbartonka.util.ZipUtil;
 import pl.indianbartonka.util.file.FileUtil;
 import pl.indianbartonka.util.system.SystemArch;
+import pl.indianbartonka.util.system.SystemFamily;
 import pl.indianbartonka.util.system.SystemOS;
 import pl.indianbartonka.util.system.SystemUtil;
 
@@ -185,11 +186,15 @@ public class BDSAutoEnable {
         }
 
         if (arch == SystemArch.ARM_32X || arch == SystemArch.ARM_64X) {
+            //Windows ma jakis emulator na ARM do apek AMD ale nie mialem okazij uzywac BDS na nim
             if (DefaultsVariables.box64) {
                 this.logger.warning("&cTwoja architektura systemu nie jest wspierana!&a Ale posiadasz&e Box64&c!");
                 return;
             } else {
                 this.logger.critical("&cTwoja architektura systemu nie jest wspierana! Twoja architektura to&b " + SystemUtil.getFullyArchCode());
+                if (SystemUtil.getSystemFamily() == SystemFamily.UNIX) {
+                    this.logger.warning("&aSpróbuj użyć&b Box64");
+                }
                 System.exit(9);
             }
         }
