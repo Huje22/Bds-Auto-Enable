@@ -487,8 +487,7 @@ public class Settings {
                             (defaultValue) -> {
                                 this.logger.info("&n&lUstaw Server Authoritative Movement&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                                 this.logger.info("Dostępne:&b " + MessageUtil.objectListToString(List.of(ServerMovementAuth.values()), "&a, &b"));
-                                this.logger.alert("Jeśli chcesz uniknąć cheaterów włącz&b server-auth-with-rewind&r wraz z &bcorrect-player-movement&r ," +
-                                        " lecz uważaj! Osoby z słabym połączeniem bedą się okropnie teleportować");
+                                this.logger.alert("Jeśli chcesz uniknąć cheaterów włącz&b server-auth-with-rewind&r lecz może się ono bagować, kochane &4Mojang&r :)");
                             },
                             this.serverProperties.getServerMovementAuth().name(),
                             (input) -> this.logger.info("Server Authoritative Movement ustawiono na:&1 " + input)

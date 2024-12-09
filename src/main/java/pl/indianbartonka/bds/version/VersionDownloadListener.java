@@ -40,6 +40,7 @@ public class VersionDownloadListener implements DownloadListener {
     @Override
     public void onEnd(final File outputFile) {
         this.logger.info("Pobrano wersje: &1" + this.version);
+        this.bdsAutoEnable.setAppWindowName("Pobrano wersje: " + this.version);
     }
 
     @Override

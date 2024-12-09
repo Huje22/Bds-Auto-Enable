@@ -17,20 +17,20 @@ public enum Difficulty {
 
     public static Difficulty getById(final int difficultyId) throws NullPointerException {
         return switch (difficultyId) {
-            case 0 -> Difficulty.PEACEFUL;
-            case 1 -> Difficulty.EASY;
-            case 2 -> Difficulty.NORMAL;
-            case 3 -> Difficulty.HARD;
+            case 0 -> PEACEFUL;
+            case 1 -> EASY;
+            case 2 -> NORMAL;
+            case 3 -> HARD;
             default -> throw new IllegalArgumentException("Unknown difficulty ID: " + difficultyId);
         };
     }
 
     public static Difficulty getByName(final String difficultyName) throws NullPointerException {
         return switch (difficultyName.toLowerCase()) {
-            case "peaceful" -> Difficulty.PEACEFUL;
-            case "easy" -> Difficulty.EASY;
-            case "normal" -> Difficulty.NORMAL;
-            case "hard" -> Difficulty.HARD;
+            case "peaceful" -> PEACEFUL;
+            case "easy" -> EASY;
+            case "normal" -> NORMAL;
+            case "hard" -> HARD;
             default -> throw new IllegalArgumentException("Unknown difficulty name: " + difficultyName);
         };
     }

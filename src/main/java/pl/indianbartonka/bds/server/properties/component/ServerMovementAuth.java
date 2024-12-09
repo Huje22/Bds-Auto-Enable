@@ -15,9 +15,10 @@ public enum ServerMovementAuth {
 
     public static ServerMovementAuth getByName(final String authName) throws NullPointerException {
         return switch (authName) {
-            case "client-auth" -> ServerMovementAuth.CLIENT_AUTH;
-            case "server-auth" -> ServerMovementAuth.SERVER_AUTH;
-            case "server-auth-with-rewind" -> ServerMovementAuth.SERVER_AUTH_REWIND;
+            case "client-auth" -> CLIENT_AUTH;
+            case "server-auth" -> SERVER_AUTH;
+            case "server-auth-with-rewind" -> SERVER_AUTH_REWIND;
+            case "default" -> DEFAULT;
             default -> throw new IllegalArgumentException("Unknown Server Movement Auth name: " + authName);
         };
     }

@@ -13,8 +13,8 @@ public enum CompressionAlgorithm {
 
     public static CompressionAlgorithm getByName(final String algorithmName) {
         return switch (algorithmName.toLowerCase()) {
-            case "zlib" -> CompressionAlgorithm.ZLIB;
-            case "snappy" -> CompressionAlgorithm.SNAPPY;
+            case "zlib" -> ZLIB;
+            case "snappy" -> SNAPPY;
             default -> throw new IllegalArgumentException("Unknown compression algorithm: " + algorithmName);
         };
     }

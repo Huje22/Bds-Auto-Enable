@@ -40,7 +40,7 @@ public class PlayerStatistics implements Serializable {
         this.maxRenderDistance = -1;
         this.longestLoginStreak = 0;
         this.platformType = PlatformType.UNKNOWN;
-        lastKnownInputMode = InputMode.UNKNOWN;
+        this.lastKnownInputMode = InputMode.UNKNOWN;
         this.lastController = Controller.UNKNOWN;
         this.dynamicProperties = new HashMap<>();
     }
