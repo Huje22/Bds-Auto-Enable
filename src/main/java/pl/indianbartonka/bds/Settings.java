@@ -83,10 +83,11 @@ public class Settings {
         }
 
         if (DefaultsVariables.box64) {
+            //TODO: Obczajc czy te pytanie ma wgl sens
             this.appConfig.setBox64(ScannerUtil.addBooleanQuestion(
                     (defaultValue) -> {
                         this.logger.info("&n&lWykryliśmy &r&bBox64&r&n&l czy użyć go?&r (Domyślnie: " + defaultValue + ")" + this.enter);
-                        this.logger.alert("Jeśli chcesz użyć&b Box64&r plik musi kończyć się na&1 .exe");
+                        this.logger.alert("Jeśli chcesz użyć&b Box64");
                     },
                     false,
                     (input) -> this.logger.info("&bBox64&r ustawione na:&1 " + input)
