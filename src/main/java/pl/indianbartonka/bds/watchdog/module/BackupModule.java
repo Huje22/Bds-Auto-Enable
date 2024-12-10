@@ -1,7 +1,6 @@
 package pl.indianbartonka.bds.watchdog.module;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -146,22 +145,25 @@ public class BackupModule {
         this.backuping = true;
         final long startTime = System.currentTimeMillis();
         this.service.execute(() -> {
-            final File backup = new File(this.backupFolder.getAbsolutePath() + File.separator + this.worldName + " " + DateUtil.getFixedDate() + ".zip");
+            File backup = new File(this.backupFolder.getAbsolutePath() + File.separator + this.worldName + " " + DateUtil.getFixedDate() + ".zip");
             try {
                 this.watchDog.saveWorld();
                 final double lastBackUpTime = this.backupConfig.getLastBackupTime();
+
                 ServerUtil.tellrawToAllAndLogger(this.prefix, "&aTworzenie kopij zapasowej ostatnio trwało to&b " + lastBackUpTime + "&a sekund", LogState.INFO);
                 this.status = "Tworzenie backupa...";
-                ZipUtil.zipFolder(this.worldPath, backup.getPath());
+
+                backup = ZipUtil.zipFolder(this.worldPath, backup.getPath());
                 final double backUpTime = ((System.currentTimeMillis() - startTime) / 1000.0);
+
                 this.backupConfig.setLastBackupTime(backUpTime);
                 this.loadAvailableBackups();
+
                 ServerUtil.tellrawToAllAndLogger(this.prefix,
-                        "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona " + this.getBackupSize(backup),
-                        LogState.INFO);
-                ServerUtil.tellrawToAllAndLogger(this.prefix,
-                        "&aDostępne jest&d " + this.backups.size() + "&a kopi zapasowych",
-                        LogState.INFO);
+                        "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona &b" + MathUtil.formatBytesDynamic(FileUtil.getFileSize(backup), true) +
+                                "&aŚwiat waży&b" + MathUtil.formatBytesDynamic(FileUtil.getFileSize(this.worldFile), false), LogState.INFO);
+                ServerUtil.tellrawToAllAndLogger(this.prefix, "&aPoziom kompresij ZIP użyty do tego wynosi:&b " + ZipUtil.getCompressionLevel(), LogState.INFO);
+                ServerUtil.tellrawToAllAndLogger(this.prefix, "&aDostępne jest&d " + this.backups.size() + "&a kopi zapasowych", LogState.INFO);
 
                 this.status = "Utworzono backup";
                 this.bdsAutoEnable.getEventManager().callEvent(new BackupDoneEvent());
@@ -187,17 +189,13 @@ public class BackupModule {
         if (maxBackups == -1 || maxBackups == 0) {
             final long gb = MemoryUnit.BYTES.to(SystemUtil.getMaxCurrentDiskSpace(), MemoryUnit.GIGABYTES);
             if (gb < MemoryUnit.BYTES.to(FileUtil.getFileSize(this.worldFile), MemoryUnit.GIGABYTES) + 1) {
-                ServerUtil.tellrawToAllAndLogger(this.prefix,
-                        "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!",
-                        LogState.WARNING);
+                ServerUtil.tellrawToAllAndLogger(this.prefix, "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!", LogState.WARNING);
                 return false;
             }
 
         } else {
             if (this.backups.size() >= maxBackups) {
-                ServerUtil.tellrawToAllAndLogger(this.prefix,
-                        "&cOsiągnięto maksymalną liczbę backup!&d (&3" + maxBackups + "&d)",
-                        LogState.WARNING);
+                ServerUtil.tellrawToAllAndLogger(this.prefix, "&cOsiągnięto maksymalną liczbę backup!&d (&3" + maxBackups + "&d)", LogState.WARNING);
                 return false;
             }
         }
@@ -218,17 +216,6 @@ public class BackupModule {
         } catch (final Exception exception) {
             this.logger.error("Nie można załadować dostępnych backup", exception);
         }
-    }
-
-    public String getBackupSize(final File backup) {
-        long fileSizeBytes;
-        try {
-            fileSizeBytes = Files.size(backup.toPath());
-        } catch (final IOException exception) {
-            fileSizeBytes = -1;
-        }
-
-        return MathUtil.formatBytesDynamic(fileSizeBytes, true);
     }
 
     private void createWorldFile() {

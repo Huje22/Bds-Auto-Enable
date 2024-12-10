@@ -8,6 +8,7 @@ import pl.indianbartonka.bds.watchdog.module.BackupModule;
 import pl.indianbartonka.util.DateUtil;
 import pl.indianbartonka.util.MathUtil;
 import pl.indianbartonka.util.ThreadUtil;
+import pl.indianbartonka.util.file.FileUtil;
 
 public class BackupCommand extends Command {
 
@@ -32,7 +33,7 @@ public class BackupCommand extends Command {
         }
 
         if (args.length == 0) {
-            if (backupModule.getBackups().size() == 0) {
+            if (backupModule.getBackups().isEmpty()) {
                 this.sendMessage("&aBrak backupów");
                 this.sendMessage("&aNastępny backup za:&b " + DateUtil.formatTimeDynamic(backupModule.calculateMillisUntilNextBackup()));
                 return true;
@@ -41,7 +42,7 @@ public class BackupCommand extends Command {
             this.sendMessage("&aNastępny backup za:&b " + DateUtil.formatTimeDynamic(backupModule.calculateMillisUntilNextBackup()));
             for (final Path path : backupModule.getBackups()) {
                 if (!Files.exists(path)) continue;
-                this.sendMessage("&a" + path.getFileName() + " Rozmiar: " + backupModule.getBackupSize(path.toFile()));
+                this.sendMessage("&a" + path.getFileName() + " Rozmiar: " + MathUtil.formatBytesDynamic(FileUtil.getFileSize(path.toFile()), true));
             }
             return true;
         }
