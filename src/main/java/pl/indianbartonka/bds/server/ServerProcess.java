@@ -170,7 +170,7 @@ public class ServerProcess {
             case LINUX -> {
                 final List<String> firstArgs = new LinkedList<>();
                 final boolean wine = this.appConfigManager.getAppConfig().isWine();
-                final boolean box64 = this.appConfigManager.getAppConfig().isBox64();
+                final boolean box64 = DefaultsVariables.box64;
 
                 if (!wine && !box64) {
                     processBuilder = new ProcessBuilder("./" + this.fileName);
@@ -180,14 +180,7 @@ public class ServerProcess {
                     return processBuilder;
                 }
 
-                if (box64) {
-                    if (!DefaultsVariables.box64) {
-                        this.logger.critical("^#cNIE POSIADASZ ^#1Box64^#C!");
-                        System.exit(-1);
-                        return null;
-                    }
-                    firstArgs.add("box64");
-                }
+                if (box64) firstArgs.add("box64");
 
                 if (wine) {
                     if (!DefaultsVariables.wine) {

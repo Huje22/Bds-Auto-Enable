@@ -33,12 +33,6 @@ public class AppConfig extends OkaeriConfig {
     private boolean wine = false;
 
     @Comment({""})
-    @Comment({"Czy użyć Box64?"})
-    @Comment({"Aby użyć Box64 trzeba mieć go pobranego!"})
-    @CustomKey("Box64")
-    private boolean box64 = false;
-
-    @Comment({""})
     @Comment({"Czy restartować server gdy TPS dwa razy pod rząd są mniejsze niż 9?"})
     @CustomKey("RestartOnLowTPS")
     private boolean restartOnLowTPS = true;
@@ -102,14 +96,6 @@ public class AppConfig extends OkaeriConfig {
 
     public void setWine(final boolean wine) {
         this.wine = wine;
-    }
-
-    public boolean isBox64() {
-        return this.box64;
-    }
-
-    public void setBox64(final boolean box64) {
-        this.box64 = box64;
     }
 
     public boolean isRestartOnLowTPS() {

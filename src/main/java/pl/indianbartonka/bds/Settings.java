@@ -82,19 +82,6 @@ public class Settings {
             this.logger.println();
         }
 
-        if (DefaultsVariables.box64) {
-            //TODO: Obczajc czy te pytanie ma wgl sens
-            this.appConfig.setBox64(ScannerUtil.addBooleanQuestion(
-                    (defaultValue) -> {
-                        this.logger.info("&n&lWykryliśmy &r&bBox64&r&n&l czy użyć go?&r (Domyślnie: " + defaultValue + ")" + this.enter);
-                        this.logger.alert("Jeśli chcesz użyć&b Box64");
-                    },
-                    false,
-                    (input) -> this.logger.info("&bBox64&r ustawione na:&1 " + input)
-            ));
-            this.logger.println();
-        }
-
         this.appConfig.setFilesPath(ScannerUtil.addStringQuestion(
                 (defaultValue) -> {
                     this.logger.info("&n&lPodaj ścieżkę do plików servera&r (Domyślnie: " + defaultValue + ")" + this.enter);
@@ -323,7 +310,7 @@ public class Settings {
         this.logger.info("&e----------&bAplikacja&e----------");
         this.logger.info("Java:&1 " + System.getProperty("java.version"));
         this.logger.info("Wine:&1 " + this.appConfig.isWine() + (DefaultsVariables.wine ? " &d(&bPosiadasz&d)" : ""));
-        this.logger.info("Box64:&1 " + this.appConfig.isBox64() + (DefaultsVariables.box64 ? " &d(&bPosiadasz&d)" : ""));
+        this.logger.info("Box64:&1 " + DefaultsVariables.box64);
         this.logger.info("Ścieżka plików:&1 " + this.appConfig.getFilesPath());
 
         final boolean backup = this.watchDogConfig.getBackupConfig().isEnabled();
