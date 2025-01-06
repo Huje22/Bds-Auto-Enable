@@ -32,15 +32,7 @@
         <dependency>
             <groupId>com.github.IndianBartonka</groupId>
             <artifactId>Indian-Utils</artifactId>
-            <version>0.0.8.1</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!--        Adnotacje od JetBrains aby kod lepiej wyglądał-->
-        <dependency>
-            <groupId>org.jetbrains</groupId>
-            <artifactId>annotations</artifactId>
-            <version>24.1.0</version>
+            <version>0.0.8.2.1</version>
             <scope>compile</scope>
         </dependency>
 
@@ -49,14 +41,6 @@
             <groupId>eu.okaeri</groupId>
             <artifactId>okaeri-configs-yaml-snakeyaml</artifactId>
             <version>5.0.2</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!--        Serializacja i deserializacja Json-->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.11.0</version>
             <scope>compile</scope>
         </dependency>
 
