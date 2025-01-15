@@ -65,6 +65,7 @@ paczka jest najwyżej)**
   przez [Adovskiego](https://www.youtube.com/@AdoVski) <br>
 
 # Użyte biblioteki
+TODO: Zaktualizuj to
 
 [JetBrains Annotations (24.1.0) - Dla lepszego kodu](https://github.com/JetBrains/java-annotations) <br>
 [Okaeri Configs (5.0.1) - Do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
