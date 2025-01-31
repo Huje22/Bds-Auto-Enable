@@ -294,20 +294,8 @@ public class BDSAutoEnable {
 
     public void setAppWindowName(final String name) {
         if (System.console() == null) return;
-        this.service.execute(() -> {
-            try {
-                final ProcessBuilder processBuilder = new ProcessBuilder();
 
-                switch (SystemUtil.getSystem()) {
-                    case WINDOWS -> processBuilder.command("cmd.exe", "/c", "title", name);
-                    case LINUX -> processBuilder.command("bash", "-c", "printf '\\033]0;%s\\007' \"" + name + "\"");
-                }
-
-                processBuilder.inheritIO().start().waitFor();
-            } catch (final IOException | InterruptedException exception) {
-                this.logger.debug("&cNie udało się zmienić nazwy okna na:&d \"&1" + name + "&d\"", exception);
-            }
-        });
+        this.service.execute(() -> SystemUtil.setConsoleName(name));
     }
 
     private void setAppName() {
