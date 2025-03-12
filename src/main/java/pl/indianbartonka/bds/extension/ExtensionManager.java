@@ -105,6 +105,7 @@ public class ExtensionManager {
         }
     }
 
+    //Nadal trzeba to ulepszyć 
     public Set<String> dependencyGraph() {
         final Map<String, List<String>> map = new HashMap<>();
         for (final File jar : this.jarFiles) {
