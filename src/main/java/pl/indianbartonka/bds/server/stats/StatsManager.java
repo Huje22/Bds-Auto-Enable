@@ -27,7 +27,7 @@ import pl.indianbartonka.bds.server.ServerProcess;
 import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.util.GsonUtil;
 import pl.indianbartonka.util.DateUtil;
-import pl.indianbartonka.util.file.FileUtil;
+import pl.indianbartonka.util.FileUtil;
 import pl.indianbartonka.util.logger.Logger;
 
 public class StatsManager {

@@ -20,7 +20,7 @@ import pl.indianbartonka.bds.pack.component.BehaviorPack;
 import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.util.GsonUtil;
 import pl.indianbartonka.util.ZipUtil;
-import pl.indianbartonka.util.file.FileUtil;
+import pl.indianbartonka.util.FileUtil;
 import pl.indianbartonka.util.logger.Logger;
 
 public class BehaviorPackLoader {

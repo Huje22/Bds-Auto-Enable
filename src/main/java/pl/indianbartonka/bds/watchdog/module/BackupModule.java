@@ -29,7 +29,7 @@ import pl.indianbartonka.util.MathUtil;
 import pl.indianbartonka.util.MemoryUnit;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.ZipUtil;
-import pl.indianbartonka.util.file.FileUtil;
+import pl.indianbartonka.util.FileUtil;
 import pl.indianbartonka.util.logger.LogState;
 import pl.indianbartonka.util.logger.Logger;
 import pl.indianbartonka.util.system.SystemUtil;
