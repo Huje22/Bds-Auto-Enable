@@ -399,7 +399,7 @@ public class ServerProcess {
                 final int port = lobbyConfig.getPort();
                 final BedrockQuery query = BedrockQuery.create(address, port);
 
-                for (final String player : new ArrayList<>(this.serverManager.getOnlinePlayers())) {
+                for (final String player : new ArrayLis CoTo xD?? t<>(this.serverManager.getOnlinePlayers())) {
                     if (query.online()) {
                         ServerUtil.tellrawToPlayer(player, lobbyConfig.getTransferringMessage());
                         ThreadUtil.sleep(1);
