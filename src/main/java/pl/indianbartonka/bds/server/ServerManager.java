@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
@@ -70,9 +71,9 @@ public class ServerManager {
         this.mainService = Executors.newFixedThreadPool(2 * Runtime.getRuntime().availableProcessors()
                 , new ThreadUtil("Player Manager"));
         this.chatService = Executors.newFixedThreadPool(3, new ThreadUtil("Chat Service"));
-        this.onlinePlayers = new ArrayList<>();
-        this.offlinePlayers = new ArrayList<>();
-        this.muted = new ArrayList<>();
+        this.onlinePlayers = new CopyOnWriteArrayList<>();
+        this.offlinePlayers = new CopyOnWriteArrayList<>();
+        this.muted = new CopyOnWriteArrayList<>();
         this.statsManager = new StatsManager(this.bdsAutoEnable, this);
         this.chatLock = new ReentrantLock();
         this.eventManager = this.bdsAutoEnable.getEventManager();
