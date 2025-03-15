@@ -1,12 +1,12 @@
 package pl.indianbartonka.bds.player;
 
 public enum MemoryTier {
-    UNDETERMINED(0),
-    SUPER_LOW(1),
-    LOW(2),
-    MID(3),
-    HIGH(4),
-    SUPER_HIGH(5);
+    UNDETERMINED(-1),
+    SUPER_LOW(0),
+    LOW(1),
+    MID(2),
+    HIGH(3),
+    SUPER_HIGH(4);
 
     private final int tier;
 
