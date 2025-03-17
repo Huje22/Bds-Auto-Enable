@@ -51,6 +51,14 @@ public final class ServerUtil {
         transferPlayer(playerName, address, 19132);
     }
 
+    public static void setPlayerPrefix(String playerName, String prefix) {
+        SERVER_PROCESS.sendToConsole("scriptevent bds:tag_prefix " + playerName.replaceAll("\"", "") + "=" + MinecraftUtil.colorize(prefix) + " ");
+    }
+
+    public static void setPlayerBelowName(String playerName, String belowName) {
+        SERVER_PROCESS.sendToConsole("scriptevent bds:tag_belowName " + playerName.replaceAll("\"", "") + "=" + MinecraftUtil.colorize(belowName));
+    }
+
     public static void tellrawToAll(final String msg) {
         if (SERVER_MANAGER.getOnlinePlayers().isEmpty()) {
             LOGGER.debug("Lista graczy jest pusta");
