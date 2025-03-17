@@ -1,7 +1,6 @@
 package pl.indianbartonka.bds.server;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -472,7 +471,7 @@ public class ServerManager {
         final Matcher matcher = pattern.matcher(logEntry);
 
         if (matcher.find()) {
-            final String playerInput = matcher.group(1);
+            final String playerInput = MinecraftUtil.fixPlayerName(matcher.group(1));
             final InputMode newInput = InputMode.getByName(matcher.group(2));
             final InputMode oldInput = InputMode.getByName(matcher.group(3));
 
