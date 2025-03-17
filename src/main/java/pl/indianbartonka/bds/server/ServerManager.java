@@ -195,7 +195,7 @@ public class ServerManager {
 
                 this.eventManager.callEvent(new PlayerJoinEvent(playerStatistics));
                 this.bdsAutoEnable.getWatchDog().getBackupModule().backupOnPlayerJoin();
-
+                this.betaSet(playerStatistics);
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć dołączenia gracza&b " + playerName, exception);
                 this.serverJoinException(playerName, exception);
@@ -480,6 +480,7 @@ public class ServerManager {
                 playerStatistics.setLastKnownInputMode(newInput);
 
                 this.eventManager.callEvent(new PlayerChangeInputModeEvent(playerStatistics, newInput, oldInput));
+                this.betaSet(playerStatistics);
             } catch (final Exception exception) {
                 this.logger.error("&cNie udało się obsłużyć zmiany&b InputMode&c gracza&b " + playerInput);
                 this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć zmiany InputMode gracza " + playerInput,
@@ -591,6 +592,25 @@ public class ServerManager {
         this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć dołączania dla gracza " + playerName,
                 additionalMessage,
                 exception, LogState.ERROR));
+    }
+
+    private void betaSet(final PlayerStatistics player) {
+        final String platform = switch (player.getPlatformType()) {
+            case UNKNOWN -> "&4NIEZNANE&f";
+            case Console -> "&7[&eKonsola&7]&f";
+            case Desktop -> "&7[&bKomputer&7]&f";
+            case Mobile -> "&7[&aTelefon&7]&f";
+        };
+
+        final String inputMode = switch (player.getLastKnownInputMode()) {
+            case UNKNOWN -> "&4NIEZNANE&f";
+            case GAMEPAD -> "&eKontroler&f";
+            case KEYBOARD_AND_MOUSE -> "&eKlawiatura&f";
+            case MOTION_CONTROLLER -> "&gKontroler Ruchu&f";
+            case TOUCH -> "&aDotyk&f";
+        };
+
+        ServerUtil.setPlayerBelowName(player.getPlayerName(), platform + " " + inputMode);
     }
 
     public StatsManager getStatsManager() {
