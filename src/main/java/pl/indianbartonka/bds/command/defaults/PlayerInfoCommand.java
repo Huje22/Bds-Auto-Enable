@@ -7,6 +7,7 @@ import java.util.Map;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.command.Command;
 import pl.indianbartonka.bds.player.PlayerStatistics;
+import pl.indianbartonka.bds.util.MinecraftUtil;
 import pl.indianbartonka.util.DateUtil;
 import pl.indianbartonka.util.MessageUtil;
 
@@ -16,6 +17,7 @@ public class PlayerInfoCommand extends Command {
 
     public PlayerInfoCommand(final BDSAutoEnable bdsAutoEnable) {
         super("player", "Wszytkie dostępne informacje o graczu");
+        this.addOption("<player>", "Gracz ktory ma zostac wyszukany");
         this.bdsAutoEnable = bdsAutoEnable;
     }
 
@@ -26,7 +28,7 @@ public class PlayerInfoCommand extends Command {
             return true;
         }
 
-        final String playerName = MessageUtil.buildMessageFromArgs(args);
+        final String playerName = MinecraftUtil.fixPlayerName(MessageUtil.buildMessageFromArgs(args));
 
         final PlayerStatistics player = this.bdsAutoEnable.getServerManager().getStatsManager().getPlayer(playerName);
 
