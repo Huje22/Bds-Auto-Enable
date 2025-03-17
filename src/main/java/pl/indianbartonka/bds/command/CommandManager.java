@@ -15,6 +15,7 @@ import pl.indianbartonka.bds.command.defaults.HelpCommand;
 import pl.indianbartonka.bds.command.defaults.McLogCommand;
 import pl.indianbartonka.bds.command.defaults.MuteCommand;
 import pl.indianbartonka.bds.command.defaults.PacksCommand;
+import pl.indianbartonka.bds.command.defaults.PlayerInfoCommand;
 import pl.indianbartonka.bds.command.defaults.ReloadCommand;
 import pl.indianbartonka.bds.command.defaults.RestartCommand;
 import pl.indianbartonka.bds.command.defaults.ServerPingCommand;
@@ -49,6 +50,7 @@ public class CommandManager {
 
         if (this.bdsAutoEnable.getWatchDog().getPackModule().isLoaded()) {
             this.commandMap.put(new TopCommand(this.bdsAutoEnable), null);
+            this.commandMap.put(new PlayerInfoCommand(this.bdsAutoEnable), null);
         }
 
         this.commandMap.put(new PacksCommand(this.bdsAutoEnable), null);
