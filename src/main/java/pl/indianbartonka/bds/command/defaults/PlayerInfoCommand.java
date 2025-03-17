@@ -21,7 +21,7 @@ public class PlayerInfoCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        if (this.bdsAutoEnable.getWatchDog().getPackModule().isLoaded()) {
+        if (!this.bdsAutoEnable.getWatchDog().getPackModule().isLoaded()) {
             this.sendMessage("&cPaczka &b" + this.bdsAutoEnable.getWatchDog().getPackModule().getPackName() + "&c nie jest załadowana!");
             return true;
         }
