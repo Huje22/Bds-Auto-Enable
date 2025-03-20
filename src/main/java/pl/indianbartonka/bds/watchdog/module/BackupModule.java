@@ -160,8 +160,8 @@ public class BackupModule {
                 this.loadAvailableBackups();
 
                 ServerUtil.tellrawToAllAndLogger(this.prefix,
-                        "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona &b" + MathUtil.formatBytesDynamic(FileUtil.getFileSize(backup), true) +
-                                "&aŚwiat waży&b" + MathUtil.formatBytesDynamic(FileUtil.getFileSize(this.worldFile), false), LogState.INFO);
+                        "&aUtworzono kopię zapasową w&b " + backUpTime + "&a sekund, waży ona &b " + MathUtil.formatBytesDynamic(FileUtil.getFileSize(backup), true) +
+                                " &aŚwiat waży&b " + MathUtil.formatBytesDynamic(FileUtil.getFileSize(this.worldFile), false), LogState.INFO);
                 ServerUtil.tellrawToAllAndLogger(this.prefix, "&aPoziom kompresij ZIP użyty do tego wynosi:&b " + ZipUtil.getCompressionLevel(), LogState.INFO);
                 ServerUtil.tellrawToAllAndLogger(this.prefix, "&aDostępne jest&d " + this.backups.size() + "&a kopi zapasowych", LogState.INFO);
 
