@@ -39,12 +39,12 @@ public class PlayerInfoCommand extends Command {
 
         final long xuid = player.getXuid();
 
-        this.sendMessage("Nick" + playerName);
-        this.sendMessage("XUID" + xuid);
+        this.sendMessage("&aNick:&b " + playerName);
+        this.sendMessage("&aXUID:&b " + xuid);
 
-        this.sendMessage("Urządzenie" + player.getPlatformType().getPlatformName());
-        this.sendMessage("Kontroler" + player.getLastKnownInputMode().getMode());
-        this.sendMessage("Maksymalna Liczba Chunk" + player.getMaxRenderDistance());
+        this.sendMessage("&aUrządzenie:&b " + player.getPlatformType().getPlatformName());
+        this.sendMessage("&aKontroler:&b " + player.getLastKnownInputMode().getMode());
+        this.sendMessage("&aMaksymalna Liczba Chunk:&b " + player.getMaxRenderDistance());
 
         final String memory = switch (player.getMemoryTier().getTier()) {
             case 0 -> "Max 1,5GB";
@@ -55,13 +55,13 @@ public class PlayerInfoCommand extends Command {
             default -> "Niewiadomo";
         };
 
-        this.sendMessage("Poziom Pamięci" + memory);
+        this.sendMessage("&aPoziom Pamięci:&b " + memory);
 
         final List<String> oldNames = player.getOldNames();
         if (oldNames != null && !oldNames.isEmpty()) {
-            this.sendMessage("Znany również jako" + MessageUtil.stringListToString(oldNames, " ,"));
+            this.sendMessage("&aZnany również jako:&b " + MessageUtil.stringListToString(oldNames, " ,"));
         } else {
-            this.sendMessage("Znany również jako" + "__Brak danych o innych nick__");
+            this.sendMessage("&aZnany również jako:&b " + "__Brak danych o innych nick__");
         }
 
         final long firstJoin = player.getFirstJoin();
@@ -69,30 +69,29 @@ public class PlayerInfoCommand extends Command {
         final long lastQuit = player.getLastQuit();
 
         if (firstJoin != 0 && firstJoin != -1) {
-            this.sendMessage("Pierwsze dołączenie" + this.getTime(DateUtil.millisToLocalDateTime(firstJoin)));
+            this.sendMessage("&aPierwsze dołączenie:&b " + this.getTime(DateUtil.millisToLocalDateTime(firstJoin)));
         }
         if (lastJoin != 0 && lastJoin != -1) {
-            this.sendMessage("Ostatnie dołączenie" + this.getTime(DateUtil.millisToLocalDateTime(lastJoin)));
+            this.sendMessage("&aOstatnie dołączenie:&b " + this.getTime(DateUtil.millisToLocalDateTime(lastJoin)));
         }
 
         if (lastQuit != 0 && lastQuit != -1) {
-            this.sendMessage("Ostatnie opuszczenie" + this.getTime(DateUtil.millisToLocalDateTime(lastQuit)));
+            this.sendMessage("&aOstatnie opuszczenie:&b " + this.getTime(DateUtil.millisToLocalDateTime(lastQuit)));
         }
 
-        this.sendMessage("Login Streak" + player.getLoginStreak());
-        this.sendMessage("Longest Login Streak" + player.getLoginStreak());
+        this.sendMessage("&aLogin Streak:&b " + player.getLoginStreak());
+        this.sendMessage("&aLongest Login Streak:&b " + player.getLoginStreak());
 
-        this.sendMessage("Śmierci" + player.getDeaths());
-        this.sendMessage("Czas gry" + DateUtil.formatTimeDynamic(player.getPlaytime()));
-        this.sendMessage("Postawione bloki" + player.getBlockPlaced());
-        this.sendMessage("Zniszczone bloki" + player.getBlockBroken());
-
+        this.sendMessage("&aŚmierci:&b " + player.getDeaths());
+        this.sendMessage("&aCzas gry:&b " + DateUtil.formatTimeDynamic(player.getPlaytime()));
+        this.sendMessage("&aPostawione bloki:&b " + player.getBlockPlaced());
+        this.sendMessage("&aZniszczone bloki:&b " + player.getBlockBroken());
 
         if (this.bdsAutoEnable.getServerProperties().isAllowList()) {
             if (this.bdsAutoEnable.getAllowlistManager().isOnAllowList(playerName)) {
-                this.sendMessage("Znajduje się na białej liście");
+                this.sendMessage("&aZnajduje się na białej liście");
             } else {
-                this.sendMessage("Nie znajduje się na białej liście");
+                this.sendMessage("&aNie znajduje się na białej liście");
             }
         }
 
@@ -100,7 +99,7 @@ public class PlayerInfoCommand extends Command {
             final Map<String, Object> dynamicProperties = player.getDynamicProperties();
             this.sendMessage("&aDynamiczne wartości");
             for (final Map.Entry<String, Object> entry : dynamicProperties.entrySet()) {
-                this.sendMessage(entry.getKey() + " : " + entry.getValue());
+                this.sendMessage("&a" + entry.getKey() + "&4 :&b " + entry.getValue());
             }
         }
 
