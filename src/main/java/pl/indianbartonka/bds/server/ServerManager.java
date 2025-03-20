@@ -610,7 +610,7 @@ public class ServerManager {
             case TOUCH -> "&aDotyk&f";
         };
 
-        ServerUtil.setPlayerBelowName(player.getPlayerName(), platform + " " + inputMode);
+        ServerUtil.setPlayerBelowName(player.getPlayerName(), platform + "&8 || " + inputMode);
     }
 
     public StatsManager getStatsManager() {
