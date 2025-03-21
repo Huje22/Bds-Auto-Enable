@@ -9,6 +9,7 @@ Jak zbudować projekt? [Budowanie projektu za pomocą Maven Wrapper](./Wrapper%2
 
 # Uwaga
 
+zaktualizuj to
 * Wspieramy tylko
   tą [wersje](https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/me/indian/bds/config/sub/version/VersionManagerConfig.java#L17)
 * Wymaga Javy 17 bądź wyższej
