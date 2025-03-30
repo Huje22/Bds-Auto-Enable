@@ -14,7 +14,7 @@ public class VersionManagerConfig extends OkaeriConfig {
     @Comment({""})
     @Comment({"Wersja która jest załadowana"})
     @CustomKey("Version")
-    private String version = "1.21.3.01";
+    private String version = "1.21.71.01";
 
     @Comment({""})
     @Comment({"Nie zmieniaj tego!"})
