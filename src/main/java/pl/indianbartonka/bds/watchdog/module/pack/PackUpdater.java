@@ -27,6 +27,7 @@ public class PackUpdater {
     private final PackModule packModule;
     private final File behaviorsFolder;
     private final OkHttpClient client;
+    private final PackDownloadListener packDownloadListener;
     private Response response;
 
     public PackUpdater(final BDSAutoEnable bdsAutoEnable, final PackModule packModule) {
@@ -35,6 +36,7 @@ public class PackUpdater {
         this.packModule = packModule;
         this.behaviorsFolder = bdsAutoEnable.getPackManager().getBehaviorPackLoader().getBehaviorsFolder();
         this.client = HTTPUtil.getOkHttpClient();
+        this.packDownloadListener = new PackDownloadListener(bdsAutoEnable);
         this.response = null;
 
         this.removeResponse();
@@ -45,8 +47,7 @@ public class PackUpdater {
             final long startTime = System.currentTimeMillis();
             this.logger.info("Pobieranie Paczki");
             final String zipPath = this.packModule.getPackFile().getPath() + ".zip";
-            //TODO: Dodac potem listener do pobierania paczki
-            HTTPUtil.download("https://github.com/Huje22/BDS-Auto-Enable-Management-Pack/archive/main.zip", zipPath);
+            HTTPUtil.download("https://github.com/Huje22/BDS-Auto-Enable-Management-Pack/archive/main.zip", zipPath, this.packDownloadListener);
             this.logger.info("Pobrano w &a" + ((System.currentTimeMillis() - startTime) / 1000.0) + "&r sekund");
             ZipUtil.unzipFile(zipPath, this.behaviorsFolder.getPath(), true);
         } catch (final Exception exception) {
