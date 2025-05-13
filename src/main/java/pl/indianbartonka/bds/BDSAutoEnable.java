@@ -2,7 +2,6 @@ package pl.indianbartonka.bds;
 
 import java.awt.SystemTray;
 import java.io.File;
-import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.nio.charset.Charset;
 import java.time.ZoneId;
@@ -37,10 +36,10 @@ import pl.indianbartonka.bds.util.geyser.GeyserUtil;
 import pl.indianbartonka.bds.version.VersionManager;
 import pl.indianbartonka.bds.watchdog.WatchDog;
 import pl.indianbartonka.util.DateUtil;
+import pl.indianbartonka.util.FileUtil;
 import pl.indianbartonka.util.MemoryUnit;
 import pl.indianbartonka.util.MessageUtil;
 import pl.indianbartonka.util.ZipUtil;
-import pl.indianbartonka.util.FileUtil;
 import pl.indianbartonka.util.system.SystemArch;
 import pl.indianbartonka.util.system.SystemFamily;
 import pl.indianbartonka.util.system.SystemOS;
@@ -51,7 +50,7 @@ public class BDSAutoEnable {
     private static boolean instanceRuned = false;
     private final Thread mainThread;
     private final long startTime;
-    private final String projectVersion, runDate;
+    private final String projectVersion, runDate, procesorName, graphicCards;
     private final Scanner mainScanner;
     private final MainLogger logger;
     private final ServerProperties serverProperties;
@@ -78,6 +77,8 @@ public class BDSAutoEnable {
         this.mainThread = Thread.currentThread();
         this.startTime = System.currentTimeMillis();
         this.runDate = DateUtil.getFixedDate();
+        this.procesorName = SystemUtil.getProcesorName();
+        this.graphicCards = MessageUtil.stringListToString(SystemUtil.getGraphicCardsName(), "&4|&3 ");
         this.projectVersion = "0.0.1-Dev";
         this.mainScanner = new Scanner(System.in);
         this.appConfigManager = new AppConfigManager();
@@ -93,6 +94,8 @@ public class BDSAutoEnable {
                 """);
         DefaultsVariables.init(this);
         this.isJavaVersionLessThan17();
+        this.logger.info("&aProcesor:&1 " + this.procesorName);
+        this.logger.info("&aKarty graficzne: &3" + this.graphicCards);
         this.checkSystemSupport();
         this.checkEncoding();
         this.checkDlls();
@@ -348,6 +351,14 @@ public class BDSAutoEnable {
 
     public String getRunDate() {
         return this.runDate;
+    }
+
+    public String getProcesorName() {
+        return this.procesorName;
+    }
+
+    public String getGraphicCards() {
+        return this.graphicCards;
     }
 
     public Scanner getMainScanner() {
