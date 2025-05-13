@@ -13,7 +13,6 @@ import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.server.properties.component.CompressionAlgorithm;
 import pl.indianbartonka.bds.server.properties.component.Difficulty;
 import pl.indianbartonka.bds.server.properties.component.PlayerPermissionLevel;
-import pl.indianbartonka.bds.server.properties.component.ServerMovementAuth;
 import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.version.VersionManager;
 import pl.indianbartonka.util.MathUtil;

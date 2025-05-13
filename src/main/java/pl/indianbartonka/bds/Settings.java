@@ -8,7 +8,6 @@ import pl.indianbartonka.bds.config.sub.watchdog.WatchDogConfig;
 import pl.indianbartonka.bds.server.properties.ServerProperties;
 import pl.indianbartonka.bds.server.properties.component.CompressionAlgorithm;
 import pl.indianbartonka.bds.server.properties.component.PlayerPermissionLevel;
-import pl.indianbartonka.bds.server.properties.component.ServerMovementAuth;
 import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.version.VersionManager;
 import pl.indianbartonka.util.MessageUtil;
@@ -240,7 +239,6 @@ public class Settings {
         ));
 
         this.logger.println();
-        this.addServerAuthQuestion();
         this.logger.println();
 
         this.serverProperties.setServerAuthoritativeBlockBreaking(ScannerUtil.addBooleanQuestion(
@@ -323,6 +321,8 @@ public class Settings {
         this.logger.info("Nazwa świata:&1 " + this.serverProperties.getWorldName());
         this.logger.println();
         this.logger.info("&e-----------&bServer&e----------");
+        this.logger.info("Procesor:&1 " + this.bdsAutoEnable.getProcesorName());
+        this.logger.info("Karty graficzne: &3" + this.bdsAutoEnable.getGraphicCards());
         this.logger.info("Wersja:&1 " + versionManager.getLoadedVersion() + " &d(&b" + versionManager.getLastKnownProtocol() + "&d)");
         this.logger.info("Port v4:&1 " + this.serverProperties.getServerPort());
         this.logger.info("Port v6:&1 " + this.serverProperties.getServerPortV6());
@@ -356,11 +356,7 @@ public class Settings {
         this.logger.println();
 
         this.logger.info("Default Player Permission Level:&1 " + this.serverProperties.getPlayerPermissionLevel().getPermissionName());
-        this.logger.info("Server Authoritative Movement:&1 " + this.serverProperties.getServerMovementAuth().getAuthName());
-
-        if (this.serverProperties.getServerMovementAuth() != ServerMovementAuth.CLIENT_AUTH) {
-            this.logger.info("Server Authoritative Block Breaking:&1 " + this.serverProperties.isServerAuthoritativeBlockBreaking());
-        }
+        this.logger.info("Server Authoritative Block Breaking:&1 " + this.serverProperties.isServerAuthoritativeBlockBreaking());
 
         this.logger.info("Wymug tekstur:&1 " + this.serverProperties.isTexturePackRequired());
         this.logger.info("Allow Cheats:&1 " + this.serverProperties.isAllowCheats());
@@ -463,26 +459,5 @@ public class Settings {
             playerPermissionLevel = PlayerPermissionLevel.MEMBER;
         }
         this.serverProperties.setPlayerPermissionLevel(playerPermissionLevel);
-    }
-
-    private void addServerAuthQuestion() {
-        ServerMovementAuth serverMovementAuth;
-
-        try {
-            serverMovementAuth = ServerMovementAuth.valueOf(
-                    ScannerUtil.addStringQuestion(
-                            (defaultValue) -> {
-                                this.logger.info("&n&lUstaw Server Authoritative Movement&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-                                this.logger.info("Dostępne:&b " + MessageUtil.objectListToString(List.of(ServerMovementAuth.values()), "&a, &b"));
-                                this.logger.alert("Jeśli chcesz uniknąć cheaterów włącz&b server-auth-with-rewind&r lecz może się ono bagować, kochane &4Mojang&r :)");
-                            },
-                            this.serverProperties.getServerMovementAuth().name(),
-                            (input) -> this.logger.info("Server Authoritative Movement ustawiono na:&1 " + input)
-                    ).toUpperCase());
-        } catch (final Exception exception) {
-            this.logger.error("Podano nieznany typ uwierzytelnienia poruszania sie , ustawiliśmy go dla ciebie na:&b " + ServerMovementAuth.SERVER_AUTH.getAuthName(), exception);
-            serverMovementAuth = ServerMovementAuth.SERVER_AUTH;
-        }
-        this.serverProperties.setServerMovementAuth(serverMovementAuth);
     }
 }
