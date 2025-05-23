@@ -161,7 +161,15 @@ public class ServerProcess {
     }
 
     /**
-     * @return
+     * Buduje i zwraca obiekt {@link ProcessBuilder}, który uruchamia aplikację
+     * w zależności od systemu operacyjnego i konfiguracji aplikacji.
+     * <p>
+     * Obsługiwane są systemy: LINUX oraz WINDOWS.
+     * Dla systemu Linux metoda wspiera dodatkowo uruchamianie przy pomocy WINE oraz BOX64.
+     *
+     * @return obiekt {@link ProcessBuilder} skonfigurowany do uruchomienia aplikacji
+     *         zgodnie z aktualnym systemem i konfiguracją. W przypadku braku wsparcia
+     *         dla systemu lub brakującego WINE – aplikacja zostanie zakończona.
      */
     private ProcessBuilder buildStartCommand() {
         ProcessBuilder processBuilder = null;
