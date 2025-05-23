@@ -9,11 +9,10 @@ Jak zbudować projekt? [Budowanie projektu za pomocą Maven Wrapper](./Wrapper%2
 
 # Uwaga
 
-zaktualizuj to
 * Wspieramy tylko
   tą [wersje](https://github.com/Huje22/Bds-Auto-Enable/blob/main/src/main/java/pl/indianbartonka/bds/config/sub/version/VersionManagerConfig.java#L17)
 * Wymaga Javy 17 bądź wyższej
-* Program wymaga przynajmniej `1GB` RAM do działania z rozszerzeniami jak `DiscordExtension`
+* Program wymaga przynajmniej `4GB` RAM (jest aktualne minimum dla BDS)
 * Program wspiera użycie: **[WINE](https://github.com/wine-mirror/wine)**, **[Box64](https://github.com/ptitSeb/box64)**
 * Program wspiera proste
   rozszerzenia: [ExampleExtension](https://github.com/Huje22/BDS-AE-Extensions/tree/master/ExampleExtension)
@@ -64,15 +63,6 @@ paczka jest najwyżej)**
   ekipe <br>
 * <b>BetterRealms</b> - Server przy którym pomagał Indian tworzony
   przez [Adovskiego](https://www.youtube.com/@AdoVski) <br>
-
-# Użyte biblioteki
-
-[IndianUtils - Dużo przydatncyh utili](https://github.com/IndianBartonka/Indian-Utils) <br>
-[Okaeri Configs (5.0.6) - Do configów yml](https://github.com/OkaeriPoland/okaeri-configs) <br>
-[OkHTTP (5.0.0-alpha.14) - Do wygodnych zapytań HTTP](https://github.com/square/okhttp)<br>
-[Logback (1.2.8) - Tylko dla developerów rozszerzeń](https://github.com/qos-ch/logback)<br>
-[McLogs (5.0.0) - Do łatwego udostępniania logów](https://github.com/aternosorg/mclogs-java)
-
   ----
 
 <div align="center">
