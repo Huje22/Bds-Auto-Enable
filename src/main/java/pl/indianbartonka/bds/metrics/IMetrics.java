@@ -32,6 +32,7 @@ import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.util.GsonUtil;
 import pl.indianbartonka.util.DateUtil;
 import pl.indianbartonka.util.ThreadUtil;
+import pl.indianbartonka.util.http.HttpStatusCode;
 
 /**
  * bStats collects some data for plugin authors.
@@ -200,7 +201,6 @@ public class IMetrics {
 
         final int randomMinutes = 3 + random.nextInt(6);
         final int secondRandomMinutes = 3 + random.nextInt(10);
-
         timer.scheduleAtFixedRate(submitTask, DateUtil.minutesTo(randomMinutes + secondRandomMinutes, TimeUnit.MILLISECONDS),
                 DateUtil.minutesTo(30, TimeUnit.MILLISECONDS));
     }
@@ -250,7 +250,7 @@ public class IMetrics {
         final String osName = System.getProperty("os.name");
         final String osArch = System.getProperty("os.arch");
         final String osVersion = System.getProperty("os.version");
-        final int coreCount = Runtime.getRuntime().availableProcessors();
+        final int coreCount = ThreadUtil.getLogicalThreads();
 
         final JsonObject data = new JsonObject();
 
@@ -260,7 +260,7 @@ public class IMetrics {
         data.addProperty("onlineMode", onlineMode);
         data.addProperty("bukkitVersion", softwareVersion);
         data.addProperty("bukkitName", softwareName);
-        data.addProperty("serverSoftware", "Okkkk");
+        data.addProperty("serverSoftware", "Paper");
 
         data.addProperty("javaVersion", javaVersion);
         data.addProperty("osName", osName);
@@ -277,35 +277,31 @@ public class IMetrics {
     private void submitData() {
         final JsonObject data = this.getServerData();
         final JsonArray extensionsData = new JsonArray();
+
+        // Dane głównego pluginu
         final JsonObject appObject = new JsonObject();
-
-        appObject.addProperty("pluginName", "BDS-Auto-Enable");
-        appObject.addProperty("pluginVersion", bdsAutoEnable.getProjectVersion());
+        appObject.addProperty("name", "BDS-Auto-Enable");
+        appObject.addProperty("version", bdsAutoEnable.getProjectVersion());
         appObject.addProperty("author", "IndianBartonka");
-
         extensionsData.add(appObject);
 
-        if (!bdsAutoEnable.getExtensionManager().getExtensions().isEmpty()) {
-            bdsAutoEnable.getExtensionManager().getExtensions().forEach((s, extension) -> {
-                final JsonObject extensionData = new JsonObject();
+        // Dane rozszerzeń
+        bdsAutoEnable.getExtensionManager().getExtensions().forEach((key, extension) -> {
+            final JsonObject extensionData = new JsonObject();
+            extensionData.addProperty("name", extension.getName());
+            extensionData.addProperty("version", extension.getVersion());
+            extensionData.addProperty("author", extension.getAuthor());
+            extensionsData.add(extensionData);
+        });
 
-                extensionData.addProperty("pluginName", extension.getName());
-                extensionData.addProperty("pluginVersion", extension.getVersion());
-                extensionData.addProperty("author", extension.getAuthor());
-
-                extensionsData.add(extensionData);
-            });
-        }
-
+        // Dołącz dane do JSON-a
         data.add("plugins", extensionsData);
 
-
+        // Wysyłanie danych w nowym wątku
         new ThreadUtil("Data sender Thread", () -> {
             try {
-                // Send the data
                 sendData(data);
             } catch (final Exception exception) {
-                // Something went wrong! :(
                 if (logFailedRequests) {
                     bdsAutoEnable.getLogger().warning("Nie można wysłać danych do&b bstats", exception);
                 }
@@ -695,5 +691,4 @@ public class IMetrics {
             return data;
         }
     }
-
 }
