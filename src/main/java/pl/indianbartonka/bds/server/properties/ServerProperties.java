@@ -422,21 +422,6 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
-    public ServerMovementAuth getServerMovementAuth() {
-        try {
-            return ServerMovementAuth.getByName(this.properties.getProperty("server-authoritative-movement"));
-        } catch (final Exception exception) {
-            this.logger.logThrowable(exception);
-            this.setServerMovementAuth(ServerMovementAuth.SERVER_AUTH);
-            return ServerMovementAuth.SERVER_AUTH;
-        }
-    }
-
-    public void setServerMovementAuth(final ServerMovementAuth serverAuthoritativeMovement) {
-        this.properties.setProperty("server-authoritative-movement", serverAuthoritativeMovement.getAuthName());
-        this.reloadServerProperties();
-    }
-
     public int getCompressionThreshold() {
         try {
             return Integer.parseInt(this.properties.getProperty("compression-threshold"));
@@ -475,7 +460,6 @@ public class ServerProperties {
                 ", playerIdleTimeout=" + this.getPlayerIdleTimeout() +
                 ", serverName='" + this.getMOTD() + "&r'" +
 //                ", playerMovementDistanceThreshold=" + this.getPlayerMovementDistanceThreshold() +
-                ", serverAuthoritativeMovement='" + this.getServerMovementAuth() + '\'' +
                 ", serverBuildRadiusRatio=" + this.getServerBuildRadiusRatio() +
                 ", clientSideChunkGenerationEnabled=" + this.isClientSideChunkGeneration() +
                 ", tickDistance=" + this.getTickDistance() +

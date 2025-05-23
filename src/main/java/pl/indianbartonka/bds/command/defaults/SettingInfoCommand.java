@@ -10,10 +10,12 @@ import pl.indianbartonka.util.system.SystemUtil;
 
 public class SettingInfoCommand extends Command {
 
+    private final BDSAutoEnable bdsAutoEnable;
     private final ServerProperties properties;
 
     public SettingInfoCommand(final BDSAutoEnable bdsAutoEnable) {
         super("setting", "Info o aktualnych ustawieniach servera");
+        this.bdsAutoEnable = bdsAutoEnable;
         this.properties = bdsAutoEnable.getServerProperties();
 
         this.addAlliases(List.of("settings"));
@@ -29,6 +31,8 @@ public class SettingInfoCommand extends Command {
 
         this.properties.loadProperties();
 
+        this.sendMessage("Procesor:&1 " + this.bdsAutoEnable.getProcesorName());
+        this.sendMessage("Karty graficzne: &3" + this.bdsAutoEnable.getGraphicCards());
         this.sendMessage("System:&b " + SystemUtil.getSystem() + " &d(&1" + SystemUtil.getFullOSNameWithDistribution() + "&d)");
         this.sendMessage("System arch:&b " + SystemUtil.getFullyArchCode() + " &d(&1" + SystemUtil.getCurrentArch() + "&d)");
 
@@ -49,8 +53,6 @@ public class SettingInfoCommand extends Command {
 
         this.sendMessage("Maksymalna ilość wątków których może użyć server:&b " + threadsCount + threadsNote);
         this.sendMessage("Maksymalny czas bycia AFK:&b " + this.properties.getPlayerIdleTimeout() + "&e minut");
-
-        this.sendMessage("Autoryzacja ruchu gracza:&b " + this.properties.getServerMovementAuth().getAuthName());
 
         this.sendMessage("Czy paczki są wymagane do pobrania:&b " + this.properties.isTexturePackRequired());
         this.sendMessage("Czy server emituje telemetrie:&b " + this.properties.isServerTelemetry());
