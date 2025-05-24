@@ -1,5 +1,6 @@
 package pl.indianbartonka.bds;
 
+import java.awt.GraphicsEnvironment;
 import java.awt.SystemTray;
 import java.io.File;
 import java.lang.management.ManagementFactory;
@@ -13,6 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import javax.swing.JOptionPane;
 import pl.indianbartonka.bds.command.CommandManager;
 import pl.indianbartonka.bds.config.AppConfig;
 import pl.indianbartonka.bds.config.AppConfigManager;
@@ -84,6 +86,7 @@ public class BDSAutoEnable {
         this.appConfigManager = new AppConfigManager();
         this.appConfig = this.appConfigManager.getAppConfig();
         this.logger = new MainLogger(this);
+        this.checkConsole();
         this.logger.println("""
                 &e ____  _____   _____ &1                _          ______             _     _     \s
                 &e|  _ \\|  __ \\ / ____|&1     /\\        | |        |  ____|           | |   | |    \s
@@ -158,6 +161,18 @@ public class BDSAutoEnable {
         this.setAppWindowName("Zainicjowano");
         this.runAutoPromotion();
         this.setAppName();
+    }
+
+    private void checkConsole() {
+        if(!this.appConfig.isDebug()) {
+            if (System.console() == null) {
+                if (!GraphicsEnvironment.isHeadless()) {
+                    this.logger.critical("&4NIE WYKRYTO KONSOLI, APLIKACJA NIE MOŻE DZIAŁAC OD TAK W TLE BEZ KONSOLI");
+                    JOptionPane.showMessageDialog(null, "Konsola nie jest dostępna!", "UWAGA", JOptionPane.ERROR_MESSAGE);
+                    System.exit(0);
+                }
+            }
+        }
     }
 
     private void isJavaVersionLessThan17() {
