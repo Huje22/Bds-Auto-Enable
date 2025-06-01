@@ -17,7 +17,7 @@ public class VersionDownloadListener implements DownloadListener {
     }
 
     @Override
-    public void onStart(final int definedBuffer, final File outputFile) {
+    public void onStart(final int definedBuffer, final long fileSize, final File outputFile) {
         this.logger.info("Pobieranie wersji: &1" + this.version);
         this.logger.info("Ustalony buffer dla naszego pliku to:&a " + MathUtil.formatBytesDynamic(definedBuffer, false));
     }
