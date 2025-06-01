@@ -31,6 +31,7 @@ import pl.indianbartonka.bds.event.player.response.PlayerChatResponse;
 import pl.indianbartonka.bds.event.server.ServerAlertEvent;
 import pl.indianbartonka.bds.event.server.ServerStartEvent;
 import pl.indianbartonka.bds.event.server.TPSChangeEvent;
+import pl.indianbartonka.bds.player.GraphicsMode;
 import pl.indianbartonka.bds.player.InputMode;
 import pl.indianbartonka.bds.player.MemoryTier;
 import pl.indianbartonka.bds.player.PlatformType;
@@ -170,7 +171,7 @@ public class ServerManager {
     }
 
     private void playerJoin(final String logEntry) {
-        final String patternString = "PlayerJoin:([^,]+) PlayerPlatform:([^,]+) PlayerInput:([^,]+) MemoryTier:([^,]+) MaxRenderDistance:([^,]+)";
+        final String patternString = "PlayerJoin:([^,]+) PlayerPlatform:([^,]+) PlayerInput:([^,]+) MemoryTier:([^,]+) MaxRenderDistance:([^,]+) GraphicMode:([^,]+)";
         final Pattern pattern = Pattern.compile(patternString);
         final Matcher matcher = pattern.matcher(logEntry);
 
@@ -180,6 +181,7 @@ public class ServerManager {
             final String input = matcher.group(3);
             final int memoryTier = Integer.parseInt(matcher.group(4));
             final int maxRenderDistance = Integer.parseInt(matcher.group(5));
+            final String graphic = matcher.group(6);
 
             try {
                 this.onlinePlayers.add(playerName);
@@ -192,6 +194,7 @@ public class ServerManager {
                 playerStatistics.setLastKnownInputMode(InputMode.getByName(input));
                 playerStatistics.setMemoryTier(MemoryTier.getMemoryTier(memoryTier));
                 playerStatistics.setMaxRenderDistance(maxRenderDistance);
+                playerStatistics.setGraphicsMode(GraphicsMode.getByName(graphic));
 
                 this.eventManager.callEvent(new PlayerJoinEvent(playerStatistics));
                 this.bdsAutoEnable.getWatchDog().getBackupModule().backupOnPlayerJoin();

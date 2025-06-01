@@ -21,6 +21,7 @@ public class PlayerStatistics implements Serializable {
     private int maxRenderDistance;
     private PlatformType platformType;
     private InputMode lastKnownInputMode;
+    private GraphicsMode graphicsMode;
 
     public PlayerStatistics(final String playerName, final long xuid, final Dimension dimension, final long firstJoin, final long lastJoin, final long lastQuit, final long playtime, final long deaths, final long blockPlaced, final long blockBroken) {
         this.playerName = playerName;
@@ -40,6 +41,7 @@ public class PlayerStatistics implements Serializable {
         this.longestLoginStreak = 0;
         this.platformType = PlatformType.UNKNOWN;
         this.lastKnownInputMode = InputMode.UNKNOWN;
+        this.graphicsMode = GraphicsMode.UNKNOWN;
         this.dynamicProperties = new HashMap<>();
     }
 
@@ -169,6 +171,14 @@ public class PlayerStatistics implements Serializable {
 
     public void setLastKnownInputMode(final InputMode lastKnownInputMode) {
         this.lastKnownInputMode = lastKnownInputMode;
+    }
+
+    public GraphicsMode getGraphicsMode() {
+        return this.graphicsMode;
+    }
+
+    public void setGraphicsMode(final GraphicsMode graphicsMode) {
+        this.graphicsMode = graphicsMode;
     }
 
     public void setDynamicProperties(final String key, final Object object) {
