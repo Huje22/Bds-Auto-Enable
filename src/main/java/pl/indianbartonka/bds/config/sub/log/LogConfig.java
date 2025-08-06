@@ -22,10 +22,7 @@ public class LogConfig extends OkaeriConfig {
     @Comment({"Nie zapisuje tych informacji które zawierają:"})
     @Comment({"W pliku"})
     @CustomKey("NoFile")
-    private List<String> noFile = Arrays.asList("[Json]", "[Blocks]", "[Components]", "[Molang]",
-            "[Item]", "[Recipes]", "[FeatureRegistry]", "[Actor]",
-            " ERROR]", " WARN]", "[Scripting] Player",
-            "\"component_groups\"");
+    private List<String> noFile = Arrays.asList("PlayerMovement");
     @Comment({""})
     @Comment("W konsoli")
     @CustomKey("NoConsole")
