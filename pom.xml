@@ -38,8 +38,7 @@
         <dependency>
             <groupId>eu.okaeri</groupId>
             <artifactId>okaeri-configs-yaml-snakeyaml</artifactId>
-            <version>5.0.8</version>
-            <scope>compile</scope>
+            <version>5.0.9</version>
         </dependency>
 
         <!--        Rządania HTTP-->
