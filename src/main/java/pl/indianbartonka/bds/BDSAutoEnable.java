@@ -307,7 +307,7 @@ public class BDSAutoEnable {
         };
 
         new Timer("AutoPromotion", true)
-                .scheduleAtFixedRate(timerTask, 0, DateUtil.minutesTo(10, TimeUnit.MILLISECONDS));
+                .scheduleAtFixedRate(timerTask, 0, DateUtil.minutesTo(30, TimeUnit.MILLISECONDS));
     }
 
     public void setAppWindowName(final String name) {
