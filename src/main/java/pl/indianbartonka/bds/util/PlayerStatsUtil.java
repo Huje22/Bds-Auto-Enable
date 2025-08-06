@@ -24,6 +24,7 @@ public final class PlayerStatsUtil {
         final List<String> topPlayTime = new ArrayList<>();
 
         final List<Map.Entry<String, Long>> sortedEntries = playTimeMap.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0)
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .limit(top)
                 .toList();
@@ -44,6 +45,7 @@ public final class PlayerStatsUtil {
         final List<String> topDeaths = new ArrayList<>();
 
         final List<Map.Entry<String, Long>> sortedEntries = deathsMap.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0)
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .limit(top)
                 .toList();
@@ -64,6 +66,7 @@ public final class PlayerStatsUtil {
         final List<String> topBroken = new ArrayList<>();
 
         final List<Map.Entry<String, Long>> sortedEntries = brokenMap.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0)
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .limit(top)
                 .toList();
@@ -84,6 +87,7 @@ public final class PlayerStatsUtil {
         final List<String> topPlaced = new ArrayList<>();
 
         final List<Map.Entry<String, Long>> sortedEntries = placedMap.entrySet().stream()
+                .filter(entry -> entry.getValue() > 0)
                 .sorted(Collections.reverseOrder(Map.Entry.comparingByValue()))
                 .limit(top)
                 .toList();
