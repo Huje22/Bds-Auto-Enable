@@ -13,6 +13,7 @@ public class MainLogger extends Logger {
                 .setLogsPath(DefaultsVariables.getLogsDir())
                 .setDebug(bdsAutoEnable.getAppConfigManager().getAppConfig().isDebug())
                 .setLoggingToFile(true)
+                .setLogJULtoFile(true)
                 .build());
     }
 }

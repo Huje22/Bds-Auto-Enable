@@ -164,7 +164,7 @@ public class BDSAutoEnable {
     }
 
     private void checkConsole() {
-        if(!this.appConfig.isDebug()) {
+        if (!this.appConfig.isDebug()) {
             if (System.console() == null) {
                 if (!GraphicsEnvironment.isHeadless()) {
                     this.logger.critical("&4NIE WYKRYTO KONSOLI, APLIKACJA NIE MOŻE DZIAŁAC OD TAK W TLE BEZ KONSOLI");

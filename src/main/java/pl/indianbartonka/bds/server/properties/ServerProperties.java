@@ -407,21 +407,6 @@ public class ServerProperties {
         this.reloadServerProperties();
     }
 
-    public boolean isServerAuthoritativeBlockBreaking() {
-        try {
-            return Boolean.parseBoolean(this.properties.getProperty("server-authoritative-block-breaking"));
-        } catch (final Exception exception) {
-            this.logger.logThrowable(exception);
-            this.setServerAuthoritativeBlockBreaking(false);
-            return false;
-        }
-    }
-
-    public void setServerAuthoritativeBlockBreaking(final boolean serverAuthoritativeBlockBreaking) {
-        this.properties.setProperty("server-authoritative-block-breaking", String.valueOf(serverAuthoritativeBlockBreaking));
-        this.reloadServerProperties();
-    }
-
     public int getCompressionThreshold() {
         try {
             return Integer.parseInt(this.properties.getProperty("compression-threshold"));

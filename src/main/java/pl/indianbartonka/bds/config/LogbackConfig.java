@@ -3,6 +3,7 @@ package pl.indianbartonka.bds.config;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import pl.indianbartonka.bds.util.DefaultsVariables;
 
 public final class LogbackConfig {
@@ -34,7 +35,7 @@ public final class LogbackConfig {
                 throw new RuntimeException("Nie udało się utworzyć konfiguracji logback");
             }
         } catch (final IOException exception) {
-            throw new RuntimeException("Nie udało się utworzyć konfiguracji logback", exception);
+            throw new UncheckedIOException("Nie udało się utworzyć konfiguracji logback", exception);
         }
     }
 
@@ -44,19 +45,11 @@ public final class LogbackConfig {
                 <configuration>
                     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
                         <encoder>
-                            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %blue(LogBack) %magenta(Logger) [%thread] %highlight(%-5level){TRACE=blue, DEBUG=green, INFO=white, WARN=yellow, ERROR=red} %logger{36} - %msg%n
+                            <pattern>%d{yyyy-MM-dd HH:mm:ss} %blue(LogBack) %magenta(Logger) [%thread] %highlight(%-5level){TRACE=blue, DEBUG=green, INFO=white, WARN=yellow, ERROR=red} %logger{36} - %msg%n
                              </pattern>
                         </encoder>
                     </appender>
-                                
-                    <logger name="net.dv8tion.jda" level="ERROR"/>
-                    <logger name="net.dv8tion.jda" level="WARN"/>
-                                
-                    <logger name="org.eclipse.jetty" level="WARN"/>
-                    <logger name="org.eclipse.jetty" level="ERROR"/>
-                    <logger name="io.javalin" level="ERROR"/>
-                    <logger name="io.javalin" level="WARN"/>
-                                
+                
                     <root level="INFO">
                         <appender-ref ref="STDOUT"/>
                     </root>

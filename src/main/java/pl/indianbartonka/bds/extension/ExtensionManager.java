@@ -3,6 +3,7 @@ package pl.indianbartonka.bds.extension;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -239,7 +240,7 @@ public class ExtensionManager {
         try {
             Files.createDirectories(Paths.get(extensionsDir));
         } catch (final IOException exception) {
-            throw new RuntimeException("Nie można utworzyć katalogu dla rozszerzeń", exception);
+            throw new UncheckedIOException("Nie można utworzyć katalogu dla rozszerzeń", exception);
         }
 
         return extensionsDir;

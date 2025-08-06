@@ -51,12 +51,11 @@ public final class ServerUtil {
         transferPlayer(playerName, address, 19132);
     }
 
-    public static void setPlayerPrefix(String playerName, String prefix) {
+    public static void setPlayerPrefix(final String playerName, final String prefix) {
         SERVER_PROCESS.sendToConsole("scriptevent bds:tag_prefix " + playerName.replaceAll("\"", "") + "=" + MinecraftUtil.colorize(prefix) + " ");
     }
 
-    //TODO: Dodaj opcję wyłączenia informacji o platformie gracza
-    public static void setPlayerBelowName(String playerName, String belowName) {
+    public static void setPlayerBelowName(final String playerName, final String belowName) {
         SERVER_PROCESS.sendToConsole("scriptevent bds:tag_belowName " + playerName.replaceAll("\"", "") + "=" + MinecraftUtil.colorize(belowName));
     }
 

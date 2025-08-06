@@ -32,7 +32,6 @@ import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.util.GsonUtil;
 import pl.indianbartonka.util.DateUtil;
 import pl.indianbartonka.util.ThreadUtil;
-import pl.indianbartonka.util.http.HttpStatusCode;
 
 /**
  * bStats collects some data for plugin authors.

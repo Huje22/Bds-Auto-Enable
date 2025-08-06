@@ -24,6 +24,7 @@ public class StatsCommand extends Command {
             final String playerName = this.player.getPlayerName();
             final long cooldownTime = DateUtil.secondToMillis(90);
 
+            //TODO: Uzyj Coldown z IndianUtils
             if (!this.cooldown.containsKey(playerName) || System.currentTimeMillis() - this.cooldown.get(playerName) > cooldownTime) {
                 this.cooldown.put(playerName, System.currentTimeMillis());
             } else {

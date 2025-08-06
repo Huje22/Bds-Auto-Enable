@@ -598,6 +598,8 @@ public class ServerManager {
     }
 
     private void betaSet(final PlayerStatistics player) {
+        if (bdsAutoEnable.getAppConfigManager().getAppConfig().isBelowName()) return;
+
         final String platform = switch (player.getPlatformType()) {
             case UNKNOWN -> "&4NIEZNANE&f";
             case Console -> "&7[&eKonsola&7]&f";

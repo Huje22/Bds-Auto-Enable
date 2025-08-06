@@ -240,16 +240,6 @@ public class Settings {
 
         this.logger.println();
         this.logger.println();
-
-        this.serverProperties.setServerAuthoritativeBlockBreaking(ScannerUtil.addBooleanQuestion(
-                (defaultValue) -> {
-                    this.logger.info("&n&lUstaw Server Authoritative Block Breaking&r (Polecamy ustawić na: " + defaultValue + ")" + this.enter);
-                    this.logger.info("Jeśli ustawione na&b true&r, serwer będzie obliczać operacje wydobywania bloków synchronicznie z klientem, aby móc zweryfikować," +
-                            " czy klient powinien mieć możliwość niszczenia bloków wtedy, kiedy uważa, że może to zrobić.");
-                    this.logger.info("Działa jak anty nuker");
-                }, true,
-                (input) -> this.logger.info("Server Authoritative Block Breaking ustawiono na:&1 " + input)
-        ));
         this.logger.println();
 
         this.serverProperties.setAllowCheats(ScannerUtil.addBooleanQuestion(
@@ -356,7 +346,6 @@ public class Settings {
         this.logger.println();
 
         this.logger.info("Default Player Permission Level:&1 " + this.serverProperties.getPlayerPermissionLevel().getPermissionName());
-        this.logger.info("Server Authoritative Block Breaking:&1 " + this.serverProperties.isServerAuthoritativeBlockBreaking());
 
         this.logger.info("Wymug tekstur:&1 " + this.serverProperties.isTexturePackRequired());
         this.logger.info("Allow Cheats:&1 " + this.serverProperties.isAllowCheats());
@@ -428,7 +417,7 @@ public class Settings {
                     ScannerUtil.addStringQuestion(
                             (defaultValue) -> {
                                 this.logger.info("&n&lUstaw Algorytm kompresji&r (Aktualnie z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
-                                this.logger.info("&b" + CompressionAlgorithm.SNAPPY + "&a Szybki algorytm kompresji z niską latencją, idealny do zastosowań czasu rzeczywistego, choć pliki mogą być nieco większe. &d(&bMoże się bagować&d)");
+                                this.logger.info("&b" + CompressionAlgorithm.SNAPPY + "&a Szybki algorytm kompresji z niską latencją, idealny do zastosowań czasu rzeczywistego, choć pliki mogą być nieco większe.");
                                 this.logger.info("&b" + CompressionAlgorithm.ZLIB + "&a Potężny algorytm, osiągający wysoki stosunek kompresji, nadający się do sytuacji wymagających znaczącej redukcji rozmiaru plików.");
                             },
                             String.valueOf(this.serverProperties.getCompressionAlgorithm()),

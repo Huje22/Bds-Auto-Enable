@@ -60,8 +60,8 @@ public class ConsoleInput {
             try {
                 this.serverProcess.setCanRun(false);
                 this.serverProcess.disableServer();
-            } catch (final InterruptedException ex) {
-                throw new RuntimeException(ex);
+            } catch (final InterruptedException interruptedException) {
+                throw new RuntimeException(interruptedException);
             }
 
             System.exit(1);

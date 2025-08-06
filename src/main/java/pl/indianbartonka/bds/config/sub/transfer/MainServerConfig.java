@@ -19,7 +19,7 @@ public class MainServerConfig extends OkaeriConfig {
 
     public String getIp() {
         if (this.ip.equals("localhost") || this.ip.equals("127.0.0.1")) {
-            throw new RuntimeException("Ip servera nie może być jako localhost");
+            throw new RuntimeException("Ip serveru nie może być jako localhost");
         }
 
         return this.ip;

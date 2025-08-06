@@ -60,6 +60,11 @@ public class AppConfig extends OkaeriConfig {
     private boolean closeOnException = true;
 
     @Comment({""})
+    @Comment({"Czy dodawac info o platformie gracza pod jego nickiem?"})
+    @CustomKey("BelowName")
+    private boolean belowName = true;
+
+    @Comment({""})
     @Comment({"Nazwy graczy którzy mogą wykonywać polecenia typu !format"})
     @CustomKey("Moderators")
     private List<String> admins = List.of("JndjanBartonka");
@@ -104,6 +109,14 @@ public class AppConfig extends OkaeriConfig {
 
     public boolean isCloseOnException() {
         return this.closeOnException;
+    }
+
+    public boolean isBelowName() {
+        return this.belowName;
+    }
+
+    public void setBelowName(final boolean belowName) {
+        this.belowName = belowName;
     }
 
     public String getFilesPath() {
