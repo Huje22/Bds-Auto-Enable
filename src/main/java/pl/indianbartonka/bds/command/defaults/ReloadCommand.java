@@ -26,6 +26,10 @@ public class ReloadCommand extends Command {
 
         try {
             this.appConfigManager.loadAll();
+
+            logger.debug("test");
+            this.logger.setDebug(this.appConfigManager.getAppConfig().isDebug());
+
             this.sendMessage("&aPrzeładowano pliki konfiguracyjne! ");
         } catch (final Exception exception) {
             this.sendMessage("&cNie udało się przeładować plików konfiguracyjnych zajrzyj do&e konsoli&c po więcej informacji");
