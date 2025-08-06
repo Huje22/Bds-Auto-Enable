@@ -55,6 +55,7 @@ public final class ServerUtil {
         SERVER_PROCESS.sendToConsole("scriptevent bds:tag_prefix " + playerName.replaceAll("\"", "") + "=" + MinecraftUtil.colorize(prefix) + " ");
     }
 
+    //TODO: Dodaj opcję wyłączenia informacji o platformie gracza
     public static void setPlayerBelowName(String playerName, String belowName) {
         SERVER_PROCESS.sendToConsole("scriptevent bds:tag_belowName " + playerName.replaceAll("\"", "") + "=" + MinecraftUtil.colorize(belowName));
     }
