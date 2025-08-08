@@ -194,6 +194,7 @@ public class BackupModule {
             }
 
         } else {
+            this.loadAvailableBackups();
             if (this.backups.size() >= maxBackups) {
                 ServerUtil.tellrawToAllAndLogger(this.prefix, "&cOsiągnięto maksymalną liczbę backup!&d (&3" + maxBackups + "&d)", LogState.WARNING);
                 return false;
