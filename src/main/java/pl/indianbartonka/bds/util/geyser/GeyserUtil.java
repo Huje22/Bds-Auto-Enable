@@ -14,7 +14,6 @@ import pl.indianbartonka.bds.util.HTTPUtil;
 
 public final class GeyserUtil {
 
-    private static final OkHttpClient CLIENT = HTTPUtil.getOkHttpClient();
     private static final Gson GSON = GsonUtil.getGson();
     private static final Map<Long, SkinResponse> SKIN_RESPONSE_MAP = new HashMap<>();
     private static BDSAutoEnable BDS_AUTO_ENABLE;
@@ -89,7 +88,7 @@ public final class GeyserUtil {
                 .url("https://api.geysermc.org/v2/skin/" + xuid)
                 .build();
 
-        try (final Response response = CLIENT.newCall(request).execute()) {
+        try (final Response response = HTTPUtil.OK_HTTP_CLIENT.newCall(request).execute()) {
             if (response.isSuccessful()) {
                 final SkinResponse skinResponse = GSON.fromJson(response.body().string(), SkinResponse.class);
 

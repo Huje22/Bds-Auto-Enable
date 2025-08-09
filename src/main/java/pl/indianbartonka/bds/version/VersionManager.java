@@ -35,7 +35,6 @@ import pl.indianbartonka.util.system.SystemUtil;
 public class VersionManager {
 
     private final BDSAutoEnable bdsAutoEnable;
-    private final OkHttpClient client;
     private final Logger logger;
     private final AppConfigManager appConfigManager;
     private final AppConfig appConfig;
@@ -53,7 +52,6 @@ public class VersionManager {
 
     public VersionManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
-        this.client = HTTPUtil.getOkHttpClient();
         this.logger = this.bdsAutoEnable.getLogger();
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.appConfig = this.appConfigManager.getAppConfig();
@@ -161,7 +159,7 @@ public class VersionManager {
                 .addHeader("User-Agent", UserAgent.randomUserAgent())
                 .build();
 
-        try (final Response response = this.client.newCall(request).execute()) {
+        try (final Response response = HTTPUtil.OK_HTTP_CLIENT.newCall(request).execute()) {
             if (response.code() != HttpURLConnection.HTTP_OK) return -1;
             return response.body().contentLength();
         } catch (final IOException ioException) {
@@ -196,7 +194,7 @@ public class VersionManager {
                 .addHeader("User-Agent", UserAgent.randomUserAgent())
                 .build();
 
-        try (final Response response = this.client.newCall(request).execute()) {
+        try (final Response response = HTTPUtil.OK_HTTP_CLIENT.newCall(request).execute()) {
             final int responseCode = response.code();
             if (responseCode == HttpURLConnection.HTTP_OK) {
                 final JsonObject jsonObject = JsonParser.parseString(response.body().string()).getAsJsonObject();

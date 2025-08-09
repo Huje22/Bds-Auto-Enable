@@ -18,7 +18,7 @@ import pl.indianbartonka.util.http.UserAgent;
 
 public final class HTTPUtil {
 
-    private static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient.Builder()
+    public static final OkHttpClient OK_HTTP_CLIENT = new OkHttpClient.Builder()
             .protocols(List.of(Protocol.HTTP_3, Protocol.HTTP_2, Protocol.HTTP_1_1))
             .connectTimeout(10, TimeUnit.SECONDS)
             .writeTimeout(10, TimeUnit.SECONDS)
@@ -29,10 +29,6 @@ public final class HTTPUtil {
             .build();
 
     private HTTPUtil() {
-    }
-
-    public static OkHttpClient getOkHttpClient() {
-        return OK_HTTP_CLIENT;
     }
 
     public static void download(final String url, final String path) throws DownloadException, IOException, TimeoutException {

@@ -26,7 +26,6 @@ public class PackUpdater {
     private final Logger logger;
     private final PackModule packModule;
     private final File behaviorsFolder;
-    private final OkHttpClient client;
     private final PackDownloadListener packDownloadListener;
     private Response response;
 
@@ -35,7 +34,6 @@ public class PackUpdater {
         this.logger = bdsAutoEnable.getLogger();
         this.packModule = packModule;
         this.behaviorsFolder = bdsAutoEnable.getPackManager().getBehaviorPackLoader().getBehaviorsFolder();
-        this.client = HTTPUtil.getOkHttpClient();
         this.packDownloadListener = new PackDownloadListener(bdsAutoEnable);
         this.response = null;
 
@@ -104,7 +102,7 @@ public class PackUpdater {
                 .get()
                 .build();
 
-        final Response newResponse = this.client.newCall(request).execute();
+        final Response newResponse = HTTPUtil.OK_HTTP_CLIENT.newCall(request).execute();
 
         if (newResponse.isSuccessful()) {
             this.response = newResponse;
