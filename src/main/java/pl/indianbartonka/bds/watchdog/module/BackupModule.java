@@ -134,6 +134,7 @@ public class BackupModule {
             return;
         }
 
+        this.loadAvailableBackups();
         if (!this.worldFile.exists() || !this.canDoBackup()) return;
 
         if (this.backuping) {
@@ -194,8 +195,6 @@ public class BackupModule {
             }
 
         } else {
-            this.loadAvailableBackups();
-            //TODO: Wykonuj to tylko gdy canBackup zwróci false w jakiś metodsch aby sprawdzić na nowo
             if (this.backups.size() >= maxBackups) {
                 ServerUtil.tellrawToAllAndLogger(this.prefix, "&cOsiągnięto maksymalną liczbę backup!&d (&3" + maxBackups + "&d)", LogState.WARNING);
                 return false;
