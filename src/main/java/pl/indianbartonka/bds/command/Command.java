@@ -62,6 +62,7 @@ public abstract class Command {
         alliases.forEach(alias -> this.alliases.add("!" + alias));
     }
 
+    //TODO: Zrób opcje z danym kltory jest dany arghument ze np arg1 = INFO O NIM
     protected final void addOption(final String option) {
         this.commandOptions.put(option, "");
     }
