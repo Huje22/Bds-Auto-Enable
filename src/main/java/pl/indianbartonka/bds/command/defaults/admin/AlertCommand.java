@@ -1,4 +1,4 @@
-package pl.indianbartonka.bds.command.defaults;
+package pl.indianbartonka.bds.command.defaults.admin;
 
 import java.util.List;
 import pl.indianbartonka.bds.command.Command;

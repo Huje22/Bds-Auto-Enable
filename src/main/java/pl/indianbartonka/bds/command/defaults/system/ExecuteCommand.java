@@ -1,4 +1,4 @@
-package pl.indianbartonka.bds.command.defaults;
+package pl.indianbartonka.bds.command.defaults.system;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;

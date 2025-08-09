@@ -1,4 +1,4 @@
-package pl.indianbartonka.bds.command.defaults;
+package pl.indianbartonka.bds.command.defaults.system;
 
 import java.util.Map;
 import pl.indianbartonka.bds.command.Command;

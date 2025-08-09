@@ -167,6 +167,7 @@ public class Settings {
                     this.logger.info("&n&lUstaw Próg kompresji&r (Aktualny z &bserver.properties&r to: " + defaultValue + ")" + this.enter);
                     this.logger.alert("Mniejszy próg kompresji = większe użycje internetu ale zmniejsza użycje procesora");
                     this.logger.alert("Większy próg kompresji = mniejsze użycje internetu ale zwiększa użycje procesora");
+                    this.logger.alert("&aPolecane wartości to:&b 128, 256, 512");
                     this.logger.alert("Ustawienie tego na&1 0&r jest nie zalecane!");
 
                 }, this.serverProperties.getCompressionThreshold(),

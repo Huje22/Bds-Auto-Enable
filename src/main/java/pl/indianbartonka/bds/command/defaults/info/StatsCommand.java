@@ -1,4 +1,4 @@
-package pl.indianbartonka.bds.command.defaults;
+package pl.indianbartonka.bds.command.defaults.info;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;

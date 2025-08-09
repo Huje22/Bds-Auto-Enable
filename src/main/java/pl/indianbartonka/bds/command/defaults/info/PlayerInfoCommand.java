@@ -1,4 +1,4 @@
-package pl.indianbartonka.bds.command.defaults;
+package pl.indianbartonka.bds.command.defaults.info;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

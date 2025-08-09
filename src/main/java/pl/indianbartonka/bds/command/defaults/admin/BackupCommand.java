@@ -1,4 +1,4 @@
-package pl.indianbartonka.bds.command.defaults;
+package pl.indianbartonka.bds.command.defaults.admin;
 
 import java.nio.file.Files;
 import java.nio.file.Path;

@@ -1,4 +1,4 @@
-package pl.indianbartonka.bds.command.defaults;
+package pl.indianbartonka.bds.command.defaults.admin;
 
 import java.util.concurrent.TimeUnit;
 import pl.indianbartonka.bds.BDSAutoEnable;
