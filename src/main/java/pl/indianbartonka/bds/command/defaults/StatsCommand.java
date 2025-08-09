@@ -1,19 +1,19 @@
 package pl.indianbartonka.bds.command.defaults;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import pl.indianbartonka.bds.command.Command;
 import pl.indianbartonka.bds.util.StatusUtil;
+import pl.indianbartonka.util.Cooldown;
 import pl.indianbartonka.util.DateUtil;
 
 public class StatsCommand extends Command {
 
-    private final Map<String, Long> cooldown;
+    private final Cooldown cooldown;
 
     public StatsCommand() {
         super("stats", "Aktualne statystyki servera minecraft i maszyny");
-        this.cooldown = new HashMap<>();
+        this.cooldown = new Cooldown("stats");
 
         this.addAlliases(List.of("status"));
     }
@@ -22,18 +22,13 @@ public class StatsCommand extends Command {
     public boolean onExecute(final String[] args, final boolean isOp) {
         if (this.player != null) {
             final String playerName = this.player.getPlayerName();
-            final long cooldownTime = DateUtil.secondToMillis(90);
 
-            //TODO: Uzyj Coldown z IndianUtils
-            if (!this.cooldown.containsKey(playerName) || System.currentTimeMillis() - this.cooldown.get(playerName) > cooldownTime) {
-                this.cooldown.put(playerName, System.currentTimeMillis());
-            } else {
-                final long playerCooldown = this.cooldown.getOrDefault(playerName, 0L);
-                final long remainingTime = (playerCooldown + cooldownTime) - System.currentTimeMillis();
-
-                this.sendMessage("&cMusisz odczekać:&b " + DateUtil.formatTimeDynamic(remainingTime));
+            if (this.cooldown.hasCooldown(playerName)) {
+                this.sendMessage("&cMusisz odczekać:&b " + DateUtil.formatTimeDynamic(this.cooldown.getRemainingTime(playerName)));
                 return true;
             }
+
+            this.cooldown.cooldown(playerName, 30 , TimeUnit.SECONDS);
         }
 
         StatusUtil.getMainStats(false).forEach(this::sendMessage);
