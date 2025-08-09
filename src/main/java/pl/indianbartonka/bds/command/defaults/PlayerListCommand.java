@@ -23,6 +23,11 @@ public class PlayerListCommand extends Command {
 
         final List<PlayerStatistics> playerList = this.serverManager.getOnlinePlayers().stream().map(statsManager::getPlayer).toList();
 
+        if (playerList.isEmpty()){
+            this.sendMessage("&cNikogo nie ma na serwerze");
+            return true;
+        }
+
         for (final PlayerStatistics playerStatistics : playerList){
             if (playerStatistics != null){
                 this.sendMessage("&c -- &b" + playerStatistics.getPlayerName());
