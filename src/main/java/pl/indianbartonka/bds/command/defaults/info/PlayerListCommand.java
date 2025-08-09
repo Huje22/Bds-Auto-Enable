@@ -23,13 +23,13 @@ public class PlayerListCommand extends Command {
 
         final List<PlayerStatistics> playerList = this.serverManager.getOnlinePlayers().stream().map(statsManager::getPlayer).toList();
 
-        if (playerList.isEmpty()){
+        if (playerList.isEmpty()) {
             this.sendMessage("&cNikogo nie ma na serwerze");
             return true;
         }
 
-        for (final PlayerStatistics playerStatistics : playerList){
-            if (playerStatistics != null){
+        for (final PlayerStatistics playerStatistics : playerList) {
+            if (playerStatistics != null) {
                 this.sendMessage("&c -- &b" + playerStatistics.getPlayerName());
                 this.sendMessage("&c - &a" + playerStatistics.getPlatformType() + "&4 |&e " + playerStatistics.getLastKnownInputMode());
                 this.sendMessage("&c - &aCzas gry:&b " + DateUtil.formatTimeDynamic(playerStatistics.getPlaytime()));

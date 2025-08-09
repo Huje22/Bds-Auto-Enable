@@ -28,7 +28,7 @@ public class StatsCommand extends Command {
                 return true;
             }
 
-            this.cooldown.cooldown(playerName, 30 , TimeUnit.SECONDS);
+            this.cooldown.cooldown(playerName, 30, TimeUnit.SECONDS);
         }
 
         StatusUtil.getMainStats(false).forEach(this::sendMessage);
