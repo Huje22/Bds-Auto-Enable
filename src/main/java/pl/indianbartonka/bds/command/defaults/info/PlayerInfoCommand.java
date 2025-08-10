@@ -87,6 +87,7 @@ public class PlayerInfoCommand extends Command {
         this.sendMessage("&aPostawione bloki:&b " + player.getBlockPlaced());
         this.sendMessage("&aZniszczone bloki:&b " + player.getBlockBroken());
 
+        //TODO: Zobaczyć czy allowlist manager napewno działa dalej
         if (this.bdsAutoEnable.getServerProperties().isAllowList()) {
             if (this.bdsAutoEnable.getAllowlistManager().isOnAllowList(playerName)) {
                 this.sendMessage("&aZnajduje się na białej liście");
