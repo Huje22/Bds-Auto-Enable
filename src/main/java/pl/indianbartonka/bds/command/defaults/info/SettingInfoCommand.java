@@ -31,8 +31,6 @@ public class SettingInfoCommand extends Command {
 
         this.properties.loadProperties();
 
-        this.sendMessage("Procesor:&1 " + this.bdsAutoEnable.getProcesorName());
-        this.sendMessage("Karty graficzne: &3" + this.bdsAutoEnable.getGraphicCards());
         this.sendMessage("System:&b " + SystemUtil.getSystem() + " &d(&1" + SystemUtil.getFullOSNameWithDistribution() + "&d)");
         this.sendMessage("System arch:&b " + SystemUtil.getFullyArchCode() + " &d(&1" + SystemUtil.getCurrentArch() + "&d)");
 

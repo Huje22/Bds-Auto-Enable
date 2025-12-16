@@ -312,8 +312,6 @@ public class Settings {
         this.logger.info("Nazwa świata:&1 " + this.serverProperties.getWorldName());
         this.logger.println();
         this.logger.info("&e-----------&bServer&e----------");
-        this.logger.info("Procesor:&1 " + this.bdsAutoEnable.getProcesorName());
-        this.logger.info("Karty graficzne: &3" + this.bdsAutoEnable.getGraphicCards());
         this.logger.info("Wersja:&1 " + versionManager.getLoadedVersion() + " &d(&b" + versionManager.getLastKnownProtocol() + "&d)");
         this.logger.info("Port v4:&1 " + this.serverProperties.getServerPort());
         this.logger.info("Port v6:&1 " + this.serverProperties.getServerPortV6());
