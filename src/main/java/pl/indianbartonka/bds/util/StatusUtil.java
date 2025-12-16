@@ -54,7 +54,7 @@ public final class StatusUtil {
 
         final double processCpuLoad = operatingSystemMXBean.getCpuLoad();
 
-        final String usedServerMemory = "Użyte " + MathUtil.formatKilobytesDynamic(getServerRamUsage(), true);
+        final String usedServerMemory = "Użyte " + MathUtil.formatKibibytesDynamic(getServerRamUsage());
 
         final String usedComputerMemory = "Użyte " + MathUtil.formatBytesDynamic(SystemUtil.getUsedRam(), true);
         final String maxComputerMemory = "Całkowity " + MathUtil.formatBytesDynamic(SystemUtil.getMaxRam(), true);
@@ -76,7 +76,7 @@ public final class StatusUtil {
         STATUS.add("> **Statystyki servera**");
         STATUS.add("Ostatnie TPS: `" + BDSAUTOENABLE.getServerManager().getLastTPS() + "`");
         STATUS.add("Pamięć RAM: `" + usedServerMemory + "` (`" + freeComputerMemory + "`)");
-        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatKilobytesDynamic(ramMonitor.getAverageServerRamUsage(), true) + "` (" + ramMonitor.getAverageServerRamUsageListSize() + ")");
+        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatKibibytesDynamic(ramMonitor.getAverageServerRamUsage()) + "` (" + ramMonitor.getAverageServerRamUsageListSize() + ")");
         if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
             STATUS.add("Następny restart za: `" + DateUtil.formatTimeDynamic(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart()) + "`");
         }

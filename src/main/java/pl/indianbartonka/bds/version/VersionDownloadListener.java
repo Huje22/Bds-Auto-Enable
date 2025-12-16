@@ -44,7 +44,7 @@ public class VersionDownloadListener implements DownloadListener {
     }
 
     @Override
-    public void onDownloadStop() {
+    public void onDownloadStop(final File outputFile) {
         this.logger.alert("Zatrzymano pobieranie!");
     }
 

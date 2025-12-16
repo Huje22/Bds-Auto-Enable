@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.github.IndianBartonka</groupId>
             <artifactId>Indian-Utils</artifactId>
-            <version>0.0.9.3</version>
+            <version>-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
 
@@ -57,7 +57,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <!--   Używam starszej wersji logback bo w nowej nie rozumiem co sie dzieje     -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>

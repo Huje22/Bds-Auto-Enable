@@ -24,7 +24,7 @@ import pl.indianbartonka.bds.server.ServerProcess;
 import pl.indianbartonka.bds.server.properties.ServerProperties;
 import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.util.HTTPUtil;
-import pl.indianbartonka.util.BedrockQuery;
+import pl.indianbartonka.util.minecraft.BedrockQuery;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.ZipUtil;
 import pl.indianbartonka.util.http.UserAgent;

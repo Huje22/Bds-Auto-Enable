@@ -2,7 +2,7 @@ package pl.indianbartonka.bds.command.defaults.info;
 
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.command.Command;
-import pl.indianbartonka.util.BedrockQuery;
+import pl.indianbartonka.util.minecraft.BedrockQuery;
 
 public class ServerPingCommand extends Command {
 

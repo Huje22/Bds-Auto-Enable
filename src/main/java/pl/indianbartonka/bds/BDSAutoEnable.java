@@ -198,7 +198,7 @@ public class BDSAutoEnable {
         final SystemArch arch = SystemUtil.getCurrentArch();
         final SystemOS systemOS = SystemUtil.getSystem();
 
-        if (arch == SystemArch.AMD_X32) {
+        if (arch == SystemArch.X86_32) {
             this.logger.critical("&cTwoja architektura systemu nie jest wspierana! Twoja architektura to&b " + SystemUtil.getFullyArchCode());
             System.exit(9);
         }

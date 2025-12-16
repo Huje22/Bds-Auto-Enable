@@ -24,10 +24,10 @@ import pl.indianbartonka.bds.shutdown.ShutdownHandler;
 import pl.indianbartonka.bds.util.DefaultsVariables;
 import pl.indianbartonka.bds.util.ServerUtil;
 import pl.indianbartonka.bds.watchdog.WatchDog;
-import pl.indianbartonka.util.BedrockQuery;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.logger.LogState;
 import pl.indianbartonka.util.logger.Logger;
+import pl.indianbartonka.util.minecraft.BedrockQuery;
 import pl.indianbartonka.util.system.SystemOS;
 import pl.indianbartonka.util.system.SystemUtil;
 

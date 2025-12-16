@@ -43,12 +43,12 @@ import pl.indianbartonka.bds.util.MinecraftUtil;
 import pl.indianbartonka.bds.util.ServerUtil;
 import pl.indianbartonka.bds.version.VersionManager;
 import pl.indianbartonka.bds.watchdog.module.pack.PackModule;
-import pl.indianbartonka.util.BedrockQuery;
 import pl.indianbartonka.util.DateUtil;
 import pl.indianbartonka.util.MessageUtil;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.logger.LogState;
 import pl.indianbartonka.util.logger.Logger;
+import pl.indianbartonka.util.minecraft.BedrockQuery;
 
 public class ServerManager {
 
