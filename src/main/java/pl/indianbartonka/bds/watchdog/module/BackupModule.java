@@ -36,6 +36,9 @@ import pl.indianbartonka.util.system.SystemUtil;
 
 public class BackupModule {
 
+
+    //TODO: Przy max backup dodaj funkcje odwracania listy aby dawało of najstarszego i usuwało 1/4 liczby maksymalnej 
+    a także napraw błąd z tworzeniem logów itp
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final ExecutorService service;
