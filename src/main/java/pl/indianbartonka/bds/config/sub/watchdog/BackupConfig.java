@@ -10,6 +10,10 @@ public class BackupConfig extends OkaeriConfig {
     private boolean enabled = false;
 
     @Comment({""})
+    @Comment({"Usuwać stare backupy?"})
+    private boolean deleteOldBackups = true;
+
+    @Comment({""})
     @Comment({"Maksymalna dozwolona liczba backupów"})
     @Comment({"Jeśli ustawione na -1 albo 0 jedynym ograniczeniem będzie pamięć systemu"})
     private int maxBackups = -1;
@@ -28,6 +32,10 @@ public class BackupConfig extends OkaeriConfig {
 
     public void setEnabled(final boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public boolean isDeleteOldBackups() {
+        return this.deleteOldBackups;
     }
 
     public int getMaxBackups() {

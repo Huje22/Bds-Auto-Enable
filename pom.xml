@@ -28,9 +28,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.IndianBartonka</groupId>
-            <artifactId>Indian-Utils</artifactId>
-            <version>-SNAPSHOT</version>
+            <groupId>com.github.IndianBartonka.Indian-Utils</groupId>
+            <artifactId>Dependencies</artifactId>
+            <version>2cad6f7f18</version>
             <scope>compile</scope>
         </dependency>
 
@@ -39,6 +39,7 @@
             <groupId>eu.okaeri</groupId>
             <artifactId>okaeri-configs-yaml-snakeyaml</artifactId>
             <version>5.0.9</version>
+            <scope>compile</scope>
         </dependency>
 
         <!--        Rządania HTTP-->

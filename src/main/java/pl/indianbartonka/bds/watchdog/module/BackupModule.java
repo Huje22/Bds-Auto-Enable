@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -28,6 +29,7 @@ import pl.indianbartonka.util.DateUtil;
 import pl.indianbartonka.util.FileUtil;
 import pl.indianbartonka.util.MathUtil;
 import pl.indianbartonka.util.MemoryUnit;
+import pl.indianbartonka.util.MessageUtil;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.ZipUtil;
 import pl.indianbartonka.util.logger.LogState;
@@ -36,9 +38,6 @@ import pl.indianbartonka.util.system.SystemUtil;
 
 public class BackupModule {
 
-
-    //TODO: Przy max backup dodaj funkcje odwracania listy aby dawało of najstarszego i usuwało 1/4 liczby maksymalnej 
-    a także napraw błąd z tworzeniem logów itp
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final ExecutorService service;
@@ -194,13 +193,13 @@ public class BackupModule {
             final long gb = MemoryUnit.BYTES.to(SystemUtil.getMaxCurrentDiskSpace(), MemoryUnit.GIGABYTES);
             if (gb < MemoryUnit.BYTES.to(FileUtil.getFileSize(this.worldFile), MemoryUnit.GIGABYTES) + 1) {
                 ServerUtil.tellrawToAllAndLogger(this.prefix, "&aWykryto zbyt małą ilość pamięci &d(&b" + gb + "&e GB&d)&a aby wykonać&b backup&c!", LogState.WARNING);
-                return false;
+                return this.deleteOldBackups();
             }
 
         } else {
             if (this.backups.size() >= maxBackups) {
                 ServerUtil.tellrawToAllAndLogger(this.prefix, "&cOsiągnięto maksymalną liczbę backup!&d (&3" + maxBackups + "&d)", LogState.WARNING);
-                return false;
+                return this.deleteOldBackups();
             }
         }
 
@@ -220,6 +219,44 @@ public class BackupModule {
         } catch (final Exception exception) {
             this.logger.error("Nie można załadować dostępnych backup", exception);
         }
+    }
+
+    public boolean deleteOldBackups() {
+        if (!this.backupConfig.isDeleteOldBackups()) return false;
+        this.loadAvailableBackups();
+
+        final List<File> deleteBackups = new ArrayList<>();
+
+        for (final Path path : this.backups) {
+            deleteBackups.add(path.toFile());
+        }
+
+        final int backupDeleteCount = (this.backups.size() / 2) + 1;
+
+        final List<File> sortedBackups = deleteBackups.stream()
+                .sorted(Comparator.comparing(File::lastModified))
+                .limit(backupDeleteCount)
+                .toList();
+
+        ServerUtil.tellrawToAllAndLogger(this.prefix, "&aUsuwanie połowy backup....", LogState.INFO);
+
+        try {
+            for (final File file : sortedBackups) {
+                System.out.println(file.getName() + " " + DateUtil.millisToLocalDateTime(file.lastModified()));
+
+                if (!file.delete()) {
+                    file.deleteOnExit();
+                    ServerUtil.tellrawToAllAndLogger(this.prefix, "&cNie udało się usunąć backupa:&b " + file.getName(), LogState.INFO);
+                }
+            }
+        } catch (final Exception exception) {
+            ServerUtil.tellrawToAllAndLogger(this.prefix, "&aNie udało się usunąć połowy backupów!! " + MessageUtil.getStackTraceAsString(exception), LogState.ERROR);
+            return false;
+        }
+
+        ServerUtil.tellrawToAllAndLogger(this.prefix, "&aUsunięto połowę backup!", LogState.INFO);
+
+        return true;
     }
 
     private void createWorldFile() {
