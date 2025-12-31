@@ -30,7 +30,7 @@
         <dependency>
             <groupId>com.github.IndianBartonka.Indian-Utils</groupId>
             <artifactId>Dependencies</artifactId>
-            <version>2cad6f7f18</version>
+            <version>3d73bf4ec0</version>
             <scope>compile</scope>
         </dependency>
 

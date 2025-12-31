@@ -12,6 +12,7 @@ public class MainLogger extends Logger {
                 .setLogName("ServerLog-" + bdsAutoEnable.getRunDate())
                 .setLogsPath(DefaultsVariables.getLogsDir())
                 .setDebug(bdsAutoEnable.getAppConfigManager().getAppConfig().isDebug())
+                .setOneLog(false)
                 .setLoggingToFile(true)
                 .setLogJULtoFile(true)
                 .build());
