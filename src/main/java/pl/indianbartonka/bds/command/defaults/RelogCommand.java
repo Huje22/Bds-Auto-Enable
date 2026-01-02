@@ -34,6 +34,7 @@ public class RelogCommand extends Command {
                     return true;
                 }
 
+                ServerUtil.tellrawToPlayer(playerName, "&cAdmin wykonuje relog dla ciebie!");
         } else {
             if (this.player == null) {
                 this.sendMessage("&cNie możesz relogować jako konsola!!!");
