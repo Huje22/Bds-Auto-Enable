@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import pl.indianbartonka.bds.BDSAutoEnable;
+import pl.indianbartonka.bds.command.defaults.RelogCommand;
 import pl.indianbartonka.bds.command.defaults.TestCommand;
 import pl.indianbartonka.bds.command.defaults.admin.AlertCommand;
 import pl.indianbartonka.bds.command.defaults.admin.BackupCommand;
@@ -64,6 +65,8 @@ public class CommandManager {
         this.commandMap.put(new SettingInfoCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new ServerPingCommand(this.bdsAutoEnable), null);
         this.commandMap.put(new StatsCommand(), null);
+
+        this.commandMap.put(new RelogCommand(this.bdsAutoEnable), null);
 
         if (this.bdsAutoEnable.getAppConfigManager().getAppConfig().isDebug()) {
             this.commandMap.put(new TestCommand(), null);

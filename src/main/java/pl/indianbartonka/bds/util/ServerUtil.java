@@ -27,6 +27,10 @@ public final class ServerUtil {
         return SERVER_PROCESS.commandAndResponse("execute as " + playerName + " run " + command);
     }
 
+    public static boolean isOnline(final String playerName){
+        return SERVER_MANAGER.isOnline(playerName);
+    }
+
     public static void kickAllPlayers(final String msg) {
         if (SERVER_MANAGER.getOnlinePlayers().isEmpty()) {
             LOGGER.debug("Lista graczy jest pusta");
