@@ -20,19 +20,26 @@ public class RelogCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        String playerName = this.player.getPlayerName();
+        final String playerName;
 
         if (args.length == 1) {
-            if (isOp) {
+            if (!isOp) {
+                this.sendMessage("&cNie masz pozwoleń aby relogować innego gracza!!");
+                return true;
+            }
                 playerName = args[0];
 
                 if (!ServerUtil.isOnline(playerName)) {
                     this.sendMessage("&cTen gracz jest offline!!");
                     return true;
                 }
-            } else {
-                this.sendMessage("&cNie masz pozwoleń aby relogować innego gracza!!");
+
+        } else {
+            if (this.player == null) {
+                this.sendMessage("&cNie możesz relogować jako konsola!!!");
                 return true;
+            } else {
+                playerName = this.player.getPlayerName();
             }
         }
 
