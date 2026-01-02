@@ -52,6 +52,12 @@ public class RelogCommand extends Command {
         if (!this.isCorrect) {
             this.sendMessage("&aUzyskiwanie serveru....");
 
+            if (mainServerConfig.isForceTransfer()) {
+                ServerUtil.transferPlayer(playerName, ip, port);
+                this.isCorrect = true;
+                return true;
+            }
+
             this.isCorrect = BedrockQuery.create(ip, port).online();
 
             if (!this.isCorrect) {

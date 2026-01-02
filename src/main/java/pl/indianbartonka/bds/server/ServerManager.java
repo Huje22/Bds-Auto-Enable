@@ -579,8 +579,10 @@ public class ServerManager {
             final String ip = mainServerConfig.getIp();
             final int port = this.bdsAutoEnable.getServerProperties().getServerPort();
 
-            final BedrockQuery query = BedrockQuery.create(ip, port);
-            if (query.online()) {
+            if (mainServerConfig.isForceTransfer()) {
+                ServerUtil.transferPlayer(playerName, ip, port);
+                additionalMessage = "Spróbujemy go przetransferować ponownie na server";
+            } else if (BedrockQuery.create(ip, port).online()) {
                 ServerUtil.transferPlayer(playerName, ip, port);
                 additionalMessage = "Spróbujemy go przetransferować ponownie na server";
             } else {

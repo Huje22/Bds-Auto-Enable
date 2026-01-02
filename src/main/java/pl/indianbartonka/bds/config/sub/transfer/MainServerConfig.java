@@ -10,11 +10,20 @@ public class MainServerConfig extends OkaeriConfig {
     private boolean transfer = true;
 
     @Comment({""})
+    @Comment({"Przenieść nawet gdy server zapytanie Query zwraca że jest on offline?"})
+    @Comment({"Używać tylko w jakiś dziwnych wypadkach"})
+    private boolean forceTransfer = false;
+
+    @Comment({""})
     @Comment({"IP twojego servera minecraft"})
     private String ip = "21.37.05";
 
     public boolean isTransfer() {
         return this.transfer;
+    }
+
+    public boolean isForceTransfer() {
+        return this.forceTransfer;
     }
 
     public String getIp() {
