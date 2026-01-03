@@ -1,6 +1,5 @@
 package pl.indianbartonka.bds.server;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -9,7 +8,6 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -56,7 +54,7 @@ public class ServerProcess {
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.serverManager = this.bdsAutoEnable.getServerManager();
         this.processService = Executors.newFixedThreadPool(2, new ThreadUtil("Server process"));
-        this.consoleOutputService = Executors.newCachedThreadPool(new ThreadUtil("Console Output"));
+        this.consoleOutputService = Executors.newFixedThreadPool(3, new ThreadUtil("Console Output"));
         this.prefix = "&b[&3ServerProcess&b] ";
         this.system = SystemUtil.getSystem();
         this.eventManager = this.bdsAutoEnable.getEventManager();
@@ -160,6 +158,7 @@ public class ServerProcess {
         });
     }
 
+    //TODO SPRAWDZAJ TO NA PODSATAWIE OSTATNI CACHOWANEGO PROCES ID
     /**
      * Buduje i zwraca obiekt {@link ProcessBuilder}, który uruchamia aplikację
      * w zależności od systemu operacyjnego i konfiguracji aplikacji.
@@ -228,35 +227,37 @@ public class ServerProcess {
      * Metody wykonywane są z consoleOutputService aby nie obciążać jednego wątku wykonywaniem tylu akcji na raz
      */
     private void readConsoleOutput() {
-        try (final Scanner consoleOutput = new Scanner(new BufferedInputStream(this.process.getInputStream()), StandardCharsets.UTF_8).useDelimiter("\\A")) {
-            try {
-                while (this.canWriteConsoleOutput) {
-                    if (!consoleOutput.hasNext()) continue;
-                    final String line = consoleOutput.nextLine();
-                    if (line.isEmpty()) continue;
+        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(this.process.getInputStream(), StandardCharsets.UTF_8))) {
+            String line;
 
-                    this.serverManager.initFromLog(line);
+            while (this.canWriteConsoleOutput && (line = reader.readLine()) != null) {
+                if (line.isEmpty()) continue;
 
-                    if (this.containsAllowedToAlert(line)) {
-                        this.eventManager.callEvent(new ServerAlertEvent(line, LogState.ALERT));
-                    }
+                final String finalLine = line;
 
-                    if (!this.containsNotAllowedToFileLog(line)) {
-                        this.consoleOutputService.execute(() -> this.logger.instantLogToFile(line));
-                    }
+                this.lastConsoleLine = finalLine;
 
-                    if (!this.containsNotAllowedToConsoleLog(line)) {
-                        this.consoleOutputService.execute(() -> System.out.println(line));
-                        this.lastConsoleLine = line;
-                    }
+                this.serverManager.initFromLog(finalLine);
+
+                if (this.containsAllowedToAlert(finalLine)) {
+                    this.eventManager.callEvent(new ServerAlertEvent(finalLine, LogState.ALERT));
                 }
-            } catch (final Exception exception) {
-                this.logger.critical("Czytanie konsoli uległo awarii , powoduje to wyłączenie aplikacji ", exception);
-                System.exit(1);
+
+                this.consoleOutputService.execute(() -> {
+                    if (!this.containsNotAllowedToFileLog(finalLine)) {
+                        this.logger.instantLogToFile(finalLine);
+                    }
+
+                    if (!this.containsNotAllowedToConsoleLog(finalLine)) {
+                        System.out.println(finalLine);
+                    }
+                });
             }
+        } catch (final Exception exception) {
+            this.logger.critical("Czytanie konsoli uległo awarii, powoduje to wyłączenie aplikacji", exception);
+            System.exit(1);
         }
     }
-
     /**
      * Metoda do wysyłania poleceń do konsoli servera BDS
      *
@@ -307,7 +308,7 @@ public class ServerProcess {
         }
 
         this.sendToConsole(command);
-        ThreadUtil.sleep(1);
+        ThreadUtil.sleep(30L);
         return this.lastConsoleLine == null ? "null" : this.lastConsoleLine;
     }
 
@@ -467,11 +468,30 @@ public class ServerProcess {
         return this.contains(message, this.appConfigManager.getLogConfig().getAlertOn());
     }
 
+
+    /**
+     * DWIE OSTATNIE LINJIKI SĄ OD GEMINI!!
+     */
     private boolean contains(final String message, final List<String> list) {
+        if (list.isEmpty()) return false;
+
+        // Szukamy bez uwzględniania wielkości liter, ale bez tworzenia miliona obiektów .toLowerCase()
+        // Najlepiej użyć StringUtils z Apache Commons jeśli masz, jeśli nie - to chociaż tak:
         for (final String element : list) {
-            if (message.toLowerCase().contains(element.toLowerCase())) {
+            if (this.caseInsensitiveContains(message, element)) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    // Prosta pomocnicza metoda, żeby nie śmiecić w pamięci
+    private boolean caseInsensitiveContains(final String source, final String target) {
+        if (target.isEmpty()) return true;
+        final int length = target.length();
+        final int max = source.length() - length;
+        for (int i = 0; i <= max; i++) {
+            if (source.regionMatches(true, i, target, 0, length)) return true;
         }
         return false;
     }
