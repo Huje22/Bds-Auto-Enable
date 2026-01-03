@@ -15,7 +15,7 @@ public class McLogCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        if (this.player != null) {
+        if (this.getPlayer() != null) {
             this.sendMessage("&cTa komenda dostępna jest tylko w&3 konsoli");
             return true;
         }

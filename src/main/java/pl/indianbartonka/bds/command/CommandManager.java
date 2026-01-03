@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.jetbrains.annotations.Nullable;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.command.defaults.RelogCommand;
 import pl.indianbartonka.bds.command.defaults.TestCommand;
@@ -69,7 +70,7 @@ public class CommandManager {
         this.commandMap.put(new RelogCommand(this.bdsAutoEnable), null);
 
         if (this.bdsAutoEnable.getAppConfigManager().getAppConfig().isDebug()) {
-            this.commandMap.put(new TestCommand(), null);
+            this.commandMap.put(new TestCommand(bdsAutoEnable), null);
         }
 
         for (final Map.Entry<Command, Extension> entry : this.commandMap.entrySet()) {

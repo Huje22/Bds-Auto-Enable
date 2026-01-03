@@ -3,6 +3,7 @@ package pl.indianbartonka.bds.command.defaults.info;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import pl.indianbartonka.bds.command.Command;
+import pl.indianbartonka.bds.player.PlayerStatistics;
 import pl.indianbartonka.bds.util.StatusUtil;
 import pl.indianbartonka.util.Cooldown;
 import pl.indianbartonka.util.DateUtil;
@@ -20,8 +21,10 @@ public class StatsCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
-        if (this.player != null) {
-            final String playerName = this.player.getPlayerName();
+        final PlayerStatistics player = this.getPlayer();
+
+        if (player != null) {
+            final String playerName = player.getPlayerName();
 
             if (this.cooldown.hasCooldown(playerName)) {
                 this.sendMessage("&cMusisz odczekać:&b " + DateUtil.formatTimeDynamic(this.cooldown.getRemainingTime(playerName)));

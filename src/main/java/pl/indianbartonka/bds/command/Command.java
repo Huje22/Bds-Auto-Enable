@@ -19,8 +19,10 @@ public abstract class Command {
     private final String name, description;
     private final List<String> alliases;
     private final Map<String, String> commandOptions;
-    protected PlayerStatistics player;
     protected CommandConfig commandConfig;
+
+    @Deprecated
+    protected PlayerStatistics player;
     private Position position;
     private BDSAutoEnable bdsAutoEnable;
 
@@ -41,6 +43,10 @@ public abstract class Command {
         return this.description;
     }
 
+    public PlayerStatistics getPlayer() {
+        return this.player;
+    }
+
     @Nullable
     public Position getPosition() {
         return this.position;
@@ -51,6 +57,7 @@ public abstract class Command {
     }
 
     protected void deniedSound() {
+        if (this.player == null) return;
         ServerUtil.playSoundToPlayer(this.player.getPlayerName(), this.commandConfig.getDeniedSound());
     }
 

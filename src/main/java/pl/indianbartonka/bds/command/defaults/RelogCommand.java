@@ -3,6 +3,7 @@ package pl.indianbartonka.bds.command.defaults;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.command.Command;
 import pl.indianbartonka.bds.config.sub.transfer.MainServerConfig;
+import pl.indianbartonka.bds.player.PlayerStatistics;
 import pl.indianbartonka.bds.util.ServerUtil;
 import pl.indianbartonka.util.minecraft.BedrockQuery;
 
@@ -20,6 +21,7 @@ public class RelogCommand extends Command {
 
     @Override
     public boolean onExecute(final String[] args, final boolean isOp) {
+        final PlayerStatistics player = this.getPlayer();
         final String playerName;
 
         if (args.length == 1) {
@@ -36,11 +38,11 @@ public class RelogCommand extends Command {
 
                 ServerUtil.tellrawToPlayer(playerName, "&cAdmin wykonuje relog dla ciebie!");
         } else {
-            if (this.player == null) {
+            if (player == null) {
                 this.sendMessage("&cNie możesz relogować jako konsola!!!");
                 return true;
             } else {
-                playerName = this.player.getPlayerName();
+                playerName = player.getPlayerName();
             }
         }
 
