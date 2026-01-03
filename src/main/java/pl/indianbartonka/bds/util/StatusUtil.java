@@ -12,7 +12,6 @@ import pl.indianbartonka.bds.server.ServerProcess;
 import pl.indianbartonka.bds.server.stats.ServerStats;
 import pl.indianbartonka.bds.server.stats.StatsManager;
 import pl.indianbartonka.bds.watchdog.WatchDog;
-import pl.indianbartonka.bds.watchdog.monitor.RamMonitor;
 import pl.indianbartonka.util.DateUtil;
 import pl.indianbartonka.util.MathUtil;
 import pl.indianbartonka.util.MemoryUnit;
@@ -46,13 +45,13 @@ public final class StatusUtil {
         STATUS.clear();
 
         final WatchDog watchDog = BDSAUTOENABLE.getWatchDog();
-        final RamMonitor ramMonitor = watchDog.getRamMonitor();
         final ServerStats serverStats = STATSMANAGER.getServerStats();
 
         final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         final OperatingSystemMXBean operatingSystemMXBean = (OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean();
 
         final double processCpuLoad = operatingSystemMXBean.getCpuLoad();
+        final double appCpuLoad = operatingSystemMXBean.getProcessCpuLoad();
 
         final String usedServerMemory = "Użyte " + MathUtil.formatKibibytesDynamic(getServerRamUsage());
 
@@ -71,12 +70,12 @@ public final class StatusUtil {
         STATUS.add("> **Statystyki maszyny**");
         STATUS.add("Pamięć RAM: `" + usedComputerMemory + " / " + maxComputerMemory + "` (`" + freeComputerMemory + "`)");
         STATUS.add("Pamięć ROM: `" + usedRom + " / " + rom + "`");
+        STATUS.add("Użycie CPU maszyny: `" + MathUtil.formatDecimal(processCpuLoad * 100, 2) + "%` ");
 
         STATUS.add("");
         STATUS.add("> **Statystyki servera**");
         STATUS.add("Ostatnie TPS: `" + BDSAUTOENABLE.getServerManager().getLastTPS() + "`");
         STATUS.add("Pamięć RAM: `" + usedServerMemory + "` (`" + freeComputerMemory + "`)");
-        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatKibibytesDynamic(ramMonitor.getAverageServerRamUsage()) + "` (" + ramMonitor.getAverageServerRamUsageListSize() + ")");
         if (APPCONFIGMANAGER.getWatchDogConfig().getAutoRestartConfig().isEnabled()) {
             STATUS.add("Następny restart za: `" + DateUtil.formatTimeDynamic(watchDog.getAutoRestartModule().calculateMillisUntilNextRestart()) + "`");
         }
@@ -90,9 +89,8 @@ public final class StatusUtil {
         STATUS.add("> **Statystyki aplikacji**");
         STATUS.add("Czas działania: `" + DateUtil.formatTimeDynamic(System.currentTimeMillis() - BDSAUTOENABLE.getStartTime()) + "`");
         STATUS.add("Pamięć RAM: `" + usedAppMemory + " / " + committedAppMemory + " / " + maxAppMemory + "`");
-        STATUS.add("Średnie użycie ramu: `" + MathUtil.formatBytesDynamic(ramMonitor.getAverageAppRamUsage(), true) + "` (" + ramMonitor.getAverageAppRamUsageListSize() + ")");
         STATUS.add("Aktualna liczba wątków: `" + ThreadUtil.getThreadsCount() + "/" + ThreadUtil.getPeakThreadsCount() + "` ");
-        STATUS.add("Użycje cpu: `" + MathUtil.formatDecimal((processCpuLoad * 100), 2) + "`% (Bugged jakieś)");
+        STATUS.add("Użycie CPU aplikacji: `" + MathUtil.formatDecimal(appCpuLoad * 100, 2) + "%` ");
 
         if (!markdown) STATUS.replaceAll(s -> s.replaceAll("`", "&b").replaceAll("\\*", "&a").replaceAll("> ", "&l"));
 
@@ -104,13 +102,11 @@ public final class StatusUtil {
 
         final ServerManager serverManager = BDSAUTOENABLE.getServerManager();
         final MemoryUsage heapMemoryUsage = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
-        final long ram = heapMemoryUsage.getUsed() + getServerRamUsage();
 
         stringBuilder.append(BDSAUTOENABLE.getProjectVersion()).append(" | ");
         stringBuilder.append(BDSAUTOENABLE.getVersionManager().getLoadedVersion()).append(" | ");
         stringBuilder.append("TPS: ").append(serverManager.getLastTPS()).append(" | ");
         stringBuilder.append("Online: ").append(serverManager.getOnlinePlayers().size()).append("/").append(BDSAUTOENABLE.getServerProperties().getMaxPlayers()).append(" | ");
-        stringBuilder.append("Ram: ").append(MathUtil.formatBytesDynamic(ram + MemoryUnit.KILOBYTES.to(getServerRamUsage(), MemoryUnit.BYTES), true));
 
         return stringBuilder.toString();
     }

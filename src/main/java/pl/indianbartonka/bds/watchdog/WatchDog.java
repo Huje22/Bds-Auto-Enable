@@ -7,7 +7,6 @@ import pl.indianbartonka.bds.util.ServerUtil;
 import pl.indianbartonka.bds.watchdog.module.AutoRestartModule;
 import pl.indianbartonka.bds.watchdog.module.BackupModule;
 import pl.indianbartonka.bds.watchdog.module.pack.PackModule;
-import pl.indianbartonka.bds.watchdog.monitor.RamMonitor;
 import pl.indianbartonka.util.MathUtil;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.logger.LogState;
@@ -17,7 +16,6 @@ public class WatchDog {
     private final BackupModule backupModule;
     private final PackModule packModule;
     private final AutoRestartModule autoRestartModule;
-    private final RamMonitor ramMonitor;
     private final String watchDogPrefix;
     private final ServerProcess serverProcess;
     private final WatchDogConfig watchDogConfig;
@@ -28,7 +26,6 @@ public class WatchDog {
         this.backupModule = new BackupModule(bdsAutoEnable, this);
         this.packModule = new PackModule(bdsAutoEnable);
         this.autoRestartModule = new AutoRestartModule(bdsAutoEnable, this);
-        this.ramMonitor = new RamMonitor(bdsAutoEnable, this);
         this.watchDogConfig = bdsAutoEnable.getAppConfigManager().getWatchDogConfig();
     }
 
@@ -44,14 +41,9 @@ public class WatchDog {
         return this.autoRestartModule;
     }
 
-    public RamMonitor getRamMonitor() {
-        return this.ramMonitor;
-    }
-
     public void init() {
         this.backupModule.init();
         this.autoRestartModule.init();
-        this.ramMonitor.init();
     }
 
     public void saveWorld() {
