@@ -111,15 +111,14 @@ public class AutoRestartModule {
                 if (lobbyConfig.isEnable()) {
                     ServerUtil.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
                 }
+                
+                this.watchDog.saveAndResume();
 
                 ServerUtil.titleToAll("&cServer zostanie zrestartowany", "&bZa&a " + seconds + "&e sekund");
                 ServerUtil.playSoundToAll("mob.wither.break_block");
                 ServerUtil.tellrawToAllAndLogger(this.prefix, "&aPrzygotowanie do&b restartu&a servera", LogState.WARNING);
 
                 if (alert) this.restartAlert(seconds);
-
-                ServerUtil.tellrawToAllAndLogger(this.prefix, "&aPierw zapiszemy świat!", LogState.INFO);
-                this.watchDog.saveAndResume();
 
                 ServerUtil.playSoundToAll("mob.wither.death");
 
