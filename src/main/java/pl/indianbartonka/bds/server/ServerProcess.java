@@ -2,12 +2,12 @@ package pl.indianbartonka.bds.server;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -43,7 +43,7 @@ public class ServerProcess {
     private ProcessBuilder processBuilder;
     private Process process;
     private String lastConsoleLine;
-    private long pid;
+    private volatile long pid;
     private long startTime;
     private WatchDog watchDog;
     private boolean canRun, canWriteConsoleOutput;
@@ -68,6 +68,7 @@ public class ServerProcess {
     public void init() {
         this.watchDog = this.bdsAutoEnable.getWatchDog();
         this.fileName = DefaultsVariables.getDefaultFileName();
+        this.finalFilePath = this.appConfigManager.getAppConfig().getFilesPath() + File.separator + this.fileName;
     }
 
     /**
@@ -76,31 +77,13 @@ public class ServerProcess {
      * @return Czy proces servera jest aktywny
      */
     public boolean checkProcesRunning() {
-        try {
-            String command = "";
-            switch (this.system) {
-                case LINUX -> command = "pgrep -f " + this.fileName;
-                case WINDOWS -> command = "tasklist /NH /FI \"IMAGENAME eq " + this.fileName + "\"";
-                default -> {
-                    this.logger.critical("Musisz podać odpowiedni system");
-                    System.exit(21);
-                }
+        if (this.pid != -1) {
+            final Optional<ProcessHandle> handle = ProcessHandle.of(this.pid);
+            if (handle.isPresent() && handle.get().isAlive()) {
+                return handle.get().info().command().map(cmd -> cmd.contains(this.fileName)).orElse(false);
             }
-
-            final Process checkProcessIsRunning = Runtime.getRuntime().exec(command);
-            try (final BufferedReader reader = new BufferedReader(new InputStreamReader(checkProcessIsRunning.getInputStream()))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    if (!line.isEmpty() && !line.equalsIgnoreCase("INFO: No tasks are running which match the specified criteria.")) {
-                        return true;
-                    }
-                }
-                checkProcessIsRunning.waitFor();
-            }
-        } catch (final IOException | InterruptedException exception) {
-            this.logger.critical("Nie można sprawdzić czy proces jest aktywny", exception);
-            System.exit(5);
         }
+
         return false;
     }
 
@@ -110,7 +93,6 @@ public class ServerProcess {
             return;
         }
 
-        this.finalFilePath = this.appConfigManager.getAppConfig().getFilesPath() + File.separator + this.fileName;
         this.processService.execute(() -> {
             if (this.checkProcesRunning()) {
                 this.logger.alert("&cProces&b " + this.fileName + "&c jest już uruchomiony.");
@@ -120,7 +102,9 @@ public class ServerProcess {
             } else {
                 this.logger.debug("Proces " + this.fileName + " nie jest uruchomiony. Uruchamianie...");
                 try {
-                    this.processBuilder = this.buildStartCommand();
+                    if (this.processBuilder == null) {
+                        this.processBuilder = this.buildStartCommand();
+                    }
 
                     if (ShutdownHandler.isShutdownHookCalled()) return;
 
@@ -138,18 +122,19 @@ public class ServerProcess {
                     this.logger.debug("&bPID&r procesu servera to&1 " + this.pid);
                     this.consoleOutputService.execute(this::readConsoleOutput);
 
-                    final int exitCode = this.process.waitFor();
+                    this.process.onExit().thenAccept(p -> {
+                        final int exitCode = p.exitValue();
+                        this.logger.alert("Proces zakończony z kodem: " + exitCode);
+                        this.eventManager.callEvent(new ServerClosedEvent());
 
-                    this.logger.alert("Proces zakończony z kodem: " + exitCode);
-                    this.eventManager.callEvent(new ServerClosedEvent());
-
-                    this.canWriteConsoleOutput = false;
-                    this.pid = -1;
-                    this.watchDog.getAutoRestartModule().noteRestart();
-                    this.serverManager.getStatsManager().saveAllData();
-                    this.serverManager.restartPlayersList();
-                    this.handleExitCode(exitCode);
-                    this.startProcess();
+                        this.canWriteConsoleOutput = false;
+                        this.pid = -1;
+                        this.watchDog.getAutoRestartModule().noteRestart();
+                        this.serverManager.getStatsManager().saveAllData();
+                        this.serverManager.restartPlayersList();
+                        this.handleExitCode(exitCode);
+                        this.startProcess();
+                    });
                 } catch (final Exception exception) {
                     this.logger.critical("Nie można uruchomić procesu", exception);
                     System.exit(5);
@@ -158,7 +143,6 @@ public class ServerProcess {
         });
     }
 
-    //TODO SPRAWDZAJ TO NA PODSATAWIE OSTATNI CACHOWANEGO PROCES ID
     /**
      * Buduje i zwraca obiekt {@link ProcessBuilder}, który uruchamia aplikację
      * w zależności od systemu operacyjnego i konfiguracji aplikacji.
