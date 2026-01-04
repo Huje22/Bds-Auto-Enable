@@ -26,6 +26,7 @@ public class EventManager {
     public EventManager(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
         this.listenerMap = new LinkedHashMap<>();
+        //TOOD: Daj maksymalnie 2-4 wątki
         this.listenerService = Executors.newCachedThreadPool(new ThreadUtil("Listeners"));
     }
 
