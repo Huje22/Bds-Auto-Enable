@@ -111,6 +111,7 @@ public class EventManager {
         return responseList;
     }
 
+    zwróć ten future i użyj tego thenAccept
     public List<EventResponse> callEventsWithResponse(final ResponsibleEvent event) {
         //TODO: Zrób to kiedys jakoś lepiej
         return CompletableFuture.supplyAsync(() -> this.eventResponses(event), this.listenerService).join();
