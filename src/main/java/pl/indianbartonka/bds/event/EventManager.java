@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.event.server.response.ServerConsoleCommandResponse;
 import pl.indianbartonka.bds.extension.Extension;
+import pl.indianbartonka.util.MathUtil;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.logger.Logger;
 
@@ -24,7 +25,7 @@ public class EventManager {
     public EventManager(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
         this.listenerMap = new ConcurrentHashMap<>();
-        this.listenerService = Executors.newFixedThreadPool(2, new ThreadUtil("Listeners"));
+        this.listenerService = Executors.newFixedThreadPool(MathUtil.getCorrectNumber(2 * ThreadUtil.getLogicalThreads(), 4, 8), new ThreadUtil("Listeners"));
     }
 
     public <T extends Listener> void registerListener(final T listener, final Extension extension) {

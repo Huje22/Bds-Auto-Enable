@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import pl.indianbartonka.bds.BDSAutoEnable;
@@ -44,6 +42,7 @@ import pl.indianbartonka.bds.util.ServerUtil;
 import pl.indianbartonka.bds.version.VersionManager;
 import pl.indianbartonka.bds.watchdog.module.pack.PackModule;
 import pl.indianbartonka.util.DateUtil;
+import pl.indianbartonka.util.MathUtil;
 import pl.indianbartonka.util.MessageUtil;
 import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.logger.LogState;
@@ -58,9 +57,23 @@ public class ServerManager {
     private final List<String> onlinePlayers, offlinePlayers;
     private final List<Long> muted;
     private final StatsManager statsManager;
-    private final ReentrantLock chatLock;
     private final EventManager eventManager;
-    private final Lock playerConnectLock;
+    private final Pattern connectPattern = Pattern.compile("Player connected: ([^,]+), xuid: (\\d+)");
+    private final Pattern disconnectPattern = Pattern.compile("Player disconnected: ([^,]+)");
+    private final Pattern joinPattern = Pattern.compile("PlayerJoin:([^,]+) PlayerPlatform:([^,]+) PlayerInput:([^,]+) MemoryTier:([^,]+) MaxRenderDistance:([^,]+) GraphicMode:([^,]+)");
+    private final Pattern spawnPattern = Pattern.compile("PlayerSpawn:([^,]+)");
+    private final Pattern movementPattern = Pattern.compile("PlayerMovement:([^,]+) Position:(.+)");
+    private final Pattern chatPattern = Pattern.compile("PlayerChat:([^,]+) Message:(.+) Position:(.+)");
+    private final Pattern customCommandPattern = Pattern.compile("PlayerCommand:([^,]+) Command:(.+) Position:(.+) Op:(.+)");
+    private final Pattern deathPattern = Pattern.compile("PlayerDeath:([^,]+) DeathMessage:(.+) Position(.+) Killer:(.+) UsedName:(.+)");
+    private final Pattern tpsPattern = Pattern.compile("TPS: (\\d{1,4})");
+    private final Pattern dimensionChangePattern = Pattern.compile("DimensionChangePlayer:([^,]+) FromDimension:(.+) ToDimension:(.+) FromPosition(.+) ToPosition(.+)");
+    private final Pattern blockBreakPattern = Pattern.compile("PlayerBreakBlock:([^,]+) Block:(.+) Position:(.+)");
+    private final Pattern blockPlacePattern = Pattern.compile("PlayerPlaceBlock:([^,]+) Block:(.+) Position:(.+)");
+    private final Pattern containerInteractPattern = Pattern.compile("PlayerContainerInteract:([^,]+) Block:(.+) Position:(.+)");
+    private final Pattern inputChangedPattern = Pattern.compile("PlayerInput:([^,]+) NewInputMode:([^,]+) OldInputMode:([^,]+)");
+    private final Pattern entityWithContainerInteractPattern = Pattern.compile("PlayerEntityContainerInteract:([^,]+) EntityID:(.+) EntityPosition:(.+)");
+    private final Pattern versionPattern = Pattern.compile("Version: (.+)");
     private ServerProcess serverProcess;
     private VersionManager versionManager;
     private double lastTPS;
@@ -68,16 +81,13 @@ public class ServerManager {
     public ServerManager(final BDSAutoEnable bdsAutoEnable) {
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = this.bdsAutoEnable.getLogger();
-        this.mainService = Executors.newFixedThreadPool(2 * Runtime.getRuntime().availableProcessors()
-                , new ThreadUtil("Player Manager"));
-        this.chatService = Executors.newFixedThreadPool(3, new ThreadUtil("Chat Service"));
+        this.mainService = Executors.newFixedThreadPool(MathUtil.getCorrectNumber(2 * ThreadUtil.getLogicalThreads(), 4, 8), new ThreadUtil("Player Manager"));
+        this.chatService = Executors.newFixedThreadPool(MathUtil.getCorrectNumber(2 * ThreadUtil.getLogicalThreads(), 2, 4), new ThreadUtil("Chat Service"));
         this.onlinePlayers = new CopyOnWriteArrayList<>();
         this.offlinePlayers = new CopyOnWriteArrayList<>();
         this.muted = new CopyOnWriteArrayList<>();
         this.statsManager = new StatsManager(this.bdsAutoEnable, this);
-        this.chatLock = new ReentrantLock();
         this.eventManager = this.bdsAutoEnable.getEventManager();
-        this.playerConnectLock = new ReentrantLock();
         this.lastTPS = 20;
     }
 
@@ -87,40 +97,53 @@ public class ServerManager {
     }
 
     public void initFromLog(final String logEntry) {
-        this.chatService.execute(() -> {
-            this.chatMessage(logEntry);
-            this.customCommand(logEntry);
-        });
+        if (logEntry.contains("PlayerChat:") || logEntry.contains("PlayerCommand:")) {
+            this.chatService.execute(() -> {
+                if (logEntry.contains("PlayerChat:")) this.chatMessage(logEntry);
+                if (logEntry.contains("PlayerCommand:")) this.customCommand(logEntry);
+            });
+            return;
+        }
 
         this.mainService.execute(() -> {
-            //Metody związane z graczem
-            this.playerConnect(logEntry);
-            this.playerJoin(logEntry);
-            this.playerQuit(logEntry);
-            this.playerSpawn(logEntry);
-            this.playerMovement(logEntry);
-            this.deathMessage(logEntry);
-            this.dimensionChange(logEntry);
-            this.playerEntityWithContainerInteract(logEntry);
-            this.playerBreakBlock(logEntry);
-            this.playerPlaceBlock(logEntry);
-            this.playerContainerInteract(logEntry);
-            this.playerChangeInputMode(logEntry);
+            if (logEntry.contains("PlayerMovement:")) {
+                this.playerMovement(logEntry);
+            } else if (logEntry.contains("PlayerBreakBlock:")) {
+                this.playerBreakBlock(logEntry);
+            } else if (logEntry.contains("PlayerPlaceBlock:")) {
+                this.playerPlaceBlock(logEntry);
+            } else if (logEntry.contains("PlayerJoin:")) {
+                this.playerJoin(logEntry);
+            } else if (logEntry.contains("Player disconnected:")) {
+                this.playerQuit(logEntry);
+            } else if (logEntry.contains("Player connected:")) {
+                this.playerConnect(logEntry);
+            } else if (logEntry.contains("PlayerSpawn:")) {
+                this.playerSpawn(logEntry);
+            } else if (logEntry.contains("PlayerDeath:")) {
+                this.deathMessage(logEntry);
+            } else if (logEntry.contains("DimensionChangePlayer:")) {
+                this.dimensionChange(logEntry);
+            } else if (logEntry.contains("PlayerContainerInteract:")) {
+                this.playerContainerInteract(logEntry);
+            } else if (logEntry.contains("PlayerEntityContainerInteract:")) {
+                this.playerEntityWithContainerInteract(logEntry);
+            } else if (logEntry.contains("PlayerInput:")) {
+                this.playerChangeInputMode(logEntry);
+            } else if (logEntry.contains("TPS:")) {
+                this.tps(logEntry);
+            } else if (logEntry.contains("Version:")) {
+                this.version(logEntry);
+            }
 
-            //Dodatkowe metody
             this.serverEnabled(logEntry);
             this.checkPackDependency(logEntry);
-            this.tps(logEntry);
-            this.version(logEntry);
         });
     }
 
     private void playerConnect(final String logEntry) {
         try {
-            this.playerConnectLock.lock();
-
-            final Pattern pattern = Pattern.compile("Player connected: ([^,]+), xuid: (\\d+)");
-            final Matcher matcher = pattern.matcher(logEntry);
+            final Matcher matcher = this.connectPattern.matcher(logEntry);
 
             if (matcher.find()) {
                 final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -141,15 +164,11 @@ public class ServerManager {
         } catch (final Exception exception) {
             this.logger.error("&cNie udało się obsłużyć połączenia gracza z logu&b " + logEntry, exception);
             this.eventManager.callEvent(new ServerAlertEvent("Nie udało się obsłużyć połączenia gracza z logu " + logEntry, exception, LogState.ERROR));
-        } finally {
-            this.playerConnectLock.unlock();
         }
     }
 
     private void playerQuit(final String logEntry) {
-        final String patternString = "Player disconnected: ([^,]+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.disconnectPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -171,9 +190,7 @@ public class ServerManager {
     }
 
     private void playerJoin(final String logEntry) {
-        final String patternString = "PlayerJoin:([^,]+) PlayerPlatform:([^,]+) PlayerInput:([^,]+) MemoryTier:([^,]+) MaxRenderDistance:([^,]+) GraphicMode:([^,]+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.joinPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -207,9 +224,8 @@ public class ServerManager {
     }
 
     private void playerSpawn(final String logEntry) {
-        final String patternString = "PlayerSpawn:([^,]+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+
+        final Matcher matcher = this.spawnPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -226,9 +242,7 @@ public class ServerManager {
     }
 
     private void playerMovement(final String logEntry) {
-        final String patternString = "PlayerMovement:([^,]+) Position:(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.movementPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerMovement = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -247,11 +261,7 @@ public class ServerManager {
     }
 
     private void chatMessage(final String logEntry) {
-        this.chatLock.lock();
-
-        final String patternString = "PlayerChat:([^,]+) Message:(.+) Position:(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.chatPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerChat = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -263,49 +273,45 @@ public class ServerManager {
                 final PlayerStatistics playerStatistics = this.statsManager.getPlayer(playerChat);
                 final boolean muted = this.isMuted(playerStatistics.getXuid());
 
-                final List<EventResponse> responses = this.eventManager.callEventsWithResponse(new PlayerChatEvent(playerStatistics, message, position, muted, appHandled));
+                this.eventManager.callEventsWithResponse(new PlayerChatEvent(playerStatistics, message, position, muted, appHandled))
+                        .thenAccept(responses -> {
+                            if (responses.isEmpty() && appHandled) {
+                                if (muted) {
+                                    ServerUtil.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
+                                    return;
+                                }
+                                ServerUtil.tellrawToAll(playerChat + " »» " + message);
+                            }
 
-                if (responses.isEmpty() && appHandled) {
-                    if (muted) {
-                        ServerUtil.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
-                        return;
-                    }
-                    ServerUtil.tellrawToAll(playerChat + " »» " + message);
-                }
+                            for (final EventResponse response : responses) {
+                                if (response instanceof final PlayerChatResponse chatResponse) {
 
-                for (final EventResponse eventResponse : responses) {
-                    if (!PlayerChatResponse.class.isAssignableFrom(eventResponse.getClass())) continue;
+                                    if (appHandled) {
+                                        String format = playerChat + " »» " + message;
+                                        if (chatResponse.isCanceled()) return;
+                                        format = chatResponse.getFormat();
 
-                    final PlayerChatResponse response = (PlayerChatResponse) eventResponse;
-
-                    if (appHandled) {
-                        String format = playerChat + " »» " + message;
-                        if (response.isCanceled()) return;
-                        format = response.getFormat();
-
-                        if (muted) {
-                            ServerUtil.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
-                            return;
-                        }
-                        ServerUtil.tellrawToAll(format);
-                        break;
-                    }
-                }
+                                        if (muted) {
+                                            ServerUtil.tellrawToPlayer(playerChat, "&cZostałeś wyciszony");
+                                            return;
+                                        }
+                                        ServerUtil.tellrawToAll(format);
+                                        break;
+                                    }
+                                }
+                            }
+                        });
             } catch (final Exception exception) {
                 this.logger.error("&cWystąpił błąd podczas próby przetworzenia wiadomości gracza&c " + playerChat);
                 this.eventManager.callEvent(new ServerAlertEvent("Wystąpił błąd podczas próby przetworzenia wiadomości gracza " + playerChat,
                         "Skutkuje to wywołaniem wyjątku", exception, LogState.CRITICAL));
                 throw exception;
-            } finally {
-                this.chatLock.unlock();
             }
         }
     }
 
     private void customCommand(final String logEntry) {
-        final String patternString = "PlayerCommand:([^,]+) Command:(.+) Position:(.+) Op:(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.customCommandPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerCommand = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -326,9 +332,7 @@ public class ServerManager {
     }
 
     private void deathMessage(final String logEntry) {
-        final String patternString = "PlayerDeath:([^,]+) DeathMessage:(.+) Position(.+) Killer:(.+) UsedName:(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.deathPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerDeath = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -351,9 +355,7 @@ public class ServerManager {
     }
 
     private void tps(final String logEntry) {
-        final String patternString = "TPS: (\\d{1,4})";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.tpsPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String tpsString = matcher.group(1);
@@ -375,9 +377,7 @@ public class ServerManager {
     }
 
     private void dimensionChange(final String logEntry) {
-        final String patternString = "DimensionChangePlayer:([^,]+) FromDimension:(.+) ToDimension:(.+) FromPosition(.+) ToPosition(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.dimensionChangePattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerName = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -402,9 +402,7 @@ public class ServerManager {
     }
 
     private void playerBreakBlock(final String logEntry) {
-        final String patternString = "PlayerBreakBlock:([^,]+) Block:(.+) Position:(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.blockBreakPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerBreakBlock = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -425,9 +423,7 @@ public class ServerManager {
     }
 
     private void playerPlaceBlock(final String logEntry) {
-        final String patternString = "PlayerPlaceBlock:([^,]+) Block:(.+) Position:(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.blockPlacePattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerPlaceBlock = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -448,9 +444,7 @@ public class ServerManager {
     }
 
     private void playerContainerInteract(final String logEntry) {
-        final String patternString = "PlayerContainerInteract:([^,]+) Block:(.+) Position:(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.containerInteractPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerInteract = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -469,9 +463,7 @@ public class ServerManager {
     }
 
     private void playerChangeInputMode(final String logEntry) {
-        final String patternString = "PlayerInput:([^,]+) NewInputMode:([^,]+) OldInputMode:([^,]+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.inputChangedPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerInput = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -494,9 +486,7 @@ public class ServerManager {
     }
 
     private void playerEntityWithContainerInteract(final String logEntry) {
-        final String patternString = "PlayerEntityContainerInteract:([^,]+) EntityID:(.+) EntityPosition:(.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.entityWithContainerInteractPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String playerInteract = MinecraftUtil.fixPlayerName(matcher.group(1));
@@ -524,9 +514,7 @@ public class ServerManager {
     }
 
     private void version(final String logEntry) {
-        final String patternString = "Version: (.+)";
-        final Pattern pattern = Pattern.compile(patternString);
-        final Matcher matcher = pattern.matcher(logEntry);
+        final Matcher matcher = this.versionPattern.matcher(logEntry);
 
         if (matcher.find()) {
             final String version = MinecraftUtil.fixMessage(matcher.group(1));

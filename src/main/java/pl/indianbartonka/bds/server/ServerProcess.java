@@ -54,7 +54,7 @@ public class ServerProcess {
         this.appConfigManager = this.bdsAutoEnable.getAppConfigManager();
         this.serverManager = this.bdsAutoEnable.getServerManager();
         this.processService = Executors.newFixedThreadPool(2, new ThreadUtil("Server process"));
-        this.consoleOutputService = Executors.newFixedThreadPool(3, new ThreadUtil("Console Output"));
+        this.consoleOutputService = Executors.newFixedThreadPool(4, new ThreadUtil("Console Output"));
         this.prefix = "&b[&3ServerProcess&b] ";
         this.system = SystemUtil.getSystem();
         this.eventManager = this.bdsAutoEnable.getEventManager();
@@ -292,7 +292,6 @@ public class ServerProcess {
         }
 
         this.sendToConsole(command);
-        ThreadUtil.sleep(30L);
         return this.lastConsoleLine == null ? "null" : this.lastConsoleLine;
     }
 
