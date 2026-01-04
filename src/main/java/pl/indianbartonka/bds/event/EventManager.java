@@ -3,11 +3,10 @@ package pl.indianbartonka.bds.event;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import pl.indianbartonka.bds.BDSAutoEnable;
@@ -21,13 +20,11 @@ public class EventManager {
     private final Logger logger;
     private final Map<Listener, Extension> listenerMap;
     private final ExecutorService listenerService;
-    private Map<Listener, Extension> listeners;
 
     public EventManager(final BDSAutoEnable bdsAutoEnable) {
         this.logger = bdsAutoEnable.getLogger();
-        this.listenerMap = new LinkedHashMap<>();
-        //TOOD: Daj maksymalnie 2-4 wątki
-        this.listenerService = Executors.newCachedThreadPool(new ThreadUtil("Listeners"));
+        this.listenerMap = new ConcurrentHashMap<>();
+        this.listenerService = Executors.newFixedThreadPool(2, new ThreadUtil("Listeners"));
     }
 
     public <T extends Listener> void registerListener(final T listener, final Extension extension) {
@@ -53,8 +50,7 @@ public class EventManager {
      */
     public void callEvent(final Event event) {
         this.listenerService.execute(() -> {
-            this.listeners = new HashMap<>(this.listenerMap);
-            for (final Map.Entry<Listener, Extension> entry : this.listeners.entrySet()) {
+            for (final Map.Entry<Listener, Extension> entry : this.listenerMap.entrySet()) {
                 final Listener listener = entry.getKey();
 
                 final Method[] subscribeMethods = Arrays.stream(listener.getClass().getDeclaredMethods())
@@ -77,8 +73,7 @@ public class EventManager {
 
     private List<EventResponse> eventResponses(final ResponsibleEvent event) {
         final List<EventResponse> responseList = new ArrayList<>();
-        this.listeners = new HashMap<>(this.listenerMap);
-        for (final Map.Entry<Listener, Extension> entry : this.listeners.entrySet()) {
+        for (final Map.Entry<Listener, Extension> entry : this.listenerMap.entrySet()) {
             final Listener listener = entry.getKey();
 
             final Method[] subscribeMethods = Arrays.stream(listener.getClass().getDeclaredMethods())
@@ -111,9 +106,7 @@ public class EventManager {
         return responseList;
     }
 
-    zwróć ten future i użyj tego thenAccept
-    public List<EventResponse> callEventsWithResponse(final ResponsibleEvent event) {
-        //TODO: Zrób to kiedys jakoś lepiej
-        return CompletableFuture.supplyAsync(() -> this.eventResponses(event), this.listenerService).join();
+    public CompletableFuture<List<EventResponse>> callEventsWithResponse(final ResponsibleEvent event) {
+        return CompletableFuture.supplyAsync(() -> this.eventResponses(event), this.listenerService);
     }
 }
