@@ -12,8 +12,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.pack.component.BehaviorPack;
@@ -137,24 +139,34 @@ public class BehaviorPackLoader {
             }
 
             final LinkedList<BehaviorPack> cachedPacks = new LinkedList<>(this.loadedBehaviorPacks);
+            final Map<String, String> allPackFromFile = new HashMap<>();
 
             for (final File file : packs) {
                 try {
                     final BehaviorPack packFromFile = this.getPackFromFile(file);
-                    if (packFromFile != null && !this.packIsLoaded(packFromFile)) {
-                        this.loadPack(packFromFile);
+                    if (packFromFile != null) {
+                        allPackFromFile.put(packFromFile.getPackId(), packFromFile.getName());
+
+                        if (!this.packIsLoaded(packFromFile)) {
+                            this.loadPack(packFromFile);
+                        }
                     }
+
                 } catch (final Exception exception) {
                     this.logger.error("&cNie udało załadować się paczki z pliku&b " + file.getName(), exception);
                 }
             }
 
-
-            //TODO: Zrób pętlę cachedPacks która zobaczy jaka cached paczka ma jaką nazwę i na podstawie jej zmieni nulla na nazwę 
-
             for (final BehaviorPack behaviorPack : cachedPacks) {
                 try {
                     if (behaviorPack == null) continue;
+                    if (behaviorPack.getName() == null) {
+                        final String found = allPackFromFile.get(behaviorPack.getPackId());
+
+                        if (found != null) {
+                            behaviorPack.setName(found);
+                        }
+                    }
 
                     if (!this.packIsLoaded(behaviorPack)) {
                         this.loadPack(behaviorPack);
@@ -162,7 +174,7 @@ public class BehaviorPackLoader {
                         this.setPackIndex(behaviorPack, this.getPackIndex(behaviorPack));
                     }
                 } catch (final Exception exception) {
-                    this.logger.error("&cNie udało załadować się paczki&b " + behaviorPack.name(), exception);
+                    this.logger.error("&cNie udało załadować się paczki&b " + behaviorPack.getName(), exception);
                 }
             }
 
@@ -176,20 +188,20 @@ public class BehaviorPackLoader {
         if (this.packIsLoaded(behaviorPack)) return;
         this.loadedBehaviorPacks.add(behaviorPack);
         this.savePacks();
-        this.logger.info("&aZaładowano &dzachowań&b " + behaviorPack.name() + "&a w wersji&1 " + Arrays.toString(behaviorPack.version()));
+        this.logger.info("&aZaładowano &dzachowań&b " + behaviorPack.getName() + "&a w wersji&1 " + Arrays.toString(behaviorPack.getVersion()));
     }
 
     public void loadPack(final BehaviorPack behaviorPack, final int index) {
         if (this.packIsLoaded(behaviorPack)) return;
         this.loadedBehaviorPacks.add(index, behaviorPack);
         this.savePacks();
-        this.logger.info("&aZaładowano paczke&d zachowań&b " + behaviorPack.name() + "&a w wersji&1 " + Arrays.toString(behaviorPack.version()));
+        this.logger.info("&aZaładowano paczke&d zachowań&b " + behaviorPack.getName() + "&a w wersji&1 " + Arrays.toString(behaviorPack.getVersion()));
     }
 
     public boolean packIsLoaded(final BehaviorPack behaviorPack) {
         return this.loadedBehaviorPacks.stream()
-                .anyMatch(behaviro -> behaviro.pack_id().equals(behaviorPack.pack_id()) &&
-                        Arrays.toString(behaviro.version()).equals(Arrays.toString(behaviorPack.version())));
+                .anyMatch(behaviro -> behaviro.getPackId().equals(behaviorPack.getPackId()) &&
+                        Arrays.toString(behaviro.getVersion()).equals(Arrays.toString(behaviorPack.getVersion())));
     }
 
     public int getPackIndex(final BehaviorPack behaviorPack) {

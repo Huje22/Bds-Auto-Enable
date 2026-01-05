@@ -12,8 +12,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import org.jetbrains.annotations.Nullable;
 import pl.indianbartonka.bds.BDSAutoEnable;
 import pl.indianbartonka.bds.pack.component.TexturePack;
@@ -136,12 +138,19 @@ public class ResourcePackLoader {
             }
 
             final LinkedList<TexturePack> cachedPacks = new LinkedList<>(this.loadedTexturePacks);
+            final Map<String, String> allPackFromFile = new HashMap<>();
 
             for (final File file : packs) {
                 try {
                     final TexturePack packFromFile = this.getPackFromFile(file);
-                    if (packFromFile != null && !this.packIsLoaded(packFromFile)) {
-                        this.loadPack(packFromFile);
+                    if (packFromFile != null) {
+                        allPackFromFile.put(packFromFile.getPackId(), packFromFile.getName());
+
+                        System.out.println(GsonUtil.getGson().toJson(packFromFile));
+
+                        if (!this.packIsLoaded(packFromFile)) {
+                            this.loadPack(packFromFile);
+                        }
                     }
                 } catch (final Exception exception) {
                     this.logger.error("&cNie udało załadować się paczki z pliku&b " + file.getName(), exception);
@@ -151,14 +160,21 @@ public class ResourcePackLoader {
             for (final TexturePack texturePack : cachedPacks) {
                 try {
                     if (texturePack == null) continue;
+                    if (texturePack.getName() == null) {
+                        final String found = allPackFromFile.get(texturePack.getPackId());
 
+                        if (found != null) {
+                            texturePack.setName(found);
+                        }
+                    }
+                    
                     if (!this.packIsLoaded(texturePack)) {
                         this.loadPack(texturePack);
                     } else {
                         this.setPackIndex(texturePack, this.getPackIndex(texturePack));
                     }
                 } catch (final Exception exception) {
-                    this.logger.error("&cNie udało załadować się paczki&b " + texturePack.name(), exception);
+                    this.logger.error("&cNie udało załadować się paczki&b " + texturePack.getName(), exception);
                 }
             }
 
@@ -172,20 +188,20 @@ public class ResourcePackLoader {
         if (this.packIsLoaded(texturePack)) return;
         this.loadedTexturePacks.add(texturePack);
         this.savePacks();
-        this.logger.info("&aZaładowano paczke&d tesktur&b " + texturePack.name() + "&a w wersji&1 " + Arrays.toString(texturePack.version()));
+        this.logger.info("&aZaładowano paczke&d tesktur&b " + texturePack.getName() + "&a w wersji&1 " + Arrays.toString(texturePack.getVersion()));
     }
 
     public void loadPack(final TexturePack texturePack, final int index) {
         if (this.packIsLoaded(texturePack)) return;
         this.loadedTexturePacks.add(index, texturePack);
         this.savePacks();
-        this.logger.info("&aZaładowano paczke&d tesktur&b " + texturePack.name() + "&a w wersji&1 " + Arrays.toString(texturePack.version()));
+        this.logger.info("&aZaładowano paczke&d tesktur&b " + texturePack.getName() + "&a w wersji&1 " + Arrays.toString(texturePack.getVersion()));
     }
 
     public boolean packIsLoaded(final TexturePack texturePack) {
         return this.loadedTexturePacks.stream()
-                .anyMatch(texture -> texture.pack_id().equals(texturePack.pack_id()) &&
-                        Arrays.toString(texture.version()).equals(Arrays.toString(texturePack.version())));
+                .anyMatch(texture -> texture.getPackId().equals(texturePack.getPackId()) &&
+                        Arrays.toString(texture.getVersion()).equals(Arrays.toString(texturePack.getVersion())));
     }
 
     public int getPackIndex(final TexturePack texturePack) {

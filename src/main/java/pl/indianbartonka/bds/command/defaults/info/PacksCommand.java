@@ -27,7 +27,7 @@ public class PacksCommand extends Command {
         this.sendMessage("&a---&bTekstury&a---");
         int counter = 1;
         for (final TexturePack texturePack : this.packManager.getResourcePackLoader().getLoadedTexturePacks()) {
-            this.sendMessage(counter + ".&b " + texturePack.name() + "&1 " + Arrays.toString(texturePack.version()));
+            this.sendMessage(counter + ".&b " + texturePack.getName() + "&1 " + Arrays.toString(texturePack.getVersion()));
             counter++;
         }
         counter = 1;
@@ -35,7 +35,7 @@ public class PacksCommand extends Command {
         this.sendMessage(" ");
         this.sendMessage("&a---&bBehaviory&a---");
         for (final BehaviorPack behaviorPack : this.packManager.getBehaviorPackLoader().getLoadedBehaviorPacks()) {
-            this.sendMessage(counter + ".&b " + behaviorPack.name() + "&1 " + Arrays.toString(behaviorPack.version()));
+            this.sendMessage(counter + ".&b " + behaviorPack.getName() + "&1 " + Arrays.toString(behaviorPack.getVersion()));
             counter++;
         }
         this.sendMessage(" ");

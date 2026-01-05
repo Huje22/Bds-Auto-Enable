@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 import org.jetbrains.annotations.Nullable;
@@ -61,7 +60,7 @@ public class PackUpdater {
         }
 
         this.logger.info("&aSprawdzanie najnowszej wersji paczki...");
-        if (Arrays.toString(this.getPackLatestVersion()).equals(Arrays.toString(mainPack.version()))) {
+        if (Arrays.toString(this.getPackLatestVersion()).equals(Arrays.toString(mainPack.getVersion()))) {
             this.logger.info("&aPosiadasz najnowszą wersje paczki");
         } else {
             final File packFile = this.packModule.getPackFile();
