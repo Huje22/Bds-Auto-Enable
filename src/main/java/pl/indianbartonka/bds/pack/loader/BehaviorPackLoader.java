@@ -149,6 +149,9 @@ public class BehaviorPackLoader {
                 }
             }
 
+
+            //TODO: Zrób pętlę cachedPacks która zobaczy jaka cached paczka ma jaką nazwę i na podstawie jej zmieni nulla na nazwę 
+
             for (final BehaviorPack behaviorPack : cachedPacks) {
                 try {
                     if (behaviorPack == null) continue;
