@@ -11,19 +11,17 @@ import pl.indianbartonka.util.ThreadUtil;
 import pl.indianbartonka.util.logger.LogState;
 import pl.indianbartonka.util.logger.Logger;
 
-public class EndCommand extends Command {
+public class StopCommand extends Command {
 
     private final BDSAutoEnable bdsAutoEnable;
     private final Logger logger;
     private final ServerProcess serverProcess;
-    private boolean canStop;
 
-    public EndCommand(final BDSAutoEnable bdsAutoEnable) {
-        super("end", "Kończy działanie servera i aplikacji");
+    public StopCommand(final BDSAutoEnable bdsAutoEnable) {
+        super("stop", "Zatrzymuje server tak aby nie restartował się");
         this.bdsAutoEnable = bdsAutoEnable;
         this.logger = bdsAutoEnable.getLogger();
         this.serverProcess = bdsAutoEnable.getServerProcess();
-        this.canStop = true;
 
         this.addOption("[seconds]");
     }
@@ -45,13 +43,14 @@ public class EndCommand extends Command {
             }
         }
 
-        this.end(seconds);
+
+        this.stop(seconds);
         return true;
     }
 
-    private void end(final int seconds) {
-        if (!this.canStop) {
-            this.sendMessage("&cServer jest już w trakcie zatrzymywania");
+    private void stop(final int seconds) {
+        if (!this.serverProcess.checkProcesRunning()) {
+            this.sendMessage("&cServer jest zatrzymany");
             return;
         }
 
@@ -65,7 +64,6 @@ public class EndCommand extends Command {
             ServerUtil.tellrawToAll("&2Zaraz zostaniecie przeniesieni na server&b lobby");
         }
 
-        this.canStop = false;
         this.serverProcess.setCanRun(false);
 
         int nextSeconds = seconds;
@@ -101,6 +99,5 @@ public class EndCommand extends Command {
             this.logger.error("Wątek został przerwany", exception);
             ThreadUtil.sleep(10);
         }
-        System.exit(0);
     }
 }
