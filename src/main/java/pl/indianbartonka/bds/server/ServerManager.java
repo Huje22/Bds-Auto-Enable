@@ -509,6 +509,13 @@ public class ServerManager {
             this.lastTPS = 20;
             this.eventManager.callEvent(new TPSChangeEvent(this.lastTPS, this.lastTPS));
             this.eventManager.callEvent(new ServerStartEvent());
+
+            /**
+             * For PTERO
+             */
+            System.out.println("Done (21.37s)! For help, type \"help\"");
+            System.out.flush();
+
             this.logger.info("&eUruchomiono server w:&b " + DateUtil.formatTimeDynamic(System.currentTimeMillis() - this.serverProcess.getStartTime(), true));
         }
     }
@@ -546,7 +553,7 @@ public class ServerManager {
 
             if (packModule.getMainPack() != null) {
                 this.logger.alert(wrongVersion.replaceAll("\n", "")
-                        .replaceAll("<version>", Arrays.toString(packModule.getMainPack().version())));
+                        .replaceAll("<version>", Arrays.toString(packModule.getMainPack().getVersion())));
             }
             packModule.setLoaded(false);
         }
