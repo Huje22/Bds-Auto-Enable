@@ -146,8 +146,6 @@ public class ResourcePackLoader {
                     if (packFromFile != null) {
                         allPackFromFile.put(packFromFile.getPackId(), packFromFile.getName());
 
-                        System.out.println(GsonUtil.getGson().toJson(packFromFile));
-
                         if (!this.packIsLoaded(packFromFile)) {
                             this.loadPack(packFromFile);
                         }
