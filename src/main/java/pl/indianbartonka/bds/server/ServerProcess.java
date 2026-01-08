@@ -191,7 +191,8 @@ public class ServerProcess {
                 System.exit(21);
             }
         }
-
+        
+        processBuilder.redirectErrorStream(true);
         return processBuilder;
     }
 
@@ -211,7 +212,7 @@ public class ServerProcess {
      * Metody wykonywane są z consoleOutputService aby nie obciążać jednego wątku wykonywaniem tylu akcji na raz
      */
     private void readConsoleOutput() {
-        try (final BufferedReader reader = new BufferedReader(new InputStreamReader(this.process.getInputStream(), StandardCharsets.UTF_8))) {
+        try (final BufferedReader reader = this.process.inputReader(StandardCharsets.UTF_8)) {
             String line;
 
             while (this.canWriteConsoleOutput && (line = reader.readLine()) != null) {

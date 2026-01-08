@@ -20,7 +20,7 @@ public class ExecuteCommand extends Command {
                 final ProcessBuilder processBuilder = new ProcessBuilder(args);
                 final Process process = processBuilder.start();
 
-                try (final BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                try (final BufferedReader reader = process.inputReader()) {
                     String line;
                     while ((line = reader.readLine()) != null) {
                         this.sendMessage(line);
